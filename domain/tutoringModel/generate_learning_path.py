@@ -1,12 +1,7 @@
-from collections import OrderedDict
-import pytest
-
-
 class GenerateLearningPath:
 
     # Learning Element Types: (+) = 1 and (-) = 0
-    # "KU" and "LK":0 sind für alle Lernenden
-    # gleich relevant / Equally relevant for all learners
+    # "KU" and "LK":0 Equally relevant for all learners
     learning_style_RQ = {"AKT": 0, "REF": 1, "INT": 1}
     learning_style_SE = {"AKT": 1, "REF": 0, "SNS": 1}
     learning_style_FO = {"AKT": 1, "REF": 0, "INT": 0, "VIS": 0, "VRB": 1}
@@ -22,6 +17,7 @@ class GenerateLearningPath:
     def __init__(self):
         pass
 
+    # Checks if the input Learning Style is out the range [0-11]
     def check_learning_style(self, input_learning_style):
         # input_learning_style= {"AKT": 2, "INT": 7,"VIS": 7, "GLO": 7}
         is_correct = False
@@ -35,7 +31,7 @@ class GenerateLearningPath:
                     break
         return is_correct
 
-    # Validation of ZF
+    # Validates the special case of ZF learning elements
     def special_case_ZF(self, input_learning_style):
 
         # input_learning_style= {"AKT": 2, "REF": 7,"SEQ": 7, "GLO": 7}
@@ -52,7 +48,8 @@ class GenerateLearningPath:
                 result = 99
 
         return result
-
+    
+    #  Calculates the sequence of the learning elements to constructs the learning path
     def calculate_sequence(self, learning_element_types, input_learning_style):
 
         # input_learning_style= {"AKT": 2, "REF": 7,"SEQ": 7, "GLO": 7}
@@ -74,6 +71,7 @@ class GenerateLearningPath:
 
         return sum
 
+     #sortes the sequence of the learning elements   
     def sorted_learning_path(self, learning_path):
         sorted_learning_path = {}
         sorted_keys = sorted(
@@ -84,6 +82,7 @@ class GenerateLearningPath:
         print(sorted_learning_path)
         return sorted_learning_path
 
+    #Calculates the sequence of the learning path and validates the input values of the learning styles
     def get_learning_path(self, input_learning_style={"AKT": 0, "INT": 0,
                                                       "VIS": 0, "GLO": 0}):
         if (len(input_learning_style) != 4):

@@ -1,0 +1,2 @@
+def func(self):
+    pass

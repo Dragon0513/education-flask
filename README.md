@@ -40,7 +40,7 @@ The system will work with the Service-Layer-Pattern, the Unit-of-Work-Pattern an
 We will follow some Gudielines for the Development. 
 These are:
 
-•	We will use Python 3.9 for our development.
+•	We will use Python 3.10 for our development.
 
 •	We will follow the Zen of Python.
 

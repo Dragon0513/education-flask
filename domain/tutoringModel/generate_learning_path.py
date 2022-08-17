@@ -49,7 +49,7 @@ class GenerateLearningPath:
 
         return result
     
-    #  Calculates the sequence of the learning elements to constructs the learning path
+    # Calculates the sequence of the learning elements to constructs the learning path
     def calculate_sequence(self, learning_element_types, input_learning_style):
 
         # input_learning_style= {"AKT": 2, "REF": 7,"SEQ": 7, "GLO": 7}
@@ -71,7 +71,7 @@ class GenerateLearningPath:
 
         return sum
 
-     #sortes the sequence of the learning elements   
+    # Sortes the sequence of the learning elements   
     def sorted_learning_path(self, learning_path):
         sorted_learning_path = {}
         sorted_keys = sorted(
@@ -82,7 +82,7 @@ class GenerateLearningPath:
         print(sorted_learning_path)
         return sorted_learning_path
 
-    #Calculates the sequence of the learning path and validates the input values of the learning styles
+    # Calculates the sequence of the learning path and validates the input values of the learning styles
     def get_learning_path(self, input_learning_style={"AKT": 0, "INT": 0,
                                                       "VIS": 0, "GLO": 0}):
         if (len(input_learning_style) != 4):

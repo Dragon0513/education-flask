@@ -1,5 +1,6 @@
 import abc
 from domain.tutoringModel import model
+from repositories.orm import LearningPath
 
 
 class AbstractRepository(abc.ABC):
@@ -20,20 +21,7 @@ class SqlAlchemyRepository(AbstractRepository):
         self.session.add(learning_path)
 
     def get(self, id):
-        """
-        ToDo: Need to investigate why .query method is
-        not working correctly here.
-
-        Error: FAILED integration/test_uow.py::test_uow_can_access_db
-        - sqlalchemy.exc.ArgumentError: Column expression or FROM
-        clause expected, got <class 'domain.tutoringModel.model.LearningPath'>.
-        """
-
-        # return self.session.query(model.LearningPath).filter_by(id=id).first()
-
-        query = 'SELECT * FROM public."LearningPath" WHERE ID = ' + \
-            str(round(id))
-        result = self.session.execute(
-            query
-        )
-        return result.mappings().first()
+        result = self.session.query(
+            LearningPath).filter_by(id=round(id)).first()
+        found_learning_path = LearningPath(id=result.id, name=result.name)
+        return found_learning_path

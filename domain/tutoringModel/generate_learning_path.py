@@ -70,7 +70,7 @@ class GenerateLearningPath:
 
         for w in sorted_keys:
             sorted_learning_path[w] = learning_path[w]
-        print(sorted_learning_path)
+        
         return sorted_learning_path
 
     def get_learning_path(self, input_learning_style={"AKT": 0, "INT": 0,
@@ -84,7 +84,7 @@ class GenerateLearningPath:
                 'The Input Learning Style is out the range [0-11]')
 
         LPath = {}
-        print("\n", input_learning_style)
+        
 
         LPath["RQ"] = self.calculate_sequence(
             self.learning_style_RQ, input_learning_style)

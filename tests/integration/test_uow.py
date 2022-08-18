@@ -1,13 +1,13 @@
 from select import select
 import pytest
 from domain.tutoringModel.model import LearningPath
-from repositories.orm import ALearningPath
+from repositories.orm import AbstractLearningPathOrm
 from service_layer import unit_of_work
 from datetime import datetime
 
 
 def insert_learning_path(session, id, name):
-    learning_path_added = ALearningPath(id=id, name=name)
+    learning_path_added = AbstractLearningPathOrm(id=id, name=name)
     session.add(learning_path_added)
     session.commit()
 

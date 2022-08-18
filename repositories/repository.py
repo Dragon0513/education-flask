@@ -1,6 +1,6 @@
 import abc
 from domain.tutoringModel import model
-from repositories.orm import LearningPath
+from repositories.orm import LearningPathOrm
 
 
 class AbstractRepository(abc.ABC):
@@ -22,6 +22,6 @@ class SqlAlchemyRepository(AbstractRepository):
 
     def get(self, id):
         result = self.session.query(
-            LearningPath).filter_by(id=round(id)).first()
-        found_learning_path = LearningPath(id=result.id, name=result.name)
+            LearningPathOrm).filter_by(id=round(id)).first()
+        found_learning_path = LearningPathOrm(id=result.id, name=result.name)
         return found_learning_path

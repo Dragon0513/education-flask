@@ -6,6 +6,7 @@ from sqlalchemy.orm import sessionmaker
 from repositories import repository
 import config
 
+
 class AbstractUnitOfWork(abc.ABC):
 
     def __enter__(self) -> AbstractUnitOfWork:
@@ -30,13 +31,14 @@ DEFAULT_SESSION_FACTORY = sessionmaker(
     )
 )
 
+
 class SqlAlchemyUnitOfWork(AbstractUnitOfWork):
     def __init__(self, session_factory=DEFAULT_SESSION_FACTORY):
         self.session_factory = session_factory
 
     def __enter__(self):
-        self.session = self.session_factory() 
-        self.products = repository.SqlAlchemyRepository(self.session)
+        self.session = self.session_factory()
+        self.learning_path = repository.SqlAlchemyRepository(self.session)
         return super().__enter__()
 
     def __exit__(self, *args):

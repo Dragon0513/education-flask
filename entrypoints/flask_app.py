@@ -5,6 +5,7 @@ from repositories import orm
 app = Flask(__name__)
 orm.start_mappers()
 
+
 @app.route("/")
 def func():
-    return jsonify(),200
+    return jsonify(), 200

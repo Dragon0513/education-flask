@@ -63,15 +63,15 @@ class GenerateLearningPath:
 
         return sum
 
-    def sorted_learning_path(self, learning_path):
-        sorted_learning_path = {}
+    def sort_learning_path(self, learning_path):
+        sort_learning_path = {}
         sorted_keys = sorted(
             learning_path, key=learning_path.get, reverse=True)
 
         for w in sorted_keys:
-            sorted_learning_path[w] = learning_path[w]
+            sort_learning_path[w] = learning_path[w]
         
-        return sorted_learning_path
+        return sort_learning_path
 
     def get_learning_path(self, input_learning_style={"AKT": 0, "INT": 0,
                                                       "VIS": 0, "GLO": 0}):
@@ -104,4 +104,4 @@ class GenerateLearningPath:
             self.learning_style_AB, input_learning_style)
         LPath["ZF"] = self.special_case_ZF(input_learning_style)
 
-        return self.sorted_learning_path(LPath)
+        return self.sort_learning_path(LPath)

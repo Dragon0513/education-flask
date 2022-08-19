@@ -1,7 +1,6 @@
-class GenerateLearningPath:
+class LearningPath:
 
     # Learning Element Types: (+) = 1 and (-) = 0
-    # "KU" and "LK":0 Equally relevant for all learners
     learning_style_RQ = {"AKT": 0, "REF": 1, "INT": 1}
     learning_style_SE = {"AKT": 1, "REF": 0, "SNS": 1}
     learning_style_FO = {"AKT": 1, "REF": 0, "INT": 0, "VIS": 0, "VRB": 1}
@@ -9,7 +8,7 @@ class GenerateLearningPath:
                          "SNS": 0, "INT": 1, "VIS": 0, "VRB": 1}
     learning_style_AN = {"AKT": 1, "REF": 0,
                          "SNS": 1, "INT": 0, "VIS": 1, "VRB": 0}
-    learning_style_ÜB = {"AKT": 1, "REF": 0, "SNS": 1, "INT": 1}
+    learning_style_UB = {"AKT": 1, "REF": 0, "SNS": 1, "INT": 1}
     learning_style_BE = {"AKT": 0, "REF": 1, "SNS": 1, "INT": 0, "GLO": 1}
     learning_style_AB = {"SNS": 1, "INT": 0, "GLO": 1}
     learning_style_ZF = {"REF": 1, "GLO": 1}
@@ -18,7 +17,7 @@ class GenerateLearningPath:
         pass
 
     def check_learning_style(self, input_learning_style):
-        # Checks if the input Learning Style is out the range [0-11]
+        
         is_correct = False
 
         for iterator in input_learning_style:
@@ -52,7 +51,7 @@ class GenerateLearningPath:
         learning_style = 0
 
         for learning_style, value in learning_element_types.items():
-            # print ("learning_style",learning_style)
+            
             if (input_learning_style.get(learning_style)):
                 learning_style = input_learning_style.get(learning_style)
 
@@ -70,12 +69,12 @@ class GenerateLearningPath:
 
         for w in sorted_keys:
             sort_learning_path[w] = learning_path[w]
-        
+
         return sort_learning_path
 
     def get_learning_path(self, input_learning_style={"AKT": 0, "INT": 0,
                                                       "VIS": 0, "GLO": 0}):
-        # Calculates the sequence of the learning path
+       
         if (len(input_learning_style) != 4):
             raise ValueError('The Size of Learning Style is not 4')
 
@@ -84,7 +83,6 @@ class GenerateLearningPath:
                 'The Input Learning Style is out the range [0-11]')
 
         LPath = {}
-        
 
         LPath["RQ"] = self.calculate_sequence(
             self.learning_style_RQ, input_learning_style)
@@ -97,7 +95,7 @@ class GenerateLearningPath:
         LPath["AN"] = self.calculate_sequence(
             self.learning_style_AN, input_learning_style)
         LPath["ÜB"] = self.calculate_sequence(
-            self.learning_style_ÜB, input_learning_style)
+            self.learning_style_UB, input_learning_style)
         LPath["BE"] = self.calculate_sequence(
             self.learning_style_BE, input_learning_style)
         LPath["AB"] = self.calculate_sequence(

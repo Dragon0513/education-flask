@@ -17,7 +17,6 @@ class LearningPath:
         pass
 
     def check_learning_style(self, input_learning_style):
-        
         is_correct = False
 
         for iterator in input_learning_style:
@@ -51,7 +50,6 @@ class LearningPath:
         learning_style = 0
 
         for learning_style, value in learning_element_types.items():
-            
             if (input_learning_style.get(learning_style)):
                 learning_style = input_learning_style.get(learning_style)
 
@@ -74,7 +72,6 @@ class LearningPath:
 
     def get_learning_path(self, input_learning_style={"AKT": 0, "INT": 0,
                                                       "VIS": 0, "GLO": 0}):
-       
         if (len(input_learning_style) != 4):
             raise ValueError('The Size of Learning Style is not 4')
 

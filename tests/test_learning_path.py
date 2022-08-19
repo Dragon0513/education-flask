@@ -1,4 +1,4 @@
-import domain.tutoringModel.LearningPath as LP
+import domain.tutoringModel.learning_path as LP
 import pytest
 
 

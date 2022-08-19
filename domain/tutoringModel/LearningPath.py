@@ -33,14 +33,14 @@ class LearningPath:
         result = 0
         reflective = input_learning_style.get("REF")
         sequential = input_learning_style.get("SEQ")
+        style_global = input_learning_style.get("GLO")
+
         condition1 = reflective and sequential
+        condition2 = condition1 and reflective > sequential
+        condition3 = (reflective and not sequential) or style_global
 
-        if (condition1 and reflective > sequential):
-
+        if (condition2 or condition3):
             result = 99
-        else:
-            if (sequential or input_learning_style.get("GLO")):
-                result = 99
 
         return result
 
@@ -91,7 +91,7 @@ class LearningPath:
             self.learning_style_ZL, input_learning_style)
         LPath["AN"] = self.calculate_sequence(
             self.learning_style_AN, input_learning_style)
-        LPath["ÜB"] = self.calculate_sequence(
+        LPath["UB"] = self.calculate_sequence(
             self.learning_style_UB, input_learning_style)
         LPath["BE"] = self.calculate_sequence(
             self.learning_style_BE, input_learning_style)

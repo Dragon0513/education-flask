@@ -1,6 +1,6 @@
 from select import select
 import pytest
-from domain.tutoringModel.model import LearningPath
+#from domain.tutoringModel.model import LearningPath
 from repositories.orm import AbstractLearningPathOrm
 from service_layer import unit_of_work
 from datetime import datetime

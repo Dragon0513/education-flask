@@ -1,15 +1,15 @@
 import abc
-from domain.tutoringModel import model
+from domain.tutoringModel import learning_path
 from repositories.orm import LearningPathOrm
 
 
 class AbstractRepository(abc.ABC):
     @abc.abstractmethod
-    def add(self, learning_path: model.LearningPath):
+    def add(self, learning_path: learning_path.LearningPath):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get(self, id) -> model.LearningPath:
+    def get(self, id) -> learning_path.LearningPath:
         raise NotImplementedError
 
 

@@ -50,12 +50,12 @@ def test_get_learning_path_with_empty_learning_style():
 def test_get_learning_path_with_different_size_of_input_learning_style():
     LearningPath = LP.LearningPath()
     input_learning_style = {"INT": 9, "VIS": 9, "GLO": 9}
-    with pytest.raises(ValueError):
-        LearningPath.get_learning_path(input_learning_style)
+    assert type(LearningPath.get_learning_path(
+        input_learning_style)) == ValueError
 
 
 def test_get_learning_path_with_out_of_Range_input_learning_style_dimension():
     LearningPath = LP.LearningPath()
     input_learning_style = {"AKT": 12, "INT": 2, "VIS": 11, "GLO": 9}
-    with pytest.raises(ValueError):
-        LearningPath.get_learning_path(input_learning_style)
+    assert type(LearningPath.get_learning_path(
+        input_learning_style)) == ValueError

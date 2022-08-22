@@ -31,15 +31,14 @@ def test_get_learning_path_for_learning_style():
     learning_path = services.get_learning_path(uow, {
         "AKT": 5, "INT": 9, "VIS": 9, "GLO": 9
     })
-    learning_path_expected = {
-        'ZF': 99, 'UB': 14, 'SE': 5, 'AN': 5,
-        'RQ': 4, 'AB': 0, 'ZL': -5, 'BE': -5, 'FO': -13}
+    learning_path_expected = ['ZF', 'UB', 'SE', 'AN',
+                              'RQ', 'AB', 'ZL', 'BE', 'FO']
     assert learning_path == learning_path_expected
 
 
 def test_get_learning_path_for_no_learning_style():
     uow = FakeUnitOfWork()
     learning_path = services.get_learning_path(uow)
-    learning_path_expected = {'ZF': 0, 'AN': 0, 'SE': 0, 'UB': 0,
-                              'AB': 0, 'BE': 0, 'FO': 0, 'RQ': 0, 'ZL': 0}
+    learning_path_expected = ['RQ', 'SE', 'FO', 'ZL',
+                              'AN', 'UB', 'BE', 'AB', 'ZF']
     assert learning_path == learning_path_expected

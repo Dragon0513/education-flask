@@ -61,22 +61,12 @@ class LearningPath:
         return sum
 
     def sort_learning_path(self, learning_path):
-        print(learning_path)
         sort_learning_path = []
-        sort_learning_path_dict = {}
 
-        sorted_keys = sorted(
-            learning_path, key=learning_path.get, reverse=True)
-
-        for w in sorted_keys:
-            sort_learning_path_dict[w] = learning_path[w]
-
-        print(sort_learning_path_dict)
         for _ in range(len(learning_path)):
-            test = max(learning_path, key=learning_path.get)
-            sort_learning_path.append(test)
-            del learning_path[test]
-        print(','.join(sort_learning_path))
+            highest_item = max(learning_path, key=learning_path.get)
+            sort_learning_path.append(highest_item)
+            del learning_path[highest_item]
         return sort_learning_path
 
     def get_learning_path(self, input_learning_style={"AKT": 0, "INT": 0,

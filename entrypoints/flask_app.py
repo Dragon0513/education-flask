@@ -1,6 +1,4 @@
-from multiprocessing.sharedctypes import Value
 from flask import Flask, jsonify, request
-from domain.tutoringModel import learning_path
 from service_layer import services, unit_of_work
 from repositories import orm
 
@@ -11,7 +9,8 @@ orm.start_mappers()
 @app.route("/learningPath")
 def get_learning_path():
     if request.json is None or 'studentId' not in request.json:
-        return jsonify(), 404
+        status_code = 404
+        return jsonify(), status_code
     else:
         if 'learningStyle' in request.json:
             learning_path = services.get_learning_path(
@@ -24,7 +23,9 @@ def get_learning_path():
             )
 
         if type(learning_path) is ValueError:
-            return jsonify({}), 400
+            status_code = 400
+            return jsonify({}), status_code
         else:
             dict = {'learningPath': learning_path}
-            return jsonify(dict), 200
+            status_code = 200
+            return jsonify(dict), status_code

@@ -1,0 +1,7 @@
+atomicwrites==1.4.0
+brotlipy==0.7.0
+psycopg2-binary==2.9.3
+pycodestyle==2.9.1
+pytest==7.1.2
+python-dotenv==0.20.0
+wincertstore==0.2

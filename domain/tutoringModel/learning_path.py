@@ -61,23 +61,23 @@ class LearningPath:
         return sum
 
     def sort_learning_path(self, learning_path):
-        sort_learning_path = {}
-        sorted_keys = sorted(
-            learning_path, key=learning_path.get, reverse=True)
+        sort_learning_path = []
 
-        for w in sorted_keys:
-            sort_learning_path[w] = learning_path[w]
-
+        for _ in range(len(learning_path)):
+            highest_item = max(learning_path, key=learning_path.get)
+            sort_learning_path.append(highest_item)
+            del learning_path[highest_item]
         return sort_learning_path
 
     def get_learning_path(self, input_learning_style={"AKT": 0, "INT": 0,
                                                       "VIS": 0, "GLO": 0}):
         if (len(input_learning_style) != 4):
-            raise ValueError('The Size of Learning Style is not 4')
+            return ValueError(
+                'The Size of Learning Style is not 4')
 
         if self.check_learning_style(input_learning_style):
-            raise ValueError(
-                'The Input Learning Style is out the range [0-11]')
+            return ValueError(
+                'Error: The Input Learning Style is out the range [0-11]')
 
         LPath = {}
 

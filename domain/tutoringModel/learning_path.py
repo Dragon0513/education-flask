@@ -1,4 +1,5 @@
 from datetime import datetime
+import errors as err
 
 
 class LearningPath:
@@ -87,12 +88,10 @@ class LearningPath:
     def get_learning_path(self, input_learning_style={"AKT": 0, "INT": 0,
                                                       "VIS": 0, "GLO": 0}):
         if (len(input_learning_style) != 4):
-            return ValueError(
-                'The Size of Learning Style is not 4')
+            raise err.WrongLearningStyleNumberError()
 
         if self.check_learning_style(input_learning_style):
-            return ValueError(
-                'Error: The Input Learning Style is out the range [0-11]')
+            raise err.WrongLearningStyleDimensionError()
 
         LPath = {}
 

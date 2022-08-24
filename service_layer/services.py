@@ -10,9 +10,6 @@ def get_learning_path(
     with uow:
         path = learning_path.LearningPath(
             student_id=student_id, learning_style=learning_style)
-        condition = type(path.learning_path) is ValueError
-        if condition:
-            return ValueError
         result = ', '.join(path.learning_path)
         if type(result) is not "":
             uow.learning_path.add(path)

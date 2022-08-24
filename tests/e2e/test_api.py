@@ -1,6 +1,7 @@
 import pytest
 import config
 import requests
+import errors as err
 
 
 def test_api_get_learning_path_for_learning_style():
@@ -21,8 +22,9 @@ def test_api_get_learning_path_for_learning_style_without_studentId():
     url = config.get_api_url()
     r = requests.get(f"{url}/learningPath", json=data)
 
-    assert r.status_code == 404
-    assert r.json() == {}
+    assert r.status_code == err.MissingParameterError().code
+    assert r.json() == {
+        "error": err.MissingParameterError().description}
 
 
 def test_api_get_learning_path_for_learning_style_without_learningStyle():
@@ -43,8 +45,9 @@ def test_api_get_learning_path_for_ls_with_wrong_number_of_dimensions():
     url = config.get_api_url()
     r = requests.get(f"{url}/learningPath", json=data)
 
-    assert r.status_code == 400
-    assert r.json() == {"Error": "Something is wrong..."}
+    assert r.status_code == err.WrongLearningStyleNumberError().code
+    assert r.json() == {
+        "error": err.WrongLearningStyleNumberError().description}
 
 
 def test_api_get_learning_path_for_ls_with_wrong_number_in_dimension():
@@ -54,5 +57,6 @@ def test_api_get_learning_path_for_ls_with_wrong_number_in_dimension():
     url = config.get_api_url()
     r = requests.get(f"{url}/learningPath", json=data)
 
-    assert r.status_code == 400
-    assert r.json() == {"Error": "Something is wrong..."}
+    assert r.status_code == err.WrongLearningStyleDimensionError().code
+    assert r.json() == {
+        "error": err.WrongLearningStyleDimensionError().description}

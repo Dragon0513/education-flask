@@ -1,5 +1,4 @@
 import abc
-from operator import mod
 from domain.tutoringModel import learning_path as LP
 
 

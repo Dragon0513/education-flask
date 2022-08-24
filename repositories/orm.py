@@ -1,5 +1,5 @@
 from sqlalchemy import MetaData, Column, Integer, String, Table
-from sqlalchemy.orm import mapper, relationship
+from sqlalchemy.orm import mapper
 from domain.tutoringModel import learning_path as LP
 
 metadata = MetaData()

@@ -8,6 +8,7 @@ import config
 
 
 class AbstractUnitOfWork(abc.ABC):
+    learning_path: repository.AbstractRepository
 
     def __enter__(self) -> AbstractUnitOfWork:
         return self

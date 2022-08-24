@@ -15,16 +15,18 @@ def get_learning_path():
         if 'learningStyle' in request.json:
             learning_path = services.get_learning_path(
                 unit_of_work.SqlAlchemyUnitOfWork(),
+                request.json["studentId"],
                 request.json["learningStyle"]
             )
         else:
             learning_path = services.get_learning_path(
-                unit_of_work.SqlAlchemyUnitOfWork()
+                unit_of_work.SqlAlchemyUnitOfWork(),
+                request.json["studentId"]
             )
 
-        if type(learning_path) is ValueError:
+        if learning_path is ValueError:
             status_code = 400
-            return jsonify({}), status_code
+            return jsonify({"Error": "Something is wrong..."}), status_code
         else:
             dict = {'learningPath': learning_path}
             status_code = 200

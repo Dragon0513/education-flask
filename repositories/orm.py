@@ -1,22 +1,19 @@
-from importlib.metadata import metadata
-from sqlalchemy import MetaData, Column, Integer, String
+from sqlalchemy import MetaData, Column, Integer, String, Table
 from sqlalchemy.orm import mapper, relationship
-from sqlalchemy.ext.declarative import declarative_base
-Base = declarative_base()
+from domain.tutoringModel import learning_path as LP
 
-metadata = MetaData(schema="public")
+metadata = MetaData()
 
-
-class LearningPathOrm(Base):
-    __tablename__ = "LearningPath"
-    id = Column('id', Integer, primary_key=True, autoincrement=True)
-    name = Column('name', String(255), nullable=False)
-    schema = 'public'
-
-
-class AbstractLearningPathOrm(LearningPathOrm):
-    pass
+learning_path = Table(
+    "learning_path",
+    metadata,
+    Column("id", Integer, primary_key=True, autoincrement=True),
+    Column("student_id", Integer, nullable=False),
+    Column("learning_path", String(255), nullable=False)
+)
 
 
 def start_mappers():
-    pass
+    mapper(
+        LP.LearningPath, learning_path
+    )

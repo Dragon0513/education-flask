@@ -1,11 +1,12 @@
 import os
+import db_config
 
 
 def get_postgres_uri():
     host = os.environ.get("DB_HOST", "localhost")
-    port = 5432
-    password = os.environ.get("DB_PASSWORD", "HASKI-Adm")
-    user, db_name = 'postgres', 'HASKI'
+    port = db_config.port
+    password = os.environ.get("DB_PASSWORD", db_config.password)
+    user, db_name = db_config.user, db_config.db_name
     return f"postgresql://{user}:{password}@{host}:{port}/{db_name}"
 
 

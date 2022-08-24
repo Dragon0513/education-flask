@@ -13,7 +13,7 @@ def test_api_get_learning_path_for_learning_style():
     assert r.status_code == 200
     learning_path_expected = ['ZF', 'UB', 'SE', 'AN',
                               'RQ', 'AB', 'ZL', 'BE', 'FO']
-    assert r.json()['learningPath'] == learning_path_expected
+    assert r.json()['learningPath'] == ', '.join(learning_path_expected)
 
 
 def test_api_get_learning_path_for_learning_style_without_studentId():
@@ -33,7 +33,7 @@ def test_api_get_learning_path_for_learning_style_without_learningStyle():
     assert r.status_code == 200
     learning_path_expected = ['RQ', 'SE', 'FO', 'ZL',
                               'AN', 'UB', 'BE', 'AB', 'ZF']
-    assert r.json()['learningPath'] == learning_path_expected
+    assert r.json()['learningPath'] == ', '.join(learning_path_expected)
 
 
 def test_api_get_learning_path_for_ls_with_wrong_number_of_dimensions():
@@ -44,7 +44,7 @@ def test_api_get_learning_path_for_ls_with_wrong_number_of_dimensions():
     r = requests.get(f"{url}/learningPath", json=data)
 
     assert r.status_code == 400
-    assert r.json() == {}
+    assert r.json() == {"Error": "Something is wrong..."}
 
 
 def test_api_get_learning_path_for_ls_with_wrong_number_in_dimension():
@@ -55,4 +55,4 @@ def test_api_get_learning_path_for_ls_with_wrong_number_in_dimension():
     r = requests.get(f"{url}/learningPath", json=data)
 
     assert r.status_code == 400
-    assert r.json() == {}
+    assert r.json() == {"Error": "Something is wrong..."}

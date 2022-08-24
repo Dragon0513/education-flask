@@ -1,3 +1,6 @@
+from datetime import datetime
+
+
 class LearningPath:
 
     # Learning Element Types: (+) = 1 and (-) = 0
@@ -13,8 +16,20 @@ class LearningPath:
     learning_style_AB = {"SNS": 1, "INT": 0, "GLO": 1}
     learning_style_ZF = {"REF": 1, "GLO": 1}
 
-    def __init__(self):
-        pass
+    def __init__(self,
+                 student_id,
+                 learning_path=None,
+                 learning_style={"AKT": 0, "INT": 0, "VIS": 0, "GLO": 0},
+                 id=None):
+        if id is None:
+            self.id = datetime.timestamp(datetime.now())
+        else:
+            self.id = id
+        self.student_id = student_id
+        if learning_path is None:
+            self.learning_path = self.get_learning_path(learning_style)
+        else:
+            self.learning_path = learning_path
 
     def check_learning_style(self, input_learning_style):
         is_correct = False

@@ -1,0 +1,401 @@
+openapi: "3.0.3"
+info:
+  description: "This is the HASKI API documentation"
+  version: "1.0"
+  title: "HASKI API"
+tags:
+- name: "HASKI-intern"
+  description: "Communication between Backend and Frontend"
+- name: "moodle"
+  description: "Extension to communicate with Moodle LMS"
+- name: "logs"
+  description: "All log data"
+paths:
+  /logs/frontend:
+    get:
+      tags:
+      - "logs"
+      summary: "get all frontend logs"
+      description: "Get all available frontend log data sets"
+      operationId: "getFrontendLog"
+      responses:
+        "200":
+            description: "successful operation"
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/FrontendLogs'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+        "404":
+          description: "Logs not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+    post:
+      tags:
+      - "logs"
+      summary: "post frontend log"
+      description: "Post a new frontend log dataset"
+      operationId: "postFrontendLog"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FrontendLog'
+      responses:
+        "201":
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessMessage'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+        "404":
+          description: "Logs not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+components:
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+  schemas:
+    GeneralError:
+      type: "object"
+      required: 
+      - "code"
+      - "message"
+      properties: 
+        code: 
+          type: "integer"
+          format: "int32"
+          example: 404
+          description: "The http error code of the error"
+        message: 
+          type: "string"
+          example: "Not found"
+          description: "A short description of the error"
+    FrontendLogEntryFCP:
+      type: "object"
+      properties:
+        name: 
+          type: "string"
+          example: "first-contentful-paint"
+          description: "name of the entry"
+        entryType: 
+          type: "string"
+          example: "paint"
+          description: "The type of the entry"
+        startTime: 
+          type: "number"
+          format: "double"
+          example: 3957.6999999284744
+          description: "The start time of the entry"
+        duration: 
+          type: "number"
+          format: "double"
+          example: 0
+          description: "The duration time of the entry"
+    FrontendLogEntryTTFB:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+          example: "http://localhost:8080/"
+          description: "The name of the entry"
+        entryType:
+          type: "string"
+          example: "navigation"
+          description: "The type of the entry"
+        startTime:
+          type: "number"
+          format: "double"
+          example: 0
+          description: "The start time of the entry"
+        duration:
+          type: "number"
+          format: "double"
+          example: 4003.0999999046326
+          description: "The duration of the entry"
+        initiatorType:
+          type: "string"
+          example: "navigation"
+          description: "The type of initiator for the entry"
+        nextHopProtocol:
+          type: "string"
+          example: "http/1.1"
+          description: "The next hop of the entry"
+        workerStart:
+          type: "number"
+          format: "double"
+          example: 0
+          description: "The start of the worker for the entry"
+        redirectStart:
+          type: "number"
+          format: "double"
+          example: 0
+          description: "The redirect start of the entry"
+        redirectEnd:
+          type: "number"
+          format: "double"
+          example: 0
+          description: "The redirect end of the entry"
+        fetchStart:
+          type: "number"
+          format: "double"
+          example: 7.699999928474426
+          description: "The fetch start of the entry"
+        domainLookupStart:
+          type: "number"
+          format: "double"
+          example: 99.19999992847443
+          description: "The domain lookup start of the entry"
+        domainLookupEnd:
+          type: "number"
+          format: "double"
+          example: 99.29999995231628
+          description: "The domain lookup end of the entry"
+        connectStart:
+          type: "number"
+          format: "double"
+          example: 99.29999995231628
+          description: "The connecet start for the entry"
+        connectEnd:
+          type: "number"
+          format: "double"
+          example: 99.89999997615814
+          description: "The connect end for the entry"
+        secureConnectionStart:
+          type: "number"
+          format: "double"
+          example: 0,
+          description: "The secure connection start of the entry"
+        requestStart:
+          type: "integer"
+          format: "int64"
+          example: 100
+          description: "The request start for the entry"
+        responseStart:
+          type: "number"
+          format: "double"
+          example: 3638.7999999523163
+          description: "The response start of the entry"
+        responseEnd:
+          type: "number"
+          format: "double"
+          example: 3640
+          description: "The response end of the entry"
+        transferSize:
+          type: "integer"
+          format: "int64"
+          example: 810
+          description: "The transfer size of the entry"
+        encodedBodySize:
+          type: "integer"
+          format: "int64"
+          example: 510
+          description: "The encoded body size of the entry"
+        decodedBodySize:
+          type: "integer"
+          format: "int64"
+          example: 510
+          description: "The decoded body size of the entry"
+        serverTiming:
+          type: "array"
+          items: 
+            type: "string"
+            example: ""
+          description: "The server timing of the entry"
+        workerTiming:
+          type: "array"
+          items: 
+            type: "string"
+            example: ""
+          description: "The worker timing of the entry"
+        unloadEventStart:
+          type: "number"
+          format: "double"
+          example: 0
+          description: "The unload event start of the entry"
+        unloadEventEnd:
+          type: "number"
+          format: "double"
+          example: 0
+          description: "The unload event end of the entry"
+        domInteractive:
+          type: "number"
+          format: "double"
+          example: 3717.5
+          description: "The dom interactive value of the entry"
+        domContentLoadedEventStart:
+          type: "number"
+          format: "double"
+          example: 3937.5999999046326
+          description: "The dom content loaded event start of the entry"
+        domContentLoadedEventEnd:
+          type: "number"
+          format: "double"
+          example: 3938.899999976158
+          description: "The dom content loaded event end of the entry"
+        domComplete:
+          type: "number"
+          format: "double"
+          example: 4003.0999999046326
+          description: "The dom complete of the entry"
+        loadEventStart:
+          type: "number"
+          format: "double"
+          example: 4003.0999999046326
+          description: "The load event start of the entry"
+        loadEventEnd:
+          type: "number"
+          format: "double"
+          example: 4003.0999999046326
+          description: "The load event end of the entry"
+        type:
+          type: "string"
+          example: "navigate"
+          description: "The type of the event"
+        redirectCount:
+          type: "number"
+          format: "double"
+          example: 0
+          description: "The redirect count of the entry"
+    FrontendLogEntryCLS:
+      type: "object"
+    FrontendLogEntryLCP:
+      type: "object"
+      properties:
+        name: 
+          type: "string"
+          example: ""
+          description: "The name of the entry"
+        entryType:
+          type: "string"
+          example: "largest-contentful-paint"
+          description: "The type of the log entry"
+        startTime:
+          type: "number"
+          format: "double"
+          example: "3957.699"
+          description: "The start time of the entry"
+        duration:
+          type: "number"
+          format: "double"
+          example: 0
+          description: "The duration of the entry"
+        size: 
+          type: "integer"
+          format: "int64"
+          example: 867
+          description: "The size of the entry"
+        renderTime:
+          type: "number"
+          format: "double"
+          example: 3957.699
+          description: "The render time of the entry"
+        loadTime:
+          type: "number"
+          format: "double"
+          example: 0
+          description: "The load time of the entry"
+        firstAnimatedFrameTime:
+          type: "number"
+          format: "double"
+          example: 0
+          description: "The frame time for the first animation"
+        id: 
+          type: "string"
+          example: ""
+          description: "The id of the entry"
+        url:
+          type: "string"
+          example: ""
+          description: "The url of the entry"
+    FrontendLogEntryFID:
+      type: "object"
+    FrontendLogEntryINP:
+      type: "object"
+    FrontendLog:
+      type: "object"
+      required: 
+      - "name"
+      - "value"
+      - "rating"
+      - "delta"
+      - "entries"
+      - "id"
+      - "navigationType"
+      properties: 
+        name:
+          type: "string"
+          example: "FCP"
+          description: "Name of the log data"
+          enum: ["FCP", "TTFB", "CLS", "LCP", "FID", "INP"]
+        value: 
+          type: "number"
+          format: "double"
+          example: 3957.6999999284744
+          description: "Value of the log data"
+        rating: 
+          type: "string"
+          example: "poor"
+          description: "Rating of the log data"
+          enum: ["good", "needs-improvement", "poor"]
+        delta: 
+          type: "number"
+          format: "double"
+          example: 3957.6999999284744
+          description: "Delta of the log data"
+        entries:
+          type: "array"
+          description: "A frontend log data entry"
+          items:
+            oneOf: 
+              - $ref: '#/components/schemas/FrontendLogEntryFCP'
+              - $ref: '#/components/schemas/FrontendLogEntryTTFB'
+              - $ref: '#/components/schemas/FrontendLogEntryCLS'
+              - $ref: '#/components/schemas/FrontendLogEntryLCP'
+              - $ref: '#/components/schemas/FrontendLogEntryFID'
+              - $ref: '#/components/schemas/FrontendLogEntryINP'
+        id:
+          type: "string"
+          example: "v3-1665068191217-4248786867866"
+          description: "The ID of the log data"
+        navigationType:
+          type: "string"
+          example: "navigate"
+          description: "The navigation type of the log data"
+          enum: ["navigate", "reload", "back-forward", "back-forward-cache", "prerender"]
+    FrontendLogs:
+      type: "array"
+      items: 
+        $ref: '#/components/schemas/FrontendLog'
+    SuccessMessage:
+      type: "object"
+      required: 
+      - "code"
+      - "message"
+      properties: 
+        code: 
+          type: "integer"
+          format: "int32"
+          example: 201
+          description: "The http code"
+        message: 
+          type: "string"
+          example: "Item successfully created"
+          description: "A short description"

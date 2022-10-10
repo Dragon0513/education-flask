@@ -90,7 +90,7 @@ def logging_frontend():
     match method:
         case 'POST':
             for key in required_log_attributes:
-                if key not in request.json:
+                if request.json is None or key not in request.json:
                     missing_value = True
             if missing_value:
                 raise err.MissingParameterError()

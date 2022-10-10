@@ -93,6 +93,7 @@ def logging_frontend():
     missing_value = False
     match method:
         case 'POST':
+            print(type(request.json))
             for key in required_log_attributes:
                 if request.json is None or key not in request.json:
                     missing_value = True

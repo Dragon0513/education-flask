@@ -3,8 +3,10 @@ from flask import Flask, jsonify, request
 from service_layer import services, unit_of_work
 from repositories import orm
 import errors as err
+from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
+CORS(app, supports_credentials=True)
 orm.start_mappers()
 
 mocked_frontend_log = {"logs": [{
@@ -35,6 +37,7 @@ def handle_exception(err):
 
 
 @app.route("/learningPath")
+@cross_origin(supports_credentials=True)
 def get_learning_path():
     if request.json is None or 'studentId' not in request.json:
         raise err.MissingParameterError()
@@ -61,6 +64,7 @@ def get_learning_path():
 
 
 @app.route("/logs/frontend", methods=['POST', 'GET'])
+@cross_origin(supports_credentials=True)
 def logging_frontend():
     method = request.method
     return_message = {}

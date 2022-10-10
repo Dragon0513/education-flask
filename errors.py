@@ -11,3 +11,8 @@ class WrongLearningStyleDimensionError(Exception):
 class WrongLearningStyleNumberError(Exception):
     code = 400
     description = "There need to be 4 dimensions for the Learning Style."
+
+
+class WrongParameterValueError(Exception):
+    code = 404
+    description = "The passed parameter values are invalid."

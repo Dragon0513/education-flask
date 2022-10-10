@@ -381,9 +381,12 @@ components:
           description: "The navigation type of the log data"
           enum: ["navigate", "reload", "back-forward", "back-forward-cache", "prerender"]
     FrontendLogs:
-      type: "array"
-      items: 
-        $ref: '#/components/schemas/FrontendLog'
+      type: "object"
+      properties:
+        logs:
+          type: "array"
+          items: 
+            $ref: '#/components/schemas/FrontendLog'
     SuccessMessage:
       type: "object"
       required: 

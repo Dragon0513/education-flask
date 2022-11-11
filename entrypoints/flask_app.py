@@ -1,13 +1,25 @@
+import os
 from zoneinfo import available_timezones
+
 from flask import Flask, jsonify, request
-from service_layer import services, unit_of_work
-from repositories import orm
-import errors as err
 from flask_cors import CORS, cross_origin
+from flask_caching import Cache
+
+import errors as err
+from repositories import orm
+from service_layer import services, unit_of_work
+from pylti1p3.contrib.flask import FlaskOIDCLogin, FlaskMessageLaunch, FlaskRequest, FlaskCacheDataStorage
+from pylti1p3.deep_link_resource import DeepLinkResource
+from pylti1p3.grade import Grade
+from pylti1p3.lineitem import LineItem
+from pylti1p3.tool_config import ToolConfJsonFile
+from pylti1p3.registration import Registration
+
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
 orm.start_mappers()
+cache = Cache(app)
 
 mocked_frontend_log = {"logs": [{
     "name": "FID",
@@ -29,6 +41,11 @@ mocked_frontend_log = {"logs": [{
     "navigationType": "reload"
 }]}
 
+def get_lti_config_path():
+    return os.path.join(app.root_path, '..', 'lticonfig.json')
+
+def get_launch_data_storage():
+    return FlaskCacheDataStorage(cache)
 
 @app.errorhandler(Exception)
 def handle_exception(err):
@@ -62,6 +79,19 @@ def get_learning_path():
         status_code = 200
         return jsonify(dict), status_code
 
+@app.route('/lti_login/', methods=['GET', 'POST'])
+def lti_login():
+    tool_conf = ToolConfJsonFile(get_lti_config_path())
+    launch_data_storage = get_launch_data_storage()
+
+    target_link_uri = request.json['target_link_uri']
+    if not target_link_uri:
+        raise Exception('Missing "target_link_uri" param')
+
+    oidc_login = FlaskOIDCLogin(request, tool_conf, launch_data_storage=launch_data_storage)
+    return oidc_login\
+        .enable_check_cookies()\
+        .redirect(target_link_uri)
 
 @app.route("/logs/frontend", methods=['POST', 'GET'])
 @cross_origin(supports_credentials=True)

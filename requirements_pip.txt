@@ -7,3 +7,4 @@ python-dotenv==0.20.0
 wincertstore==0.2
 PyLTI1p3
 flask_caching
+jwcrypto

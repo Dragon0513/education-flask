@@ -15,6 +15,9 @@ from pylti1p3.lineitem import LineItem
 from pylti1p3.tool_config import ToolConfJsonFile
 from pylti1p3.registration import Registration
 
+from service_layer.lti.config.ToolConfigJson import ToolConfigJson
+from service_layer.lti.OIDCLogin import OIDCLogin
+
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
@@ -42,14 +45,14 @@ mocked_frontend_log = {"logs": [{
 }]}
 
 def get_lti_config_path():
-    return os.path.join(app.root_path, '..', 'lticonfig.json')
+    return os.path.abspath(os.path.join(app.root_path, '../configs/lti_config.json'))
 
 def get_launch_data_storage():
     return FlaskCacheDataStorage(cache)
 
 @app.errorhandler(Exception)
 def handle_exception(err):
-    response = {"error": err.description}
+    response = {"error": err.args[0]}
     return jsonify(response), err.code
 
 
@@ -78,20 +81,25 @@ def get_learning_path():
         dict = {'learningPath': learning_path}
         status_code = 200
         return jsonify(dict), status_code
+@app.route('/lti_launch/', methods=['GET'])
+def lti_launch():
+    return 'LTI launch', 200
 
 @app.route('/lti_login/', methods=['GET', 'POST'])
 def lti_login():
-    tool_conf = ToolConfJsonFile(get_lti_config_path())
+    tool_conf = ToolConfigJson(get_lti_config_path())
     launch_data_storage = get_launch_data_storage()
 
-    target_link_uri = request.json['target_link_uri']
+    target_link_uri = request.form['target_link_uri']
     if not target_link_uri:
         raise Exception('Missing "target_link_uri" param')
 
-    oidc_login = FlaskOIDCLogin(request, tool_conf, launch_data_storage=launch_data_storage)
+
+    # oidc_login = FlaskOIDCLogin(request, tool_conf, launch_data_storage=launch_data_storage)
+    oidc_login = OIDCLogin(request, tool_conf, launch_data_storage=launch_data_storage)
     return oidc_login\
-        .enable_check_cookies()\
-        .redirect(target_link_uri)
+        .check_auth()\
+        .login()
 
 @app.route("/logs/frontend", methods=['POST', 'GET'])
 @cross_origin(supports_credentials=True)

@@ -6,6 +6,7 @@ from flask_cors import CORS, cross_origin
 from flask_caching import Cache
 
 import errors as err
+from flask import redirect
 from repositories import orm
 from service_layer import services, unit_of_work
 from pylti1p3.contrib.flask import FlaskOIDCLogin, FlaskMessageLaunch, FlaskRequest, FlaskCacheDataStorage
@@ -81,9 +82,9 @@ def get_learning_path():
         dict = {'learningPath': learning_path}
         status_code = 200
         return jsonify(dict), status_code
-@app.route('/lti_launch/', methods=['GET'])
+@app.route('/lti_launch/', methods=['POST'])
 def lti_launch():
-    return 'LTI launch', 200
+    return redirect('http://localhost:8080')
 
 @app.route('/lti_login/', methods=['GET', 'POST'])
 def lti_login():

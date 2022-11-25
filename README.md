@@ -72,13 +72,15 @@ These are:
 ## DB Setup
 For creating a (local) setup for the PostgreSQL Database for the HASKI project, you need to install PostgreSQL.
 You can follow these tutorials:
+
 https://www.postgresqltutorial.com/postgresql-getting-started/install-postgresql/
+
 https://www.postgresqltutorial.com/postgresql-getting-started/connect-to-postgresql-database/
 
 After the installation, you can run it on the CMD or the pgAdmin 4 application.
 You first have to create a database Called HASKI.
-Afterwards, you can use the 'setup\Table_Setup.sql' Script for creating the table within your DB.
+Afterwards, you can use the `setup\Table_Setup.sql` Script for creating the table within your DB.
 
-For the last step, you should check the 'db_config.py' file and change the password for your set password.
+For the last step, you should check the `db_config.py` file and change the password for your set password.
 Caution, there are two passwords set during the setup of PostgreSQL!
 This is not the Masterpassword to unlock the pgAdmin 4, but the password for the superuser postgres!

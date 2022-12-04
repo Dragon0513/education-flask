@@ -1,6 +1,9 @@
+from urllib.request import Request
 from service_layer import unit_of_work
 from domain.tutoringModel import learning_path
-
+from service_layer.lti.OIDCLoginFlask import OIDCLoginFlask
+from service_layer.lti.OIDCLogin import OIDCLogin
+from flask.wrappers import Request
 
 def get_learning_path(
     uow: unit_of_work.AbstractUnitOfWork,
@@ -15,3 +18,8 @@ def get_learning_path(
             uow.learning_path.add(path)
             uow.commit()
     return result
+
+def get_oidc_login(request : Request, tool_conf):
+    ''' Return OIDC login url or error response in case of wrong parameters, unsecure or request'''     
+    oidc_login = OIDCLoginFlask(request, tool_conf)
+    return oidc_login.check_auth().login()

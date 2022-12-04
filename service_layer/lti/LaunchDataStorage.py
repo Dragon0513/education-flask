@@ -1,15 +1,9 @@
-class LaunchDataStorage(object):
-    def __init__(self):
-        pass
+dict = {}
+def set_value(key, value):
+    # if conflict throw exception
+    if key in dict:
+        raise KeyError("Key already exists")
+    dict[key] = value
 
-    def set_nonce_and_state(self, nonce, state):
-        pass
-
-    def get_nonce_and_state(self, nonce):
-        return 'nonce', 'state'
-
-    def delete_nonce_and_state(self, nonce):
-        pass
-
-    def set_value(self, key, value):
-        pass
+def get_value(key):
+    return dict.get(key)

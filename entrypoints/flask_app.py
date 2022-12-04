@@ -1,30 +1,23 @@
 import os
-from zoneinfo import available_timezones
 
 from flask import Flask, jsonify, request
 from flask_cors import CORS, cross_origin
 from flask_caching import Cache
 
 import errors as err
-from flask import redirect
+from flask import redirect, make_response
 from repositories import orm
 from service_layer import services, unit_of_work
-from pylti1p3.contrib.flask import FlaskOIDCLogin, FlaskMessageLaunch, FlaskRequest, FlaskCacheDataStorage
-from pylti1p3.deep_link_resource import DeepLinkResource
-from pylti1p3.grade import Grade
-from pylti1p3.lineitem import LineItem
-from pylti1p3.tool_config import ToolConfJsonFile
-from pylti1p3.registration import Registration
+from service_layer.lti.OIDCLoginFlask import OIDCLoginFlask
 
 from service_layer.lti.config.ToolConfigJson import ToolConfigJson
-from service_layer.lti.OIDCLogin import OIDCLogin
 
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
 orm.start_mappers()
 cache = Cache(app)
-
+tool_conf = ToolConfigJson(os.path.abspath(os.path.join(app.root_path, '../configs/lti_config.json')))
 mocked_frontend_log = {"logs": [{
     "name": "FID",
     "value": 1.900000000372529,
@@ -44,12 +37,6 @@ mocked_frontend_log = {"logs": [{
     "id": "v3-1665130071366-6352791670096",
     "navigationType": "reload"
 }]}
-
-def get_lti_config_path():
-    return os.path.abspath(os.path.join(app.root_path, '../configs/lti_config.json'))
-
-def get_launch_data_storage():
-    return FlaskCacheDataStorage(cache)
 
 @app.errorhandler(Exception)
 def handle_exception(err):
@@ -82,25 +69,14 @@ def get_learning_path():
         dict = {'learningPath': learning_path}
         status_code = 200
         return jsonify(dict), status_code
+
 @app.route('/lti_launch/', methods=['POST'])
 def lti_launch():
     return redirect('http://localhost:8080')
 
-@app.route('/lti_login/', methods=['GET', 'POST'])
+@app.route('/lti_login/', methods=['POST'])
 def lti_login():
-    tool_conf = ToolConfigJson(get_lti_config_path())
-    launch_data_storage = get_launch_data_storage()
-
-    target_link_uri = request.form['target_link_uri']
-    if not target_link_uri:
-        raise Exception('Missing "target_link_uri" param')
-
-
-    # oidc_login = FlaskOIDCLogin(request, tool_conf, launch_data_storage=launch_data_storage)
-    oidc_login = OIDCLogin(request, tool_conf, launch_data_storage=launch_data_storage)
-    return oidc_login\
-        .check_auth()\
-        .login()
+    return services.get_oidc_login(request, tool_conf)
 
 @app.route("/logs/frontend", methods=['POST', 'GET'])
 @cross_origin(supports_credentials=True)

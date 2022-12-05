@@ -2,7 +2,7 @@ from service_layer.lti.OIDCLogin import OIDCLogin
 from service_layer.service.SessionServiceFlask import SessionServiceFlask
 from service_layer.service.CookieServiceFlask import CookieServiceFlask
 from service_layer.lti.config.ToolConfigJson import ToolConfigJson
-import LaunchDataStorage
+import service_layer.lti.LaunchDataStorage as LaunchDataStorage
 import urllib.parse
 from flask import redirect,make_response
 from flask.wrappers import Request

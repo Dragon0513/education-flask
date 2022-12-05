@@ -1,4 +1,4 @@
-from CookieService import CookieService
+from service_layer.service.CookieService import CookieService
 class CookieServiceFlask(CookieService):
     def __init__(self, request):
         self.request = request

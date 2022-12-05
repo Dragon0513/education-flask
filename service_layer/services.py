@@ -2,7 +2,6 @@ from urllib.request import Request
 from service_layer import unit_of_work
 from domain.tutoringModel import learning_path
 from service_layer.lti.OIDCLoginFlask import OIDCLoginFlask
-from service_layer.lti.OIDCLogin import OIDCLogin
 from flask.wrappers import Request
 
 def get_learning_path(

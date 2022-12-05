@@ -2,7 +2,6 @@ import pytest
 from repositories import repository
 from service_layer import services, unit_of_work
 
-
 class FakeRepository(repository.AbstractRepository):
     def __init__(self, learning_path):
         self._learning_path = set(learning_path)

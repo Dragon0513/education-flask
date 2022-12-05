@@ -1,7 +1,7 @@
-from OIDCLogin import OIDCLogin
-from services.SessionServiceFlask import SessionServiceFlask
-from services.CookieServiceFlask import CookieServiceFlask
-from config.ToolConfigJson import ToolConfigJson
+from service_layer.lti.OIDCLogin import OIDCLogin
+from service_layer.service.SessionServiceFlask import SessionServiceFlask
+from service_layer.service.CookieServiceFlask import CookieServiceFlask
+from service_layer.lti.config.ToolConfigJson import ToolConfigJson
 import LaunchDataStorage
 import urllib.parse
 from flask import redirect,make_response

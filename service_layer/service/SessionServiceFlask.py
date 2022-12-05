@@ -1,4 +1,4 @@
-from SessionService import SessionService
+from service_layer.service.SessionService import SessionService
 from flask.sessions import SessionMixin
 
 from service_layer.crypto.cryptorandom import CryptoRandom

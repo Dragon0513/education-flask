@@ -2,3 +2,5 @@
 __pycache__/
 venv/
 .vscode/launch.json
+keys/private.pem
+keys/public.pem

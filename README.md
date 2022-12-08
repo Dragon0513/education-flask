@@ -63,7 +63,11 @@ These are:
 • The naming (of variables, functions, classes, etc.) should be self-explaining.
 
 ## Setup
-
+### Crypto
+In order for the system to verify requests, JWTs with RS256 signed signature will be used. Therefore create two files which hold public and private key in PEM format:
+- keys/public.pem
+- keys/private.pem
+### Project
 - Create a new conda environment using `conda env create -f environment.yml`
 - Activate the environment: `conda activate haskibackend`
 - Run `pip install -r .\requirements_pip.txt`

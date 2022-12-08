@@ -1,5 +1,10 @@
 class LearningElement:
-    def __init__(self, name, classification, ancestor_id, prerequisite_id, order_depth) -> None:
+    def __init__(self,
+                 name,
+                 classification,
+                 ancestor_id,
+                 prerequisite_id,
+                 order_depth) -> None:
         self.name = name
         self.classification = classification
         self.ancestor_id = ancestor_id
@@ -29,7 +34,12 @@ class Module:
 
 
 class Topic:
-    def __init__(self, name, module_id, ancestor_id, prerequisite_id, order_depth) -> None:
+    def __init__(self,
+                 name,
+                 module_id,
+                 ancestor_id,
+                 prerequisite_id,
+                 order_depth) -> None:
         self.name = name
         self.module_id = module_id
         self.ancestor_id = ancestor_id

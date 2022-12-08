@@ -40,7 +40,11 @@ def create_element(
     with uow:
         try:
             element = DM.LearningElement(
-                name, classification, ancestor_id, prerequiste_id, order_depth)
+                name,
+                classification,
+                ancestor_id,
+                prerequiste_id,
+                order_depth)
             uow.learning_element.add_element(element)
             uow.commit()
             result = element.serialize()
@@ -66,7 +70,9 @@ def create_topic(
             result = topic.serialize()
             return result
         except IntegrityError as e:
-            return {'error': 'There is a foreign key violation for the module_id parameter. Please check again!'}
+            return {'error':
+                    'There is a foreign key violation for the module_id\
+                         parameter. Please check again!'}
 
 
 def get_learning_path(
@@ -261,11 +267,12 @@ def update_topic(
     name,
     module_id,
     order_depth,
-    ancestor_id = None,
-    prerequisite_id = None
+    ancestor_id=None,
+    prerequisite_id=None
 ) -> dict:
     with uow:
-        topic = DM.Topic(name, module_id, ancestor_id, prerequisite_id, order_depth)
+        topic = DM.Topic(name, module_id, ancestor_id,
+                         prerequisite_id, order_depth)
         uow.topic.update_topic(topic, id)
         uow.commit()
         topic.id = id

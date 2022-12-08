@@ -1,4 +1,4 @@
-from sqlalchemy import MetaData, Column, Integer, String, Table, Date, Boolean, Identity
+from sqlalchemy import MetaData, Column, Integer, String, Table, Date, Boolean
 from sqlalchemy.orm import mapper
 from domain.tutoringModel import learning_path as LP
 from domain.domainModel import model as DM

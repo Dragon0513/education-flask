@@ -14,18 +14,18 @@ class AbstractUnitOfWork(abc.ABC):
     student: repository.AbstractRepository
     topic: repository.AbstractRepository
 
-    def __enter__(self) -> AbstractUnitOfWork: # pragma: no cover
+    def __enter__(self) -> AbstractUnitOfWork:  # pragma: no cover
         return self
 
-    def __exit__(self, *args): # pragma: no cover
+    def __exit__(self, *args):  # pragma: no cover
         self.rollback()
 
     @abc.abstractmethod
-    def commit(self): # pragma: no cover
+    def commit(self):  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
-    def rollback(self): # pragma: no cover
+    def rollback(self):  # pragma: no cover
         raise NotImplementedError
 
 

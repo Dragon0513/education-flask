@@ -1,5 +1,11 @@
 class LearningPath:
-    def __init__(self, id, student_id, module_id, contains_le, order_depth, path) -> None:
+    def __init__(self,
+                 id,
+                 student_id,
+                 module_id,
+                 contains_le,
+                 order_depth,
+                 path) -> None:
         self.id = id
         self.student_id = student_id
         self.moduel_id = module_id

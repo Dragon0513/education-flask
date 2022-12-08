@@ -138,7 +138,12 @@ def get_learning_elements():
                 condition3 = 'classification' not in request.json
                 condition4 = 'ancestor_id' not in request.json
                 condition5 = 'order_depth' not in request.json
-                if condition1 or condition2 or condition3 or condition4 or condition5:
+                condition6 = 'prerequisite_id' in request.json
+                if (condition1 or
+                    condition2 or
+                    condition3 or
+                    condition4 or
+                        condition5):
                     raise err.MissingParameterError()
                 else:
                     learning_element = services.create_element(
@@ -147,7 +152,7 @@ def get_learning_elements():
                         request.json['classification'],
                         request.json['ancestor_id'],
                         request.json['order_depth'],
-                        request.json['prerequisite_id'] if 'prerequisite_id' in request.json else None
+                        request.json['prerequisite_id'] if condition6 else None
                     )
             except (err.WrongLearningStyleNumberError,
                     err.WrongLearningStyleDimensionError) as e:
@@ -287,14 +292,17 @@ def get_student_by_id(student_id):
             return jsonify(student), status_code
         case 'PUT':
             try:
-                if request.json is None or 'name' not in request.json:
+                condition1 = request.json is None
+                condition2 = 'name' not in request.json
+                condition3 = 'learning_style' in request.json
+                if condition1 or condition2:
                     raise err.MissingParameterError()
                 else:
                     student = services.update_student(
                         unit_of_work.SqlAlchemyUnitOfWork(),
                         student_id,
                         request.json['name'],
-                        request.json['learning_style'] if 'learning_style' in request.json else None
+                        request.json['learning_style'] if condition3 else None
                     )
             except (err.WrongLearningStyleNumberError,
                     err.WrongLearningStyleDimensionError) as e:
@@ -332,6 +340,8 @@ def get_topics():
                 condition2 = 'name' not in request.json
                 condition3 = 'module_id' not in request.json
                 condition4 = 'order_depth' not in request.json
+                condition5 = 'ancestor_id' in request.json
+                condition6 = 'prerequisite_id' in request.json
                 if condition1 or condition2 or condition3 or condition4:
                     raise err.MissingParameterError()
                 topic = services.create_topic(
@@ -339,8 +349,8 @@ def get_topics():
                     request.json['name'],
                     request.json['module_id'],
                     request.json['order_depth'],
-                    request.json['ancestor_id'] if 'ancestor_id' in request.json else None,
-                    request.json['prerequisite_id'] if 'prerequisite_id' in request.json else None
+                    request.json['ancestor_id'] if condition5 else None,
+                    request.json['prerequisite_id'] if condition6 else None
                 )
             except (err.WrongLearningStyleNumberError,
                     err.WrongLearningStyleDimensionError) as e:
@@ -422,7 +432,9 @@ def get_topic_by_id(topic_id):
                 condition2 = 'name' not in request.json
                 condition3 = 'module_id' not in request.json
                 condition4 = 'order_depth' not in request.json
-                if condition1 or condition2 or  condition3 or condition4:
+                condition5 = 'ancestor_id' in request.json
+                condition6 = 'prerequisite_id' in request.json
+                if condition1 or condition2 or condition3 or condition4:
                     raise err.MissingParameterError()
                 topic = services.update_topic(
                     unit_of_work.SqlAlchemyUnitOfWork(),
@@ -430,8 +442,8 @@ def get_topic_by_id(topic_id):
                     request.json['name'],
                     request.json['module_id'],
                     request.json['order_depth'],
-                    request.json['ancestor_id'] if 'ancestor_id' in request.json else None,
-                    request.json['prerequisite_id'] if 'prerequisite_id' in request.json else None
+                    request.json['ancestor_id'] if condition5 else None,
+                    request.json['prerequisite_id'] if condition6 else None
                 )
             except (err.WrongLearningStyleNumberError,
                     err.WrongLearningStyleDimensionError) as e:

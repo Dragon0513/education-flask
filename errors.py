@@ -20,4 +20,5 @@ class WrongParameterValueError(Exception):
 
 class ForeignKeyViolation(Exception):
     code = 400
-    description = "There is a foreign key violation for a parameter. Please check again!"
+    description = "There is a foreign key violation for a parameter. \
+    Please check again!"

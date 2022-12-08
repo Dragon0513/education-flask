@@ -58,11 +58,18 @@ class FakeRepository(repository.AbstractRepository):
         return self.topic
 
     def get_topics_for_module(self, module_id, order_depth):
-        result = next((p for p in self.topic if p.module_id == module_id and p.order_depth == order_depth), None)
+        result = next((p for p in self.topic if p.module_id ==
+                      module_id and p.order_depth == order_depth), None)
         return [result]
 
-    def get_topics_for_module_and_ancestor(self, module_id, order_depth, ancestor_id):
-        result = next((p for p in self.topic if p.module_id == module_id and p.order_depth == order_depth and p.ancestor_id == ancestor_id), None)
+    def get_topics_for_module_and_ancestor(self,
+                                           module_id,
+                                           order_depth,
+                                           ancestor_id):
+        result = next((p for p in self.topic if p.module_id == module_id
+                       and p.order_depth == order_depth
+                       and p.ancestor_id == ancestor_id),
+                      None)
         return [result]
 
     def get_topic_by_id(self, topic_id):
@@ -126,7 +133,7 @@ def test_get_learning_path_for_no_learning_style():
 def test_add_course():
     uow = FakeUnitOfWork()
     course = services.create_course(
-        uow = uow,
+        uow=uow,
         name="Test Course"
     )
     assert type(course) is dict
@@ -137,7 +144,7 @@ def test_add_course():
 def test_add_student():
     uow = FakeUnitOfWork()
     student = services.create_student(
-        uow = uow,
+        uow=uow,
         name="Max Mustermann"
     )
     assert type(student) is dict
@@ -148,7 +155,7 @@ def test_add_student():
 def test_add_element():
     uow = FakeUnitOfWork()
     element = services.create_element(
-        uow = uow,
+        uow=uow,
         name="Test Element",
         classification="LK",
         ancestor_id=1,
@@ -163,7 +170,7 @@ def test_add_element():
 def test_add_topic():
     uow = FakeUnitOfWork()
     topic = services.create_topic(
-        uow = uow,
+        uow=uow,
         name="Test Topic",
         module_id=1,
         order_depth=3,
@@ -178,7 +185,7 @@ def test_add_topic():
 def test_get_learning_elements():
     uow = FakeUnitOfWork()
     services.create_element(
-        uow = uow,
+        uow=uow,
         name="Test Element",
         classification="LK",
         ancestor_id=1,
@@ -201,7 +208,7 @@ def test_get_learning_elements_without_learning_elements():
 def test_get_learning_element_by_id():
     uow = FakeUnitOfWork()
     services.create_element(
-        uow = uow,
+        uow=uow,
         name="Test Element",
         classification="LK",
         ancestor_id=1,
@@ -224,7 +231,7 @@ def test_get_learning_element_by_id_with_wrong_id():
 def test_get_modules():
     uow = FakeUnitOfWork()
     services.create_course(
-        uow = uow,
+        uow=uow,
         name="Test Course"
     )
     result = services.get_modules(uow)
@@ -243,7 +250,7 @@ def test_get_modules_without_modules():
 def test_get_module_by_id():
     uow = FakeUnitOfWork()
     services.create_course(
-        uow = uow,
+        uow=uow,
         name="Test Course"
     )
     result = services.get_module_by_id(uow, 1)
@@ -262,7 +269,7 @@ def test_get_module_by_id_with_wrong_id():
 def test_get_students():
     uow = FakeUnitOfWork()
     services.create_student(
-        uow = uow,
+        uow=uow,
         name="Max Mustermann"
     )
     result = services.get_students(uow)
@@ -281,7 +288,7 @@ def test_get_students_without_students():
 def test_get_student_by_id():
     uow = FakeUnitOfWork()
     services.create_student(
-        uow = uow,
+        uow=uow,
         name="Max Mustermann"
     )
     result = services.get_student_by_id(uow, 1)
@@ -300,7 +307,7 @@ def test_get_student_by_id_with_wrong_id():
 def test_get_topics():
     uow = FakeUnitOfWork()
     services.create_topic(
-        uow = uow,
+        uow=uow,
         name="Test Topic",
         module_id=1,
         order_depth=3,
@@ -323,7 +330,7 @@ def test_get_topics_without_topics():
 def test_get_topic_by_id():
     uow = FakeUnitOfWork()
     services.create_topic(
-        uow = uow,
+        uow=uow,
         name="Test Topic",
         module_id=1,
         order_depth=3,
@@ -347,14 +354,14 @@ def test_get_topic_by_id_with_wrong_id():
 def test_update_student():
     uow = FakeUnitOfWork()
     services.create_student(
-        uow = uow,
+        uow=uow,
         name="Max Mustermann"
     )
     result = services.update_student(
-        uow = uow,
-        id = 1,
-        name = "Maria Musterfrau",
-        learning_style = None
+        uow=uow,
+        id=1,
+        name="Maria Musterfrau",
+        learning_style=None
     )
     assert type(result) is dict
     assert result is not None
@@ -365,7 +372,7 @@ def test_update_student():
 def test_update_topic():
     uow = FakeUnitOfWork()
     services.create_topic(
-        uow = uow,
+        uow=uow,
         name="Test Topic",
         module_id=1,
         order_depth=3,
@@ -373,12 +380,12 @@ def test_update_topic():
         prerequisite_id=None
     )
     result = services.update_topic(
-        uow = uow,
-        id = 1,
-        name = "New Test Topic",
-        module_id = 1,
-        order_depth = 3,
-        ancestor_id = 2,
+        uow=uow,
+        id=1,
+        name="New Test Topic",
+        module_id=1,
+        order_depth=3,
+        ancestor_id=2,
         prerequisite_id=None
     )
     assert type(result) is dict

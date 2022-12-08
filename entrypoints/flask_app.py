@@ -1,23 +1,34 @@
 import os
+import errors as err
 
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, session
+from flask import redirect, make_response
 from flask_cors import CORS, cross_origin
 from flask_caching import Cache
 
-import errors as err
-from flask import redirect, make_response
+from flask_jwt_extended import create_access_token
+from flask_jwt_extended import get_jwt_identity
+from flask_jwt_extended import jwt_required
+from flask_jwt_extended import JWTManager
+
 from repositories import orm
 from service_layer import services, unit_of_work
 from service_layer.lti.OIDCLoginFlask import OIDCLoginFlask
-
 from service_layer.lti.config.ToolConfigJson import ToolConfigJson
 
 
+
 app = Flask(__name__)
+# import secret key from environment variable
+app.secret_key = os.environ.get('SECRET_KEY')
 CORS(app, supports_credentials=True)
 orm.start_mappers()
 cache = Cache(app)
 tool_conf = ToolConfigJson(os.path.abspath(os.path.join(app.root_path, '../configs/lti_config.json')))
+app.config["JWT_SECRET_KEY"] = app.secret_key
+app.config["JWT_ALGORITHM"] = "RSA256"
+jwt = JWTManager(app)
+
 mocked_frontend_log = {"logs": [{
     "name": "FID",
     "value": 1.900000000372529,
@@ -72,11 +83,14 @@ def get_learning_path():
 
 @app.route('/lti_launch/', methods=['POST'])
 def lti_launch():
+
+    # passt state noch?
+    services.get_lti_launch(request, tool_conf, session=session)
     return redirect('http://localhost:8080')
 
 @app.route('/lti_login/', methods=['POST'])
 def lti_login():
-    return services.get_oidc_login(request, tool_conf)
+    return services.get_oidc_login(request, tool_conf, session=session)
 
 @app.route("/logs/frontend", methods=['POST', 'GET'])
 @cross_origin(supports_credentials=True)

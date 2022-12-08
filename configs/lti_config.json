@@ -1,7 +1,7 @@
 {
   "http://localhost": {
     "default": true,
-    "client_id": "3pgh7rqonYP6Ny5",
+    "client_id": "tZbSmQ57sbDhYNC",
     "auth_login_url": "http://localhost/mod/lti/auth.php",
     "auth_token_url": "http://localhost/mod/lti/token.php",
     "target_link_uri": "http://localhost:5000/lti_launch",

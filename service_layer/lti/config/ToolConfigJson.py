@@ -12,5 +12,5 @@ class ToolConfigJson():
         with open(config_file, 'r') as cfg:
             self._iss_conf_dict = json.loads(cfg.read())
         
-    def get_platform(self, iss, client_id=None):
+    def get_platform(self, iss):
         return self._iss_conf_dict[iss]

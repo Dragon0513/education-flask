@@ -1,7 +1,7 @@
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 from flask.wrappers import Request
 
-class OIDCLogin:
+class OIDCLogin(ABC):
     ''' Base class for OIDC login. Derive from this class and implement the abstract methods '''
     _response = None
     def __init__(self, request : Request, tool_config):

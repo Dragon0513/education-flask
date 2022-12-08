@@ -1,3 +1,4 @@
+import os
 from service_layer.lti.OIDCLogin import OIDCLogin
 from service_layer.service.SessionServiceFlask import SessionServiceFlask
 from service_layer.service.CookieServiceFlask import CookieServiceFlask
@@ -9,9 +10,9 @@ from flask.wrappers import Request
 
 class OIDCLoginFlask(OIDCLogin):
     ''' Flask implementation of OIDC login '''
-    def __init__(self, request : Request, tool_config : ToolConfigJson, session_service=None, cookie_service=None):
+    def __init__(self, request : Request, tool_config : ToolConfigJson, session_service=None, cookie_service=None, session=None):
         self._cookie_service = cookie_service if cookie_service else CookieServiceFlask(request)
-        self._session_service = session_service if session_service else SessionServiceFlask(request)
+        self._session_service = session_service if session_service else SessionServiceFlask(session)
         super(OIDCLoginFlask, self).__init__(request, tool_config)
 
     def check_auth(self):
@@ -36,6 +37,11 @@ class OIDCLoginFlask(OIDCLogin):
             self._response = "No lti_deployment_id found", 400
             return self
 
+        # check cookie
+        if not self._cookie_service.get_cookie('session') or not self._cookie_service.get_cookie('MoodleSession'):
+            self._response = "No cookie found", 400
+            return self
+
         # Get the platform settings (same scheme as in the tool config json)
         platform = self._tool_config.get_platform(self._request.form.get('iss'))
         if not platform:
@@ -46,9 +52,10 @@ class OIDCLoginFlask(OIDCLogin):
         except ValueError:
             self._response = "target_link_uri is not URL", 400
             return self
-        if urllib.parse.urlparse(self._request.form.get('target_link_uri')).scheme != 'https':
-            self._response = "target_link_uri is not HTTPS", 400
-            return self
+        if os.environ.get('FLASK_ENV') == 'production':
+            if urllib.parse.urlparse(self._request.form.get('target_link_uri')).scheme != 'https':
+                self._response = "target_link_uri is not HTTPS", 400
+                return self
         if urllib.parse.urlparse(self._request.form.get('target_link_uri')).netloc != self._request.host:
             self._response = "target_link_uri is not from the same host", 400
             return self
@@ -65,7 +72,7 @@ class OIDCLoginFlask(OIDCLogin):
         # check auth
         if self._response:
             return make_response(self._response)
-            
+
         # Create a unique nonce for this flow
         nonce = self._session_service.get_oidc_nonce()
 
@@ -92,3 +99,8 @@ class OIDCLoginFlask(OIDCLogin):
             }
         print(ru + urllib.parse.urlencode(params))
         return redirect(ru + urllib.parse.urlencode(params))
+
+    def lti_launch_from_id_token(self):
+        # get issuer
+        # based on issuer platform get corresponsing implementaiton and write id token data into structures
+        parse_id_token(self._request.form.get('id_token'))

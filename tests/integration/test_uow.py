@@ -7,7 +7,7 @@ from domain.tutoringModel import learning_path as LP
 
 def insert_learning_path(session, id, student_id, learning_path):
     session.execute(
-        "INSERT INTO learning_path (id, student_id, learning_path) \
+        "INSERT INTO learning_path_test (id, student_id, learning_path) \
         VALUES (:id, :student_id, :learning_path)",
         dict(id=id, student_id=student_id, learning_path=learning_path)
     )

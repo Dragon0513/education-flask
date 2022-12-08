@@ -147,7 +147,7 @@ def test_api_post_frontend_logs_without_data():
     url = config.get_api_url()
     r = requests.post(f"{url}/logs/frontend", json=data)
 
-    assert r.status_code == 404
+    assert r.status_code == 400
 
 
 def test_api_post_frontend_logs_with_wrong_values():

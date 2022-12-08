@@ -1,5 +1,5 @@
 class MissingParameterError(Exception):
-    code = 404
+    code = 400
     description = "Missing parameters in request."
 
 
@@ -16,3 +16,8 @@ class WrongLearningStyleNumberError(Exception):
 class WrongParameterValueError(Exception):
     code = 404
     description = "The passed parameter values are invalid."
+
+
+class ForeignKeyViolation(Exception):
+    code = 400
+    description = "There is a foreign key violation for a parameter. Please check again!"

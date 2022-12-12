@@ -36,31 +36,48 @@ def handle_exception(err):
     return jsonify(response), err.code
 
 
-@app.route("/learningPath")
+@app.route("/learningPath/<student_id>/<course_id>/<order_depth>", methods=['POST', 'GET'])
 @cross_origin(supports_credentials=True)
-def get_learning_path():
-    if request.json is None or 'studentId' not in request.json:
-        raise err.MissingParameterError()
-    else:
-        try:
-            if 'learningStyle' in request.json:
+def get_learning_path(student_id, course_id, order_depth):
+    method = request.method
+    match method:
+        case 'GET':
+            try:
                 learning_path = services.get_learning_path(
                     unit_of_work.SqlAlchemyUnitOfWork(),
-                    request.json["studentId"],
-                    request.json["learningStyle"]
+                    student_id,
+                    course_id,
+                    order_depth
                 )
-            else:
-                learning_path = services.get_learning_path(
-                    unit_of_work.SqlAlchemyUnitOfWork(),
-                    request.json["studentId"]
-                )
-        except (err.WrongLearningStyleNumberError,
-                err.WrongLearningStyleDimensionError) as e:
-            raise e
+            except (err.WrongLearningStyleNumberError,
+                    err.WrongLearningStyleDimensionError) as e:
+                raise e
 
-        dict = {'learningPath': learning_path}
-        status_code = 200
-        return jsonify(dict), status_code
+            if learning_path == {}:
+                status_code = 404
+            else:
+                status_code = 201
+            return jsonify(learning_path), status_code
+        case 'POST':
+            try:
+                learning_style = {"AKT": 0, "INT": 0, "VIS": 0, "GLO": 0}
+                algorithm = "Graf"
+                if 'learningStyle' in request.json: learning_style = request.json["learningStyle"]
+                if 'algorithm' in request.json: algorithm = request.json["algorithm"] 
+                learning_path = services.create_learning_path(
+                    unit_of_work.SqlAlchemyUnitOfWork(),
+                    student_id,
+                    course_id,
+                    order_depth,
+                    learning_style = learning_style,
+                    algorithm = algorithm
+                )
+            except (err.WrongLearningStyleNumberError,
+                    err.WrongLearningStyleDimensionError,
+                    err.NoValidAlgorithmError) as e:
+                raise e
+            status_code = 201
+            return jsonify(learning_path), status_code
 
 
 @app.route("/logs/frontend", methods=['POST', 'GET'])
@@ -182,25 +199,25 @@ def get_learning_element_by_id(element_id):
     return jsonify(learning_elements), status_code
 
 
-@app.route('/module', methods=['GET', 'POST'])
+@app.route('/course', methods=['GET', 'POST'])
 @cross_origin(supports_credentials=True)
-def get_modules():
+def get_courses():
     method = request.method
     match method:
         case 'GET':
             try:
-                module = services.get_modules(
+                course = services.get_courses(
                     unit_of_work.SqlAlchemyUnitOfWork()
                 )
             except (err.WrongLearningStyleNumberError,
                     err.WrongLearningStyleDimensionError) as e:
                 raise e
 
-            if module == {}:
+            if course == {}:
                 status_code = 404
             else:
                 status_code = 200
-            return jsonify(module), status_code
+            return jsonify(course), status_code
         case 'POST':
             if request.json is None or 'name' not in request.json:
                 raise err.MissingParameterError()
@@ -211,23 +228,23 @@ def get_modules():
             return jsonify(test), 201
 
 
-@app.route('/module/<module_id>', methods=['GET'])
+@app.route('/course/<course_id>', methods=['GET'])
 @cross_origin(supports_credentials=True)
-def get_module_by_id(module_id):
+def get_course_by_id(course_id):
     try:
-        module = services.get_module_by_id(
+        course = services.get_course_by_id(
             unit_of_work.SqlAlchemyUnitOfWork(),
-            module_id
+            course_id
         )
     except (err.WrongLearningStyleNumberError,
             err.WrongLearningStyleDimensionError) as e:
         raise e
 
-    if module == {}:
+    if course == {}:
         status_code = 404
     else:
         status_code = 200
-    return jsonify(module), status_code
+    return jsonify(course), status_code
 
 
 @app.route('/student', methods=['GET', 'POST'])
@@ -338,7 +355,7 @@ def get_topics():
             try:
                 condition1 = request.json is None
                 condition2 = 'name' not in request.json
-                condition3 = 'module_id' not in request.json
+                condition3 = 'course_id' not in request.json
                 condition4 = 'order_depth' not in request.json
                 condition5 = 'ancestor_id' in request.json
                 condition6 = 'prerequisite_id' in request.json
@@ -347,7 +364,7 @@ def get_topics():
                 topic = services.create_topic(
                     unit_of_work.SqlAlchemyUnitOfWork(),
                     request.json['name'],
-                    request.json['module_id'],
+                    request.json['course_id'],
                     request.json['order_depth'],
                     request.json['ancestor_id'] if condition5 else None,
                     request.json['prerequisite_id'] if condition6 else None
@@ -365,13 +382,13 @@ def get_topics():
             return jsonify(topic), status_code
 
 
-@app.route('/topic/<module_id>/<order_depth>', methods=['GET'])
+@app.route('/topic/<course_id>/<order_depth>', methods=['GET'])
 @cross_origin(supports_credentials=True)
-def get_topics_for_module(module_id, order_depth):
+def get_topics_for_course(course_id, order_depth):
     try:
-        topics = services.get_topics_for_module(
+        topics = services.get_topics_for_course(
             unit_of_work.SqlAlchemyUnitOfWork(),
-            module_id,
+            course_id,
             order_depth
         )
     except (err.WrongLearningStyleNumberError,
@@ -385,13 +402,13 @@ def get_topics_for_module(module_id, order_depth):
     return jsonify(topics), status_code
 
 
-@app.route('/topic/<module_id>/<order_depth>/<ancestor_id>', methods=['GET'])
+@app.route('/topic/<course_id>/<order_depth>/<ancestor_id>', methods=['GET'])
 @cross_origin(supports_credentials=True)
-def get_topics_for_module_and_ancestor(module_id, order_depth, ancestor_id):
+def get_topics_for_course_and_ancestor(course_id, order_depth, ancestor_id):
     try:
-        topics = services.get_topics_for_module_and_ancestor(
+        topics = services.get_topics_for_course_and_ancestor(
             unit_of_work.SqlAlchemyUnitOfWork(),
-            module_id,
+            course_id,
             order_depth,
             ancestor_id
         )
@@ -430,7 +447,7 @@ def get_topic_by_id(topic_id):
             try:
                 condition1 = request.json is None
                 condition2 = 'name' not in request.json
-                condition3 = 'module_id' not in request.json
+                condition3 = 'course_id' not in request.json
                 condition4 = 'order_depth' not in request.json
                 condition5 = 'ancestor_id' in request.json
                 condition6 = 'prerequisite_id' in request.json
@@ -440,7 +457,7 @@ def get_topic_by_id(topic_id):
                     unit_of_work.SqlAlchemyUnitOfWork(),
                     topic_id,
                     request.json['name'],
-                    request.json['module_id'],
+                    request.json['course_id'],
                     request.json['order_depth'],
                     request.json['ancestor_id'] if condition5 else None,
                     request.json['prerequisite_id'] if condition6 else None

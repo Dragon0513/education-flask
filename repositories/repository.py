@@ -1,5 +1,5 @@
 import abc
-from domain.tutoringModel import learning_path as LP
+from domain.tutoringModel import graf as LP
 from domain.domainModel import model as DM
 from domain.learnersModel import model as LM
 from domain.tutoringModel import model as TM
@@ -7,11 +7,11 @@ from domain.tutoringModel import model as TM
 
 class AbstractRepository(abc.ABC):
     @abc.abstractmethod
-    def add(self, learning_path: LP.LearningPath):  # pragma: no cover
+    def add_learning_path(self, learning_path: TM.LearningPath):  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
-    def add_course(self, course) -> DM.Module:  # pragma: no cover
+    def add_course(self, course) -> DM.Course:  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -27,10 +27,6 @@ class AbstractRepository(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get(self, id) -> LP.LearningPath:  # pragma: no cover
-        raise NotImplementedError
-
-    @abc.abstractmethod
     def get_learning_elements(self) -> DM.LearningElement:  # pragma: no cover
         raise NotImplementedError
 
@@ -41,11 +37,18 @@ class AbstractRepository(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_modules(self) -> DM.Module:  # pragma: no cover
+    def get_courses(self) -> DM.Course:  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_module_by_id(self, module_id) -> DM.Module:  # pragma: no cover
+    def get_course_by_id(self, course_id) -> DM.Course:  # pragma: no cover
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def get_learning_path(self,
+                          student_id,
+                          course_id,
+                          order_depth) -> TM.LearningPath:  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -61,14 +64,14 @@ class AbstractRepository(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_topics_for_module(self,
-                              module_id,
+    def get_topics_for_course(self,
+                              course_id,
                               order_depth) -> DM.Topic:  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_topics_for_module_and_ancestor(self,
-                                           module_id,
+    def get_topics_for_course_and_ancestor(self,
+                                           course_id,
                                            order_depth,
                                            ancestor_id)\
             -> DM.Topic:  # pragma: no cover
@@ -88,10 +91,10 @@ class AbstractRepository(abc.ABC):
 
 
 class SqlAlchemyRepository(AbstractRepository):
-    def __init__(self, session):
+    def __init__(self, session):  # pragma: no cover
         self.session = session
 
-    def add(self, learning_path):
+    def add_learning_path(self, learning_path):
         self.session.add(learning_path)
 
     def add_course(self, course):
@@ -106,9 +109,6 @@ class SqlAlchemyRepository(AbstractRepository):
     def add_topic(self, topic):
         self.session.add(topic)
 
-    def get(self, id):
-        return self.session.query(LP.LearningPath).filter_by(id=id).all()
-
     def get_learning_elements(self):
         return self.session.query(DM.LearningElement).all()
 
@@ -116,11 +116,14 @@ class SqlAlchemyRepository(AbstractRepository):
         return self.session.query(DM.LearningElement)\
             .filter_by(id=element_id).all()
 
-    def get_modules(self):
-        return self.session.query(DM.Module).all()
+    def get_courses(self):
+        return self.session.query(DM.Course).all()
 
-    def get_module_by_id(self, module_id):
-        return self.session.query(DM.Module).filter_by(id=module_id).all()
+    def get_course_by_id(self, course_id):
+        return self.session.query(DM.Course).filter_by(id=course_id).all()
+
+    def get_learning_path(self, student_id, course_id, order_depth):
+        return self.session.query(TM.LearningPath).filter_by(student_id=student_id).filter_by(course_id=course_id).filter_by(order_depth=order_depth).all()
 
     def get_students(self):
         return self.session.query(LM.Student).all()
@@ -131,17 +134,17 @@ class SqlAlchemyRepository(AbstractRepository):
     def get_topics(self):
         return self.session.query(DM.Topic).all()
 
-    def get_topics_for_module(self, module_id, order_depth):
+    def get_topics_for_course(self, course_id, order_depth):
         return self.session.query(DM.Topic)\
-            .filter_by(module_id=module_id)\
+            .filter_by(course_id=course_id)\
             .filter_by(order_depth=order_depth).all()
 
-    def get_topics_for_module_and_ancestor(self,
-                                           module_id,
+    def get_topics_for_course_and_ancestor(self,
+                                           course_id,
                                            order_depth,
                                            ancestor_id):
         return self.session.query(DM.Topic)\
-            .filter_by(module_id=module_id)\
+            .filter_by(course_id=course_id)\
             .filter_by(order_depth=order_depth)\
             .filter_by(ancestor_id=ancestor_id).all()
 
@@ -157,7 +160,7 @@ class SqlAlchemyRepository(AbstractRepository):
     def update_topic(self, topic, id):
         return self.session.query(DM.Topic).filter_by(id=id).update(
             {DM.Topic.name: topic.name,
-             DM.Topic.module_id: topic.module_id,
+             DM.Topic.course_id: topic.course_id,
              DM.Topic.order_depth: topic.order_depth,
              DM.Topic.ancestor_id: topic.ancestor_id,
              DM.Topic.prerequisite_id: topic.prerequisite_id})

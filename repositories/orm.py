@@ -1,6 +1,6 @@
 from sqlalchemy import MetaData, Column, Integer, String, Table, Date, Boolean
 from sqlalchemy.orm import mapper
-from domain.tutoringModel import learning_path as LP
+from domain.tutoringModel import graf as LP
 from domain.domainModel import model as DM
 from domain.learnersModel import model as LM
 from domain.tutoringModel import model as TM
@@ -23,22 +23,14 @@ learning_path = Table(
     metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("student_id", Integer, nullable=False),
-    Column("module_id", Integer, nullable=False),
+    Column("course_id", Integer, nullable=False),
     Column("contains_le", Boolean, nullable=False),
     Column("order_depth", Integer, nullable=False),
     Column("path", String, nullable=False)
 )
 
-learning_path_test = Table(
-    "learning_path_test",
-    metadata,
-    Column("id", Integer, primary_key=True, autoincrement=True),
-    Column("student_id", Integer, nullable=False),
-    Column("learning_path", String(255), nullable=False)
-)
-
-module = Table(
-    "module",
+course = Table(
+    "course",
     metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("name", String, nullable=False)
@@ -68,7 +60,7 @@ student_topic = Table(
     metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("topic_id", Integer, nullable=False),
-    Column("module_id", Integer, nullable=False),
+    Column("course_id", Integer, nullable=False),
     Column("student_id", Integer, nullable=False),
     Column("is_recommended", Boolean, nullable=False),
     Column("sequence_nr", Integer, nullable=False),
@@ -81,7 +73,7 @@ topic = Table(
     metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("name", String, nullable=False),
-    Column("module_id", Integer, nullable=False),
+    Column("course_id", Integer, nullable=False),
     Column("ancestor_id", Integer, nullable=True),
     Column("prerequisite_id", Integer, nullable=True),
     Column("order_depth", Integer, nullable=False)
@@ -93,13 +85,10 @@ def start_mappers():
         DM.LearningElement, learning_element
     )
     mapper(
-        LP.LearningPath, learning_path_test
-    )
-    mapper(
         TM.LearningPath, learning_path
     )
     mapper(
-        DM.Module, module
+        DM.Course, course
     )
     mapper(
         LM.Student, student

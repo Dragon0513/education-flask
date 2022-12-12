@@ -1,8 +1,10 @@
 from service_layer import unit_of_work
-from domain.tutoringModel import learning_path
+from domain.tutoringModel import graf
 from domain.domainModel import model as DM
 from domain.learnersModel import model as LM
+from domain.tutoringModel import model as TM
 from sqlalchemy.exc import IntegrityError
+import errors as err
 
 
 def create_course(
@@ -10,8 +12,8 @@ def create_course(
     name
 ) -> dict:
     with uow:
-        course = DM.Module(name)
-        uow.module.add_course(course)
+        course = DM.Course(name)
+        uow.course.add_course(course)
         uow.commit()
         result = course.serialize()
     return result
@@ -53,41 +55,50 @@ def create_element(
             return e
 
 
+def create_learning_path(
+    uow: unit_of_work.AbstractUnitOfWork,
+    student_id,
+    course_id,
+    order_depth,
+    learning_style: dict = {"AKT": 0, "INT": 0, "VIS": 0, "GLO": 0},
+    algorithm = "Graf"
+) -> dict:
+    with uow:
+        try:
+            path = TM.LearningPath(student_id = student_id, course_id = course_id, order_depth = order_depth)
+            path.get_learning_path(student_id = student_id, learning_style = learning_style, algorithm = algorithm)
+            uow.learning_path.add_learning_path(path)
+            uow.commit()
+            result = path.serialize()
+            return result
+        except err.NoValidAlgorithmError:
+            raise err.NoValidAlgorithmError()
+        except IntegrityError:
+            return {'error':
+                    'There is a foreign key violation for the course_id\
+                         parameter. Please check again!'}
+
+
 def create_topic(
     uow: unit_of_work.AbstractUnitOfWork,
     name,
-    module_id,
+    course_id,
     order_depth,
     ancestor_id=None,
     prerequisite_id=None
 ) -> dict:
     with uow:
-        topic = DM.Topic(name, module_id, ancestor_id,
+        topic = DM.Topic(name, course_id, ancestor_id,
                          prerequisite_id, order_depth)
         try:
             uow.topic.add_topic(topic)
             uow.commit()
             result = topic.serialize()
             return result
-        except IntegrityError as e:
+        except IntegrityError:
             return {'error':
-                    'There is a foreign key violation for the module_id\
+                    'There is a foreign key violation for the course_id\
                          parameter. Please check again!'}
-
-
-def get_learning_path(
-    uow: unit_of_work.AbstractUnitOfWork,
-    student_id,
-    learning_style: dict = {"AKT": 0, "INT": 0, "VIS": 0, "GLO": 0}
-) -> str:
-    with uow:
-        path = learning_path.LearningPath(
-            student_id=student_id, learning_style=learning_style)
-        result = ', '.join(path.learning_path)
-        if type(result) != "":
-            uow.learning_path.add(path)
-            uow.commit()
-    return result
 
 
 def get_learning_elements(
@@ -119,32 +130,47 @@ def get_learning_element_by_id(
     return result
 
 
-def get_modules(
+def get_learning_path(
+    uow: unit_of_work.AbstractUnitOfWork,
+    student_id,
+    course_id,
+    order_depth
+) -> dict:
+    with uow:
+        path = uow.learning_path.get_learning_path(student_id, course_id, order_depth)
+        if path == [] or path == [None]:
+            result = {}
+        else:
+            result = path[0].serialize()
+    return result
+
+
+def get_courses(
     uow: unit_of_work.AbstractUnitOfWork
 ) -> dict:
     with uow:
-        modules = uow.module.get_modules()
-        if modules == []:
+        courses = uow.course.get_courses()
+        if courses == []:
             result = {}
         else:
             result = {}
             temp = []
-            for module in modules:
-                temp.append(module.serialize())
-            result['modules'] = temp
+            for course in courses:
+                temp.append(course.serialize())
+            result['courses'] = temp
     return result
 
 
-def get_module_by_id(
+def get_course_by_id(
     uow: unit_of_work.AbstractUnitOfWork,
-    module_id
+    course_id
 ) -> dict:
     with uow:
-        module = uow.module.get_module_by_id(module_id)
-        if module == [] or module == [None]:
+        course = uow.course.get_course_by_id(course_id)
+        if course == [] or course == [None]:
             result = {}
         else:
-            result = module[0].serialize()
+            result = course[0].serialize()
     return result
 
 
@@ -193,13 +219,13 @@ def get_topics(
     return result
 
 
-def get_topics_for_module(
+def get_topics_for_course(
     uow: unit_of_work.AbstractUnitOfWork,
-    module_id,
+    course_id,
     order_depth
 ) -> dict:
     with uow:
-        topics = uow.topic.get_topics_for_module(module_id, order_depth)
+        topics = uow.topic.get_topics_for_course(course_id, order_depth)
         if topics == []:
             result = {}
         else:
@@ -208,19 +234,19 @@ def get_topics_for_module(
             for topic in topics:
                 temp.append(topic.serialize())
             result['topics'] = temp
-            result['module'] = module_id
+            result['course'] = course_id
     return result
 
 
-def get_topics_for_module_and_ancestor(
+def get_topics_for_course_and_ancestor(
     uow: unit_of_work.AbstractUnitOfWork,
-    module_id,
+    course_id,
     order_depth,
     ancestor_id
 ) -> dict:
     with uow:
-        topics = uow.topic.get_topics_for_module_and_ancestor(
-            module_id, order_depth, ancestor_id)
+        topics = uow.topic.get_topics_for_course_and_ancestor(
+            course_id, order_depth, ancestor_id)
         if topics == []:
             result = {}
         else:
@@ -229,7 +255,7 @@ def get_topics_for_module_and_ancestor(
             for topic in topics:
                 temp.append(topic.serialize())
             result['topics'] = temp
-            result['module'] = module_id
+            result['course'] = course_id
     return result
 
 
@@ -265,13 +291,13 @@ def update_topic(
     uow: unit_of_work.AbstractUnitOfWork,
     id,
     name,
-    module_id,
+    course_id,
     order_depth,
     ancestor_id=None,
     prerequisite_id=None
 ) -> dict:
     with uow:
-        topic = DM.Topic(name, module_id, ancestor_id,
+        topic = DM.Topic(name, course_id, ancestor_id,
                          prerequisite_id, order_depth)
         uow.topic.update_topic(topic, id)
         uow.commit()

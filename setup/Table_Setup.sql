@@ -49,13 +49,13 @@ CREATE TABLE IF NOT EXISTS public.learning_path
 (
     id integer NOT NULL,
     student_id integer NOT NULL,
-    module_id integer NOT NULL,
+    course_id integer NOT NULL,
     contains_le boolean NOT NULL,
     order_depth integer NOT NULL,
     path text COLLATE pg_catalog."default",
     CONSTRAINT learning_path_pkey1 PRIMARY KEY (id),
-    CONSTRAINT module_id FOREIGN KEY (module_id)
-        REFERENCES public.module (id) MATCH SIMPLE
+    CONSTRAINT course_id FOREIGN KEY (course_id)
+        REFERENCES public.course (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION,
     CONSTRAINT student_id FOREIGN KEY (student_id)
@@ -70,20 +70,20 @@ ALTER TABLE IF EXISTS public.learning_path
     OWNER to postgres;
 
 
--- Table: public.module
+-- Table: public.course
 
-DROP TABLE IF EXISTS public.module;
+DROP TABLE IF EXISTS public.course;
 
-CREATE TABLE IF NOT EXISTS public.module
+CREATE TABLE IF NOT EXISTS public.course
 (
     id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 2 MINVALUE 2 MAXVALUE 2147483647 CACHE 1 ),
     name text COLLATE pg_catalog."default" NOT NULL,
-    CONSTRAINT module_pkey PRIMARY KEY (id)
+    CONSTRAINT course_pkey PRIMARY KEY (id)
 )
 
 TABLESPACE pg_default;
 
-ALTER TABLE IF EXISTS public.module
+ALTER TABLE IF EXISTS public.course
     OWNER to postgres;
 
 
@@ -142,15 +142,15 @@ CREATE TABLE IF NOT EXISTS public.student_topic
 (
     id integer NOT NULL,
     topic_id integer NOT NULL,
-    module_id integer NOT NULL,
+    course_id integer NOT NULL,
     student_id integer NOT NULL,
     is_recommended boolean NOT NULL,
     sequence_nr integer NOT NULL,
     done boolean NOT NULL DEFAULT false,
     done_at date,
     CONSTRAINT student_topic_pkey PRIMARY KEY (id),
-    CONSTRAINT module_id FOREIGN KEY (module_id)
-        REFERENCES public.module (id) MATCH SIMPLE
+    CONSTRAINT course_id FOREIGN KEY (course_id)
+        REFERENCES public.course (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION,
     CONSTRAINT student_id FOREIGN KEY (student_id)
@@ -177,13 +177,13 @@ CREATE TABLE IF NOT EXISTS public.topic
 (
     id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 17 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
     name text COLLATE pg_catalog."default" NOT NULL,
-    module_id integer NOT NULL,
+    course_id integer NOT NULL,
     ancestor_id integer,
     prerequisite_id integer,
     order_depth integer NOT NULL,
     CONSTRAINT topic_pkey PRIMARY KEY (id),
-    CONSTRAINT module_id FOREIGN KEY (module_id)
-        REFERENCES public.module (id) MATCH SIMPLE
+    CONSTRAINT course_id FOREIGN KEY (course_id)
+        REFERENCES public.course (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
 )

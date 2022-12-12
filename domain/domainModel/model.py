@@ -22,7 +22,7 @@ class LearningElement:
         }
 
 
-class Module:
+class Course:
     def __init__(self, name) -> None:
         self.name = name
 
@@ -36,12 +36,12 @@ class Module:
 class Topic:
     def __init__(self,
                  name,
-                 module_id,
+                 course_id,
                  ancestor_id,
                  prerequisite_id,
                  order_depth) -> None:
         self.name = name
-        self.module_id = module_id
+        self.course_id = course_id
         self.ancestor_id = ancestor_id
         self.prerequisite_id = prerequisite_id
         self.order_depth = order_depth
@@ -50,7 +50,7 @@ class Topic:
         return {
             'id': self.id,
             'name': self.name,
-            'module_id': self.module_id,
+            'course_id': self.course_id,
             'ancestor_id': self.ancestor_id,
             'prerequisite_id': self.prerequisite_id,
             'order_depth': self.order_depth

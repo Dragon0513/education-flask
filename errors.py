@@ -22,3 +22,8 @@ class ForeignKeyViolation(Exception):
     code = 400
     description = "There is a foreign key violation for a parameter. \
     Please check again!"
+
+
+class NoValidAlgorithmError(Exception):
+    code = 400
+    description = "Please choose an existing Algorithm!"

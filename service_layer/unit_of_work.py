@@ -10,7 +10,7 @@ import config
 class AbstractUnitOfWork(abc.ABC):
     learning_path: repository.AbstractRepository
     learning_element: repository.AbstractRepository
-    module: repository.AbstractRepository
+    course: repository.AbstractRepository
     student: repository.AbstractRepository
     topic: repository.AbstractRepository
 
@@ -45,7 +45,7 @@ class SqlAlchemyUnitOfWork(AbstractUnitOfWork):
         self.session = self.session_factory()
         self.learning_path = repository.SqlAlchemyRepository(self.session)
         self.learning_element = repository.SqlAlchemyRepository(self.session)
-        self.module = repository.SqlAlchemyRepository(self.session)
+        self.course = repository.SqlAlchemyRepository(self.session)
         self.student = repository.SqlAlchemyRepository(self.session)
         self.topic = repository.SqlAlchemyRepository(self.session)
         return super().__enter__()

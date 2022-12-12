@@ -14,6 +14,10 @@ class OIDCLogin(ABC):
     def login(self):
         pass
 
+    @abstractmethod
+    def lti_launch_from_id_token(self):
+        pass
+
     @staticmethod
     def make_url_accept_param(url):
         if '?' in url:

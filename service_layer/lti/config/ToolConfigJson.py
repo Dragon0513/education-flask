@@ -1,10 +1,13 @@
+from collections import namedtuple
 import json
 import os
+
+from service_layer.lti.lms.Platform import Platform
 
 
 # Parses LTI Config file and returns a dictionary of the contents
 class ToolConfigJson():
-    _iss_conf_dict : dict = {}
+    _iss_conf_dict : dict = {} # stores all the platform configurations
     def __init__(self, config_file="../../../config/lti_config.json"):
         if not os.path.isfile(config_file):
             raise FileNotFoundError("LTI tool config file not found: " + config_file)
@@ -14,3 +17,11 @@ class ToolConfigJson():
         
     def get_platform(self, iss):
         return self._iss_conf_dict[iss]
+
+    def decode_platform(self, platformdict : dict):
+        """ Decodes a platform dictionary into a Platform object """
+        try:
+            return Platform(**platformdict)
+        except TypeError as e:
+            print(e)
+            return None

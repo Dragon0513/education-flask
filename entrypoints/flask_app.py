@@ -1,7 +1,8 @@
+from functools import wraps
 import os
 import errors as err
 
-from flask import Flask, jsonify, request, session
+from flask import Flask, abort, jsonify, request, session
 from flask import redirect, make_response
 from flask_cors import CORS, cross_origin
 from flask_caching import Cache
@@ -15,7 +16,7 @@ from repositories import orm
 from service_layer import services, unit_of_work
 from service_layer.lti.OIDCLoginFlask import OIDCLoginFlask
 from service_layer.lti.config.ToolConfigJson import ToolConfigJson
-
+import service_layer.crypto.CryptoKeyManagement as CryptoKeyManagement
 
 
 app = Flask(__name__)
@@ -27,6 +28,11 @@ cache = Cache(app)
 tool_conf = ToolConfigJson(os.path.abspath(os.path.join(app.root_path, '../configs/lti_config.json')))
 app.config["JWT_SECRET_KEY"] = app.secret_key
 app.config["JWT_ALGORITHM"] = "RSA256"
+app.config["SESSION_USE_SIGNER"] = True
+if os.environ.get('FLASK_ENV') == 'production': # only set secure cookie in production: will only allow cookie transmission in https
+    app.config["SESSION_COOKIE_SECURE"] = True
+else:
+    app.config["SESSION_COOKIE_SECURE"] = False
 jwt = JWTManager(app)
 
 mocked_frontend_log = {"logs": [{
@@ -51,8 +57,9 @@ mocked_frontend_log = {"logs": [{
 
 @app.errorhandler(Exception)
 def handle_exception(err):
-    response = {"error": err.args[0]}
-    return jsonify(response), err.code
+    response = jsonify(message=str(err))
+    response.status_code = (err.code if hasattr(err, 'code') else 500)
+    return response
 
 
 @app.route("/learningPath")
@@ -81,15 +88,39 @@ def get_learning_path():
         status_code = 200
         return jsonify(dict), status_code
 
+def authorize(f):
+    @wraps(f)
+    def decorated_function(*args, **kws):
+            if not 'Authorization' in request.headers:
+               abort(401)
+
+            user = None
+            data = request.headers['Authorization'].encode('ascii','ignore')
+            token = str.replace(str(data), 'Bearer ','')
+            try:
+                user = jwt.decode(token, JWT_SECRET, algorithms=['HS256'])['sub']
+            except:
+                raise err.StateNotMatchingError()
+
+            return f(user, *args, **kws)            
+    return decorated_function
+
 @app.route('/lti_launch/', methods=['POST'])
 def lti_launch():
-
     # passt state noch?
-    services.get_lti_launch(request, tool_conf, session=session)
-    return redirect('http://localhost:8080')
+    if 'state' in session:
+        if CryptoKeyManagement.verify_own_jwt(session['state']) == CryptoKeyManagement.verify_own_jwt(request.form['state']):
+            services.get_lti_launch(request, tool_conf, session=session)
+            return redirect('http://localhost:8080')
+        else:
+            raise err.StateNotMatchingError()
+    else:
+        raise err.StateNotMatchingError()
 
 @app.route('/lti_login/', methods=['POST'])
 def lti_login():
+    response = make_response()
+    response.set_cookie('state', 'test', httponly=True)
     return services.get_oidc_login(request, tool_conf, session=session)
 
 @app.route("/logs/frontend", methods=['POST', 'GET'])

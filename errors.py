@@ -16,3 +16,7 @@ class WrongLearningStyleNumberError(Exception):
 class WrongParameterValueError(Exception):
     code = 404
     description = "The passed parameter values are invalid."
+
+class StateNotMatchingError(Exception):
+    code = 400
+    description = "The passed state is not matching."

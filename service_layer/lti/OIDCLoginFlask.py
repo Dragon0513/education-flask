@@ -6,7 +6,7 @@ from service_layer.lti.config.ToolConfigJson import ToolConfigJson
 import service_layer.lti.LaunchDataStorage as LaunchDataStorage
 import urllib.parse
 from flask import redirect,make_response
-from flask.wrappers import Request
+from flask.wrappers import Request, Response
 
 class OIDCLoginFlask(OIDCLogin):
     ''' Flask implementation of OIDC login '''
@@ -38,12 +38,12 @@ class OIDCLoginFlask(OIDCLogin):
             return self
 
         # check cookie
-        if not self._cookie_service.get_cookie('session') or not self._cookie_service.get_cookie('MoodleSession'):
+        if not self._cookie_service.get_cookie('MoodleSession'):
             self._response = "No cookie found", 400
             return self
 
         # Get the platform settings (same scheme as in the tool config json)
-        platform = self._tool_config.get_platform(self._request.form.get('iss'))
+        platform = self._tool_config.decode_platform(self._tool_config.get_platform(self._request.form.get('iss')))
         if not platform:
             self._response = "No platform found", 400
             return self
@@ -60,7 +60,7 @@ class OIDCLoginFlask(OIDCLogin):
             self._response = "target_link_uri is not from the same host", 400
             return self
         # Verify if the target_link_uri is valid and does not redirect to other domain than our tool
-        if self._request.form.get('target_link_uri') not in platform['target_link_uri']:
+        if self._request.form.get('target_link_uri') != platform.target_link_uri:
             self._response = "Invalid target_link_uri", 400
 
         return self
@@ -82,7 +82,7 @@ class OIDCLoginFlask(OIDCLogin):
 
         # Store the nonce and state so they can be validated when the id_token
         # is posted back to the tool by the Authorization Server.
-        LaunchDataStorage.set_value(key=nonce, value=state)
+        # LaunchDataStorage.set_value(key=nonce, value=state)
         
         platform = self._tool_config.get_platform(self._request.form.get('iss'))
         ru = self.make_url_accept_param(platform['auth_login_url'])
@@ -100,7 +100,27 @@ class OIDCLoginFlask(OIDCLogin):
         print(ru + urllib.parse.urlencode(params))
         return redirect(ru + urllib.parse.urlencode(params))
 
-    def lti_launch_from_id_token(self):
+    def verify_state(self):
+        ''' Verify the state parameter
+            If the state parameter is not valid, the request is rejected with a 403 Forbidden response.
+        '''
+        # check auth
+        if self._response:
+            return self
+
+        # Verify the state parameter
+        if self._request.form.get('state') != self._session_service.get_oidc_state():
+            self._response = "Invalid state", 403
+            return self
+
+        return self
+
+
+    def lti_launch_from_id_token(self) -> Response:
         # get issuer
         # based on issuer platform get corresponsing implementaiton and write id token data into structures
-        parse_id_token(self._request.form.get('id_token'))
+        platform = self._tool_config.decode_platform(self._tool_config.get_platform(self._request.form.get('iss')))
+        if platform:
+            return make_response(platform.launch())
+        else:
+            return make_response("No platform found", 400)

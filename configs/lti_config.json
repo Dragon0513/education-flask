@@ -6,6 +6,7 @@
     "auth_token_url": "http://localhost/mod/lti/token.php",
     "target_link_uri": "http://localhost:5000/lti_launch",
     "key_set_url": "http://localhost/mod/lti/certs.php",
+    "platform_name": "moodle",
     "key_set": {
       "keys": [
         {

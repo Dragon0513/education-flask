@@ -12,7 +12,7 @@ def load_public_key():
         return public_key.public_bytes(crypto_serialization.Encoding.PEM,
                             crypto_serialization.PublicFormat.SubjectPublicKeyInfo)
 
-def verify_jwt(jwt_token : str):
+def verify_own_jwt(jwt_token : str):
     return jws.verify(jwt_token, load_public_key().decode(), algorithms=["RS256"])
 
 def sign_jwt(payload : dict):
@@ -23,3 +23,6 @@ def sign_jwt(payload : dict):
                             crypto_serialization.PrivateFormat.PKCS8,
                             crypto_serialization.NoEncryption())
             return jws.sign(payload, key_private, algorithm="RS256")
+
+def load_jwt(jwt_token : str):
+    return jws.get_unverified_claims(jwt_token)

@@ -26,4 +26,4 @@ def get_oidc_login(request : Request, tool_conf, session):
 def get_lti_launch(request : Request, tool_conf, session):
     ''' Return LTI launch data or error response in case of wrong parameters, unsecure or request'''     
     oidc_login = OIDCLoginFlask(request, tool_conf, session=session)
-    return oidc_login.lti_launch_from_id_token().launch()
+    return oidc_login.verify_state().lti_launch_from_id_token()

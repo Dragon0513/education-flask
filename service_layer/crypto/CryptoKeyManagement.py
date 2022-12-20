@@ -1,7 +1,10 @@
+import datetime
 import os
 import pickle
 from jose import jws
 from cryptography.hazmat.primitives import serialization as crypto_serialization
+
+from service_layer.crypto.cryptorandom import CryptoRandom
 
 private_key_location : str = "keys/private.pem"
 public_key_location : str = "keys/public.pem"
@@ -26,3 +29,15 @@ def sign_jwt(payload : dict):
 
 def load_jwt(jwt_token : str):
     return jws.get_unverified_claims(jwt_token)
+
+def get_jwt_state(nonce : str):
+    state = CryptoRandom().getrandomstring(16)
+    state_jwt = {
+        'state': state,
+        'nonce': nonce,
+        'iat': datetime.datetime.utcnow().timestamp(),
+        'exp': (datetime.datetime.utcnow() + datetime.timedelta(minutes=60)).timestamp(),
+        'kid': 'backendprivatekey',
+        'iss': 'https://localhost:5000'
+    }
+    return sign_jwt(state_jwt)

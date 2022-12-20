@@ -1,11 +1,11 @@
 import datetime
 import jwt
-from service_layer.service.SessionService import SessionService
+from service_layer.service.StateService import StateService
 from flask.sessions import SessionMixin
 import service_layer.crypto.CryptoKeyManagement as CryptoKeyManagement
 
 from service_layer.crypto.cryptorandom import CryptoRandom
-class SessionServiceFlask(SessionService):
+class StateServiceFlask(StateService):
     ''' Stores data in the session. This is browser specific.'''
     session : SessionMixin
     def __init__(self, session):
@@ -26,19 +26,7 @@ class SessionServiceFlask(SessionService):
             return self.session['state']
         else:
             self.session['state'] = self.get_jwt_state()
-    
-    def get_jwt_state(self):
-        state = CryptoRandom().getrandomstring(32)
-        return state
-        state_jwt = {
-            'state': state,
-            'nonce': self.get_oidc_nonce(),
-            'iat': datetime.datetime.utcnow().timestamp(),
-            'exp': (datetime.datetime.utcnow() + datetime.timedelta(minutes=60)).timestamp(),
-            'kid': 'backendprivatekey',
-            'iss': 'https://localhost:5000'
-        }
-        return CryptoKeyManagement.sign_jwt(state_jwt)
+            return self.session['state']
 
 
     def get_state_from_jwt(self, state_jwt):

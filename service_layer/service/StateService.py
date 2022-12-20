@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-class SessionService(ABC):
+class StateService(ABC):
     @abstractmethod
     def get_oidc_nonce(self):
         pass

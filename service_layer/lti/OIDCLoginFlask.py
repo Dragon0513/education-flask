@@ -1,8 +1,10 @@
 import os
+from service_layer.crypto.cryptorandom import CryptoRandom
 from service_layer.lti.OIDCLogin import OIDCLogin
-from service_layer.service.SessionServiceFlask import SessionServiceFlask
+from service_layer.service.StateServiceFlask import StateServiceFlask
 from service_layer.service.CookieServiceFlask import CookieServiceFlask
 from service_layer.lti.config.ToolConfigJson import ToolConfigJson
+import service_layer.crypto.CryptoKeyManagement as CryptoKeyManagement
 import service_layer.lti.LaunchDataStorage as LaunchDataStorage
 import urllib.parse
 from flask import redirect,make_response
@@ -12,7 +14,7 @@ class OIDCLoginFlask(OIDCLogin):
     ''' Flask implementation of OIDC login '''
     def __init__(self, request : Request, tool_config : ToolConfigJson, session_service=None, cookie_service=None, session=None):
         self._cookie_service = cookie_service if cookie_service else CookieServiceFlask(request)
-        self._session_service = session_service if session_service else SessionServiceFlask(session)
+        self._session_service = session_service if session_service else StateServiceFlask(session)
         super(OIDCLoginFlask, self).__init__(request, tool_config)
 
     def check_auth(self):
@@ -38,9 +40,9 @@ class OIDCLoginFlask(OIDCLogin):
             return self
 
         # check cookie
-        if not self._cookie_service.get_cookie('MoodleSession'):
-            self._response = "No cookie found", 400
-            return self
+        # if not self._cookie_service.get_cookie('MoodleSession'):
+        #     self._response = "No cookie found", 400
+        #     return self
 
         # Get the platform settings (same scheme as in the tool config json)
         platform = self._tool_config.decode_platform(self._tool_config.get_platform(self._request.form.get('iss')))
@@ -74,15 +76,17 @@ class OIDCLoginFlask(OIDCLogin):
             return make_response(self._response)
 
         # Create a unique nonce for this flow
-        nonce = self._session_service.get_oidc_nonce()
+        nonce = CryptoRandom().getrandomstring(32)
 
         # Consider using a state JWT as described in
         # https://tools.ietf.org/html/draft-bradley-oauth-jwt-encoded-state-09
-        state = self._session_service.get_oidc_state()
+        state = CryptoKeyManagement.get_jwt_state(nonce)
+
+        self._cookie_service.set_cookie(name='state',value=state, domain='127.0.0.1')
 
         # Store the nonce and state so they can be validated when the id_token
         # is posted back to the tool by the Authorization Server.
-        # LaunchDataStorage.set_value(key=nonce, value=state)
+        LaunchDataStorage.set_value(key=nonce, value=state)
         
         platform = self._tool_config.get_platform(self._request.form.get('iss'))
         ru = self.make_url_accept_param(platform['auth_login_url'])
@@ -98,7 +102,9 @@ class OIDCLoginFlask(OIDCLogin):
             'lti_message_hint': self._request.form.get('lti_message_hint'), # resource link id or deep link idc
             }
         print(ru + urllib.parse.urlencode(params))
-        return redirect(ru + urllib.parse.urlencode(params))
+        response = redirect(ru + urllib.parse.urlencode(params))
+        response.set_cookie('test', 'test')
+        return response
 
     def verify_state(self):
         ''' Verify the state parameter

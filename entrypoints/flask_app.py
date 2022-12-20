@@ -1,16 +1,11 @@
 from functools import wraps
 import os
-import errors as err
+from errors import errors as err
 
 from flask import Flask, abort, jsonify, request, session
 from flask import redirect, make_response
 from flask_cors import CORS, cross_origin
 from flask_caching import Cache
-
-from flask_jwt_extended import create_access_token
-from flask_jwt_extended import get_jwt_identity
-from flask_jwt_extended import jwt_required
-from flask_jwt_extended import JWTManager
 
 from repositories import orm
 from service_layer import services, unit_of_work
@@ -28,12 +23,11 @@ cache = Cache(app)
 tool_conf = ToolConfigJson(os.path.abspath(os.path.join(app.root_path, '../configs/lti_config.json')))
 app.config["JWT_SECRET_KEY"] = app.secret_key
 app.config["JWT_ALGORITHM"] = "RSA256"
-app.config["SESSION_USE_SIGNER"] = True
-if os.environ.get('FLASK_ENV') == 'production': # only set secure cookie in production: will only allow cookie transmission in https
-    app.config["SESSION_COOKIE_SECURE"] = True
-else:
-    app.config["SESSION_COOKIE_SECURE"] = False
-jwt = JWTManager(app)
+# app.config["SESSION_USE_SIGNER"] = True
+# if os.environ.get('FLASK_ENV') == 'production': # only set secure cookie in production: will only allow cookie transmission in https
+#     app.config["SESSION_COOKIE_SECURE"] = True
+# else:
+#     app.config["SESSION_COOKIE_SECURE"] = False
 
 mocked_frontend_log = {"logs": [{
     "name": "FID",
@@ -98,7 +92,7 @@ def authorize(f):
             data = request.headers['Authorization'].encode('ascii','ignore')
             token = str.replace(str(data), 'Bearer ','')
             try:
-                user = jwt.decode(token, JWT_SECRET, algorithms=['HS256'])['sub']
+                user = {}#jwt.decode(token, JWT_SECRET, algorithms=['HS256'])['sub']
             except:
                 raise err.StateNotMatchingError()
 
@@ -117,10 +111,11 @@ def lti_launch():
     else:
         raise err.StateNotMatchingError()
 
+@cross_origin(supports_credentials=True)
 @app.route('/lti_login/', methods=['POST'])
 def lti_login():
-    response = make_response()
-    response.set_cookie('state', 'test', httponly=True)
+
+    # return response
     return services.get_oidc_login(request, tool_conf, session=session)
 
 @app.route("/logs/frontend", methods=['POST', 'GET'])
@@ -171,3 +166,6 @@ def logging_frontend():
             return_message = mocked_frontend_log
             status_code = 200
     return jsonify(return_message), status_code
+
+if __name__ == '__main__':
+    app.run(port=5000, debug=True)

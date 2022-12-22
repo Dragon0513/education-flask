@@ -7,6 +7,7 @@ from service_layer.lti.OIDCLogin import OIDCLogin
 from service_layer.service.StateServiceFlask import StateServiceFlask
 from service_layer.service.CookieServiceFlask import CookieServiceFlask
 from service_layer.lti.config.ToolConfigJson import ToolConfigJson
+from errors import errors as err
 import service_layer.crypto.JWTKeyManagement as JWTKeyManagement
 import service_layer.lti.LaunchDataStorage as LaunchDataStorage
 import urllib.parse
@@ -24,8 +25,7 @@ class OIDCLoginFlask(OIDCLogin):
     def check_auth(self) -> OIDCLogin:
         # check issuer
         if not self._request.form.get('iss'):
-            self._response = "No issuer found", 400
-            return self
+            raise err.ErrorExcepion(message="No issuer found", status_code=400)
         # check client_id
         if not self._request.form.get('client_id'):
             self._response = "No client_id found", 400

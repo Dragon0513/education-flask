@@ -70,7 +70,7 @@ def authorize(f):
             state = JWTKeyManagement.verify_jwt(state_jwt)
 
 
-            return f(state, *args, **kws)            
+            return f(*args, **kws)            
     return decorated_function
 
 @app.route("/learningPath")

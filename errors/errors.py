@@ -7,6 +7,10 @@ class AException(Exception):
         conditional_message = (message + " Inner Exception: ") if message else "" + str(exception)
         self.message = conditional_message if exception is not None else message
         self.code = status_code
+class ErrorExcepion(AException):
+    """General exception for on the fly errors."""
+    def __init__(self, exception : Exception | None = None, message = "An unexpected error occurred.", status_code=500):
+        super().__init__(exception, message, status_code)
 
 class MissingParameterError(AException):
     def __init__(self, exception : Exception | None = None, message = "Missing parameters in request.", status_code=404):
@@ -34,3 +38,4 @@ class InvalidJWTError(AException):
 class UnauthorizedError(AException):
     def __init__(self, exception : Exception | None = None, message = "The request is unauthorized.", status_code=401):
         super().__init__(exception, message, status_code)
+

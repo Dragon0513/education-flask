@@ -64,7 +64,7 @@ class LTIToolPlatform():
     description = None # OPTIONAL (description)
     url = None # OPTIONAL (url)
 
-class LTIMessage(JWTMessage):
+class LTIIDToken(JWTMessage):
     """
     https://www.imsglobal.org/spec/security/v1p0/#id-token 
     https://www.imsglobal.org/spec/security/v1p0/#authentication-response-validation

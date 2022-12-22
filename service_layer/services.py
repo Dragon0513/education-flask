@@ -21,9 +21,15 @@ def get_learning_path(
 def get_oidc_login(request : Request, tool_conf, session):
     ''' Return OIDC login url or error response in case of wrong parameters, unsecure or request'''     
     oidc_login = OIDCLoginFlask(request, tool_conf, session=session)
-    return oidc_login.check_auth().login()
+    return oidc_login.check_auth().auth_redirect()
 
 def get_lti_launch(request : Request, tool_conf, session):
     ''' Return LTI launch data or error response in case of wrong parameters, unsecure or request'''     
     oidc_login = OIDCLoginFlask(request, tool_conf, session=session)
-    return oidc_login.verify_state().lti_launch_from_id_token()
+    return oidc_login.verify_state().verify_id_token().lti_launch_from_id_token()
+
+def get_login(request : Request, tool_conf, session):
+    ''' Return cookie value or None'''
+    # check if request has 
+    oidc_login = OIDCLoginFlask(request, tool_conf, session=session)
+    return oidc_login.get_login()

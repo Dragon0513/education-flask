@@ -1,5 +1,6 @@
 from functools import wraps
 import os
+import urllib.parse
 from errors import errors as err
 
 from flask import Flask, abort, jsonify, request, session
@@ -99,17 +100,27 @@ def authorize(f):
             return f(user, *args, **kws)            
     return decorated_function
 
+# loginmask or get cookie for frontend if end of OIDC Login workflow
+@app.route('/login', methods=['GET'])
+def login():
+    return services.get_login(request, tool_conf, session=session)
+    response = make_response()
+    response.set_cookie('state', "test", secure=True, httponly=True, samesite='None')
+    return response
+
 @app.route('/lti_launch/', methods=['POST'])
 def lti_launch():
     # passt state noch?
-    if 'state' in session:
-        if CryptoKeyManagement.verify_own_jwt(session['state']) == CryptoKeyManagement.verify_own_jwt(request.form['state']):
-            services.get_lti_launch(request, tool_conf, session=session)
-            return redirect('http://localhost:8080')
-        else:
-            raise err.StateNotMatchingError()
-    else:
-        raise err.StateNotMatchingError()
+    # if 'state' in session:
+    #     if CryptoKeyManagement.verify_jwt(session['state']) == CryptoKeyManagement.verify_jwt(request.form['state']):
+    return services.get_lti_launch(request, tool_conf, session=session)
+    response = redirect('http://localhost:8080/' + urllib.parse.urlencode({'state': request.form['state']}))
+    response.set_cookie('state', "test", secure=True, httponly=True, samesite='None')
+    return response
+    #     else:
+    #         raise err.StateNotMatchingError()
+    # else:
+    #     raise err.StateNotMatchingError()
 
 @cross_origin(supports_credentials=True)
 @app.route('/lti_login/', methods=['POST'])

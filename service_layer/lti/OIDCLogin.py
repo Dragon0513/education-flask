@@ -9,15 +9,25 @@ class OIDCLogin(ABC):
     def __init__(self, request : Request, tool_config : ToolConfigJson):
         self._request = request
         self._tool_config = tool_config
+        
     @abstractmethod
     def check_auth(self):
         pass
+
     @abstractmethod
-    def login(self):
+    def auth_redirect(self):
         pass
 
     @abstractmethod
     def lti_launch_from_id_token(self):
+        pass
+
+    @abstractmethod
+    def verify_id_token(self) -> 'OIDCLogin':
+        pass
+
+    @abstractmethod
+    def get_login(self):
         pass
 
     @staticmethod

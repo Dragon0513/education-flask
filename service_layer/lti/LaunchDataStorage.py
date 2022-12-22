@@ -6,7 +6,8 @@ dict : Dict[str, tuple[str, datetime]] = {}
 def set_value(key, value):
     # if conflict throw exception
     if key in dict:
-        raise KeyError("Key already exists")
+        pass
+        # raise KeyError("Key already exists")
     dict[key] = (value, datetime.now() + timedelta(minutes=1)) # 1 minute expiration for authorization
 
 def get_value(key) -> str | None:

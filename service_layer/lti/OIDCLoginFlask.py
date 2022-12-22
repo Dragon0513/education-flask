@@ -1,4 +1,5 @@
 import datetime
+import json
 import os
 from service_layer.crypto.cryptorandom import CryptoRandom
 from service_layer.lti.Messages import LTIIDToken
@@ -203,12 +204,13 @@ class OIDCLoginFlask(OIDCLogin):
             self._response = "Invalid key", 400
             return self
         # hmac_key = filter(lambda key: key.kid == id_token_unverified['kid'], platform['key_set']['keys'])
-        id_token = CryptoKeyManagement.verify_jwt(id_token_jwt, CryptoKeyManagement.construct_key(hmac_key))
-        if not id_token:
+        self.id_token = CryptoKeyManagement.verify_jwt(id_token_jwt, CryptoKeyManagement.construct_key(hmac_key))
+        if not self.id_token:
             self._response = "Invalid id_token signature", 403
             return self
         # self.id_token = LTIIDToken(**id_token)
         # TODO parse token and write into structures
+       
 
         return self
 
@@ -224,8 +226,9 @@ class OIDCLoginFlask(OIDCLogin):
 
         # generate nonce to obtain cookie
         nonce = CryptoRandom().getrandomstring(32)
-        nonce_jwt = CryptoKeyManagement.generate_nonce_jwt(nonce, state_form['iss'], "https://localhost:5000")
+        nonce_jwt = CryptoKeyManagement.generate_nonce_jwt(nonce, self._request.referrer, "https://localhost:5000")
         LaunchDataStorage.set_value(key=nonce, value=nonce_jwt)
+        LaunchDataStorage.set_value(key="key", value=self.id_token)
 
         # redirect to tool (login url in react)
         response = redirect('http://localhost:8080/login?' + urllib.parse.urlencode({'nonce': nonce_jwt}))
@@ -243,17 +246,26 @@ class OIDCLoginFlask(OIDCLogin):
 
     def get_login(self) -> Response:
         # verify nonce jwt in request
-        nonce_jwt = self._request.form.get('nonce', type=str) or ''
+        json_data = self._request.get_json() or {}
+        if not json_data.get('nonce'):
+            self._response = "No nonce found", 403
+            return make_response(self._response)
+        nonce_jwt = json_data['nonce'] or ''
         nonce_payload = CryptoKeyManagement.verify_jwt(nonce_jwt)
         if not nonce_payload:
             self._response = "Invalid nonce signature", 403
             return make_response(self._response)
 
-        assert(self.verify_jwt_payload(nonce_payload))
-
-        response = make_response("OK", 200)
+        if not self.verify_jwt_payload(nonce_payload):
+            self._response = "Invalid nonce", 403
+            return make_response(self._response)
+        userinfo = LaunchDataStorage.get_value(key="key")
         # TODO this cookie holds authorization data
-        state_jwt = CryptoKeyManagement.generate_state_jwt(CryptoRandom.createuniqueid(32), CryptoRandom.createuniqueid(32), self._request.form['iss'], "https://localhost:5000")
-
+        state_jwt = CryptoKeyManagement.generate_state_jwt(CryptoRandom.createuniqueid(32), CryptoRandom.createuniqueid(32), self._request.referrer, "https://localhost:5000")
+        response = Response(
+            response=json.dumps(userinfo),
+            status=200,
+            mimetype='application/json'
+        )
         self._cookie_service.set_cookie(response,key='state',value=state_jwt, domain='127.0.0.1')
         return response

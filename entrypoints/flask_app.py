@@ -101,7 +101,7 @@ def authorize(f):
     return decorated_function
 
 # loginmask or get cookie for frontend if end of OIDC Login workflow
-@app.route('/login', methods=['GET'])
+@app.route('/login', methods=['POST'])
 def login():
     return services.get_login(request, tool_conf, session=session)
     response = make_response()

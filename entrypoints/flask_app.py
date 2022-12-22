@@ -12,7 +12,7 @@ from repositories import orm
 from service_layer import services, unit_of_work
 from service_layer.lti.OIDCLoginFlask import OIDCLoginFlask
 from service_layer.lti.config.ToolConfigJson import ToolConfigJson
-import service_layer.crypto.CryptoKeyManagement as CryptoKeyManagement
+import service_layer.crypto.JWTKeyManagement as JWTKeyManagement
 
 
 app = Flask(__name__)
@@ -49,15 +49,32 @@ mocked_frontend_log = {"logs": [{
     "id": "v3-1665130071366-6352791670096",
     "navigationType": "reload"
 }]}
-
 @app.errorhandler(Exception)
-def handle_exception(err):
-    response = jsonify(message=str(err))
-    response.status_code = (err.code if hasattr(err, 'code') else 500)
+def handle_custom_exception(ex):
+    if isinstance(ex, err.AException):
+        response = make_response(ex.message, ex.code)
+        return response
+    else:
+        response = make_response(str(err),500)
     return response
 
+def authorize(f):
+    @wraps(f)
+    def decorated_function(*args, **kws):
+            state_jwt = request.cookies.get('state')
+            if state_jwt is None:
+                raise err.StateNotMatchingError()
+
+            if not JWTKeyManagement.verify_jwt_payload(JWTKeyManagement.verify_jwt(state_jwt), verify_nonce=False):
+                raise err.UnauthorizedError()
+            state = JWTKeyManagement.verify_jwt(state_jwt)
+
+
+            return f(state, *args, **kws)            
+    return decorated_function
 
 @app.route("/learningPath")
+@authorize
 @cross_origin(supports_credentials=True)
 def get_learning_path():
     if request.json is None or 'studentId' not in request.json:
@@ -83,50 +100,18 @@ def get_learning_path():
         status_code = 200
         return jsonify(dict), status_code
 
-def authorize(f):
-    @wraps(f)
-    def decorated_function(*args, **kws):
-            if not 'Authorization' in request.headers:
-               abort(401)
-
-            user = None
-            data = request.headers['Authorization'].encode('ascii','ignore')
-            token = str.replace(str(data), 'Bearer ','')
-            try:
-                user = {}#jwt.decode(token, JWT_SECRET, algorithms=['HS256'])['sub']
-            except:
-                raise err.StateNotMatchingError()
-
-            return f(user, *args, **kws)            
-    return decorated_function
 
 # loginmask or get cookie for frontend if end of OIDC Login workflow
 @app.route('/login', methods=['POST'])
 def login():
     return services.get_login(request, tool_conf, session=session)
-    response = make_response()
-    response.set_cookie('state', "test", secure=True, httponly=True, samesite='None')
-    return response
 
 @app.route('/lti_launch/', methods=['POST'])
 def lti_launch():
-    # passt state noch?
-    # if 'state' in session:
-    #     if CryptoKeyManagement.verify_jwt(session['state']) == CryptoKeyManagement.verify_jwt(request.form['state']):
     return services.get_lti_launch(request, tool_conf, session=session)
-    response = redirect('http://localhost:8080/' + urllib.parse.urlencode({'state': request.form['state']}))
-    response.set_cookie('state', "test", secure=True, httponly=True, samesite='None')
-    return response
-    #     else:
-    #         raise err.StateNotMatchingError()
-    # else:
-    #     raise err.StateNotMatchingError()
 
-@cross_origin(supports_credentials=True)
 @app.route('/lti_login/', methods=['POST'])
 def lti_login():
-
-    # return response
     return services.get_oidc_login(request, tool_conf, session=session)
 
 @app.route("/logs/frontend", methods=['POST', 'GET'])

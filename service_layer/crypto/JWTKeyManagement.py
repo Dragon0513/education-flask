@@ -3,9 +3,10 @@ import json
 import os
 import pickle
 from typing import Any, Mapping
-from jose import jws, jwk
+from jose import JWSError, jws, jwk
 from jose.backends.base import Key
 from cryptography.hazmat.primitives import serialization as crypto_serialization
+from errors.errors import InvalidJWTError
 
 from service_layer.crypto.cryptorandom import CryptoRandom
 from service_layer.lti import LaunchDataStorage
@@ -24,10 +25,16 @@ def construct_key(key : str | bytes | dict[str, Any] | Key):
 
 def verify_jwt(jwt_token : str, key : str | bytes | Mapping[str, Any] | Key = load_public_key().decode()):
     ''' Returns the payload of the JWT token if it is valid, otherwise raises an exception'''
-    return json.loads(jws.verify(jwt_token, key, algorithms=["RS256"]).decode('UTF-8'))
+    try:
+        return json.loads(jws.verify(jwt_token, key, algorithms=["RS256"]).decode('UTF-8'))
+    except JWSError as e:
+        raise InvalidJWTError(e)
 
 def get_unverified_header(jwt_token : str):
-    return jws.get_unverified_header(jwt_token)
+    try:
+        return jws.get_unverified_header(jwt_token)
+    except JWSError as e:
+        raise InvalidJWTError(e)
 
 def sign_jwt(payload : dict):
     with open(os.path.abspath(private_key_location), "rb") as key_file:
@@ -63,3 +70,29 @@ def generate_state_jwt(nonce : str, state : str, audience : str, issuer : str):
         'iss': issuer
     }
     return sign_jwt(state_jwt)
+
+def verify_jwt_payload(jwt_payload, verify_nonce=True) -> bool:
+    """Verifies the payload of a JWT token. Returns True if the payload is valid, otherwise False."""
+    if verify_nonce and not LaunchDataStorage.get_value(jwt_payload['nonce']):
+        return False
+    # verify issued at
+    if jwt_payload['iat'] > datetime.datetime.utcnow().timestamp():
+        return False
+    # verify expiration
+    if jwt_payload['exp'] < datetime.datetime.utcnow().timestamp():
+        return False
+    # verify issuer
+    if jwt_payload['iss'] != 'https://localhost:5000':
+        return False
+    # verify kid
+    if jwt_payload['kid'] != 'backendprivatekey':
+        return False
+    return True
+
+def verify_state_jwt_payload(state_jwt_payload) -> bool:
+    if verify_jwt_payload(state_jwt_payload) == False:
+        return False
+    # verify state in storage
+    if LaunchDataStorage.get_value(state_jwt_payload['nonce']) != state_jwt_payload['state']:
+        return False
+    return True

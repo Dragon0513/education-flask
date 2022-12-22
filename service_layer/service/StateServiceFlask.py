@@ -2,7 +2,7 @@ import datetime
 import jwt
 from service_layer.service.StateService import StateService
 from flask.sessions import SessionMixin
-import service_layer.crypto.CryptoKeyManagement as CryptoKeyManagement
+import service_layer.crypto.JWTKeyManagement as JWTKeyManagement
 
 from service_layer.crypto.cryptorandom import CryptoRandom
 class StateServiceFlask(StateService):
@@ -30,4 +30,4 @@ class StateServiceFlask(StateService):
 
 
     def get_state_from_jwt(self, state_jwt):
-        return CryptoKeyManagement.load_jwt(state_jwt)
+        return JWTKeyManagement.load_jwt(state_jwt)

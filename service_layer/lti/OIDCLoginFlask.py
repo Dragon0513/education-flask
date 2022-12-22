@@ -7,7 +7,7 @@ from service_layer.lti.OIDCLogin import OIDCLogin
 from service_layer.service.StateServiceFlask import StateServiceFlask
 from service_layer.service.CookieServiceFlask import CookieServiceFlask
 from service_layer.lti.config.ToolConfigJson import ToolConfigJson
-import service_layer.crypto.CryptoKeyManagement as CryptoKeyManagement
+import service_layer.crypto.JWTKeyManagement as JWTKeyManagement
 import service_layer.lti.LaunchDataStorage as LaunchDataStorage
 import urllib.parse
 from flask import redirect,make_response
@@ -87,7 +87,7 @@ class OIDCLoginFlask(OIDCLogin):
         state = CryptoRandom().getrandomstring(32)
 
         assert self.platform is not None
-        state_jwt = CryptoKeyManagement.generate_state_jwt(nonce,state, self.platform.auth_login_url, "https://localhost:5000")
+        state_jwt = JWTKeyManagement.generate_state_jwt(nonce,state, self.platform.auth_login_url, "https://localhost:5000")
 
 
         # Store the nonce and state so they can be validated when the id_token
@@ -112,30 +112,7 @@ class OIDCLoginFlask(OIDCLogin):
         self._cookie_service.set_cookie(response,key='state',value=state_jwt, domain='127.0.0.1')
         return response
 
-    def verify_jwt_payload(self, jwt_payload) -> bool:
-        if not LaunchDataStorage.get_value(jwt_payload['nonce']):
-            return False
-        # verify issued at
-        if jwt_payload['iat'] > datetime.datetime.utcnow().timestamp():
-            return False
-        # verify expiration
-        if jwt_payload['exp'] < datetime.datetime.utcnow().timestamp():
-            return False
-        # verify issuer
-        if jwt_payload['iss'] != 'https://localhost:5000':
-            return False
-        # verify kid
-        if jwt_payload['kid'] != 'backendprivatekey':
-            return False
-        return True
 
-    def verify_state_jwt_payload(self, state_jwt_payload) -> bool:
-        if self.verify_jwt_payload(state_jwt_payload) == False:
-            return False
-        # verify state in storage
-        if LaunchDataStorage.get_value(state_jwt_payload['nonce']) != state_jwt_payload['state']:
-            return False
-        return True
 
     def verify_state(self) -> OIDCLogin:
         ''' Verify the state parameter
@@ -157,16 +134,16 @@ class OIDCLoginFlask(OIDCLogin):
         
         # verify state paramter signature
         state_form_jwt = self._request.form.get('state', type=str) or ''
-        state_form = CryptoKeyManagement.verify_jwt(state_form_jwt)
-        assert(self.verify_state_jwt_payload(state_form))
+        state_form = JWTKeyManagement.verify_jwt(state_form_jwt)
+        assert(JWTKeyManagement.verify_state_jwt_payload(state_form))
         if not state_form:
             self._response = "Invalid state signature", 403
             return self
 
         # verify cookie signature
         state_cookie_jwt = self._cookie_service.get_cookie('state', type=str) or ''
-        state_cookie = CryptoKeyManagement.verify_jwt(state_cookie_jwt)
-        assert(self.verify_state_jwt_payload(state_cookie))
+        state_cookie = JWTKeyManagement.verify_jwt(state_cookie_jwt)
+        assert(JWTKeyManagement.verify_state_jwt_payload(state_cookie))
         if not state_cookie:
             self._response = "Invalid state signature", 403
             return self
@@ -194,8 +171,8 @@ class OIDCLoginFlask(OIDCLogin):
 
         # Decode the id_token
         id_token_jwt = self._request.form.get('id_token', type=str) or ''
-        id_token_header_unverified = CryptoKeyManagement.get_unverified_header(id_token_jwt)
-        id_token_unverified = CryptoKeyManagement.load_jwt(id_token_jwt)
+        id_token_header_unverified = JWTKeyManagement.get_unverified_header(id_token_jwt)
+        id_token_unverified = JWTKeyManagement.load_jwt(id_token_jwt)
 
         platform = self._tool_config.get_platform(id_token_unverified['iss'])
         print(id_token_header_unverified)
@@ -204,7 +181,7 @@ class OIDCLoginFlask(OIDCLogin):
             self._response = "Invalid key", 400
             return self
         # hmac_key = filter(lambda key: key.kid == id_token_unverified['kid'], platform['key_set']['keys'])
-        self.id_token = CryptoKeyManagement.verify_jwt(id_token_jwt, CryptoKeyManagement.construct_key(hmac_key))
+        self.id_token = JWTKeyManagement.verify_jwt(id_token_jwt, JWTKeyManagement.construct_key(hmac_key))
         if not self.id_token:
             self._response = "Invalid id_token signature", 403
             return self
@@ -221,12 +198,12 @@ class OIDCLoginFlask(OIDCLogin):
 
         # state from form
         state_form_jwt = self._request.form.get('state', type=str) or ''
-        state_form = CryptoKeyManagement.verify_jwt(state_form_jwt)
-        assert(self.verify_state_jwt_payload(state_form))
+        state_form = JWTKeyManagement.verify_jwt(state_form_jwt)
+        assert(JWTKeyManagement.verify_state_jwt_payload(state_form))
 
         # generate nonce to obtain cookie
         nonce = CryptoRandom().getrandomstring(32)
-        nonce_jwt = CryptoKeyManagement.generate_nonce_jwt(nonce, self._request.referrer, "https://localhost:5000")
+        nonce_jwt = JWTKeyManagement.generate_nonce_jwt(nonce, self._request.referrer, "https://localhost:5000")
         LaunchDataStorage.set_value(key=nonce, value=nonce_jwt)
         LaunchDataStorage.set_value(key="key", value=self.id_token)
 
@@ -251,17 +228,17 @@ class OIDCLoginFlask(OIDCLogin):
             self._response = "No nonce found", 403
             return make_response(self._response)
         nonce_jwt = json_data['nonce'] or ''
-        nonce_payload = CryptoKeyManagement.verify_jwt(nonce_jwt)
+        nonce_payload = JWTKeyManagement.verify_jwt(nonce_jwt)
         if not nonce_payload:
             self._response = "Invalid nonce signature", 403
             return make_response(self._response)
 
-        if not self.verify_jwt_payload(nonce_payload):
+        if not JWTKeyManagement.verify_jwt_payload(nonce_payload):
             self._response = "Invalid nonce", 403
             return make_response(self._response)
         userinfo = LaunchDataStorage.get_value(key="key")
         # TODO this cookie holds authorization data
-        state_jwt = CryptoKeyManagement.generate_state_jwt(CryptoRandom.createuniqueid(32), CryptoRandom.createuniqueid(32), self._request.referrer, "https://localhost:5000")
+        state_jwt = JWTKeyManagement.generate_state_jwt(CryptoRandom.createuniqueid(32), CryptoRandom.createuniqueid(32), self._request.referrer, "https://localhost:5000")
         response = Response(
             response=json.dumps(userinfo),
             status=200,

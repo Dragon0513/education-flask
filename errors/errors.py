@@ -12,6 +12,11 @@ class ErrorExcepion(AException):
     def __init__(self, exception : Exception | None = None, message = "An unexpected error occurred.", status_code=500):
         super().__init__(exception, message, status_code)
 
+class TypeException(AException):
+    """Exception for wrong type errors."""
+    def __init__(self, exception : Exception | None = None, message = "An unexpected type error occurred.", status_code=500):
+        super().__init__(exception, message, status_code)
+
 class MissingParameterError(AException):
     def __init__(self, exception : Exception | None = None, message = "Missing parameters in request.", status_code=404):
         super().__init__(exception, message, status_code)
@@ -33,6 +38,10 @@ class StateNotMatchingError(AException):
 
 class InvalidJWTError(AException):
     def __init__(self, exception : Exception | None = None, message = "The passed JWT is invalid.", status_code=400):
+        super().__init__(exception, message, status_code)
+
+class KeyAlreadyExistsError(AException):
+    def __init__(self, exception : Exception | None = None, message = "The passed key already exists.", status_code=400):
         super().__init__(exception, message, status_code)
 
 class UnauthorizedError(AException):

@@ -59,12 +59,13 @@ def generate_nonce_jwt(nonce : str, audience : str, issuer : str):
     }
     return sign_jwt(nonce_jwt)
 
-def generate_state_jwt(nonce : str, state : str, audience : str, issuer : str):
+def generate_state_jwt(nonce : str, state : str, audience : str, issuer : str, additional_claims : dict = {}, expiration : int = 60):
     state_jwt = {
         'state': state,
         'nonce': nonce,
+        **additional_claims,
         'iat': datetime.datetime.utcnow().timestamp(),
-        'exp': (datetime.datetime.utcnow() + datetime.timedelta(minutes=60)).timestamp(),
+        'exp': (datetime.datetime.utcnow() + datetime.timedelta(minutes=expiration)).timestamp(),
         'aud': audience,
         'kid': 'backendprivatekey',
         'iss': issuer
@@ -82,7 +83,7 @@ def verify_jwt_payload(jwt_payload, verify_nonce=True) -> bool:
     if jwt_payload['exp'] < datetime.datetime.utcnow().timestamp():
         return False
     # verify issuer
-    if jwt_payload['iss'] != 'https://localhost:5000':
+    if jwt_payload['iss'] != 'http://fakedomain.com:5000':
         return False
     # verify kid
     if jwt_payload['kid'] != 'backendprivatekey':

@@ -20,96 +20,86 @@ class OIDCLoginFlask(OIDCLogin):
     def __init__(self, request : Request, tool_config : ToolConfigJson, session_service=None, cookie_service=None, session=None):
         self._cookie_service = cookie_service if cookie_service else CookieServiceFlask(request)
         self._session_service = session_service if session_service else StateServiceFlask(session)
+        self.oidc_login_params = {'iss', 'client_id', 'login_hint', 'target_link_uri', 'lti_deployment_id'}
         super(OIDCLoginFlask, self).__init__(request, tool_config)
 
     def check_auth(self) -> OIDCLogin:
-        # check issuer
-        if not self._request.form.get('iss'):
-            raise err.ErrorExcepion(message="No issuer found", status_code=400)
-        # check client_id
-        if not self._request.form.get('client_id'):
-            self._response = "No client_id found", 400
-            return self
-        # check login hint
-        if not self._request.form.get('login_hint'):
-            self._response = "No login_hint found", 400
-            return self
-        # check target link uri
-        if not self._request.form.get('target_link_uri'):
-            self._response = "No target_link_uri found", 400
-            return self
-        # check lti deployment id
-        if not self._request.form.get('lti_deployment_id'):
-            self._response = "No lti_deployment_id found", 400
-            return self
+        # Check if all parameters are present
+        try:
+            if not self.oidc_login_params.issubset(self._request.form.keys()):
+                raise err.MissingParameterError(status_code=400)
+            # store subset with values from request form in object
+            else:
+                self._oidc_login_params_dict = {key: self._request.form.get(key) for key in self.oidc_login_params}
+        except Exception as e:
+            raise err.ErrorExcepion(e,message="Error in check_auth", status_code=400)
 
-        # check cookie
-        # if not self._cookie_service.get_cookie('MoodleSession'):
-        #     self._response = "No cookie found", 400
-        #     return self
 
         # Get the platform settings (same scheme as in the tool config json)
-        self.platform = self._tool_config.decode_platform(self._tool_config.get_platform(self._request.form.get('iss')))
-        if not self.platform:
-            self._response = "No platform found", 400
-            return self
         try:
-            urllib.parse.urlparse(self._request.form.get('target_link_uri'))
-        except ValueError:
-            self._response = "target_link_uri is not URL", 400
-            return self
-        if os.environ.get('FLASK_ENV') == 'production':
-            if urllib.parse.urlparse(self._request.form.get('target_link_uri')).scheme != 'https':
-                self._response = "target_link_uri is not HTTPS", 400
-                return self
-        if urllib.parse.urlparse(self._request.form.get('target_link_uri')).netloc != self._request.host:
-            self._response = "target_link_uri is not from the same host", 400
-            return self
+            self.platform = self._tool_config.decode_platform(self._tool_config.get_platform(str(self._oidc_login_params_dict.get('iss'))))
+            if not self.platform:
+                raise err.ErrorExcepion(message="No platform found", status_code=400)
+        except Exception as e:
+            raise err.ErrorExcepion(e,message="Error in check_auth", status_code=400)
+        try:
+            parsed_target_link_url = urllib.parse.urlparse(self._oidc_login_params_dict.get('target_link_uri')) or None
+        except ValueError as e:
+            raise err.ErrorExcepion(e,message="target_link_uri is not URL", status_code=400)
+
         # Verify if the target_link_uri is valid and does not redirect to other domain than our tool
-        if self._request.form.get('target_link_uri') != self.platform.target_link_uri:
-            self._response = "Invalid target_link_uri", 400
+        # Verify HTTPS if in production
+        try:
+            if os.environ.get('FLASK_ENV') == 'production':
+                if parsed_target_link_url.scheme != 'https':
+                    raise err.ErrorExcepion(message="target_link_uri is not HTTPS", status_code=400)
+            if parsed_target_link_url.netloc != self._request.host:
+                raise err.ErrorExcepion(message="target_link_uri is not from the same host", status_code=400)
+        except Exception as e:
+            raise err.ErrorExcepion(e,message="target_link_uri invalid", status_code=400)
+
+        # Verify if the target_link_uri is valid and does not redirect to other domain than our tool
+        if self._oidc_login_params_dict.get('target_link_uri') != self.platform.target_link_uri:
+            raise err.ErrorExcepion(message="target_link_uri may be malicious", status_code=400)
 
         return self
 
     def auth_redirect(self) -> Response:
-        ''' Login to OIDC provider
+        ''' Login to OIDC provider from LMS.
             Crafts the redirect url by adding the necessary parameters
         '''
-        # check auth
-        if self._response:
-            return make_response(self._response)
 
-        # Create a unique nonce for this flow
+        # Create a unique nonce for this flow to prevent replay attacks
         nonce = CryptoRandom().getrandomstring(32)
 
-        # Consider using a state JWT as described in
-        # https://tools.ietf.org/html/draft-bradley-oauth-jwt-encoded-state-09
+        # Create a unique state for this flow to ensure integrity of the response
         state = CryptoRandom().getrandomstring(32)
 
-        assert self.platform is not None
-        state_jwt = JWTKeyManagement.generate_state_jwt(nonce,state, self.platform.auth_login_url, "https://localhost:5000")
-
+        state_jwt = JWTKeyManagement.generate_state_jwt(nonce,
+                                                        state, 
+                                                        self.platform.auth_login_url, 
+                                                        self._tool_config.get_tool_url(str(self._oidc_login_params_dict.get('iss'))))
 
         # Store the nonce and state so they can be validated when the id_token
         # is posted back to the tool by the Authorization Server.
         LaunchDataStorage.set_value(key=nonce, value=state)
         
-        platform = self._tool_config.get_platform(self._request.form.get('iss'))
+        platform = self._tool_config.get_platform(str(self._oidc_login_params_dict.get('iss')))
         ru = self.make_url_accept_param(platform['auth_login_url'])
         params = {
             'client_id': platform['client_id'],
             'response_mode': 'form_post',
-            'redirect_uri': self._request.form.get('target_link_uri'),
+            'redirect_uri': self._oidc_login_params_dict.get('target_link_uri'),
             'response_type': 'id_token',
             'scope': 'openid',
             'nonce': nonce,
             'state': state_jwt,
-            'login_hint': self._request.form.get('login_hint'),
-            'lti_message_hint': self._request.form.get('lti_message_hint'), # resource link id or deep link idc
+            'login_hint': self._oidc_login_params_dict.get('login_hint'),
+            'lti_message_hint': self._oidc_login_params_dict.get('lti_message_hint'), # resource link id or deep link idc
             }
         print(ru + urllib.parse.urlencode(params))
         response = redirect(ru + urllib.parse.urlencode(params))        
-        self._cookie_service.set_cookie(response,key='state',value=state_jwt, domain='127.0.0.1')
+        # self._cookie_service.set_cookie(response,key='state',value=state_jwt, domain='127.0.0.1', secure=False, httponly=False, samesite='Lax')
         return response
 
 
@@ -127,10 +117,10 @@ class OIDCLoginFlask(OIDCLogin):
             self._response = "No state found", 403
             return self
         
-        # check cookie
-        if not self._cookie_service.get_cookie('state'):
-            self._response = "No cookie found", 403
-            return self
+        # # check cookie
+        # if not self._cookie_service.get_cookie('state'):
+        #     self._response = "No cookie found", 403
+        #     return self
         
         # verify state paramter signature
         state_form_jwt = self._request.form.get('state', type=str) or ''
@@ -140,18 +130,18 @@ class OIDCLoginFlask(OIDCLogin):
             self._response = "Invalid state signature", 403
             return self
 
-        # verify cookie signature
-        state_cookie_jwt = self._cookie_service.get_cookie('state', type=str) or ''
-        state_cookie = JWTKeyManagement.verify_jwt(state_cookie_jwt)
-        assert(JWTKeyManagement.verify_state_jwt_payload(state_cookie))
-        if not state_cookie:
-            self._response = "Invalid state signature", 403
-            return self
+        # # verify cookie signature
+        # state_cookie_jwt = self._cookie_service.get_cookie('state', type=str) or ''
+        # state_cookie = JWTKeyManagement.verify_jwt(state_cookie_jwt)
+        # assert(JWTKeyManagement.verify_state_jwt_payload(state_cookie))
+        # if not state_cookie:
+        #     self._response = "Invalid state signature", 403
+        #     return self
 
         # verify both state form and cookie are the same
-        if state_form != state_cookie:
-            self._response = "Invalid state", 403
-            return self
+        # if state_form != state_cookie:
+        #     self._response = "Invalid state", 403
+        #     return self
 
         return self
 
@@ -203,12 +193,11 @@ class OIDCLoginFlask(OIDCLogin):
 
         # generate nonce to obtain cookie
         nonce = CryptoRandom().getrandomstring(32)
-        nonce_jwt = JWTKeyManagement.generate_nonce_jwt(nonce, self._request.referrer, "https://localhost:5000")
+        nonce_jwt = JWTKeyManagement.generate_nonce_jwt(nonce, self._request.referrer, "http://fakedomain.com:5000")
         LaunchDataStorage.set_value(key=nonce, value=nonce_jwt)
-        LaunchDataStorage.set_value(key="key", value=self.id_token)
 
         # redirect to tool (login url in react)
-        response = redirect('http://localhost:8080/login?' + urllib.parse.urlencode({'nonce': nonce_jwt}))
+        response = redirect('http://fakedomain.com:8080/login?' + urllib.parse.urlencode({'nonce': nonce_jwt}))
         return response
 
         # get issuer
@@ -236,13 +225,17 @@ class OIDCLoginFlask(OIDCLogin):
         if not JWTKeyManagement.verify_jwt_payload(nonce_payload):
             self._response = "Invalid nonce", 403
             return make_response(self._response)
-        userinfo = LaunchDataStorage.get_value(key="key")
-        # TODO this cookie holds authorization data
-        state_jwt = JWTKeyManagement.generate_state_jwt(CryptoRandom.createuniqueid(32), CryptoRandom.createuniqueid(32), self._request.referrer, "https://localhost:5000")
+        # TODO this cookie holds authorization data. implement right and role management
+        state_jwt = JWTKeyManagement.generate_state_jwt(nonce=CryptoRandom.createuniqueid(32), 
+                                                        state=CryptoRandom.createuniqueid(32), 
+                                                        audience=self._request.referrer, 
+                                                        issuer="http://fakedomain.com:5000",
+                                                        additional_claims={'user_id': 2, 'permissions': ['read:user_info']}
+                                                        )
         response = Response(
-            response=json.dumps(userinfo),
+            response=json.dumps(state_jwt),
             status=200,
             mimetype='application/json'
         )
-        self._cookie_service.set_cookie(response,key='state',value=state_jwt, domain='127.0.0.1')
+        self._cookie_service.set_cookie(response,key='haski_state',value=state_jwt, domain='fakedomain.com', secure=False, httponly=True, samesite='Lax')
         return response

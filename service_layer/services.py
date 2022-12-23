@@ -20,6 +20,16 @@ def get_learning_path(
             uow.commit()
     return result
 
+# ##### TEST ENDPOINT #####
+def get_user_info(uow: unit_of_work.AbstractUnitOfWork, user_id : str) -> str:
+    with uow:
+        return "Das wäre jetzt der User mit id: " + user_id
+        # user_info = uow.user_info.get(user_id)
+        # if user_info is None:
+        #     raise err.UserNotFoundError()
+        # return user_info
+
+# ##### LTI #####
 def get_oidc_login(request : Request, tool_conf, session) -> Response:
     ''' Return OIDC login url or error response in case of wrong parameters, unsecure or request'''     
     oidc_login = OIDCLoginFlask(request, tool_conf, session=session)

@@ -2,9 +2,10 @@
   "http://localhost": {
     "default": true,
     "client_id": "1H5HPHiu7StMgn6",
+    "tool_url": "http://fakedomain.com:5000",
+    "target_link_uri": "http://fakedomain.com:5000/lti_launch",
     "auth_login_url": "http://localhost/mod/lti/auth.php",
     "auth_token_url": "http://localhost/mod/lti/token.php",
-    "target_link_uri": "http://127.0.0.1:5000/lti_launch",
     "key_set_url": "http://localhost/mod/lti/certs.php",
     "platform_name": "moodle",
     "key_set": {

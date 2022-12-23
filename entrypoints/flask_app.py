@@ -58,23 +58,36 @@ def handle_custom_exception(ex):
         response = make_response(str(err),500)
     return response
 
-def authorize(f):
-    @wraps(f)
-    def decorated_function(*args, **kws):
-            state_jwt = request.cookies.get('state')
-            if state_jwt is None:
-                raise err.StateNotMatchingError()
+def authorize(permission):
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kws):
+                state_jwt = request.cookies.get('haski_state')
+                if state_jwt is None:
+                    raise err.StateNotMatchingError()
 
-            if not JWTKeyManagement.verify_jwt_payload(JWTKeyManagement.verify_jwt(state_jwt), verify_nonce=False):
-                raise err.UnauthorizedError()
-            state = JWTKeyManagement.verify_jwt(state_jwt)
+                if not JWTKeyManagement.verify_jwt_payload(JWTKeyManagement.verify_jwt(state_jwt), verify_nonce=False):
+                    raise err.UnauthorizedError()
+                state = JWTKeyManagement.verify_jwt(state_jwt)
+                if 'permissions' not in state:
+                    raise err.UnauthorizedError()
+                if permission not in state['permissions']:
+                    raise err.UnauthorizedError()
 
+                return f(state, *args, **kws)          
+        return decorated_function
+    return decorator
 
-            return f(*args, **kws)            
-    return decorated_function
+# ##### TEST ENDPOINT #####
+@app.route("/user_info")
+@authorize('read:user_info')
+def get_user_info(state):
+    user_info = services.get_user_info(unit_of_work.SqlAlchemyUnitOfWork(), state['user_id'])
+    user_dict = {'user_info': user_info}
+    status_code = 200
+    return jsonify(user_dict), status_code
 
 @app.route("/learningPath")
-@authorize
 @cross_origin(supports_credentials=True)
 def get_learning_path():
     if request.json is None or 'studentId' not in request.json:
@@ -106,10 +119,12 @@ def get_learning_path():
 def login():
     return services.get_login(request, tool_conf, session=session)
 
+# TODO explain
 @app.route('/lti_launch/', methods=['POST'])
 def lti_launch():
     return services.get_lti_launch(request, tool_conf, session=session)
 
+# TODO explain
 @app.route('/lti_login/', methods=['POST'])
 def lti_login():
     return services.get_oidc_login(request, tool_conf, session=session)

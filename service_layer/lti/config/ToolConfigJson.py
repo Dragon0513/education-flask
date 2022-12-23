@@ -1,7 +1,7 @@
 from collections import namedtuple
 import json
 import os
-
+from errors import errors as err
 from service_layer.lti.lms.Platform import Platform
 
 
@@ -15,7 +15,7 @@ class ToolConfigJson():
         with open(config_file, 'r') as cfg:
             self._iss_conf_dict = json.loads(cfg.read())
         
-    def get_platform(self, iss):
+    def get_platform(self, iss : str):
         return self._iss_conf_dict[iss]
 
     def decode_platform(self, platformdict : dict):
@@ -23,5 +23,8 @@ class ToolConfigJson():
         try:
             return Platform(**platformdict)
         except TypeError as e:
-            print(e)
-            return None
+            raise err.TypeException(e,message="Error decoding platform dictionary: " + str(e), status_code=500)
+
+    def get_tool_url(self, iss : str):
+        """ Returns the tool url from the config file"""
+        return self._iss_conf_dict[iss]['tool_url']

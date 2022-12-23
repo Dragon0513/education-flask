@@ -2,6 +2,7 @@ class Platform():
     def __init__(self, 
                 default : bool, 
                 client_id : str,
+                tool_url : str,
                 auth_login_url : str, 
                 auth_token_url : str,
                 target_link_uri : str,
@@ -13,6 +14,7 @@ class Platform():
                 deployment_ids : list) -> None:
         self.default = default
         self.client_id = client_id
+        self.tool_url = tool_url
         self.auth_login_url = auth_login_url
         self.auth_token_url = auth_token_url
         self.target_link_uri = target_link_uri

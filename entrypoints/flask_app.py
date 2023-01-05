@@ -36,46 +36,39 @@ def handle_exception(err):
     return jsonify(response), err.code
 
 
-@app.route("/learningPath/<student_id>/<course_id>/<order_depth>", methods=['POST', 'GET'])
+@app.route("/learningPath/<student_id>/<course_id>/<order_depth>",
+           methods=['POST', 'GET'])
 @cross_origin(supports_credentials=True)
 def get_learning_path(student_id, course_id, order_depth):
     method = request.method
     match method:
         case 'GET':
-            try:
-                learning_path = services.get_learning_path(
-                    unit_of_work.SqlAlchemyUnitOfWork(),
-                    student_id,
-                    course_id,
-                    order_depth
-                )
-            except (err.WrongLearningStyleNumberError,
-                    err.WrongLearningStyleDimensionError) as e:
-                raise e
-
+            learning_path = services.get_learning_path(
+                unit_of_work.SqlAlchemyUnitOfWork(),
+                student_id,
+                course_id,
+                order_depth
+            )
             if learning_path == {}:
                 status_code = 404
             else:
                 status_code = 201
             return jsonify(learning_path), status_code
         case 'POST':
-            try:
-                learning_style = {"AKT": 0, "INT": 0, "VIS": 0, "GLO": 0}
-                algorithm = "Graf"
-                if 'learningStyle' in request.json: learning_style = request.json["learningStyle"]
-                if 'algorithm' in request.json: algorithm = request.json["algorithm"] 
-                learning_path = services.create_learning_path(
-                    unit_of_work.SqlAlchemyUnitOfWork(),
-                    student_id,
-                    course_id,
-                    order_depth,
-                    learning_style = learning_style,
-                    algorithm = algorithm
-                )
-            except (err.WrongLearningStyleNumberError,
-                    err.WrongLearningStyleDimensionError,
-                    err.NoValidAlgorithmError) as e:
-                raise e
+            learning_style = {"AKT": 0, "INT": 0, "VIS": 0, "GLO": 0}
+            algorithm = "Graf"
+            if 'learningStyle' in request.json:
+                learning_style = request.json["learningStyle"]
+            if 'algorithm' in request.json:
+                algorithm = request.json["algorithm"]
+            learning_path = services.create_learning_path(
+                unit_of_work.SqlAlchemyUnitOfWork(),
+                student_id,
+                course_id,
+                order_depth,
+                learning_style=learning_style,
+                algorithm=algorithm
+            )
             status_code = 201
             return jsonify(learning_path), status_code
 
@@ -135,68 +128,86 @@ def get_learning_elements():
     method = request.method
     match method:
         case 'GET':
-            try:
-                learning_elements = services.get_learning_elements(
-                    unit_of_work.SqlAlchemyUnitOfWork()
-                )
-            except (err.WrongLearningStyleNumberError,
-                    err.WrongLearningStyleDimensionError) as e:
-                raise e
-
+            learning_elements = services.get_learning_elements(
+                unit_of_work.SqlAlchemyUnitOfWork()
+            )
             if learning_elements == {}:
                 status_code = 404
             else:
                 status_code = 200
             return jsonify(learning_elements), status_code
         case 'POST':
-            try:
-                condition1 = request.json is None
-                condition2 = 'name' not in request.json
-                condition3 = 'classification' not in request.json
-                condition4 = 'ancestor_id' not in request.json
-                condition5 = 'order_depth' not in request.json
-                condition6 = 'prerequisite_id' in request.json
-                if (condition1 or
-                    condition2 or
-                    condition3 or
-                    condition4 or
-                        condition5):
-                    raise err.MissingParameterError()
-                else:
-                    learning_element = services.create_element(
-                        unit_of_work.SqlAlchemyUnitOfWork(),
-                        request.json['name'],
-                        request.json['classification'],
-                        request.json['ancestor_id'],
-                        request.json['order_depth'],
-                        request.json['prerequisite_id'] if condition6 else None
-                    )
-            except (err.WrongLearningStyleNumberError,
-                    err.WrongLearningStyleDimensionError) as e:
-                raise e
-            if type(learning_element) is IntegrityError:
-                raise err.ForeignKeyViolation()
-            elif learning_element == {}:
-                status_code = 404
+            condition1 = request.json is None
+            condition2 = 'name' not in request.json
+            condition3 = 'classification' not in request.json
+            condition4 = 'ancestor_id' not in request.json
+            condition5 = 'order_depth' not in request.json
+            condition6 = 'prerequisite_id' in request.json
+            if (condition1 or
+                condition2 or
+                condition3 or
+                condition4 or
+                    condition5):
+                raise err.MissingParameterError()
             else:
-                status_code = 200
+                learning_element = services.create_element(
+                    unit_of_work.SqlAlchemyUnitOfWork(),
+                    request.json['name'],
+                    request.json['classification'],
+                    request.json['ancestor_id'],
+                    request.json['order_depth'],
+                    request.json['prerequisite_id'] if condition6 else None
+                )
+            status_code = 200
             return jsonify(learning_element), status_code
 
 
-@app.route("/learningElement/<element_id>", methods=['GET'])
+@app.route("/learningElement/<element_id>", methods=['GET', 'PUT', 'DELETE'])
 @cross_origin(supports_credentials=True)
 def get_learning_element_by_id(element_id):
-    try:
-        learning_elements = services.get_learning_element_by_id(
-            unit_of_work.SqlAlchemyUnitOfWork(),
-            element_id
-        )
-    except (err.WrongLearningStyleNumberError,
-            err.WrongLearningStyleDimensionError) as e:
-        raise e
-
-    status_code = 200
-    return jsonify(learning_elements), status_code
+    method = request.method
+    match method:
+        case 'GET':
+            learning_element = services.get_learning_element_by_id(
+                unit_of_work.SqlAlchemyUnitOfWork(),
+                element_id
+            )
+            status_code = 200
+            return jsonify(learning_element), status_code
+        case 'PUT':
+            condition1 = request.json is None
+            condition2 = 'name' not in request.json
+            condition3 = 'classification' not in request.json
+            condition4 = 'ancestor_id' not in request.json
+            condition5 = 'order_depth' not in request.json
+            condition6 = 'prerequisite_id' in request.json
+            if condition1 or \
+                    condition2 or \
+                    condition3 or \
+                    condition4 or condition5:
+                raise err.MissingParameterError()
+            else:
+                learning_element = services.update_learning_element(
+                    unit_of_work.SqlAlchemyUnitOfWork(),
+                    element_id,
+                    request.json['name'],
+                    request.json['classification'],
+                    request.json['ancestor_id'],
+                    request.json['prerequisite_id'] if condition6 else None,
+                    request.json['order_depth']
+                )
+                if learning_element == {}:
+                    status_code = 404
+                else:
+                    status_code = 200
+                return jsonify(learning_element), status_code
+        case 'DELETE':
+            services.delete_learning_element(
+                unit_of_work.SqlAlchemyUnitOfWork(),
+                element_id
+            )
+            status_code = 204
+            return jsonify(None), status_code
 
 
 @app.route('/course', methods=['GET', 'POST'])
@@ -228,23 +239,44 @@ def get_courses():
             return jsonify(test), 201
 
 
-@app.route('/course/<course_id>', methods=['GET'])
+@app.route('/course/<course_id>', methods=['GET', 'PUT', 'DELETE'])
 @cross_origin(supports_credentials=True)
 def get_course_by_id(course_id):
-    try:
-        course = services.get_course_by_id(
-            unit_of_work.SqlAlchemyUnitOfWork(),
-            course_id
-        )
-    except (err.WrongLearningStyleNumberError,
-            err.WrongLearningStyleDimensionError) as e:
-        raise e
-
-    if course == {}:
-        status_code = 404
-    else:
-        status_code = 200
-    return jsonify(course), status_code
+    method = request.method
+    match method:
+        case 'GET':
+            course = services.get_course_by_id(
+                unit_of_work.SqlAlchemyUnitOfWork(),
+                course_id
+            )
+            if course == {}:
+                status_code = 404
+            else:
+                status_code = 200
+            return jsonify(course), status_code
+        case 'PUT':
+            condition1 = request.json is None
+            condition2 = 'name' not in request.json
+            if condition1 or condition2:
+                raise err.MissingParameterError()
+            else:
+                course = services.update_course(
+                    unit_of_work.SqlAlchemyUnitOfWork(),
+                    course_id,
+                    request.json['name']
+                )
+                if course == {}:
+                    status_code = 404
+                else:
+                    status_code = 200
+                return jsonify(course), status_code
+        case 'DELETE':
+            services.delete_course(
+                unit_of_work.SqlAlchemyUnitOfWork(),
+                course_id
+            )
+            status_code = 204
+            return jsonify(None), status_code
 
 
 @app.route('/student', methods=['GET', 'POST'])
@@ -287,49 +319,46 @@ def get_students():
             return jsonify(student), status_code
 
 
-@app.route('/student/<student_id>', methods=['GET', 'PUT'])
+@app.route('/student/<student_id>', methods=['GET', 'PUT', 'DELETE'])
 @cross_origin(supports_credentials=True)
 def get_student_by_id(student_id):
     method = request.method
     match method:
         case 'GET':
-            try:
-                student = services.get_student_by_id(
-                    unit_of_work.SqlAlchemyUnitOfWork(),
-                    student_id
-                )
-            except (err.WrongLearningStyleNumberError,
-                    err.WrongLearningStyleDimensionError) as e:
-                raise e
-
+            student = services.get_student_by_id(
+                unit_of_work.SqlAlchemyUnitOfWork(),
+                student_id
+            )
             if student == {}:
                 status_code = 404
             else:
                 status_code = 200
             return jsonify(student), status_code
         case 'PUT':
-            try:
-                condition1 = request.json is None
-                condition2 = 'name' not in request.json
-                condition3 = 'learning_style' in request.json
-                if condition1 or condition2:
-                    raise err.MissingParameterError()
-                else:
-                    student = services.update_student(
-                        unit_of_work.SqlAlchemyUnitOfWork(),
-                        student_id,
-                        request.json['name'],
-                        request.json['learning_style'] if condition3 else None
-                    )
-            except (err.WrongLearningStyleNumberError,
-                    err.WrongLearningStyleDimensionError) as e:
-                raise e
-
+            condition1 = request.json is None
+            condition2 = 'name' not in request.json
+            condition3 = 'learning_style' in request.json
+            if condition1 or condition2:
+                raise err.MissingParameterError()
+            else:
+                student = services.update_student(
+                    unit_of_work.SqlAlchemyUnitOfWork(),
+                    student_id,
+                    request.json['name'],
+                    request.json['learning_style'] if condition3 else None
+                )
             if student == {}:
                 status_code = 404
             else:
                 status_code = 201
             return jsonify(student), status_code
+        case 'DELETE':
+            services.delete_student(
+                unit_of_work.SqlAlchemyUnitOfWork(),
+                student_id
+            )
+            status_code = 204
+            return jsonify(None), status_code
 
 
 @app.route('/topic', methods=['GET', 'POST'])
@@ -423,51 +452,48 @@ def get_topics_for_course_and_ancestor(course_id, order_depth, ancestor_id):
     return jsonify(topics), status_code
 
 
-@app.route('/topic/<topic_id>', methods=['GET', 'PUT'])
+@app.route('/topic/<topic_id>', methods=['GET', 'PUT', 'DELETE'])
 @cross_origin(supports_credentials=True)
 def get_topic_by_id(topic_id):
     method = request.method
     match method:
         case 'GET':
-            try:
-                topic = services.get_topic_by_id(
-                    unit_of_work.SqlAlchemyUnitOfWork(),
-                    topic_id
-                )
-            except (err.WrongLearningStyleNumberError,
-                    err.WrongLearningStyleDimensionError) as e:
-                raise e
-
+            topic = services.get_topic_by_id(
+                unit_of_work.SqlAlchemyUnitOfWork(),
+                topic_id
+            )
             if topic == {}:
                 status_code = 404
             else:
                 status_code = 200
             return jsonify(topic), status_code
         case 'PUT':
-            try:
-                condition1 = request.json is None
-                condition2 = 'name' not in request.json
-                condition3 = 'course_id' not in request.json
-                condition4 = 'order_depth' not in request.json
-                condition5 = 'ancestor_id' in request.json
-                condition6 = 'prerequisite_id' in request.json
-                if condition1 or condition2 or condition3 or condition4:
-                    raise err.MissingParameterError()
-                topic = services.update_topic(
-                    unit_of_work.SqlAlchemyUnitOfWork(),
-                    topic_id,
-                    request.json['name'],
-                    request.json['course_id'],
-                    request.json['order_depth'],
-                    request.json['ancestor_id'] if condition5 else None,
-                    request.json['prerequisite_id'] if condition6 else None
-                )
-            except (err.WrongLearningStyleNumberError,
-                    err.WrongLearningStyleDimensionError) as e:
-                raise e
-
+            condition1 = request.json is None
+            condition2 = 'name' not in request.json
+            condition3 = 'course_id' not in request.json
+            condition4 = 'order_depth' not in request.json
+            condition5 = 'ancestor_id' in request.json
+            condition6 = 'prerequisite_id' in request.json
+            if condition1 or condition2 or condition3 or condition4:
+                raise err.MissingParameterError()
+            topic = services.update_topic(
+                unit_of_work.SqlAlchemyUnitOfWork(),
+                topic_id,
+                request.json['name'],
+                request.json['course_id'],
+                request.json['order_depth'],
+                request.json['ancestor_id'] if condition5 else None,
+                request.json['prerequisite_id'] if condition6 else None
+            )
             if topic == {}:
                 status_code = 404
             else:
                 status_code = 201
             return jsonify(topic), status_code
+        case 'DELETE':
+            services.delete_topic(
+                unit_of_work.SqlAlchemyUnitOfWork(),
+                topic_id
+            )
+            status_code = 204
+            return jsonify(None), status_code

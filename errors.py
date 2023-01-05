@@ -27,3 +27,18 @@ class ForeignKeyViolation(Exception):
 class NoValidAlgorithmError(Exception):
     code = 400
     description = "Please choose an existing Algorithm!"
+
+
+class NoValidIdError(Exception):
+    code = 404
+    description = "This ID does not exist!"
+
+
+class NoContentWarning(Exception):
+    code = 204
+    description = "No entries were found"
+
+
+class CreationError(Exception):
+    code = 409
+    description = "Could not create the ressource due to an error!"

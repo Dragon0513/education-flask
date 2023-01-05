@@ -37,9 +37,27 @@ class FakeRepository(repository.AbstractRepository):
         topic.id = len(self.topic) + 1
         self.topic.add(topic)
 
+    def delete_course(self, course_id):
+        to_remove = next((p for p in self.course if p.id == course_id), None)
+        self.course.remove(to_remove)
+
+    def delete_learning_element(self, element_id):
+        to_remove = next((p for p in self.element if p.id == element_id), None)
+        self.element.remove(to_remove)
+
+    def delete_student(self, student_id):
+        to_remove = next((p for p in self.student if p.id == student_id), None)
+        self.student.remove(to_remove)
+
+    def delete_topic(self, topic_id):
+        to_remove = next((p for p in self.topic if p.id == topic_id), None)
+        self.topic.remove(to_remove)
+
     def get_learning_path(self, student_id, course_id, order_depth):
-        result = next((p for p in self.learning_path if p.student_id == student_id and p.course_id ==
-                      course_id and p.order_depth == order_depth), None)
+        result = next((p for p in self.learning_path if
+                       p.student_id == student_id and
+                       p.course_id == course_id and
+                       p.order_depth == order_depth), None)
         return [result]
 
     def get_learning_elements(self):
@@ -87,6 +105,18 @@ class FakeRepository(repository.AbstractRepository):
             return []
         return [result]
 
+    def update_course(self, course, id):
+        to_remove = next((p for p in self.course if p.id == id), None)
+        self.course.remove(to_remove)
+        course.id = len(self.course)
+        self.course.add(course)
+
+    def update_learning_element(self, learning_element, id):
+        to_remove = next((p for p in self.element if p.id == id), None)
+        self.element.remove(to_remove)
+        learning_element.id = len(self.element)
+        self.student.add(learning_element)
+
     def update_student(self, student, id):
         to_remove = next((p for p in self.student if p.id == id), None)
         self.student.remove(to_remove)
@@ -113,25 +143,25 @@ class FakeUnitOfWork(unit_of_work.AbstractUnitOfWork):
         self.committed = True
 
     def rollback(self):
-        pass #Just needed for working, has no function in test
+        pass  # Just needed for working, has no function in test
 
 
 def test_get_learning_path_for_learning_style():
     uow = FakeUnitOfWork()
     services.create_learning_path(uow=uow,
-                                student_id=123,
-                                course_id=1,
-                                order_depth=3,
-                                learning_style={
-                                    "AKT": 5,
-                                    "INT": 9,
-                                    "VIS": 9,
-                                    "GLO": 9
-                                })
-    result = services.get_learning_path(uow, 
-                                student_id=123,
-                                course_id=1,
-                                order_depth=3)
+                                  student_id=123,
+                                  course_id=1,
+                                  order_depth=3,
+                                  learning_style={
+                                      "AKT": 5,
+                                      "INT": 9,
+                                      "VIS": 9,
+                                      "GLO": 9
+                                  })
+    result = services.get_learning_path(uow,
+                                        student_id=123,
+                                        course_id=1,
+                                        order_depth=3)
     assert type(result) is dict
     assert result != {}
 
@@ -176,7 +206,7 @@ def test_add_element():
         classification="LK",
         ancestor_id=1,
         order_depth=2,
-        prerequiste_id=None
+        prerequisite_id=None
     )
     assert type(element) is dict
     assert uow.learning_element.get_learning_elements() is not None
@@ -198,6 +228,69 @@ def test_add_topic():
     assert uow.committed
 
 
+def test_delete_course():
+    uow = FakeUnitOfWork()
+    services.create_course(
+        uow=uow,
+        name=test_course_name
+    )
+    result = services.delete_course(
+        uow=uow,
+        course_id=1
+    )
+    assert result is None
+
+
+def test_delete_element():
+    uow = FakeUnitOfWork()
+    services.create_element(
+        uow=uow,
+        name=test_element_name,
+        classification="LK",
+        ancestor_id=1,
+        order_depth=2,
+        prerequisite_id=None
+    )
+    result = services.delete_learning_element(
+        uow=uow,
+        element_id=1
+    )
+    print(result)
+    assert result is None
+
+
+def test_delete_student():
+    uow = FakeUnitOfWork()
+    services.create_student(
+        uow=uow,
+        name=test_person_name
+    )
+    result = services.delete_student(
+        uow=uow,
+        student_id=1
+    )
+    print(result)
+    assert result is None
+
+
+def test_delete_topic():
+    uow = FakeUnitOfWork()
+    services.create_topic(
+        uow=uow,
+        name=test_topic_name,
+        course_id=1,
+        order_depth=3,
+        ancestor_id=2,
+        prerequisite_id=None
+    )
+    result = services.delete_topic(
+        uow=uow,
+        topic_id=1
+    )
+    print(result)
+    assert result is None
+
+
 def test_get_learning_elements():
     uow = FakeUnitOfWork()
     services.create_element(
@@ -206,7 +299,7 @@ def test_get_learning_elements():
         classification="LK",
         ancestor_id=1,
         order_depth=2,
-        prerequiste_id=None
+        prerequisite_id=None
     )
     result = services.get_learning_elements(uow)
     assert type(result) is dict
@@ -229,7 +322,7 @@ def test_get_learning_element_by_id():
         classification="LK",
         ancestor_id=1,
         order_depth=2,
-        prerequiste_id=None
+        prerequisite_id=None
     )
     result = services.get_learning_element_by_id(uow, 1)
     assert type(result) is dict
@@ -365,6 +458,48 @@ def test_get_topic_by_id_with_wrong_id():
     assert type(result) is dict
     assert result is not None
     assert result == {}
+
+
+def test_update_course():
+    uow = FakeUnitOfWork()
+    services.create_course(
+        uow=uow,
+        name=test_course_name
+    )
+    result = services.update_course(
+        uow=uow,
+        id=1,
+        name="Hello World Course"
+    )
+    assert type(result) is dict
+    assert result is not None
+    assert result['id'] == 1
+    assert result['name'] == "Hello World Course"
+
+
+def test_update_learning_element():
+    uow = FakeUnitOfWork()
+    services.create_element(
+        uow=uow,
+        name=test_element_name,
+        classification="LK",
+        ancestor_id=1,
+        order_depth=2,
+        prerequisite_id=None
+    )
+    result = services.update_learning_element(
+        uow=uow,
+        id=1,
+        name=test_element_name,
+        classification="LZ",
+        ancestor_id=1,
+        order_depth=2,
+        prerequisite_id=None
+    )
+    assert type(result) is dict
+    assert result is not None
+    assert result['id'] == 1
+    assert result['classification'] == "LZ"
 
 
 def test_update_student():

@@ -37,22 +37,19 @@ def create_element(
     classification,
     ancestor_id,
     order_depth,
-    prerequiste_id=None
+    prerequisite_id=None
 ) -> dict:
     with uow:
-        try:
-            element = DM.LearningElement(
-                name,
-                classification,
-                ancestor_id,
-                prerequiste_id,
-                order_depth)
-            uow.learning_element.add_element(element)
-            uow.commit()
-            result = element.serialize()
-            return result
-        except IntegrityError as e:
-            return e
+        element = DM.LearningElement(
+            name,
+            classification,
+            ancestor_id,
+            prerequisite_id,
+            order_depth)
+        uow.learning_element.add_element(element)
+        uow.commit()
+        result = element.serialize()
+        return result
 
 
 def create_learning_path(
@@ -61,22 +58,19 @@ def create_learning_path(
     course_id,
     order_depth,
     learning_style: dict = {"AKT": 0, "INT": 0, "VIS": 0, "GLO": 0},
-    algorithm = "Graf"
+    algorithm="Graf"
 ) -> dict:
     with uow:
-        try:
-            path = TM.LearningPath(student_id = student_id, course_id = course_id, order_depth = order_depth)
-            path.get_learning_path(student_id = student_id, learning_style = learning_style, algorithm = algorithm)
-            uow.learning_path.add_learning_path(path)
-            uow.commit()
-            result = path.serialize()
-            return result
-        except err.NoValidAlgorithmError:
-            raise err.NoValidAlgorithmError()
-        except IntegrityError:
-            return {'error':
-                    'There is a foreign key violation for the course_id\
-                         parameter. Please check again!'}
+        path = TM.LearningPath(student_id=student_id,
+                               course_id=course_id, order_depth=order_depth)
+        path.get_learning_path(
+            student_id=student_id,
+            learning_style=learning_style,
+            algorithm=algorithm)
+        uow.learning_path.add_learning_path(path)
+        uow.commit()
+        result = path.serialize()
+        return result
 
 
 def create_topic(
@@ -99,6 +93,42 @@ def create_topic(
             return {'error':
                     'There is a foreign key violation for the course_id\
                          parameter. Please check again!'}
+
+
+def delete_course(
+    uow: unit_of_work.AbstractUnitOfWork,
+    course_id
+):
+    with uow:
+        uow.course.delete_course(course_id)
+        uow.commit()
+
+
+def delete_learning_element(
+    uow: unit_of_work.AbstractUnitOfWork,
+    element_id
+):
+    with uow:
+        uow.learning_element.delete_learning_element(element_id)
+        uow.commit()
+
+
+def delete_student(
+    uow: unit_of_work.AbstractUnitOfWork,
+    student_id
+):
+    with uow:
+        uow.student.delete_student(student_id)
+        uow.commit()
+
+
+def delete_topic(
+    uow: unit_of_work.AbstractUnitOfWork,
+    topic_id
+):
+    with uow:
+        uow.topic.delete_topic(topic_id)
+        uow.commit()
 
 
 def get_learning_elements(
@@ -137,7 +167,8 @@ def get_learning_path(
     order_depth
 ) -> dict:
     with uow:
-        path = uow.learning_path.get_learning_path(student_id, course_id, order_depth)
+        path = uow.learning_path.get_learning_path(
+            student_id, course_id, order_depth)
         if path == [] or path == [None]:
             result = {}
         else:
@@ -270,6 +301,39 @@ def get_topic_by_id(
         else:
             result = topic[0].serialize()
     return result
+
+
+def update_course(
+    uow: unit_of_work.AbstractUnitOfWork,
+    id,
+    name
+) -> DM.Course:
+    with uow:
+        course = DM.Course(name)
+        uow.course.update_course(course, id)
+        uow.commit()
+        course.id = id
+        result = course.serialize()
+        return result
+
+
+def update_learning_element(
+    uow: unit_of_work.AbstractUnitOfWork,
+    id,
+    name,
+    classification,
+    ancestor_id,
+    prerequisite_id,
+    order_depth
+) -> DM.LearningElement:
+    with uow:
+        learning_element = DM.LearningElement(
+            name, classification, ancestor_id, prerequisite_id, order_depth)
+        uow.learning_element.update_learning_element(learning_element, id)
+        uow.commit()
+        learning_element.id = id
+        result = learning_element.serialize()
+        return result
 
 
 def update_student(

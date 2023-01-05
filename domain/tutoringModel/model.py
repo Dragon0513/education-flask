@@ -1,14 +1,15 @@
 from domain.tutoringModel import graf
 import errors as err
 
+
 class LearningPath:
     def __init__(self,
-                 id = None,
-                 student_id = None,
-                 course_id = None,
-                 contains_le = False,
-                 order_depth = None,
-                 path = None) -> None:
+                 id=None,
+                 student_id=None,
+                 course_id=None,
+                 contains_le=False,
+                 order_depth=None,
+                 path=None) -> None:
         self.id = id
         self.student_id = student_id
         self.course_id = course_id
@@ -28,8 +29,9 @@ class LearningPath:
 
     def get_learning_path(self, student_id, learning_style, algorithm):
         if algorithm == "Graf":
-            path = graf.GrafAlgorithm(student_id=student_id, learning_style = learning_style)
-            temp = path.get_learning_path(input_learning_style = learning_style)
+            path = graf.GrafAlgorithm(
+                student_id=student_id, learning_style=learning_style)
+            temp = path.get_learning_path(input_learning_style=learning_style)
             self.path = ", ".join(temp)
         else:
             raise err.NoValidAlgorithmError()

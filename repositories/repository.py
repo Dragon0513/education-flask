@@ -6,85 +6,85 @@ import errors as err
 from sqlalchemy.exc import IntegrityError
 
 
-class AbstractRepository(abc.ABC):
+class AbstractRepository(abc.ABC):  # pragma: no cover
     @abc.abstractmethod
     def add_learning_path(self,
-                          learning_path: TM.LearningPath):  # pragma: no cover
+                          learning_path: TM.LearningPath):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def add_course(self, course) -> DM.Course:  # pragma: no cover
+    def add_course(self, course) -> DM.Course:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def add_element(self, element) -> DM.LearningElement:  # pragma: no cover
+    def add_element(self, element) -> DM.LearningElement:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def add_student(self, student) -> LM.Student:  # pragma: no cover
+    def add_student(self, student) -> LM.Student:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def add_topic(self, topic) -> DM.Topic:  # pragma: no cover
+    def add_topic(self, topic) -> DM.Topic:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def delete_course(self, course_id):  # pragma: no cover
+    def delete_course(self, course_id):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def delete_learning_element(self, element_id):  # pragma: no cover
+    def delete_learning_element(self, element_id):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def delete_student(self, student_id):  # pragma: no cover
+    def delete_student(self, student_id):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def delete_topic(self, topic_id):  # pragma: no cover
+    def delete_topic(self, topic_id):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_learning_elements(self) -> DM.LearningElement:  # pragma: no cover
+    def get_learning_elements(self) -> DM.LearningElement:
         raise NotImplementedError
 
     @abc.abstractmethod
     def get_learning_element_by_id(self,
                                    element_id) \
-            -> DM.LearningElement:  # pragma: no cover
+            -> DM.LearningElement:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_courses(self) -> DM.Course:  # pragma: no cover
+    def get_courses(self) -> DM.Course:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_course_by_id(self, course_id) -> DM.Course:  # pragma: no cover
+    def get_course_by_id(self, course_id) -> DM.Course:
         raise NotImplementedError
 
     @abc.abstractmethod
     def get_learning_path(self,
                           student_id,
                           course_id,
-                          order_depth) -> TM.LearningPath:  # pragma: no cover
+                          order_depth) -> TM.LearningPath:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_students(self) -> LM.Student:  # pragma: no cover
+    def get_students(self) -> LM.Student:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_student_by_id(self, student_id) -> LM.Student:  # pragma: no cover
+    def get_student_by_id(self, student_id) -> LM.Student:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_topics(self) -> DM.Topic:  # pragma: no cover
+    def get_topics(self) -> DM.Topic:
         raise NotImplementedError
 
     @abc.abstractmethod
     def get_topics_for_course(self,
                               course_id,
-                              order_depth) -> DM.Topic:  # pragma: no cover
+                              order_depth) -> DM.Topic:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -92,34 +92,34 @@ class AbstractRepository(abc.ABC):
                                            course_id,
                                            order_depth,
                                            ancestor_id)\
-            -> DM.Topic:  # pragma: no cover
+            -> DM.Topic:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_topic_by_id(self, topic_id) -> DM.Topic:  # pragma: no cover
+    def get_topic_by_id(self, topic_id) -> DM.Topic:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def update_course(self, course) -> DM.Course:  # pragma: no cover
+    def update_course(self, course) -> DM.Course:
         raise NotImplementedError
 
     @abc.abstractmethod
     def update_learning_element(self,
                                 learning_element) \
-            -> DM.LearningElement:  # pragma: no cover
+            -> DM.LearningElement:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def update_student(self, student) -> LM.Student:  # pragma: no cover
+    def update_student(self, student) -> LM.Student:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def update_topic(self, topic) -> DM.Topic:  # pragma: no cover
+    def update_topic(self, topic) -> DM.Topic:
         raise NotImplementedError
 
 
-class SqlAlchemyRepository(AbstractRepository):
-    def __init__(self, session):  # pragma: no cover
+class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
+    def __init__(self, session):
         self.session = session
 
     def add_learning_path(self, learning_path):
@@ -145,10 +145,16 @@ class SqlAlchemyRepository(AbstractRepository):
             raise err.CreationError()
 
     def add_student(self, student):
-        self.session.add(student)
+        try:
+            self.session.add(student)
+        except Exception:
+            raise err.CreationError()
 
     def add_topic(self, topic):
-        self.session.add(topic)
+        try:
+            self.session.add(topic)
+        except Exception:
+            raise err.CreationError()
 
     def delete_course(self, course_id):
         course = self.get_course_by_id(course_id)
@@ -195,7 +201,10 @@ class SqlAlchemyRepository(AbstractRepository):
             return result
 
     def get_courses(self):
-        return self.session.query(DM.Course).all()
+        try:
+            return self.session.query(DM.Course).all()
+        except Exception:
+            raise err.DatabaseQueryError()
 
     def get_course_by_id(self, course_id):
         result = self.session.query(DM.Course).filter_by(id=course_id).all()
@@ -205,13 +214,19 @@ class SqlAlchemyRepository(AbstractRepository):
             return result
 
     def get_learning_path(self, student_id, course_id, order_depth):
-        return self.session.query(TM.LearningPath)\
-            .filter_by(student_id=student_id)\
-            .filter_by(course_id=course_id)\
-            .filter_by(order_depth=order_depth).all()
+        try:
+            return self.session.query(TM.LearningPath)\
+                .filter_by(student_id=student_id)\
+                .filter_by(course_id=course_id)\
+                .filter_by(order_depth=order_depth).all()
+        except Exception:
+            raise err.DatabaseQueryError()
 
     def get_students(self):
-        return self.session.query(LM.Student).all()
+        try:
+            return self.session.query(LM.Student).all()
+        except Exception:
+            raise err.DatabaseQueryError()
 
     def get_student_by_id(self, student_id):
         result = self.session.query(LM.Student).filter_by(id=student_id).all()
@@ -221,21 +236,30 @@ class SqlAlchemyRepository(AbstractRepository):
             return result
 
     def get_topics(self):
-        return self.session.query(DM.Topic).all()
+        try:
+            return self.session.query(DM.Topic).all()
+        except Exception:
+            raise err.DatabaseQueryError()
 
     def get_topics_for_course(self, course_id, order_depth):
-        return self.session.query(DM.Topic)\
-            .filter_by(course_id=course_id)\
-            .filter_by(order_depth=order_depth).all()
+        try:
+            return self.session.query(DM.Topic)\
+                .filter_by(course_id=course_id)\
+                .filter_by(order_depth=order_depth).all()
+        except Exception:
+            raise err.DatabaseQueryError()
 
     def get_topics_for_course_and_ancestor(self,
                                            course_id,
                                            order_depth,
                                            ancestor_id):
-        return self.session.query(DM.Topic)\
-            .filter_by(course_id=course_id)\
-            .filter_by(order_depth=order_depth)\
-            .filter_by(ancestor_id=ancestor_id).all()
+        try:
+            return self.session.query(DM.Topic)\
+                .filter_by(course_id=course_id)\
+                .filter_by(order_depth=order_depth)\
+                .filter_by(ancestor_id=ancestor_id).all()
+        except Exception:
+            raise err.DatabaseQueryError()
 
     def get_topic_by_id(self, topic_id):
         result = self.session.query(DM.Topic).filter_by(id=topic_id).all()

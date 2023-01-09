@@ -42,3 +42,8 @@ class NoContentWarning(Exception):
 class CreationError(Exception):
     code = 409
     description = "Could not create the ressource due to an error!"
+
+
+class DatabaseQueryError(Exception):
+    code = 500
+    description = "Something went wrong while querying the Database!"

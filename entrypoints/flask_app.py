@@ -3,7 +3,6 @@ from service_layer import services, unit_of_work
 from repositories import orm
 import errors as err
 from flask_cors import CORS, cross_origin
-from sqlalchemy.exc import IntegrityError
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
@@ -216,14 +215,9 @@ def get_courses():
     method = request.method
     match method:
         case 'GET':
-            try:
-                course = services.get_courses(
-                    unit_of_work.SqlAlchemyUnitOfWork()
-                )
-            except (err.WrongLearningStyleNumberError,
-                    err.WrongLearningStyleDimensionError) as e:
-                raise e
-
+            course = services.get_courses(
+                unit_of_work.SqlAlchemyUnitOfWork()
+            )
             if course == {}:
                 status_code = 404
             else:
@@ -285,33 +279,23 @@ def get_students():
     method = request.method
     match method:
         case 'GET':
-            try:
-                student = services.get_students(
-                    unit_of_work.SqlAlchemyUnitOfWork()
-                )
-            except (err.WrongLearningStyleNumberError,
-                    err.WrongLearningStyleDimensionError) as e:
-                raise e
-
+            student = services.get_students(
+                unit_of_work.SqlAlchemyUnitOfWork()
+            )
             if student == {}:
                 status_code = 404
             else:
                 status_code = 200
             return jsonify(student), status_code
         case 'POST':
-            try:
-                if request.json is None or 'name' not in request.json:
-                    raise err.MissingParameterError()
-                else:
-                    name = request.json['name']
-                    student = services.create_student(
-                        unit_of_work.SqlAlchemyUnitOfWork(),
-                        name
-                    )
-            except (err.WrongLearningStyleNumberError,
-                    err.WrongLearningStyleDimensionError) as e:
-                raise e
-
+            if request.json is None or 'name' not in request.json:
+                raise err.MissingParameterError()
+            else:
+                name = request.json['name']
+                student = services.create_student(
+                    unit_of_work.SqlAlchemyUnitOfWork(),
+                    name
+                )
             if student == {}:
                 status_code = 404
             else:
@@ -367,41 +351,31 @@ def get_topics():
     method = request.method
     match method:
         case 'GET':
-            try:
-                topic = services.get_topics(
-                    unit_of_work.SqlAlchemyUnitOfWork()
-                )
-            except (err.WrongLearningStyleNumberError,
-                    err.WrongLearningStyleDimensionError) as e:
-                raise e
-
+            topic = services.get_topics(
+                unit_of_work.SqlAlchemyUnitOfWork()
+            )
             if topic == {}:
                 status_code = 404
             else:
                 status_code = 200
             return jsonify(topic), status_code
         case 'POST':
-            try:
-                condition1 = request.json is None
-                condition2 = 'name' not in request.json
-                condition3 = 'course_id' not in request.json
-                condition4 = 'order_depth' not in request.json
-                condition5 = 'ancestor_id' in request.json
-                condition6 = 'prerequisite_id' in request.json
-                if condition1 or condition2 or condition3 or condition4:
-                    raise err.MissingParameterError()
-                topic = services.create_topic(
-                    unit_of_work.SqlAlchemyUnitOfWork(),
-                    request.json['name'],
-                    request.json['course_id'],
-                    request.json['order_depth'],
-                    request.json['ancestor_id'] if condition5 else None,
-                    request.json['prerequisite_id'] if condition6 else None
-                )
-            except (err.WrongLearningStyleNumberError,
-                    err.WrongLearningStyleDimensionError) as e:
-                raise e
-
+            condition1 = request.json is None
+            condition2 = 'name' not in request.json
+            condition3 = 'course_id' not in request.json
+            condition4 = 'order_depth' not in request.json
+            condition5 = 'ancestor_id' in request.json
+            condition6 = 'prerequisite_id' in request.json
+            if condition1 or condition2 or condition3 or condition4:
+                raise err.MissingParameterError()
+            topic = services.create_topic(
+                unit_of_work.SqlAlchemyUnitOfWork(),
+                request.json['name'],
+                request.json['course_id'],
+                request.json['order_depth'],
+                request.json['ancestor_id'] if condition5 else None,
+                request.json['prerequisite_id'] if condition6 else None
+            )
             if topic == {}:
                 status_code = 404
             elif 'error' in topic:
@@ -414,16 +388,11 @@ def get_topics():
 @app.route('/topic/<course_id>/<order_depth>', methods=['GET'])
 @cross_origin(supports_credentials=True)
 def get_topics_for_course(course_id, order_depth):
-    try:
-        topics = services.get_topics_for_course(
-            unit_of_work.SqlAlchemyUnitOfWork(),
-            course_id,
-            order_depth
-        )
-    except (err.WrongLearningStyleNumberError,
-            err.WrongLearningStyleDimensionError) as e:
-        raise e
-
+    topics = services.get_topics_for_course(
+        unit_of_work.SqlAlchemyUnitOfWork(),
+        course_id,
+        order_depth
+    )
     if topics == {}:
         status_code = 404
     else:
@@ -434,17 +403,12 @@ def get_topics_for_course(course_id, order_depth):
 @app.route('/topic/<course_id>/<order_depth>/<ancestor_id>', methods=['GET'])
 @cross_origin(supports_credentials=True)
 def get_topics_for_course_and_ancestor(course_id, order_depth, ancestor_id):
-    try:
-        topics = services.get_topics_for_course_and_ancestor(
-            unit_of_work.SqlAlchemyUnitOfWork(),
-            course_id,
-            order_depth,
-            ancestor_id
-        )
-    except (err.WrongLearningStyleNumberError,
-            err.WrongLearningStyleDimensionError) as e:
-        raise e
-
+    topics = services.get_topics_for_course_and_ancestor(
+        unit_of_work.SqlAlchemyUnitOfWork(),
+        course_id,
+        order_depth,
+        ancestor_id
+    )
     if topics == {}:
         status_code = 404
     else:

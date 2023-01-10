@@ -20,10 +20,11 @@ def create_course(
 
 def create_student(
     uow: unit_of_work.AbstractUnitOfWork,
-    name
+    name,
+    learning_style = None
 ) -> dict:
     with uow:
-        student = LM.Student(name, None)
+        student = LM.Student(name, learning_style)
         uow.student.add_student(student)
         uow.commit()
         result = student.serialize()

@@ -51,15 +51,16 @@ def get_learning_path(student_id, course_id, order_depth):
             if learning_path == {}:
                 status_code = 404
             else:
-                status_code = 201
+                status_code = 200
             return jsonify(learning_path), status_code
         case 'POST':
             learning_style = {"AKT": 0, "INT": 0, "VIS": 0, "GLO": 0}
             algorithm = "Graf"
-            if 'learningStyle' in request.json:
-                learning_style = request.json["learningStyle"]
-            if 'algorithm' in request.json:
-                algorithm = request.json["algorithm"]
+            if request.json is not None:
+                if 'learningStyle' in request.json:
+                    learning_style = request.json["learningStyle"]
+                if 'algorithm' in request.json:
+                    algorithm = request.json["algorithm"]
             learning_path = services.create_learning_path(
                 unit_of_work.SqlAlchemyUnitOfWork(),
                 student_id,
@@ -288,13 +289,17 @@ def get_students():
                 status_code = 200
             return jsonify(student), status_code
         case 'POST':
-            if request.json is None or 'name' not in request.json:
+            condition1 = 'name' not in request.json
+            condition2 = "learning_style" in request.json
+            if request.json is None or condition1:
                 raise err.MissingParameterError()
             else:
                 name = request.json['name']
+                learning_stlye = request.json['learning_style'] if condition2 else None
                 student = services.create_student(
                     unit_of_work.SqlAlchemyUnitOfWork(),
-                    name
+                    name,
+                    learning_stlye
                 )
             if student == {}:
                 status_code = 404

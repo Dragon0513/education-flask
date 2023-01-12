@@ -21,7 +21,7 @@ def create_course(
 def create_student(
     uow: unit_of_work.AbstractUnitOfWork,
     name,
-    learning_style = None
+    learning_style=None
 ) -> dict:
     with uow:
         student = LM.Student(name, learning_style)

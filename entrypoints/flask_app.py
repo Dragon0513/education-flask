@@ -294,12 +294,10 @@ def get_students():
             if request.json is None or condition1:
                 raise err.MissingParameterError()
             else:
-                name = request.json['name']
-                learning_stlye = request.json['learning_style'] if condition2 else None
                 student = services.create_student(
                     unit_of_work.SqlAlchemyUnitOfWork(),
-                    name,
-                    learning_stlye
+                    request.json['name'],
+                    request.json['learning_style'] if condition2 else None
                 )
             if student == {}:
                 status_code = 404

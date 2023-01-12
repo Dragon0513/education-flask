@@ -64,10 +64,11 @@ These are:
 
 ## Setup
 
-- Create a new conda environment using `conda env create -f environment.yml`
-- Activate the environment: `conda activate haskibackend`
-- Run `pip install -r .\requirements_pip.txt`
+- Create a new conda environment using `conda create --name HASKI-Backend --file requirements.txt`
+- Activate the environment: `conda activate HASKI-Backend`
 - Run the app using `flask run`
+
+To create a new requirements file after installing a new library, please run the following command: `pip list --format=freeze > requirements.txt`
 
 ## DB Setup
 For creating a (local) setup for the PostgreSQL Database for the HASKI project, you need to install PostgreSQL.
@@ -84,3 +85,12 @@ Afterwards, you can use the `setup\Table_Setup.sql` Script for creating the tabl
 For the last step, you should check the `db_config.py` file and change the password for your set password.
 Caution, there are two passwords set during the setup of PostgreSQL!
 This is not the Masterpassword to unlock the pgAdmin 4, but the password for the superuser postgres!
+
+## Contribution
+For contributing to the project, please work on the Issues and fulfill the requested tasks.
+After completing, please run `python validate_script.py` in the root folder and check, that all is working fine.
+The test coverage should be as good as possible and there shouldn't be any information displayed by pycodestyle.
+For checking the code quality, you can use Sonarqube (https://docs.sonarqube.org/latest/setup-and-upgrade/install-the-server/).
+There shouldn't be any code smells left, when contributing to the project.
+
+After a Pull Request, one of the Code Owners will check and give feedback before the merge is possible.

@@ -4,27 +4,27 @@ info:
   version: "1.0"
   title: "HASKI API"
 tags:
-- name: "HASKI-intern"
-  description: "Communication between Backend and Frontend"
-- name: "moodle"
-  description: "Extension to communicate with Moodle LMS"
-- name: "logs"
-  description: "All log data"
+  - name: "HASKI-intern"
+    description: "Communication between Backend and Frontend"
+  - name: "moodle"
+    description: "Extension to communicate with Moodle LMS"
+  - name: "logs"
+    description: "All log data"
 paths:
   /logs/frontend:
     get:
       tags:
-      - "logs"
+        - "logs"
       summary: "get all frontend logs"
       description: "Get all available frontend log data sets"
       operationId: "getFrontendLog"
       responses:
         "200":
-            description: "successful operation"
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/FrontendLogs'
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FrontendLogs"
         "400":
           description: "Bad Request"
           content:
@@ -39,7 +39,7 @@ paths:
                 $ref: "#/components/schemas/GeneralError"
     post:
       tags:
-      - "logs"
+        - "logs"
       summary: "post frontend log"
       description: "Post a new frontend log dataset"
       operationId: "postFrontendLog"
@@ -47,14 +47,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/FrontendLog'
+              $ref: "#/components/schemas/FrontendLog"
       responses:
         "201":
           description: "successful operation"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SuccessMessage'
+                $ref: "#/components/schemas/SuccessMessage"
         "400":
           description: "Bad Request"
           content:
@@ -75,36 +75,36 @@ components:
   schemas:
     GeneralError:
       type: "object"
-      required: 
-      - "code"
-      - "message"
-      properties: 
-        code: 
+      required:
+        - "code"
+        - "message"
+      properties:
+        code:
           type: "integer"
           format: "int32"
           example: 404
           description: "The http error code of the error"
-        message: 
+        message:
           type: "string"
           example: "Not found"
           description: "A short description of the error"
     FrontendLogEntryFCP:
       type: "object"
       properties:
-        name: 
+        name:
           type: "string"
           example: "first-contentful-paint"
           description: "name of the entry"
-        entryType: 
+        entryType:
           type: "string"
           example: "paint"
           description: "The type of the entry"
-        startTime: 
+        startTime:
           type: "number"
           format: "double"
           example: 3957.6999999284744
           description: "The start time of the entry"
-        duration: 
+        duration:
           type: "number"
           format: "double"
           example: 0
@@ -114,7 +114,7 @@ components:
       properties:
         name:
           type: "string"
-          example: "http://localhost:8080/"
+          example: "http://fakedomain.com:8080/"
           description: "The name of the entry"
         entryType:
           type: "string"
@@ -215,13 +215,13 @@ components:
           description: "The decoded body size of the entry"
         serverTiming:
           type: "array"
-          items: 
+          items:
             type: "string"
             example: ""
           description: "The server timing of the entry"
         workerTiming:
           type: "array"
-          items: 
+          items:
             type: "string"
             example: ""
           description: "The worker timing of the entry"
@@ -279,7 +279,7 @@ components:
     FrontendLogEntryLCP:
       type: "object"
       properties:
-        name: 
+        name:
           type: "string"
           example: ""
           description: "The name of the entry"
@@ -297,7 +297,7 @@ components:
           format: "double"
           example: 0
           description: "The duration of the entry"
-        size: 
+        size:
           type: "integer"
           format: "int64"
           example: 867
@@ -317,7 +317,7 @@ components:
           format: "double"
           example: 0
           description: "The frame time for the first animation"
-        id: 
+        id:
           type: "string"
           example: ""
           description: "The id of the entry"
@@ -331,31 +331,31 @@ components:
       type: "object"
     FrontendLog:
       type: "object"
-      required: 
-      - "name"
-      - "value"
-      - "rating"
-      - "delta"
-      - "entries"
-      - "id"
-      - "navigationType"
-      properties: 
+      required:
+        - "name"
+        - "value"
+        - "rating"
+        - "delta"
+        - "entries"
+        - "id"
+        - "navigationType"
+      properties:
         name:
           type: "string"
           example: "FCP"
           description: "Name of the log data"
           enum: ["FCP", "TTFB", "CLS", "LCP", "FID", "INP"]
-        value: 
+        value:
           type: "number"
           format: "double"
           example: 3957.6999999284744
           description: "Value of the log data"
-        rating: 
+        rating:
           type: "string"
           example: "poor"
           description: "Rating of the log data"
           enum: ["good", "needs-improvement", "poor"]
-        delta: 
+        delta:
           type: "number"
           format: "double"
           example: 3957.6999999284744
@@ -364,13 +364,13 @@ components:
           type: "array"
           description: "A frontend log data entry"
           items:
-            oneOf: 
-              - $ref: '#/components/schemas/FrontendLogEntryFCP'
-              - $ref: '#/components/schemas/FrontendLogEntryTTFB'
-              - $ref: '#/components/schemas/FrontendLogEntryCLS'
-              - $ref: '#/components/schemas/FrontendLogEntryLCP'
-              - $ref: '#/components/schemas/FrontendLogEntryFID'
-              - $ref: '#/components/schemas/FrontendLogEntryINP'
+            oneOf:
+              - $ref: "#/components/schemas/FrontendLogEntryFCP"
+              - $ref: "#/components/schemas/FrontendLogEntryTTFB"
+              - $ref: "#/components/schemas/FrontendLogEntryCLS"
+              - $ref: "#/components/schemas/FrontendLogEntryLCP"
+              - $ref: "#/components/schemas/FrontendLogEntryFID"
+              - $ref: "#/components/schemas/FrontendLogEntryINP"
         id:
           type: "string"
           example: "v3-1665068191217-4248786867866"
@@ -379,26 +379,33 @@ components:
           type: "string"
           example: "navigate"
           description: "The navigation type of the log data"
-          enum: ["navigate", "reload", "back-forward", "back-forward-cache", "prerender"]
+          enum:
+            [
+              "navigate",
+              "reload",
+              "back-forward",
+              "back-forward-cache",
+              "prerender",
+            ]
     FrontendLogs:
       type: "object"
       properties:
         logs:
           type: "array"
-          items: 
-            $ref: '#/components/schemas/FrontendLog'
+          items:
+            $ref: "#/components/schemas/FrontendLog"
     SuccessMessage:
       type: "object"
-      required: 
-      - "code"
-      - "message"
-      properties: 
-        code: 
+      required:
+        - "code"
+        - "message"
+      properties:
+        code:
           type: "integer"
           format: "int32"
           example: 201
           description: "The http code"
-        message: 
+        message:
           type: "string"
           example: "Item successfully created"
           description: "A short description"

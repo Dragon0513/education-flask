@@ -1,3 +1,4 @@
+import datetime
 from functools import wraps
 import os
 import urllib.parse
@@ -24,11 +25,7 @@ cache = Cache(app)
 tool_conf = ToolConfigJson(os.path.abspath(os.path.join(app.root_path, '../configs/lti_config.json')))
 app.config["JWT_SECRET_KEY"] = app.secret_key
 app.config["JWT_ALGORITHM"] = "RSA256"
-# app.config["SESSION_USE_SIGNER"] = True
-# if os.environ.get('FLASK_ENV') == 'production': # only set secure cookie in production: will only allow cookie transmission in https
-#     app.config["SESSION_COOKIE_SECURE"] = True
-# else:
-#     app.config["SESSION_COOKIE_SECURE"] = False
+
 
 mocked_frontend_log = {"logs": [{
     "name": "FID",
@@ -113,10 +110,17 @@ def get_learning_path():
         status_code = 200
         return jsonify(dict), status_code
 
+# @app.after_request
+# def handle_credentials(response):
+#     response.headers["Access-Control-Allow-Credentials"] = True
+#     return response
 
 # loginmask or get cookie for frontend if end of OIDC Login workflow
-@app.route('/login', methods=['POST'])
+@app.route('/login', methods=['POST', 'GET'])
 def login():
+    res=make_response(jsonify({'name': 'test'}), 200)
+    res.set_cookie('haskistate', "test", domain="fakedomain.com:8080", secure=False, httponly=True, expires=datetime.datetime.now() + datetime.timedelta(days=1))
+    return res
     return services.get_login(request, tool_conf, session=session)
 
 # TODO explain

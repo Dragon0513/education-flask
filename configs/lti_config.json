@@ -1,27 +1,27 @@
 {
-  "http://localhost": {
+  "http://fakedomain.com": {
     "default": true,
-    "client_id": "1H5HPHiu7StMgn6",
+    "client_id": "baxlYFroQGZBk7O",
     "tool_url": "http://fakedomain.com:5000",
     "target_link_uri": "http://fakedomain.com:5000/lti_launch",
-    "auth_login_url": "http://localhost/mod/lti/auth.php",
-    "auth_token_url": "http://localhost/mod/lti/token.php",
-    "key_set_url": "http://localhost/mod/lti/certs.php",
+    "auth_login_url": "http://fakedomain.com/mod/lti/auth.php",
+    "auth_token_url": "http://fakedomain.com/mod/lti/token.php",
+    "key_set_url": "http://fakedomain.com/mod/lti/certs.php",
     "platform_name": "moodle",
     "key_set": {
       "keys": [
         {
           "kty": "RSA",
           "alg": "RS256",
-          "kid": "70cf05314b70c3b03da7",
+          "kid": "9ff4cd444a5c3535df3a",
           "e": "AQAB",
-          "n": "2uFUHPhM5xSaz-p4M5FMZV6fVfWa6Ff6S9qGLTAxBoKetgQbT1TSkpiKzZ8xcfgBqkKTxi01EH2NcUNNZIl2fp7HzWMjht41bH5OAHHpr47svskgCpsfMscDgywjBtm0QxrUVnoAyayAibwMhxSFqSo6nSYUE0k68xSlLQQYxPZwaFu8OCtX8YZ_sW95gjAdgpXfJeDHknsLOwXSwcQ7GiyRwn1rQkxrwHdkla4hW-G-2d3M4lh3oMOz-E3vm8n_IsNNGYQgjx6U09sSm7gnd8WaGCbLiiC87uR5bJwX3i2sE-VP9b5O2F-9JAdPwvsDyMT1s5WmXZlxjihOb8ZElw",
+          "n": "qgtgjGKc86cwm6LIxdAHH1wiX30bLeDwqnr07MBGL6efDmUC2HbQYhURaMtCrAV7jQigSYXSB-KhVvnK19rPsOZEOYo3zvdh4NFAh-yxjIbAcvVopiPAPWvYJd4lCkvufoEch8KpJ_t5J_k4_usVZlxViDX99PszokM9396nk1oOfNWJn-T97tB9DOcHW-jYfmI1CcUENIwGjUUgs7ry0A8wZut5-Zo3nDaNh2aDma4R2hQyAvlL6gi_Cg4X-yji-hEhWOKbQJd1f1dJbVgY5FF4UxyFxxQCs1C1ePvuvOhOhZiMVttS1RH9-ggqRFliK5OHgafSMF85W8F5OO17ew",
           "use": "sig"
         }
       ]
     },
     "private_key_file": "private.key",
     "public_key_file": "public.key",
-    "deployment_ids": ["3"]
+    "deployment_ids": ["1"]
   }
 }

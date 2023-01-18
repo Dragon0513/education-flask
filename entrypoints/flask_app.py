@@ -59,6 +59,7 @@ def handle_custom_exception(ex):
     return response
 
 def authorize(permission):
+    '''🔑 Decorator for checking if user has the required permission to access the endpoint'''
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kws):

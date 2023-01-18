@@ -108,7 +108,7 @@ class OIDCLoginFlask(OIDCLogin):
         ''' Verify the state parameter
             If the state parameter is not valid, the request is rejected with a 403 Forbidden response.
         '''
-        # check auth
+        # 🔑 check auth
         if self._response:
             return self
 
@@ -225,7 +225,7 @@ class OIDCLoginFlask(OIDCLogin):
         if not JWTKeyManagement.verify_jwt_payload(nonce_payload):
             self._response = "Invalid nonce", 403
             return make_response(self._response)
-        # TODO this cookie holds authorization data. implement right and role management
+        # 🧾 TODO this cookie holds authorization data. implement right and role management
         state_jwt = JWTKeyManagement.generate_state_jwt(nonce=CryptoRandom.createuniqueid(32), 
                                                         state=CryptoRandom.createuniqueid(32), 
                                                         audience=self._request.referrer, 
@@ -237,5 +237,7 @@ class OIDCLoginFlask(OIDCLogin):
             status=200,
             mimetype='application/json'
         )
+        # set 🔑 auth 🍪 cookie
         self._cookie_service.set_cookie(response,key='haski_state',value=state_jwt, domain='fakedomain.com', secure=False, httponly=True, samesite='Lax')
+        response.set_cookie(key='haski_state',value=state_jwt, secure=False, httponly=True, samesite='Lax')
         return response

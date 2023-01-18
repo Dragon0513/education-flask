@@ -52,7 +52,7 @@ def handle_custom_exception(ex):
         response = make_response(ex.message, ex.code)
         return response
     else:
-        response = make_response(str(err),500)
+        response = make_response(jsonify(err),500)
     return response
 
 def authorize(permission):
@@ -76,11 +76,11 @@ def authorize(permission):
     return decorator
 
 # ##### TEST ENDPOINT #####
-@app.route("/user_info")
+@app.route("/user")
 @authorize('read:user_info')
 def get_user_info(state):
     user_info = services.get_user_info(unit_of_work.SqlAlchemyUnitOfWork(), state['user_id'])
-    user_dict = {'user_info': user_info}
+    user_dict = {'user': user_info, 'id': state['user_id']}
     status_code = 200
     return jsonify(user_dict), status_code
 
@@ -110,17 +110,9 @@ def get_learning_path():
         status_code = 200
         return jsonify(dict), status_code
 
-# @app.after_request
-# def handle_credentials(response):
-#     response.headers["Access-Control-Allow-Credentials"] = True
-#     return response
-
 # loginmask or get cookie for frontend if end of OIDC Login workflow
-@app.route('/login', methods=['POST', 'GET'])
+@app.route('/login', methods=['POST'])
 def login():
-    res=make_response(jsonify({'name': 'test'}), 200)
-    res.set_cookie('haskistate', "test", domain="fakedomain.com:8080", secure=False, httponly=True, expires=datetime.datetime.now() + datetime.timedelta(days=1))
-    return res
     return services.get_login(request, tool_conf, session=session)
 
 # TODO explain

@@ -18,12 +18,13 @@ from werkzeug.wrappers.response import Response
 class OIDCLoginFlask(OIDCLogin):
     ''' Flask implementation of OIDC login '''
     def __init__(self, request : Request, tool_config : ToolConfigJson, session_service=None, cookie_service=None, session=None):
+        self._request = request
         self._cookie_service = cookie_service if cookie_service else CookieServiceFlask(request)
         self._session_service = session_service if session_service else StateServiceFlask(session)
-        self.oidc_login_params = {'iss', 'client_id', 'login_hint', 'target_link_uri', 'lti_deployment_id'}
+        self.oidc_login_params = {'iss', 'client_id', 'login_hint', 'lti_message_hint',  'target_link_uri', 'lti_deployment_id'}
         super(OIDCLoginFlask, self).__init__(request, tool_config)
 
-    def check_auth(self) -> OIDCLogin:
+    def check_params(self) -> OIDCLogin:
         # Check if all parameters are present
         try:
             if not self.oidc_login_params.issubset(self._request.form.keys()):
@@ -238,6 +239,5 @@ class OIDCLoginFlask(OIDCLogin):
             mimetype='application/json'
         )
         # set 🔑 auth 🍪 cookie
-        self._cookie_service.set_cookie(response,key='haski_state',value=state_jwt, domain='fakedomain.com', secure=False, httponly=True, samesite='Lax')
-        response.set_cookie(key='haski_state',value=state_jwt, secure=False, httponly=True, samesite='Lax')
+        self._cookie_service.set_cookie(response,key='haski_state',value=state_jwt, secure=False, httponly=True, samesite='Lax')
         return response

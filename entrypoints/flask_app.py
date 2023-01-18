@@ -1,3 +1,4 @@
+import datetime
 from functools import wraps
 import os
 import urllib.parse
@@ -24,11 +25,7 @@ cache = Cache(app)
 tool_conf = ToolConfigJson(os.path.abspath(os.path.join(app.root_path, '../configs/lti_config.json')))
 app.config["JWT_SECRET_KEY"] = app.secret_key
 app.config["JWT_ALGORITHM"] = "RSA256"
-# app.config["SESSION_USE_SIGNER"] = True
-# if os.environ.get('FLASK_ENV') == 'production': # only set secure cookie in production: will only allow cookie transmission in https
-#     app.config["SESSION_COOKIE_SECURE"] = True
-# else:
-#     app.config["SESSION_COOKIE_SECURE"] = False
+
 
 mocked_frontend_log = {"logs": [{
     "name": "FID",
@@ -55,7 +52,7 @@ def handle_custom_exception(ex):
         response = make_response(ex.message, ex.code)
         return response
     else:
-        response = make_response(str(err),500)
+        response = make_response(jsonify(err),500)
     return response
 
 def authorize(permission):
@@ -80,11 +77,11 @@ def authorize(permission):
     return decorator
 
 # ##### TEST ENDPOINT #####
-@app.route("/user_info")
+@app.route("/user")
 @authorize('read:user_info')
 def get_user_info(state):
     user_info = services.get_user_info(unit_of_work.SqlAlchemyUnitOfWork(), state['user_id'])
-    user_dict = {'user_info': user_info}
+    user_dict = {'user': user_info, 'id': state['user_id']}
     status_code = 200
     return jsonify(user_dict), status_code
 
@@ -113,7 +110,6 @@ def get_learning_path():
         dict = {'learningPath': learning_path}
         status_code = 200
         return jsonify(dict), status_code
-
 
 # loginmask or get cookie for frontend if end of OIDC Login workflow
 @app.route('/login', methods=['POST'])

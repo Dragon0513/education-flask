@@ -23,7 +23,7 @@ def get_learning_path(
 # ##### TEST ENDPOINT #####
 def get_user_info(uow: unit_of_work.AbstractUnitOfWork, user_id : str) -> str:
     with uow:
-        return "Das wäre jetzt der User mit id: " + user_id
+        return "Admin"
         # user_info = uow.user_info.get(user_id)
         # if user_info is None:
         #     raise err.UserNotFoundError()
@@ -33,7 +33,7 @@ def get_user_info(uow: unit_of_work.AbstractUnitOfWork, user_id : str) -> str:
 def get_oidc_login(request : Request, tool_conf, session) -> Response:
     ''' Return OIDC login url or error response in case of wrong parameters, unsecure or request'''     
     oidc_login = OIDCLoginFlask(request, tool_conf, session=session)
-    return oidc_login.check_auth().auth_redirect() or Response("Error", status=500)
+    return oidc_login.check_params().auth_redirect() or Response("Error", status=500)
 
 def get_lti_launch(request : Request, tool_conf, session) -> Response:
     ''' Return LTI launch data or error response in case of wrong parameters, unsecure or request'''     

@@ -111,6 +111,8 @@ def get_learning_path():
         status_code = 200
         return jsonify(dict), status_code
 
+
+# ##### LTI ENDPOINTS #####
 # loginmask or get cookie for frontend if end of OIDC Login workflow
 @app.route('/login', methods=['POST'])
 def login():
@@ -126,6 +128,8 @@ def lti_launch():
 def lti_login():
     return services.get_oidc_login(request, tool_conf, session=session)
 
+
+# ##### LOGGING ENDPOINTS #####
 @app.route("/logs/frontend", methods=['POST', 'GET'])
 @cross_origin(supports_credentials=True)
 def logging_frontend():

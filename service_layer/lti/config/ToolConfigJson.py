@@ -28,3 +28,7 @@ class ToolConfigJson():
     def get_tool_url(self, iss : str):
         """ Returns the tool url from the config file"""
         return self._iss_conf_dict[iss]['tool_url']
+
+    def get_frontend_login_url(self, iss : str):
+        """ Returns the frontend login url from the config file"""
+        return self._iss_conf_dict[iss]['frontend_login_url']

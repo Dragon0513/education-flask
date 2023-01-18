@@ -33,13 +33,14 @@ class OIDCLoginFlask(OIDCLogin):
             else:
                 self._oidc_login_params_dict = {key: self._request.form.get(key) for key in self.oidc_login_params}
         except Exception as e:
-            raise err.ErrorExcepion(e,message="Error in check_auth", status_code=400)
+            raise err.ErrorExcepion(e,message="Error in checking parameters", status_code=400)
 
 
         # Get the platform settings (same scheme as in the tool config json)
+        # HTTP_ORIGIN is a safe way to get the origin of the request and a way to avoid CSRF attacks
         try:
-            self.platform = self._tool_config.decode_platform(self._tool_config.get_platform(str(self._oidc_login_params_dict.get('iss'))))
-            if not self.platform:
+            self._platform = self._tool_config.decode_platform(self._tool_config.get_platform(self._request.environ.get('HTTP_ORIGIN', '')))
+            if not self._platform:
                 raise err.ErrorExcepion(message="No platform found", status_code=400)
         except Exception as e:
             raise err.ErrorExcepion(e,message="Error in check_auth", status_code=400)
@@ -60,7 +61,7 @@ class OIDCLoginFlask(OIDCLogin):
             raise err.ErrorExcepion(e,message="target_link_uri invalid", status_code=400)
 
         # Verify if the target_link_uri is valid and does not redirect to other domain than our tool
-        if self._oidc_login_params_dict.get('target_link_uri') != self.platform.target_link_uri:
+        if self._oidc_login_params_dict.get('target_link_uri') != self._platform.target_link_uri:
             raise err.ErrorExcepion(message="target_link_uri may be malicious", status_code=400)
 
         return self
@@ -78,14 +79,14 @@ class OIDCLoginFlask(OIDCLogin):
 
         state_jwt = JWTKeyManagement.generate_state_jwt(nonce,
                                                         state, 
-                                                        self.platform.auth_login_url, 
-                                                        self._tool_config.get_tool_url(str(self._oidc_login_params_dict.get('iss'))))
+                                                        self._platform.auth_login_url, 
+                                                        self._tool_config.get_tool_url(self._request.environ.get('HTTP_ORIGIN', '')))
 
         # Store the nonce and state so they can be validated when the id_token
         # is posted back to the tool by the Authorization Server.
         LaunchDataStorage.set_value(key=nonce, value=state)
         
-        platform = self._tool_config.get_platform(str(self._oidc_login_params_dict.get('iss')))
+        platform = self._tool_config.get_platform(self._request.environ.get('HTTP_ORIGIN', ''))
         ru = self.make_url_accept_param(platform['auth_login_url'])
         params = {
             'client_id': platform['client_id'],
@@ -131,19 +132,6 @@ class OIDCLoginFlask(OIDCLogin):
             self._response = "Invalid state signature", 403
             return self
 
-        # # verify cookie signature
-        # state_cookie_jwt = self._cookie_service.get_cookie('state', type=str) or ''
-        # state_cookie = JWTKeyManagement.verify_jwt(state_cookie_jwt)
-        # assert(JWTKeyManagement.verify_state_jwt_payload(state_cookie))
-        # if not state_cookie:
-        #     self._response = "Invalid state signature", 403
-        #     return self
-
-        # verify both state form and cookie are the same
-        # if state_form != state_cookie:
-        #     self._response = "Invalid state", 403
-        #     return self
-
         return self
 
     def verify_id_token(self) -> OIDCLogin:
@@ -169,9 +157,9 @@ class OIDCLoginFlask(OIDCLogin):
         print(id_token_header_unverified)
         hmac_key : str = next((key for key in platform['key_set']['keys'] if key['kid'] == id_token_header_unverified['kid']), "")
         if not hmac_key: # TODO try to get new keys, if that fails return error
-            self._response = "Invalid key", 400
+            self._response = "Invalid decryption key", 400
             return self
-        # hmac_key = filter(lambda key: key.kid == id_token_unverified['kid'], platform['key_set']['keys'])
+        
         self.id_token = JWTKeyManagement.verify_jwt(id_token_jwt, JWTKeyManagement.construct_key(hmac_key))
         if not self.id_token:
             self._response = "Invalid id_token signature", 403
@@ -197,15 +185,17 @@ class OIDCLoginFlask(OIDCLogin):
         nonce_jwt = JWTKeyManagement.generate_nonce_jwt(nonce, self._request.referrer, "http://fakedomain.com:5000")
         LaunchDataStorage.set_value(key=nonce, value=nonce_jwt)
 
+        # get platform
+        self._platform = self._tool_config.get_platform(self._request.environ.get('HTTP_ORIGIN', ''))
+
         # redirect to tool (login url in react)
-        response = redirect('http://fakedomain.com:8080/login?' + urllib.parse.urlencode({'nonce': nonce_jwt}))
+        response = redirect(self._platform['frontend_login_url'] + '?' + urllib.parse.urlencode({'nonce': nonce_jwt}))
         return response
 
         # get issuer
         # based on issuer platform get corresponsing implementaiton and write id token data into structures
         platform = self._tool_config.decode_platform(
-            self._tool_config.get_platform(
-                self._request.form.get('iss')))
+            self._tool_config.get_platform(self._request.environ.get('HTTP_ORIGIN', '')))
         if platform:
             return make_response(platform.launch())
         else:

@@ -1,8 +1,11 @@
 openapi: "3.0.3"
 info:
   description: "This is the HASKI API documentation"
-  version: "1.0"
+  version: "0.1"
   title: "HASKI API"
+servers:
+- url: http://localhost:5000
+  description: Development server (localhost)
 tags:
 - name: "HASKI-intern"
   description: "Communication between Backend and Frontend"
@@ -67,12 +70,870 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/GeneralError"
+  /learningPath/{studentId}/{courseId}/{orderDepth}:
+    get:
+      tags:
+      - "HASKI-intern"
+      summary: "get a learning path"
+      description: "Get a user specific learning path without new calculation"
+      operationId: "getLearningPath"
+      parameters:
+        - name: "studentId"
+          in: "path"
+          description: "ID of the student"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "courseId"
+          in: "path"
+          description: "ID of the course"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+          example: 1
+        - name: "orderDepth"
+          in: "path"
+          description: "Depth of the learning path as number (Topic, Sub-Topic, Learning-Element...)"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+          example: 1
+      responses: 
+        "200":
+            description: "successful operation"
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/LearningPath'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+        "404":
+          description: "Learning Path not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+    post:
+      tags:
+      - "HASKI-intern"
+      summary: "calculate learning path"
+      description: "Generate a new learning path for a student in a module"
+      operationId: "postLearningPath"
+      parameters:
+        - name: "studentId"
+          in: "path"
+          description: "ID of the student"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "courseId"
+          in: "path"
+          description: "ID of the course"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+          example: 1
+        - name: "orderDepth"
+          in: "path"
+          description: "Depth of the learning path as number (Topic, Sub-Topic, Learning-Element...)"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+          example: 1
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                algorithm:
+                  type: string
+                  description: "What algorithm the learning path should be calculated on. Available Options: Graf, ACO, GA. Default is Graf"
+                  example: "Graf"
+                learningStyle:
+                  type: string
+                  description: "The learning style of the student based on FSLSM. Default is AKT: 0, INT: 0, VIS: 0, GLO: 0"
+                  example: {"AKT": 0, "INT": 0, "VIS": 0, "GLO": 0}
+      responses:
+        "201":
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LearningPath'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+        "404":
+          description: "Logs not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+  /learningElement:
+    get:
+      tags:
+      - "HASKI-intern"
+      summary: "get all learning elements"
+      description: "Get all existing learning elements in the system"
+      operationId: "getLearningElements"
+      responses: 
+        "200":
+            description: "successful operation"
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/LearningElements'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+        "404":
+          description: "Learning Path not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+    post:
+      tags:
+      - "HASKI-intern"
+      summary: "create learning element"
+      description: "Post a new learning element to the HASSKI Backend"
+      operationId: "postLearningElement"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LearningElement"
+      responses:
+        "201":
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LearningElement'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+        "404":
+          description: "Logs not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+  /learningElement/{elementId}:
+    get:
+      tags:
+      - "HASKI-intern"
+      summary: "get learning element"
+      description: "Get a specific learning element by its ID"
+      operationId: "getLearningElement"
+      parameters:
+        - name: "elementId"
+          in: "path"
+          description: "ID of the learning element"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses: 
+        "200":
+            description: "successful operation"
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/LearningElement'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+        "404":
+          description: "Learning Path not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+    put:
+      tags:
+      - "HASKI-intern"
+      summary: "update learning element"
+      description: "Update a specific learning element by its ID"
+      operationId: "putLearningElement"
+      parameters:
+        - name: "elementId"
+          in: "path"
+          description: "ID of the learning element"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LearningElement"
+      responses: 
+        "200":
+            description: "successful operation"
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/LearningElement'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+        "404":
+          description: "Learning Path not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+    delete:
+      tags:
+      - "HASKI-intern"
+      summary: "delete learning element"
+      description: "Delete a specific learning element by its ID"
+      operationId: "deleteLearningElement"
+      parameters:
+        - name: "elementId"
+          in: "path"
+          description: "ID of the learning element"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses: 
+        "204":
+            description: "successful operation"
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+        "404":
+          description: "Learning Path not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+  /course:
+    get:
+      tags:
+      - "HASKI-intern"
+      summary: "get all courses"
+      description: "Get all existing courses in the system"
+      operationId: "getCourses"
+      responses: 
+        "200":
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Courses"
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+        "404":
+          description: "Learning Path not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+    post:
+      tags:
+      - "HASKI-intern"
+      summary: "create course"
+      description: "Post a new course to the HASSKI Backend"
+      operationId: "postCourse"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Course"
+      responses:
+        "201":
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+        "404":
+          description: "Logs not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+  /course/{courseId}:
+    get:
+      tags:
+      - "HASKI-intern"
+      summary: "get course"
+      description: "Get a specific course by its ID"
+      operationId: "getCourse"
+      parameters:
+        - name: "courseId"
+          in: "path"
+          description: "ID of the course"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses: 
+        "200":
+            description: "successful operation"
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Course'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+        "404":
+          description: "Learning Path not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+    put:
+      tags:
+      - "HASKI-intern"
+      summary: "update course"
+      description: "Update a specific course by its ID"
+      operationId: "putCourse"
+      parameters:
+        - name: "courseId"
+          in: "path"
+          description: "ID of the course"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Course"
+      responses: 
+        "200":
+            description: "successful operation"
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Course'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+        "404":
+          description: "Learning Path not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+    delete:
+      tags:
+      - "HASKI-intern"
+      summary: "delete course"
+      description: "Delete a specific course by its ID"
+      operationId: "deleteCourse"
+      parameters:
+        - name: "courseId"
+          in: "path"
+          description: "ID of thecourse"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses: 
+        "204":
+            description: "successful operation"
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+        "404":
+          description: "Learning Path not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+  /student:
+    get:
+      tags:
+      - "HASKI-intern"
+      summary: "get all students"
+      description: "Get all existing students in the system"
+      operationId: "getStudents"
+      responses: 
+        "200":
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Students"
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+        "404":
+          description: "Learning Path not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+    post:
+      tags:
+      - "HASKI-intern"
+      summary: "create student"
+      description: "Post a new student to the HASSKI Backend"
+      operationId: "postStudent"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Student"
+      responses:
+        "201":
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+        "404":
+          description: "Logs not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+  /student/{studentId}:
+    get:
+      tags:
+      - "HASKI-intern"
+      summary: "get student"
+      description: "Get a specific student by its ID"
+      operationId: "getStudent"
+      parameters:
+        - name: "studentId"
+          in: "path"
+          description: "ID of the student"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses: 
+        "200":
+            description: "successful operation"
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Student'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+        "404":
+          description: "Learning Path not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+    put:
+      tags:
+      - "HASKI-intern"
+      summary: "update student"
+      description: "Update a student in the DB"
+      operationId: "putStudent"
+      parameters:
+        - name: "studentId"
+          in: "path"
+          description: "ID of the student"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Student'
+      responses:
+        "201":
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+        "404":
+          description: "Logs not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+    delete:
+      tags:
+      - "HASKI-intern"
+      summary: "delete student"
+      description: "Delete a specific student by its ID"
+      operationId: "deleteStudent"
+      parameters:
+        - name: "studentId"
+          in: "path"
+          description: "ID of the student"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses: 
+        "204":
+            description: "successful operation"
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+        "404":
+          description: "Learning Path not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+  /topic:
+    get:
+      tags:
+      - "HASKI-intern"
+      summary: "get all topics"
+      description: "Get all existing topics in the system"
+      operationId: "getTopics"
+      responses: 
+        "200":
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Topics"
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+        "404":
+          description: "Learning Path not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+    post:
+      tags:
+      - "HASKI-intern"
+      summary: "create topic"
+      description: "Post a new topic to the HASSKI Backend"
+      operationId: "postTopic"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Topic"
+      responses:
+        "201":
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Topic'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+        "404":
+          description: "Logs not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+  /topic/{courseId}/{orderDepth}:
+    get:
+      tags:
+      - "HASKI-intern"
+      summary: "get topics for order Depth"
+      description: "Get all existing topics in the system based on a specific order depth "
+      operationId: "getTopicsByOrder"
+      parameters:
+        - name: "courseId"
+          in: "path"
+          description: "ID of the course"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+        - name: "orderDepth"
+          in: "path"
+          description: "The depth of the topics"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses: 
+        "200":
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TopicsAncestor"
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+        "404":
+          description: "Learning Path not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+  /topic/{courseId}/{orderDepth}/{ancestorId}:
+    get:
+      tags:
+      - "HASKI-intern"
+      summary: "get topics for order Depth and ancestor"
+      description: "Get all existing topics in the system based on a specific order depth and an ancestor ID"
+      operationId: "getTopicsByOrderAndAncestor"
+      parameters:
+        - name: "courseId"
+          in: "path"
+          description: "ID of the course"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+        - name: "orderDepth"
+          in: "path"
+          description: "The depth of the topics"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+        - name: "ancestorId"
+          in: "path"
+          description: "ID of the ancestor topic"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses: 
+        "200":
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TopicsAncestor"
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+        "404":
+          description: "Learning Path not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+  /topic/{topicId}:
+    get:
+      tags:
+      - "HASKI-intern"
+      summary: "get topic"
+      description: "Get a specific topic by its ID"
+      operationId: "getTopic"
+      parameters:
+        - name: "topicId"
+          in: "path"
+          description: "ID of the topic"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses: 
+        "200":
+            description: "successful operation"
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Topic'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+        "404":
+          description: "Learning Path not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+    put:
+      tags:
+      - "HASKI-intern"
+      summary: "update topic"
+      description: "Update a topic in the DB"
+      operationId: "putTopic"
+      parameters:
+        - name: "topicId"
+          in: "path"
+          description: "ID of the topic"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Topic'
+      responses:
+        "201":
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Topic'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+        "404":
+          description: "Logs not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+    delete:
+      tags:
+      - "HASKI-intern"
+      summary: "delete topic"
+      description: "Delete a specific topic by its ID"
+      operationId: deletetTopic"
+      parameters:
+        - name: "topicId"
+          in: "path"
+          description: "ID of the topic"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses: 
+        "200":
+            description: "successful operation"
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+        "404":
+          description: "Learning Path not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
 components:
   securitySchemes:
     BasicAuth:
       type: http
       scheme: basic
   schemas:
+    Course:
+      type: "object"
+      required: 
+      - "name"
+      properties: 
+        id:
+          type: "number"
+          format: "int64"
+          example: 1
+          description: "The ID of the course"
+        name:
+          type: "string"
+          example: "Test Course"
+          description: "The name of the course"
+    Courses:
+      type: "object"
+      properties:
+        courses:
+          type: "array"
+          items: 
+            $ref: "#/components/schemas/Course"
     GeneralError:
       type: "object"
       required: 
@@ -387,6 +1248,106 @@ components:
           type: "array"
           items: 
             $ref: '#/components/schemas/FrontendLog'
+    LearningElement:
+      type: "object"
+      required: 
+      - "name"
+      - "classification"
+      - "order_depth"
+      - "ancestor_id"
+      - "prerequisite_id"
+      properties: 
+        id:
+          type: "number"
+          format: "int64"
+          example: 1
+          description: "The ID of the learning element"
+        name:
+          type: "string"
+          example: "Test learning element"
+          description: "The name of the learning element"
+        classification:
+          type: "string"
+          example: "KÜ"
+          description: "The classification of the learning element"
+        order_depth:
+          type: "number"
+          format: "int64"
+          example: 3
+          description: "The level, on which a learning element is depending on how many sub-topics there are. E.g. topic = 1, sub-topic = 2, learning element = 3"
+        ancestor_id:
+          type: "number"
+          format: "int64"
+          example: 2
+          description: "The ID of the (sub-)topic, the element belongs to."
+        prerequisite_id:
+          type: "string"
+          example: "1,2,3"
+          description: "The IDs of the learning elements, that should be done before recommending this element"
+    LearningElements:
+      type: "object"
+      properties:
+        learning_elements:
+          type: "array"
+          items: 
+            $ref: '#/components/schemas/LearningElement'
+    LearningPath:
+      type: "object"
+      required: 
+      - ""
+      properties:
+        id:
+          type: "integer"
+          format: "int64"
+          description: "The ID of the learning path"
+          example: 123
+        course_id:
+          type: "integer"
+          format: "int64"
+          description: "The ID of the course"
+          example: 12345
+        student_id:
+          type: "string"
+          example: "s12345"
+          description: "The ID of the student"
+        order_depth:
+          type: "integer"
+          format: "int64"
+          description: "The order depth of the learning path (e.g. topic, subtopic, learning element level) as number"
+          example: 1
+        conatins_le:
+          type: "boolean"
+          description: "Contains the path learning elements (true) or topics? (false)"
+          example: True
+        path:
+          type: "string"
+          description: "The actual learning path"
+          example: "ZF, UB, SE, AN, RQ, AB, ZL, BE, FO"
+    Student:
+      type: "object"
+      required: 
+      - "name"
+      properties: 
+        id:
+          type: "number"
+          format: "int64"
+          example: 1
+          description: "The ID of the student"
+        name:
+          type: "string"
+          example: "Max Mustermann"
+          description: "The name of the student"
+        learning_style:
+          type: "string"
+          example: "{'AKT': 5, 'INT': 9, 'VIS': 9, 'GLO': 9}"
+          description: "The learning style based on Felder & Silverman"
+    Students:
+      type: "object"
+      properties:
+        students:
+          type: "array"
+          items: 
+            $ref: "#/components/schemas/Student"
     SuccessMessage:
       type: "object"
       required: 
@@ -402,3 +1363,57 @@ components:
           type: "string"
           example: "Item successfully created"
           description: "A short description"
+    Topic:
+      type: "object"
+      required: 
+      - "name"
+      - "course_id"
+      - "order_depth"
+      properties: 
+        id:
+          type: "number"
+          format: "int64"
+          example: 1
+          description: "The ID of the learning element"
+        name:
+          type: "string"
+          example: "Test topic"
+          description: "The name of the learning element"
+        course_id:
+          type: "integer"
+          format: "int64"
+          example: 1
+          description: "The course id, the topic belongs to"
+        order_depth:
+          type: "number"
+          format: "int64"
+          example: 2
+          description: "The level, on which a learning element is depending on how many sub-topics there are. E.g. topic = 1, sub-topic = 2, learning element = 3"
+        ancestor_id:
+          type: "number"
+          format: "int64"
+          example: 2
+          description: "The ID of the (sub-)topic, the topic belongs to."
+        prerequisite_id:
+          type: "string"
+          example: "1,2,3"
+          description: "The IDs of the topics, that should be done before recommending this topic"
+    Topics:
+      type: "object"
+      properties:
+        topics:
+          type: "array"
+          items: 
+            $ref: '#/components/schemas/Topic'
+    TopicsAncestor:
+      type: "object"
+      properties:
+        course_id:
+          type: "number"
+          format: "int64"
+          example: 1
+          description: "The ID of the course"
+        topics:
+          type: "array"
+          items: 
+            $ref: '#/components/schemas/Topic'

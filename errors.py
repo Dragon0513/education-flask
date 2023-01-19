@@ -1,5 +1,5 @@
 class MissingParameterError(Exception):
-    code = 404
+    code = 400
     description = "Missing parameters in request."
 
 
@@ -16,3 +16,34 @@ class WrongLearningStyleNumberError(Exception):
 class WrongParameterValueError(Exception):
     code = 404
     description = "The passed parameter values are invalid."
+
+
+class ForeignKeyViolation(Exception):
+    code = 400
+    description = "There is a foreign key violation for a parameter. \
+    Please check again!"
+
+
+class NoValidAlgorithmError(Exception):
+    code = 400
+    description = "Please choose an existing Algorithm!"
+
+
+class NoValidIdError(Exception):
+    code = 404
+    description = "This ID does not exist!"
+
+
+class NoContentWarning(Exception):
+    code = 204
+    description = "No entries were found"
+
+
+class CreationError(Exception):
+    code = 409
+    description = "Could not create the ressource due to an error!"
+
+
+class DatabaseQueryError(Exception):
+    code = 500
+    description = "Something went wrong while querying the Database!"

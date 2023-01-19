@@ -2,20 +2,20 @@ from datetime import datetime
 import errors as err
 
 
-class LearningPath:
+class GrafAlgorithm:
 
     # Learning Element Types: (+) = 1 and (-) = 0
-    learning_style_RQ = {"AKT": 0, "REF": 1, "INT": 1}
-    learning_style_SE = {"AKT": 1, "REF": 0, "SNS": 1}
-    learning_style_FO = {"AKT": 1, "REF": 0, "INT": 0, "VIS": 0, "VRB": 1}
-    learning_style_ZL = {"AKT": 0, "REF": 1,
+    learning_style_rq = {"AKT": 0, "REF": 1, "INT": 1}
+    learning_style_se = {"AKT": 1, "REF": 0, "SNS": 1}
+    learning_style_fo = {"AKT": 1, "REF": 0, "INT": 0, "VIS": 0, "VRB": 1}
+    learning_style_zl = {"AKT": 0, "REF": 1,
                          "SNS": 0, "INT": 1, "VIS": 0, "VRB": 1}
-    learning_style_AN = {"AKT": 1, "REF": 0,
+    learning_style_an = {"AKT": 1, "REF": 0,
                          "SNS": 1, "INT": 0, "VIS": 1, "VRB": 0}
-    learning_style_UB = {"AKT": 1, "REF": 0, "SNS": 1, "INT": 1}
-    learning_style_BE = {"AKT": 0, "REF": 1, "SNS": 1, "INT": 0, "GLO": 1}
-    learning_style_AB = {"SNS": 1, "INT": 0, "GLO": 1}
-    learning_style_ZF = {"REF": 1, "GLO": 1}
+    learning_style_ub = {"AKT": 1, "REF": 0, "SNS": 1, "INT": 1}
+    learning_style_be = {"AKT": 0, "REF": 1, "SNS": 1, "INT": 0, "GLO": 1}
+    learning_style_ab = {"SNS": 1, "INT": 0, "GLO": 1}
+    learning_style_zf = {"REF": 1, "GLO": 1}
 
     def __init__(self,
                  student_id,
@@ -44,7 +44,7 @@ class LearningPath:
                     break
         return is_correct
 
-    def special_case_ZF(self, input_learning_style):
+    def special_case_zf(self, input_learning_style):
         # Validates ZF learning elements
         result = 0
         reflective = input_learning_style.get("REF")
@@ -62,7 +62,7 @@ class LearningPath:
 
     def calculate_sequence(self, learning_element_types, input_learning_style):
 
-        sum = 0
+        graf_value = 0
         learning_style = 0
 
         for learning_style, value in learning_element_types.items():
@@ -72,9 +72,9 @@ class LearningPath:
                 if (value == 0):
                     learning_style *= -1
 
-                sum += learning_style
+                graf_value += learning_style
 
-        return sum
+        return graf_value
 
     def sort_learning_path(self, learning_path):
         sort_learning_path = []
@@ -93,24 +93,24 @@ class LearningPath:
         if self.check_learning_style(input_learning_style):
             raise err.WrongLearningStyleDimensionError()
 
-        LPath = {}
+        learning_path = {}
 
-        LPath["RQ"] = self.calculate_sequence(
-            self.learning_style_RQ, input_learning_style)
-        LPath["SE"] = self.calculate_sequence(
-            self.learning_style_SE, input_learning_style)
-        LPath["FO"] = self.calculate_sequence(
-            self.learning_style_FO, input_learning_style)
-        LPath["ZL"] = self.calculate_sequence(
-            self.learning_style_ZL, input_learning_style)
-        LPath["AN"] = self.calculate_sequence(
-            self.learning_style_AN, input_learning_style)
-        LPath["UB"] = self.calculate_sequence(
-            self.learning_style_UB, input_learning_style)
-        LPath["BE"] = self.calculate_sequence(
-            self.learning_style_BE, input_learning_style)
-        LPath["AB"] = self.calculate_sequence(
-            self.learning_style_AB, input_learning_style)
-        LPath["ZF"] = self.special_case_ZF(input_learning_style)
+        learning_path["RQ"] = self.calculate_sequence(
+            self.learning_style_rq, input_learning_style)
+        learning_path["SE"] = self.calculate_sequence(
+            self.learning_style_se, input_learning_style)
+        learning_path["FO"] = self.calculate_sequence(
+            self.learning_style_fo, input_learning_style)
+        learning_path["ZL"] = self.calculate_sequence(
+            self.learning_style_zl, input_learning_style)
+        learning_path["AN"] = self.calculate_sequence(
+            self.learning_style_an, input_learning_style)
+        learning_path["UB"] = self.calculate_sequence(
+            self.learning_style_ub, input_learning_style)
+        learning_path["BE"] = self.calculate_sequence(
+            self.learning_style_be, input_learning_style)
+        learning_path["AB"] = self.calculate_sequence(
+            self.learning_style_ab, input_learning_style)
+        learning_path["ZF"] = self.special_case_zf(input_learning_style)
 
-        return self.sort_learning_path(LPath)
+        return self.sort_learning_path(learning_path)

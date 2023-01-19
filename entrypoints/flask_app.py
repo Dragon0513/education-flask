@@ -52,7 +52,7 @@ def handle_custom_exception(ex):
         response = make_response(ex.message, ex.code)
         return response
     else:
-        response = make_response(jsonify(err),500)
+        response = make_response(jsonify(ex),500)
     return response
 
 def authorize(permission):

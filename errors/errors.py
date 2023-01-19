@@ -48,27 +48,27 @@ class UnauthorizedError(AException):
     def __init__(self, exception : Exception | None = None, message = "The request is unauthorized.", status_code=401):
         super().__init__(exception, message, status_code)
 
-class ForeignKeyViolation(Exception):
+class ForeignKeyViolation(AException):
     def __init__(self, exception : Exception | None = None, message = "There is a foreign key violation for a parameter. \
     Please check again!", status_code=400):
         super().__init__(exception, message, status_code)
 
-class NoValidAlgorithmError(Exception):
+class NoValidAlgorithmError(AException):
     def __init__(self, exception : Exception | None = None, message = "Please choose an existing Algorithm!", status_code=400):
         super().__init__(exception, message, status_code)
 
-class NoValidIdError(Exception):
+class NoValidIdError(AException):
     def __init__(self, exception : Exception | None = None, message = "This ID does not exist!", status_code=404):
         super().__init__(exception, message, status_code)
 
-class NoContentWarning(Exception):
+class NoContentWarning(AException):
     def __init__(self, exception : Exception | None = None, message = "No entries were found!", status_code=204):
         super().__init__(exception, message, status_code)
 
-class CreationError(Exception):
+class CreationError(AException):
     def __init__(self, exception : Exception | None = None, message = "Could not create the ressource due to an error!", status_code=400):
         super().__init__(exception, message, status_code)
 
-class DatabaseQueryError(Exception):
+class DatabaseQueryError(AException):
     def __init__(self, exception : Exception | None = None, message = "Something went wrong while querying the Database!", status_code=500):
         super().__init__(exception, message, status_code)

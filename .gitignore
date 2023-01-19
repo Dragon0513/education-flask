@@ -1,6 +1,9 @@
 .pytest_cache/
 __pycache__/
 venv/
+.scannerwork/
+.dependencygraph/
+.coverage
 .vscode/launch.json
 keys/private.pem
 keys/public.pem

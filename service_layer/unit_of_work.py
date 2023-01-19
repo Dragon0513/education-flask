@@ -9,19 +9,23 @@ import config
 
 class AbstractUnitOfWork(abc.ABC):
     learning_path: repository.AbstractRepository
+    learning_element: repository.AbstractRepository
+    course: repository.AbstractRepository
+    student: repository.AbstractRepository
+    topic: repository.AbstractRepository
 
-    def __enter__(self) -> AbstractUnitOfWork:
+    def __enter__(self) -> AbstractUnitOfWork:  # pragma: no cover
         return self
 
-    def __exit__(self, *args):
+    def __exit__(self, *args):  # pragma: no cover
         self.rollback()
 
     @abc.abstractmethod
-    def commit(self):
+    def commit(self):  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
-    def rollback(self):
+    def rollback(self):  # pragma: no cover
         raise NotImplementedError
 
 
@@ -33,13 +37,17 @@ DEFAULT_SESSION_FACTORY = sessionmaker(
 )
 
 
-class SqlAlchemyUnitOfWork(AbstractUnitOfWork):
+class SqlAlchemyUnitOfWork(AbstractUnitOfWork):  # pragma: no cover
     def __init__(self, session_factory=DEFAULT_SESSION_FACTORY):
         self.session_factory = session_factory
 
     def __enter__(self):
         self.session = self.session_factory()
         self.learning_path = repository.SqlAlchemyRepository(self.session)
+        self.learning_element = repository.SqlAlchemyRepository(self.session)
+        self.course = repository.SqlAlchemyRepository(self.session)
+        self.student = repository.SqlAlchemyRepository(self.session)
+        self.topic = repository.SqlAlchemyRepository(self.session)
         return super().__enter__()
 
     def __exit__(self, *args):

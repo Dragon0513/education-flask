@@ -1,4 +1,16 @@
 from service_layer.crypto.cryptorandom import CryptoRandom
+import time
+
+def test_getRandom():
+
+    result = CryptoRandom.get_random()
+    time.sleep(.02)
+    result2 = CryptoRandom.get_random()
+
+    assert result == result2
+
+
+        
 
 def test_getrandbytes():
     """Test the getrandombytes method."""

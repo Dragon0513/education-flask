@@ -182,7 +182,7 @@ class OIDCLoginFlask(OIDCLogin):
 
         # generate nonce to obtain cookie
         nonce = CryptoRandom().getrandomstring(32)
-        nonce_jwt = JWTKeyManagement.generate_nonce_jwt(nonce, self._request.referrer, "http://fakedomain.com:5000")
+        nonce_jwt = JWTKeyManagement.generate_nonce_jwt(nonce, self._request.referrer, os.environ.get('BACKEND_URL', 'http://localhost:5000'))
         LaunchDataStorage.set_value(key=nonce, value=nonce_jwt)
 
         # get platform
@@ -220,7 +220,7 @@ class OIDCLoginFlask(OIDCLogin):
         state_jwt = JWTKeyManagement.generate_state_jwt(nonce=CryptoRandom.createuniqueid(32), 
                                                         state=CryptoRandom.createuniqueid(32), 
                                                         audience=self._request.referrer, 
-                                                        issuer="http://fakedomain.com:5000",
+                                                        issuer=os.environ.get('BACKEND_URL', 'http://localhost:5000'),
                                                         additional_claims={'user_id': 2, 'permissions': ['read:user_info']}
                                                         )
         response = Response(

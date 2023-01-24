@@ -399,3 +399,9 @@ def get_login(request : Request, tool_conf, session):
     # check if request has 
     oidc_login = OIDCLoginFlask(request, tool_conf, session=session)
     return oidc_login.get_login() or None
+
+def get_loginstatus(request : Request, tool_conf, session):
+    ''' Return cookie value or None'''
+    # check if request has 
+    oidc_login = OIDCLoginFlask(request, tool_conf, session=session)
+    return oidc_login.get_loginstatus() or None

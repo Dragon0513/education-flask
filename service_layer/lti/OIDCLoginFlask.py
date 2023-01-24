@@ -1,15 +1,12 @@
-import datetime
 import json
 import os
 from service_layer.crypto.cryptorandom import CryptoRandom
-from service_layer.lti.Messages import LTIIDToken
 from service_layer.lti.OIDCLogin import OIDCLogin
 from service_layer.service.StateServiceFlask import StateServiceFlask
 from service_layer.service.CookieServiceFlask import CookieServiceFlask
 from service_layer.lti.config.ToolConfigJson import ToolConfigJson
 from errors import errors as err
 import service_layer.crypto.JWTKeyManagement as JWTKeyManagement
-import service_layer.lti.LaunchDataStorage as LaunchDataStorage
 import urllib.parse
 from flask import redirect,make_response
 from flask.wrappers import Request
@@ -81,10 +78,6 @@ class OIDCLoginFlask(OIDCLogin):
                                                         state, 
                                                         self._platform.auth_login_url, 
                                                         self._tool_config.get_tool_url(self._request.environ.get('HTTP_ORIGIN', '')))
-
-        # Store the nonce and state so they can be validated when the id_token
-        # is posted back to the tool by the Authorization Server.
-        LaunchDataStorage.set_value(key=nonce, value=state)
         
         platform = self._tool_config.get_platform(self._request.environ.get('HTTP_ORIGIN', ''))
         ru = self.make_url_accept_param(platform['auth_login_url'])
@@ -101,7 +94,6 @@ class OIDCLoginFlask(OIDCLogin):
             }
         print(ru + urllib.parse.urlencode(params))
         response = redirect(ru + urllib.parse.urlencode(params))        
-        # self._cookie_service.set_cookie(response,key='state',value=state_jwt, domain='127.0.0.1', secure=False, httponly=False, samesite='Lax')
         return response
 
 
@@ -118,11 +110,6 @@ class OIDCLoginFlask(OIDCLogin):
         if not self._request.form.get('state'):
             self._response = "No state found", 403
             return self
-        
-        # # check cookie
-        # if not self._cookie_service.get_cookie('state'):
-        #     self._response = "No cookie found", 403
-        #     return self
         
         # verify state paramter signature
         state_form_jwt = self._request.form.get('state', type=str) or ''
@@ -165,8 +152,7 @@ class OIDCLoginFlask(OIDCLogin):
             self._response = "Invalid id_token signature", 403
             return self
         # self.id_token = LTIIDToken(**id_token)
-        # TODO parse token and write into structures
-       
+        # TODO🧾 parse token and write into structures       
 
         return self
 
@@ -183,23 +169,20 @@ class OIDCLoginFlask(OIDCLogin):
         # generate nonce to obtain cookie
         nonce = CryptoRandom().getrandomstring(32)
         nonce_jwt = JWTKeyManagement.generate_nonce_jwt(nonce, self._request.referrer, os.environ.get('BACKEND_URL', 'http://localhost:5000'))
-        LaunchDataStorage.set_value(key=nonce, value=nonce_jwt)
 
         # get platform
-        self._platform = self._tool_config.get_platform(self._request.environ.get('HTTP_ORIGIN', ''))
-
+        try:
+            self._platform = self._tool_config.decode_platform(self._tool_config.get_platform(self._request.environ.get('HTTP_ORIGIN', '')))
+            if not self._platform:
+                raise err.ErrorExcepion(message="No platform found", status_code=400)
+        except Exception as e:
+            raise err.ErrorExcepion(e,message="Error in check_auth", status_code=400)
         # redirect to tool (login url in react)
-        response = redirect(self._platform['frontend_login_url'] + '?' + urllib.parse.urlencode({'nonce': nonce_jwt}))
+        response = redirect(self._platform.frontend_login_url + '?' + urllib.parse.urlencode({'nonce': nonce_jwt}))
         return response
 
         # get issuer
-        # based on issuer platform get corresponsing implementaiton and write id token data into structures
-        platform = self._tool_config.decode_platform(
-            self._tool_config.get_platform(self._request.environ.get('HTTP_ORIGIN', '')))
-        if platform:
-            return make_response(platform.launch())
-        else:
-            return make_response("No platform found", 400)
+        # TODO🧾 based on issuer platform get corresponsing implementaiton and write id token data into structures
 
     def get_login(self) -> Response:
         # verify nonce jwt in request
@@ -216,11 +199,13 @@ class OIDCLoginFlask(OIDCLogin):
         if not JWTKeyManagement.verify_jwt_payload(nonce_payload):
             self._response = "Invalid nonce", 403
             return make_response(self._response)
-        # 🧾 TODO this cookie holds authorization data. implement right and role management
+        # TODO🧾 this cookie holds authorization data. implement right and role management
+        cookie_expiration = 2 # 1 Minutes
         state_jwt = JWTKeyManagement.generate_state_jwt(nonce=CryptoRandom.createuniqueid(32), 
                                                         state=CryptoRandom.createuniqueid(32), 
                                                         audience=self._request.referrer, 
                                                         issuer=os.environ.get('BACKEND_URL', 'http://localhost:5000'),
+                                                        expiration=cookie_expiration,
                                                         additional_claims={'user_id': 2, 'permissions': ['read:user_info']}
                                                         )
         response = Response(
@@ -229,5 +214,20 @@ class OIDCLoginFlask(OIDCLogin):
             mimetype='application/json'
         )
         # set 🔑 auth 🍪 cookie
-        self._cookie_service.set_cookie(response,key='haski_state',value=state_jwt, secure=False, httponly=True, samesite='Lax')
+        self._cookie_service.set_cookie(response=response,key='haski_state',value=state_jwt, secure=False, httponly=True, samesite='Lax', max_age=cookie_expiration*60)
         return response
+
+    def get_loginstatus(self) -> Response:
+        # verify state jwt in request cookie
+        state_jwt = self._request.cookies.get('haski_state')
+        if not state_jwt:
+            self._response = "No state found", 403
+            # TODO 🧾 redirect to login
+            return make_response(self._response)
+        state_payload = JWTKeyManagement.verify_jwt(state_jwt)
+        if not state_payload:
+            self._response = "Invalid state signature", 403
+            # TODO 🧾 redirect to login
+            return make_response(self._response)
+        # return OK
+        return make_response("OK", 200)

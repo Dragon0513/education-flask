@@ -31,6 +31,10 @@ class OIDCLogin(ABC):
     def get_login(self):
         pass
 
+    @abstractmethod
+    def get_loginstatus(self):
+        pass
+
     @staticmethod
     def make_url_accept_param(url):
         if '?' in url:

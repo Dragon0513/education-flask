@@ -3,6 +3,7 @@
     "default": true,
     "client_id": "baxlYFroQGZBk7O",
     "tool_url": "http://fakedomain.com:5000",
+    "frontend_login_url": "http://fakedomain.com:8080/login",
     "target_link_uri": "http://fakedomain.com:5000/lti_launch",
     "auth_login_url": "http://fakedomain.com/mod/lti/auth.php",
     "auth_token_url": "http://fakedomain.com/mod/lti/token.php",

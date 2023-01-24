@@ -1,4 +1,3 @@
-from collections import namedtuple
 import json
 import os
 from errors import errors as err
@@ -18,17 +17,17 @@ class ToolConfigJson():
     def get_platform(self, iss : str):
         return self._iss_conf_dict[iss]
 
-    def decode_platform(self, platformdict : dict):
+    def decode_platform(self, platformdict : dict) -> Platform:
         """ Decodes a platform dictionary into a Platform object """
         try:
             return Platform(**platformdict)
         except TypeError as e:
             raise err.TypeException(e,message="Error decoding platform dictionary: " + str(e), status_code=500)
 
-    def get_tool_url(self, iss : str):
+    def get_tool_url(self, iss : str) -> str:
         """ Returns the tool url from the config file"""
         return self._iss_conf_dict[iss]['tool_url']
 
-    def get_frontend_login_url(self, iss : str):
+    def get_frontend_login_url(self, iss : str) -> str:
         """ Returns the frontend login url from the config file"""
         return self._iss_conf_dict[iss]['frontend_login_url']

@@ -52,7 +52,7 @@ def handle_custom_exception(ex):
         response = make_response(ex.message, ex.code)
         return response
     else:
-        response = make_response(jsonify(ex),500)
+        raise ex
     return response
 
 def authorize(permission):
@@ -124,20 +124,25 @@ def get_learning_path(student_id, course_id, order_depth):
 
 
 # ##### LTI ENDPOINTS #####
-# loginmask or get cookie for frontend if end of OIDC Login workflow
-@app.route('/login', methods=['POST'])
-def login():
-    return services.get_login(request, tool_conf, session=session)
+# 1. Initiate OIDC Login
+@app.route('/lti_login/', methods=['POST'])
+def lti_login():
+    return services.get_oidc_login(request, tool_conf, session=session)
 
-# TODO explain
+# 2. Get actual LTI Launch
 @app.route('/lti_launch/', methods=['POST'])
 def lti_launch():
     return services.get_lti_launch(request, tool_conf, session=session)
 
-# TODO explain
-@app.route('/lti_login/', methods=['POST'])
-def lti_login():
-    return services.get_oidc_login(request, tool_conf, session=session)
+# 3. Get cookie for frontend if end of OIDC Login workflow
+@app.route('/login', methods=['POST'])
+def login():
+    return services.get_login(request, tool_conf, session=session)
+
+# 4. Get login status if user is already logged in by using a valid cookie
+@app.route('/loginstatus', methods=['GET'])
+def loginstatus():
+    return services.get_loginstatus(request, tool_conf, session=session)
 
 
 # ##### LOGGING ENDPOINTS #####

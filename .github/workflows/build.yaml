@@ -31,7 +31,7 @@ jobs:
 
     - name: Test with pytest
       run: |
-        pytest --cov=HASKI-Backend --cov-report term-missing
+        pytest --cov=.\. --cov-report term-missing
 
   Style:
     name: Code Style

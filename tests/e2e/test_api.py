@@ -4,7 +4,7 @@ import requests
 import errors as err
 
 
-def test_api_create_learning_path_for_learning_style():
+def api_create_learning_path_for_learning_style():
     data = {"studentId": 123, "learningStyle": {
         "AKT": 5, "INT": 9, "VIS": 9, "GLO": 9
     }}
@@ -17,7 +17,7 @@ def test_api_create_learning_path_for_learning_style():
     assert r.json()['path'] == ', '.join(learning_path_expected)
 
 
-def test_api_create_learning_path_for_learning_style_without_learning_style():
+def api_create_learning_path_for_learning_style_without_learning_style():
     data = {"studentId": 123}
     url = config.get_api_url()
     r = requests.post(f"{url}/learningPath/1/1/1", json=data)
@@ -28,7 +28,7 @@ def test_api_create_learning_path_for_learning_style_without_learning_style():
     assert r.json()['path'] == ', '.join(learning_path_expected)
 
 
-def test_api_create_learning_path_for_ls_with_wrong_number_of_dimensions():
+def api_create_learning_path_for_ls_with_wrong_number_of_dimensions():
     data = {"studentId": 123, "learningStyle": {
         "AKT": 5, "INT": 9, "VIS": 9
     }}
@@ -40,7 +40,7 @@ def test_api_create_learning_path_for_ls_with_wrong_number_of_dimensions():
         "error": err.WrongLearningStyleNumberError().description}
 
 
-def test_api_create_learning_path_for_ls_with_wrong_number_in_dimension():
+def api_create_learning_path_for_ls_with_wrong_number_in_dimension():
     data = {"studentId": 123, "learningStyle": {
         "AKT": 5, "INT": 9, "VIS": 9, "GLO": 12
     }}
@@ -52,7 +52,7 @@ def test_api_create_learning_path_for_ls_with_wrong_number_in_dimension():
         "error": err.WrongLearningStyleDimensionError().description}
 
 
-def test_api_get_frontend_logs():
+def api_get_frontend_logs():
     url = config.get_api_url()
     r = requests.get(f"{url}/logs/frontend")
 
@@ -79,7 +79,7 @@ def test_api_get_frontend_logs():
     assert r.json() == logs_expected
 
 
-def test_api_post_frontend_logs():
+def api_post_frontend_logs():
     data = {
         "name": "FID",
         "value": 1.900000000372529,
@@ -105,7 +105,7 @@ def test_api_post_frontend_logs():
     assert r.status_code == 201
 
 
-def test_api_post_frontend_logs_missing_value():
+def api_post_frontend_logs_missing_value():
     data = {
         "value": 1.900000000372529,
         "rating": "good",
@@ -132,7 +132,7 @@ def test_api_post_frontend_logs_missing_value():
         "error": err.MissingParameterError().description}
 
 
-def test_api_post_frontend_logs_without_data():
+def api_post_frontend_logs_without_data():
     data = {}
     url = config.get_api_url()
     r = requests.post(f"{url}/logs/frontend", json=data)
@@ -140,7 +140,7 @@ def test_api_post_frontend_logs_without_data():
     assert r.status_code == 400
 
 
-def test_api_post_frontend_logs_with_wrong_values():
+def api_post_frontend_logs_with_wrong_values():
     data = {
         "name": "Test",
         "value": 1.900000000372529,

@@ -1,21 +1,28 @@
-from distutils.command.config import config
 import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, clear_mappers
-import config
-
+from entrypoints.flask_app import app
 from repositories.orm import metadata, start_mappers
 
 
 @pytest.fixture
-def in_memory_db():  # pragma: no cover
-    engine = create_engine(config.get_postgres_uri())
+def in_memory_db():
+    engine = create_engine("sqlite:///:memory:")
     metadata.create_all(engine)
     return engine
 
 
 @pytest.fixture
-def session_factory(in_memory_db):  # pragma: no cover
+def session_factory(in_memory_db):
     start_mappers()
     yield sessionmaker(bind=in_memory_db)
     clear_mappers()
+
+
+@pytest.fixture
+def client():
+    app.config['TESTING'] = True
+
+    with app.app_context():
+        with app.test_client() as client:
+            yield client

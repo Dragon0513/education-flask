@@ -2,6 +2,12 @@
 
 FROM python:3.10.4-slim-buster
 
+RUN addgroup -S nonroot \
+    && adduser -S nonroot -G nonroot
+
+USER nonroot
+
+
 WORKDIR /python-docker
 
 COPY requirements.txt requirements.txt

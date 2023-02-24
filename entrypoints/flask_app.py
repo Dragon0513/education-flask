@@ -3,8 +3,11 @@ from service_layer import services, unit_of_work
 from repositories import orm
 import errors as err
 from flask_cors import CORS, cross_origin
+from flask_wtf.csrf import CSRFProtect
 
 app = Flask(__name__)
+csrf = CSRFProtect()
+csrf.init_app(app)
 CORS(app, supports_credentials=True)
 orm.start_mappers()
 
@@ -35,8 +38,7 @@ def handle_exception(err):
     return jsonify(response), err.code
 
 
-@app.route("/learningPath/<student_id>/<course_id>/<order_depth>",
-           methods=['POST', 'GET'])
+@app.route("/learningPath/<student_id>/<course_id>/<order_depth>")
 @cross_origin(supports_credentials=True)
 def get_learning_path(student_id, course_id, order_depth):
     method = request.method
@@ -73,7 +75,7 @@ def get_learning_path(student_id, course_id, order_depth):
             return jsonify(learning_path), status_code
 
 
-@app.route("/logs/frontend", methods=['POST', 'GET'])
+@app.route("/logs/frontend")
 @cross_origin(supports_credentials=True)
 def logging_frontend():
     method = request.method
@@ -122,7 +124,7 @@ def logging_frontend():
     return jsonify(return_message), status_code
 
 
-@app.route("/learningElement", methods=['GET', 'POST'])
+@app.route("/learningElement")
 @cross_origin(supports_credentials=True)
 def get_learning_elements():
     method = request.method
@@ -162,7 +164,7 @@ def get_learning_elements():
             return jsonify(learning_element), status_code
 
 
-@app.route("/learningElement/<element_id>", methods=['GET', 'PUT', 'DELETE'])
+@app.route("/learningElement/<element_id>")
 @cross_origin(supports_credentials=True)
 def get_learning_element_by_id(element_id):
     method = request.method
@@ -210,7 +212,7 @@ def get_learning_element_by_id(element_id):
             return jsonify(None), status_code
 
 
-@app.route('/course', methods=['GET', 'POST'])
+@app.route('/course')
 @cross_origin(supports_credentials=True)
 def get_courses():
     method = request.method
@@ -234,7 +236,7 @@ def get_courses():
             return jsonify(test), 201
 
 
-@app.route('/course/<course_id>', methods=['GET', 'PUT', 'DELETE'])
+@app.route('/course/<course_id>')
 @cross_origin(supports_credentials=True)
 def get_course_by_id(course_id):
     method = request.method
@@ -274,7 +276,7 @@ def get_course_by_id(course_id):
             return jsonify(None), status_code
 
 
-@app.route('/student', methods=['GET', 'POST'])
+@app.route('/student')
 @cross_origin(supports_credentials=True)
 def get_students():
     method = request.method
@@ -306,7 +308,7 @@ def get_students():
             return jsonify(student), status_code
 
 
-@app.route('/student/<student_id>', methods=['GET', 'PUT', 'DELETE'])
+@app.route('/student/<student_id>')
 @cross_origin(supports_credentials=True)
 def get_student_by_id(student_id):
     method = request.method
@@ -348,7 +350,7 @@ def get_student_by_id(student_id):
             return jsonify(None), status_code
 
 
-@app.route('/topic', methods=['GET', 'POST'])
+@app.route('/topic')
 @cross_origin(supports_credentials=True)
 def get_topics():
     method = request.method
@@ -388,7 +390,7 @@ def get_topics():
             return jsonify(topic), status_code
 
 
-@app.route('/topic/<course_id>/<order_depth>', methods=['GET'])
+@app.route('/topic/<course_id>/<order_depth>')
 @cross_origin(supports_credentials=True)
 def get_topics_for_course(course_id, order_depth):
     topics = services.get_topics_for_course(
@@ -403,7 +405,7 @@ def get_topics_for_course(course_id, order_depth):
     return jsonify(topics), status_code
 
 
-@app.route('/topic/<course_id>/<order_depth>/<ancestor_id>', methods=['GET'])
+@app.route('/topic/<course_id>/<order_depth>/<ancestor_id>')
 @cross_origin(supports_credentials=True)
 def get_topics_for_course_and_ancestor(course_id, order_depth, ancestor_id):
     topics = services.get_topics_for_course_and_ancestor(
@@ -419,7 +421,7 @@ def get_topics_for_course_and_ancestor(course_id, order_depth, ancestor_id):
     return jsonify(topics), status_code
 
 
-@app.route('/topic/<topic_id>', methods=['GET', 'PUT', 'DELETE'])
+@app.route('/topic/<topic_id>')
 @cross_origin(supports_credentials=True)
 def get_topic_by_id(topic_id):
     method = request.method

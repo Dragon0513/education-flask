@@ -31,7 +31,7 @@ jobs:
 
     - name: Test with pytest
       run: |
-        pytest --cov=. --cov-report term-missing --envfile .env
+        pytest --cov=. --cov-report term-missing
 
   Style:
     name: Code Style

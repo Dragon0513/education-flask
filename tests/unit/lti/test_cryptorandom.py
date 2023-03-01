@@ -61,7 +61,6 @@ def test_createuniqueid():
 
 def test_createuniqueidbase64():
     """Test the createuniqueidbase64"""
-
     # Arrange
     length = 32
     # Act
@@ -95,5 +94,24 @@ def test_getrandomstring():
     length = 64
     # Act
     result = CryptoRandom.getrandomstring(length)
+    # Assert
+    assert len(result) == length
+
+def test_getrandomstringbase64():
+    """Test the getrandomstringbase64 method."""
+    # Arrange
+    length = 32
+    # Act
+    result = CryptoRandom.getrandomstringbase64(length)
+    time.sleep(.02)
+    result2 = CryptoRandom.getrandomstringbase64(length)
+    # Assert
+    assert len(result) == length
+    assert result != result2
+
+    # Arrange
+    length = 64
+    # Act
+    result = CryptoRandom.getrandomstringbase64(length)
     # Assert
     assert len(result) == length

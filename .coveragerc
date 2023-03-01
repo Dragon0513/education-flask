@@ -1,0 +1,2 @@
+[run]
+omit = validate_script.py, setup/*

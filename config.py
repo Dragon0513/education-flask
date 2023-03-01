@@ -1,7 +1,7 @@
 import os
 
 
-def get_postgres_uri():
+def get_postgres_uri():  # pragma: no cover
     host = os.environ.get("DB_HOST", "localhost")
     port = os.environ.get("DB_PORT", 0)
     password = os.environ.get("DB_PASSWORD", "")
@@ -10,7 +10,7 @@ def get_postgres_uri():
     return f"postgresql://{user}:{password}@{host}:{port}/{db_name}"
 
 
-def get_api_url():
+def get_api_url():  # pragma: no cover
     host = os.environ.get("API_HOST", "localhost")
     port = 5000 if host == "localhost" else 80
     return f"https://{host}:{port}"

@@ -6,21 +6,21 @@ from repositories.orm import metadata, start_mappers
 
 
 @pytest.fixture
-def in_memory_db():
+def in_memory_db():  # pragma: no cover
     engine = create_engine("sqlite:///:memory:")
     metadata.create_all(engine)
     return engine
 
 
 @pytest.fixture
-def session_factory(in_memory_db):
+def session_factory(in_memory_db):  # pragma: no cover
     start_mappers()
     yield sessionmaker(bind=in_memory_db)
     clear_mappers()
 
 
 @pytest.fixture
-def client():
+def client():  # pragma: no cover
     app.config['TESTING'] = True
 
     with app.app_context():

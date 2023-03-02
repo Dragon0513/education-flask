@@ -89,12 +89,10 @@ This is not the Masterpassword to unlock the pgAdmin 4, but the password for the
 ## Running in Docker
 This project includes a Pipeline, that will automatically create a Docker image in the repository when merging into the main branch.
 This Docker image should always be the latest running version.
-It can be used by the following comands:
-`docker pull ghcr.io/haski-rak/haski-backend:main`
-Afterwards, start the Docker image as container with the following command:
-`docker run -d -p --env-file .env 5000:5000 haski-backend:main`
 Please create a .env file first locally, so that it can be passed with docker run.
 A template is provided in the .env_template file in this repository.
+Start the Docker image as container with the following command:
+`docker run -d -p --env-file <path/to/.env-File> 5000:5000 ghcr.io/haski-rak/haski-backend:main`
 
 ## Contribution
 For contributing to the project, please work on the Issues and fulfill the requested tasks.

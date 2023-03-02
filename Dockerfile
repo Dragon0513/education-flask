@@ -2,14 +2,9 @@
 
 FROM python:3.10.4-slim-buster
 
-RUN addgroup -S nonroot \
-    && adduser -S nonroot -G nonroot
-
-USER nonroot
+WORKDIR /app
 
 COPY ./requirements.txt /app/requirements.txt
-
-WORKDIR /app
 
 RUN pip3 install -r requirements.txt
 

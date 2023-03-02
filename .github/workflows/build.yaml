@@ -49,6 +49,10 @@ jobs:
         python3 -m pip install --upgrade pip
         pip3 install -r requirements.txt
 
+    - name: Create Database Tables
+      run: |
+        python db_setup.py
+
     - name: Test with pytest
       run: |
         pytest --cov=. --cov-report term-missing

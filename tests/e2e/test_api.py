@@ -1,8 +1,13 @@
 import pytest
-import config
-import requests
 import errors as err
 import json
+
+
+def test_api_post_course(client):
+    data = {"name": "Test Course"}
+    r = client.post("/course", json=data)
+
+    assert r.status_code == 201
 
 
 def test_api_get_frontend_logs(client):

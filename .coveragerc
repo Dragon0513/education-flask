@@ -1,2 +1,2 @@
 [run]
-omit = validate_script.py, setup/*
+omit = validate_script.py, setup/*, db_setup.py

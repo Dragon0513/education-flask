@@ -5,7 +5,6 @@ def test_getRandom():
     """Test the getRandom method."""
     # Act
     result = CryptoRandom.get_random()
-    time.sleep(.02)
     result2 = CryptoRandom.get_random()
     # Assert
     assert result != result2
@@ -16,7 +15,6 @@ def test_getrandbits():
     length = 32
     # Act
     result = CryptoRandom.getrandbits(length)
-    time.sleep(.02)
     result2 = CryptoRandom.getrandbits(length)
     # Assert
     assert result == result2
@@ -27,7 +25,6 @@ def test_getrandbytes():
     length = 32
     # Act
     result = CryptoRandom.getrandbytes(length)
-    time.sleep(.02)
     result2 = CryptoRandom.getrandbytes(length)
     # Assert
     assert len(result) == length
@@ -46,7 +43,6 @@ def test_createuniqueid():
     length = 32
     # Act
     result = CryptoRandom.createuniqueid(length)
-    time.sleep(.02)
     result2 = CryptoRandom.createuniqueid(length)
     # Assert
     assert len(result) == length
@@ -65,7 +61,6 @@ def test_createuniqueidbase64():
     length = 32
     # Act
     result = CryptoRandom.createuniqueidbase64(length)
-    time.sleep(.02)
     result2 = CryptoRandom.createuniqueidbase64(length)
     # Assert
     assert len(result) == length
@@ -84,7 +79,6 @@ def test_getrandomstring():
     length = 32
     # Act
     result = CryptoRandom.getrandomstring(length)
-    time.sleep(.02)
     result2 = CryptoRandom.getrandomstring(length)
     # Assert
     assert len(result) == length
@@ -103,7 +97,6 @@ def test_getrandomstringbase64():
     length = 32
     # Act
     result = CryptoRandom.getrandomstringbase64(length)
-    time.sleep(.02)
     result2 = CryptoRandom.getrandomstringbase64(length)
     # Assert
     assert len(result) == length

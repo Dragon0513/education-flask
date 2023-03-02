@@ -2,11 +2,11 @@ import os
 
 
 def get_postgres_uri():  # pragma: no cover
-    host = os.environ.get("DB_HOST", "localhost")
-    port = os.environ.get("DB_PORT", 0)
-    password = os.environ.get("DB_PASSWORD", "")
-    user = os.environ.get("DB_USER", "")
-    db_name = os.environ.get("DB_NAME", "")
+    host = os.environ.get("DB_HOST", "127.0.0.1")
+    port = os.environ.get("DB_PORT", 5432)
+    password = os.environ.get("DB_PASSWORD", "postgres")
+    user = os.environ.get("DB_USER", "postgres")
+    db_name = os.environ.get("DB_NAME", "haski")
     return f"postgresql://{user}:{password}@{host}:{port}/{db_name}"
 
 

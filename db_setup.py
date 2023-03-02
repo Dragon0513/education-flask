@@ -1,45 +1,45 @@
 import psycopg2
 import os
 
-#Establishing the connection
+# Establishing the connection
 conn = psycopg2.connect(
     database="postgres",
     user='postgres',
-    password=os.environ.get("DB_PASSWORD", ""),
-    host=os.environ.get("DB_HOST", "localhost"), 
-    port= os.environ.get("DB_PORT", 0)
+    password=os.environ.get("DB_PASSWORD", "postgres"),
+    host=os.environ.get("DB_HOST", "localhost"),
+    port=os.environ.get("DB_PORT", 5432)
 )
 
 conn.autocommit = True
 
-#Creating a cursor object using the cursor() method
+# Creating a cursor object using the cursor() method
 cursor = conn.cursor()
 
-#Preparing query to create a database
+# Preparing query to create a database
 sql = '''CREATE database HASKI'''
 
-#Creating a database
+# Creating a database
 cursor.execute(sql)
 
 conn.commit()
-#Closing the connection
+# Closing the connection
 conn.close()
 
-#Establishing the connection
+# Establishing the connection
 conn = psycopg2.connect(
     database=os.environ.get("DB_NAME", "haski"),
     user='postgres',
-    password=os.environ.get("DB_PASSWORD", "HASKI-ADM"),
-    host=os.environ.get("DB_HOST", "127.0.0.1"), 
-    port= os.environ.get("DB_PORT", 5432)
+    password=os.environ.get("DB_PASSWORD", "postgres"),
+    host=os.environ.get("DB_HOST", "127.0.0.1"),
+    port=os.environ.get("DB_PORT", 5432)
 )
 
 conn.autocommit = True
 
-#Creating a cursor object using the cursor() method
+# Creating a cursor object using the cursor() method
 cursor = conn.cursor()
 
-#Doping EMPLOYEE table if already exists.
+# Doping EMPLOYEE table if already exists.
 cursor.execute("DROP TABLE IF EXISTS learning_element")
 cursor.execute("DROP TABLE IF EXISTS learning_path")
 cursor.execute("DROP TABLE IF EXISTS course")
@@ -48,8 +48,8 @@ cursor.execute("DROP TABLE IF EXISTS topic")
 cursor.execute("DROP TABLE IF EXISTS student_element")
 cursor.execute("DROP TABLE IF EXISTS student_topic")
 
-#Creating table as per requirement
-sql ='''
+# Creating table as per requirement
+sql = '''
     CREATE TABLE student(
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -58,7 +58,7 @@ sql ='''
 '''
 cursor.execute(sql)
 
-sql ='''
+sql = '''
     CREATE TABLE course(
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL
@@ -66,7 +66,7 @@ sql ='''
 '''
 cursor.execute(sql)
 
-sql ='''
+sql = '''
     CREATE TABLE learning_path(
     id BIGSERIAL PRIMARY KEY,
     student_id integer NOT NULL,
@@ -86,7 +86,7 @@ sql ='''
 '''
 cursor.execute(sql)
 
-sql ='''
+sql = '''
     CREATE TABLE topic(
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -102,7 +102,7 @@ sql ='''
 '''
 cursor.execute(sql)
 
-sql ='''
+sql = '''
     CREATE TABLE learning_element(
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -118,7 +118,7 @@ sql ='''
 '''
 cursor.execute(sql)
 
-sql ='''
+sql = '''
     CREATE TABLE student_element(
     id BIGSERIAL PRIMARY KEY,
     student_id INTEGER NOT NULL,
@@ -138,7 +138,7 @@ sql ='''
 '''
 cursor.execute(sql)
 
-sql ='''
+sql = '''
     CREATE TABLE student_topic(
     id BIGSERIAL PRIMARY KEY,
     topic_id INTEGER NOT NULL,
@@ -165,5 +165,5 @@ sql ='''
 cursor.execute(sql)
 
 conn.commit()
-#Closing the connection
+# Closing the connection
 conn.close()

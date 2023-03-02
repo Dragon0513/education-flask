@@ -1,6 +1,8 @@
 from service_layer.crypto.cryptorandom import CryptoRandom
 import base64
 
+#pytest tests\unit\lti\test_cryptorandom.py --cov
+
 def test_getRandom():
     """Test the getRandom method."""
     # Act

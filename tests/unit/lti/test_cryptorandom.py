@@ -1,5 +1,5 @@
 from service_layer.crypto.cryptorandom import CryptoRandom
-import time
+import base64
 
 def test_getRandom():
     """Test the getRandom method."""
@@ -17,7 +17,7 @@ def test_getrandbits():
     result = CryptoRandom.getrandbits(length)
     result2 = CryptoRandom.getrandbits(length)
     # Assert
-    assert result == result2
+    assert result != result2
 
 def test_getrandbytes():
     """Test the getrandombytes method."""
@@ -63,7 +63,7 @@ def test_createuniqueidbase64():
     result = CryptoRandom.createuniqueidbase64(length)
     result2 = CryptoRandom.createuniqueidbase64(length)
     # Assert
-    assert len(result) == length
+    assert len(base64.b64decode(bytes(result, 'utf-8'))) == length
     assert result != result2
 
     # Arrange
@@ -71,7 +71,7 @@ def test_createuniqueidbase64():
     # Act
     result = CryptoRandom.createuniqueidbase64(length)
     # Assert
-    assert len(result) == length
+    assert len(base64.b64decode(bytes(result, 'utf-8'))) == length
 
 def test_getrandomstring():
     """Test the getrandomstring method."""
@@ -99,12 +99,14 @@ def test_getrandomstringbase64():
     result = CryptoRandom.getrandomstringbase64(length)
     result2 = CryptoRandom.getrandomstringbase64(length)
     # Assert
-    assert len(result) == length
+
+    #base64.b64decode(result)
+    assert len(base64.b64decode(bytes(result, 'utf-8'))) == length
     assert result != result2
 
     # Arrange
     length = 64
     # Act
-    result = CryptoRandom.getrandomstringbase64(length)
+    result = CryptoRandom.getrandomstringbase64(length)   
     # Assert
-    assert len(result) == length
+    assert len(base64.b64decode(bytes(result, 'utf-8'))) == length

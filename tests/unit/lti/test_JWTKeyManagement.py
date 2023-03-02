@@ -30,7 +30,7 @@ def test_load_jwt():
     claims = jwt.load_jwt(token)
 
     #Assert
-    #assert claims == b
+    assert claims == test_dictionary
 
 
 def test_sign_verify_jwt():

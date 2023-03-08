@@ -13,4 +13,4 @@ def get_postgres_uri():  # pragma: no cover
 def get_api_url():  # pragma: no cover
     host = os.environ.get("API_HOST", "localhost")
     port = 5000 if host == "localhost" else 80
-    return f"https://{host}:{port}"
+    return f"http://{host}:{port}"

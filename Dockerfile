@@ -22,12 +22,10 @@ COPY setup/ /app/setup/
 
 COPY tests/ /app/tests/
 
-COPY .flaskenv /app/
+COPY .flaskenv /app/.flaskenv
 
-COPY config.py /app/
+COPY config.py /app/config.py
 
-COPY errors.py /app/
-
-COPY requirements.txt /app/
+COPY errors.py /app/errors.py
 
 CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]

@@ -30,4 +30,4 @@ class ToolConfigJson():
 
     def get_frontend_login_url(self, iss : str) -> str:
         """ Returns the frontend login url from the config file"""
-        return self._iss_conf_dict[iss]['frontend_login_url']
+        return self._iss_conf_dict[iss]['frontend_login_url']  

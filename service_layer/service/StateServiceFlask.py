@@ -1,5 +1,4 @@
 import datetime
-import jwt
 from service_layer.service.StateService import StateService
 from flask.sessions import SessionMixin
 import service_layer.crypto.JWTKeyManagement as JWTKeyManagement

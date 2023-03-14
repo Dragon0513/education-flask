@@ -7,6 +7,7 @@ import service_layer.crypto.JWTKeyManagement as jwt
 private_key_location : str = "keys/private.pem"
 public_key_location : str = "keys/public.pem"
 
+#pytest tests\unit\lti\test_JWTKeyManagement.py --cov
 
 def test_get_unverified_header():
     """Test if a unverified header contains the correct information."""

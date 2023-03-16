@@ -1,38 +1,178 @@
---Table: public.learning_path_test
+-- User
+DROP TABLE IF EXISTS public."user";
 
-DROP TABLE IF EXISTS public.learning_path_test;
-
-CREATE TABLE IF NOT EXISTS public.learning_path_test
+CREATE TABLE IF NOT EXISTS public."user"
 (
-    id integer NOT NULL,
-    student_id integer NOT NULL,
-    learning_path text COLLATE pg_catalog."default" NOT NULL,
-    CONSTRAINT learning_path_pkey PRIMARY KEY (id)
+    id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+    name text COLLATE pg_catalog."default" NOT NULL,
+    university text COLLATE pg_catalog."default" NOT NULL,
+    lms_user_id integer NOT NULL,
+    CONSTRAINT user_pkey PRIMARY KEY (id)
 )
 
 TABLESPACE pg_default;
 
-ALTER TABLE IF EXISTS public.learning_path_test
+ALTER TABLE IF EXISTS public."user"
     OWNER to postgres;
 
+--Settings
+DROP TABLE IF EXISTS public.settings;
 
--- Table: public.learning_element
+CREATE TABLE IF NOT EXISTS public.settings
+(
+    id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+    user_id integer NOT NULL,
+    theme text COLLATE pg_catalog."default",
+    pswd text COLLATE pg_catalog."default",
+    CONSTRAINT settings_pkey PRIMARY KEY (id),
+    CONSTRAINT user_id FOREIGN KEY (user_id)
+        REFERENCES public."user" (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
+)
 
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.settings
+    OWNER to postgres;
+
+-- Admin
+DROP TABLE IF EXISTS public.admin;
+
+CREATE TABLE IF NOT EXISTS public.admin
+(
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    CONSTRAINT admin_pkey PRIMARY KEY (id),
+    CONSTRAINT user_id FOREIGN KEY (user_id)
+        REFERENCES public."user" (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.admin
+    OWNER to postgres;
+
+-- Course Creator
+DROP TABLE IF EXISTS public.course_creator;
+
+CREATE TABLE IF NOT EXISTS public.course_creator
+(
+    id integer NOT NULL,
+    user_id integer,
+    CONSTRAINT course_creator_pkey PRIMARY KEY (id),
+    CONSTRAINT user_id FOREIGN KEY (user_id)
+        REFERENCES public."user" (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.course_creator
+    OWNER to postgres;
+
+-- Teacher
+DROP TABLE IF EXISTS public.teacher;
+
+CREATE TABLE IF NOT EXISTS public.teacher
+(
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    CONSTRAINT teacher_pkey PRIMARY KEY (id),
+    CONSTRAINT user_id FOREIGN KEY (user_id)
+        REFERENCES public."user" (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.teacher
+    OWNER to postgres;
+
+-- Student
+DROP TABLE IF EXISTS public.student;
+
+CREATE TABLE IF NOT EXISTS public.student
+(
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    CONSTRAINT student_pkey PRIMARY KEY (id),
+    CONSTRAINT user_id FOREIGN KEY (user_id)
+        REFERENCES public."user" (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.student
+    OWNER to postgres;
+
+-- Course
+DROP TABLE IF EXISTS public.course;
+
+CREATE TABLE IF NOT EXISTS public.course
+(
+    id integer NOT NULL,
+    lms_id integer NOT NULL,
+    name text COLLATE pg_catalog."default" NOT NULL,
+    university text COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT course_pkey PRIMARY KEY (id)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.course
+    OWNER to postgres;
+
+-- Topic
+DROP TABLE IF EXISTS public.topic;
+
+CREATE TABLE IF NOT EXISTS public.topic
+(
+    id integer NOT NULL,
+    lms_id integer NOT NULL,
+    is_topic boolean NOT NULL,
+    parent_id integer,
+    contains_le boolean NOT NULL,
+    name text COLLATE pg_catalog."default" NOT NULL,
+    university text COLLATE pg_catalog."default" NOT NULL,
+    created_by text COLLATE pg_catalog."default" NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    last_updated timestamp without time zone,
+    CONSTRAINT topic_pkey PRIMARY KEY (id),
+    CONSTRAINT topic_id FOREIGN KEY (parent_id)
+        REFERENCES public.topic (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.topic
+    OWNER to postgres;
+
+-- Learning Element
 DROP TABLE IF EXISTS public.learning_element;
 
 CREATE TABLE IF NOT EXISTS public.learning_element
 (
-    id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 25 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
-    name text COLLATE pg_catalog."default" NOT NULL,
+    id integer NOT NULL,
+    lms_id integer NOT NULL,
+    activity_type text COLLATE pg_catalog."default" NOT NULL,
     classification text COLLATE pg_catalog."default" NOT NULL,
-    ancestor_id integer NOT NULL,
-    prerequisite_id text COLLATE pg_catalog."default",
-    order_depth integer NOT NULL,
-    CONSTRAINT learning_element_pkey PRIMARY KEY (id),
-    CONSTRAINT learning_element_ancestor_id_fkey FOREIGN KEY (ancestor_id)
-        REFERENCES public.topic (id) MATCH SIMPLE
-        ON UPDATE NO ACTION
-        ON DELETE NO ACTION
+    name text COLLATE pg_catalog."default" NOT NULL,
+    university text COLLATE pg_catalog."default" NOT NULL,
+    created_by text COLLATE pg_catalog."default" NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    last_updated timestamp without time zone,
+    CONSTRAINT learning_element_pkey PRIMARY KEY (id)
 )
 
 TABLESPACE pg_default;
@@ -40,20 +180,224 @@ TABLESPACE pg_default;
 ALTER TABLE IF EXISTS public.learning_element
     OWNER to postgres;
 
+-- Course Topic
+DROP TABLE IF EXISTS public.course_topic;
 
--- Table: public.learning_path
+CREATE TABLE IF NOT EXISTS public.course_topic
+(
+    id integer NOT NULL,
+    course_id integer NOT NULL,
+    topic_id integer NOT NULL,
+    CONSTRAINT course_topic_pkey PRIMARY KEY (id),
+    CONSTRAINT course_id FOREIGN KEY (course_id)
+        REFERENCES public.course (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT topic_id FOREIGN KEY (topic_id)
+        REFERENCES public.topic (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
 
-DROP TABLE IF EXISTS public.learning_path;
+TABLESPACE pg_default;
 
-CREATE TABLE IF NOT EXISTS public.learning_path
+ALTER TABLE IF EXISTS public.course_topic
+    OWNER to postgres;
+
+-- Topic Learning Element
+DROP TABLE IF EXISTS public.topic_learning_element;
+
+CREATE TABLE IF NOT EXISTS public.topic_learning_element
+(
+    id integer NOT NULL,
+    topic_id integer NOT NULL,
+    learning_element_id integer NOT NULL,
+    CONSTRAINT topic_learninf_element_pkey PRIMARY KEY (id),
+    CONSTRAINT learning_element_id FOREIGN KEY (learning_element_id)
+        REFERENCES public.learning_element (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT topic_id FOREIGN KEY (topic_id)
+        REFERENCES public.topic (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.topic_learning_element
+    OWNER to postgres;
+
+-- Learning Characteristic
+DROP TABLE IF EXISTS public.learning_characteristics;
+
+CREATE TABLE IF NOT EXISTS public.learning_characteristics
+(
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    CONSTRAINT learning_characteristics_pkey PRIMARY KEY (id),
+    CONSTRAINT user_id FOREIGN KEY (user_id)
+        REFERENCES public."user" (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.learning_characteristics
+    OWNER to postgres;
+
+-- Learning Style
+DROP TABLE IF EXISTS public.learning_style;
+
+CREATE TABLE IF NOT EXISTS public.learning_style
+(
+    id integer NOT NULL,
+    characteristic_id integer NOT NULL,
+    perception_dimension text COLLATE pg_catalog."default" NOT NULL,
+    perception_value integer NOT NULL,
+    input_dimension text COLLATE pg_catalog."default" NOT NULL,
+    input_value integer NOT NULL,
+    processing_dimension text COLLATE pg_catalog."default" NOT NULL,
+    processing_value integer NOT NULL,
+    understanding_dimension text COLLATE pg_catalog."default" NOT NULL,
+    understanding_value integer NOT NULL,
+    CONSTRAINT learning_style_pkey PRIMARY KEY (id),
+    CONSTRAINT characteristic_id FOREIGN KEY (characteristic_id)
+        REFERENCES public.learning_characteristics (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.learning_style
+    OWNER to postgres;
+
+-- Learning Strategy
+DROP TABLE IF EXISTS public.learning_strategy;
+
+CREATE TABLE IF NOT EXISTS public.learning_strategy
+(
+    id integer NOT NULL,
+    characterisitc_id integer NOT NULL,
+    CONSTRAINT learning_strategy_pkey PRIMARY KEY (id),
+    CONSTRAINT characterisitc_id FOREIGN KEY (characterisitc_id)
+        REFERENCES public.learning_characteristics (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.learning_strategy
+    OWNER to postgres;
+
+-- Knowledge
+DROP TABLE IF EXISTS public.knowledge;
+
+CREATE TABLE IF NOT EXISTS public.knowledge
+(
+    id integer NOT NULL,
+    characterisitc_id integer NOT NULL,
+    CONSTRAINT knowledge_pkey PRIMARY KEY (id),
+    CONSTRAINT characterisitc_id FOREIGN KEY (characterisitc_id)
+        REFERENCES public.learning_characteristics (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.knowledge
+    OWNER to postgres;
+
+-- Learning Analytics
+DROP TABLE IF EXISTS public.learning_analytics;
+
+CREATE TABLE IF NOT EXISTS public.learning_analytics
+(
+    id integer NOT NULL,
+    characterisitc_id integer NOT NULL,
+    CONSTRAINT learning_analytics_pkey PRIMARY KEY (id),
+    CONSTRAINT characterisitc_id FOREIGN KEY (characterisitc_id)
+        REFERENCES public.learning_characteristics (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.learning_analytics
+    OWNER to postgres;
+
+-- Course Creator Course
+DROP TABLE IF EXISTS public.course_creator_course;
+
+CREATE TABLE IF NOT EXISTS public.course_creator_course
+(
+    id integer NOT NULL,
+    course_creator_id integer NOT NULL,
+    course_id integer NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    last_updated timestamp without time zone,
+    CONSTRAINT course_creator_course_pkey PRIMARY KEY (id),
+    CONSTRAINT course_creator_id FOREIGN KEY (course_creator_id)
+        REFERENCES public.course_creator (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT course_id FOREIGN KEY (course_id)
+        REFERENCES public.course (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.course_creator_course
+    OWNER to postgres;
+
+-- Teacher Course
+DROP TABLE IF EXISTS public.teacher_course;
+
+CREATE TABLE IF NOT EXISTS public.teacher_course
+(
+    id integer NOT NULL,
+    teacher_id integer NOT NULL,
+    course_id integer NOT NULL,
+    CONSTRAINT teacher_course_pkey PRIMARY KEY (id),
+    CONSTRAINT course_id FOREIGN KEY (course_id)
+        REFERENCES public.course (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT teacher_id FOREIGN KEY (teacher_id)
+        REFERENCES public.teacher (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.teacher_course
+    OWNER to postgres;
+
+-- Student Course
+DROP TABLE IF EXISTS public.student_course;
+
+CREATE TABLE IF NOT EXISTS public.student_course
 (
     id integer NOT NULL,
     student_id integer NOT NULL,
     course_id integer NOT NULL,
-    contains_le boolean NOT NULL,
-    order_depth integer NOT NULL,
-    path text COLLATE pg_catalog."default",
-    CONSTRAINT learning_path_pkey1 PRIMARY KEY (id),
+    perception_dimension text COLLATE pg_catalog."default" NOT NULL,
+    perception_value integer NOT NULL,
+    input_dimension text COLLATE pg_catalog."default" NOT NULL,
+    input_value integer NOT NULL,
+    processing_dimension text COLLATE pg_catalog."default" NOT NULL,
+    processing_value integer NOT NULL,
+    understanding_dimension text COLLATE pg_catalog."default" NOT NULL,
+    understanding_value integer NOT NULL,
+    CONSTRAINT student_course_pkey PRIMARY KEY (id),
     CONSTRAINT course_id FOREIGN KEY (course_id)
         REFERENCES public.course (id) MATCH SIMPLE
         ON UPDATE NO ACTION
@@ -66,63 +410,77 @@ CREATE TABLE IF NOT EXISTS public.learning_path
 
 TABLESPACE pg_default;
 
-ALTER TABLE IF EXISTS public.learning_path
+ALTER TABLE IF EXISTS public.student_course
     OWNER to postgres;
 
+-- Student Topic
+DROP TABLE IF EXISTS public.student_topic;
 
--- Table: public.course
-
-DROP TABLE IF EXISTS public.course;
-
-CREATE TABLE IF NOT EXISTS public.course
-(
-    id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 2 MINVALUE 2 MAXVALUE 2147483647 CACHE 1 ),
-    name text COLLATE pg_catalog."default" NOT NULL,
-    CONSTRAINT course_pkey PRIMARY KEY (id)
-)
-
-TABLESPACE pg_default;
-
-ALTER TABLE IF EXISTS public.course
-    OWNER to postgres;
-
-
--- Table: public.student
-
-DROP TABLE IF EXISTS public.student;
-
-CREATE TABLE IF NOT EXISTS public.student
-(
-    id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 3 MINVALUE 3 MAXVALUE 2147483647 CACHE 1 ),
-    name text COLLATE pg_catalog."default" NOT NULL,
-    learning_style text COLLATE pg_catalog."default",
-    CONSTRAINT student_pkey PRIMARY KEY (id)
-)
-
-TABLESPACE pg_default;
-
-ALTER TABLE IF EXISTS public.student
-    OWNER to postgres;
-
-
--- Table: public.student_element
-
-DROP TABLE IF EXISTS public.student_element;
-
-CREATE TABLE IF NOT EXISTS public.student_element
+CREATE TABLE IF NOT EXISTS public.student_topic
 (
     id integer NOT NULL,
     student_id integer NOT NULL,
-    element_id integer NOT NULL,
-    is_recommended boolean NOT NULL,
+    topic_id integer NOT NULL,
     done boolean NOT NULL,
-    done_at date,
-    CONSTRAINT student_element_pkey PRIMARY KEY (id),
-    CONSTRAINT student_element_element_id_fkey FOREIGN KEY (element_id)
+    done_at timestamp without time zone,
+    CONSTRAINT student_topic_pkey PRIMARY KEY (id),
+    CONSTRAINT student_id FOREIGN KEY (student_id)
+        REFERENCES public.student (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT topic_id FOREIGN KEY (topic_id)
+        REFERENCES public.topic (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.student_topic
+    OWNER to postgres;
+
+-- Student Topic Visit
+DROP TABLE IF EXISTS public.student_topic_visit;
+
+CREATE TABLE IF NOT EXISTS public.student_topic_visit
+(
+    id integer NOT NULL,
+    student_id integer NOT NULL,
+    topic_id integer NOT NULL,
+    visit_start timestamp without time zone NOT NULL,
+    visit_end timestamp without time zone,
+    CONSTRAINT student_topic_visit_pkey PRIMARY KEY (id),
+    CONSTRAINT student_id FOREIGN KEY (student_id)
+        REFERENCES public.student (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT topic_id FOREIGN KEY (topic_id)
+        REFERENCES public.topic (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.student_topic_visit
+    OWNER to postgres;
+
+-- Student Learning Element
+DROP TABLE IF EXISTS public.student_learning_element;
+
+CREATE TABLE IF NOT EXISTS public.student_learning_element
+(
+    id integer NOT NULL,
+    student_id integer NOT NULL,
+    learning_element_id integer NOT NULL,
+    done boolean NOT NULL,
+    done_at timestamp without time zone,
+    CONSTRAINT student_learning_element_pkey PRIMARY KEY (id),
+    CONSTRAINT learning_element_id FOREIGN KEY (learning_element_id)
         REFERENCES public.learning_element (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION,
-    CONSTRAINT student_element_student_id_fkey FOREIGN KEY (student_id)
+    CONSTRAINT student_id FOREIGN KEY (student_id)
         REFERENCES public.student (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
@@ -130,25 +488,68 @@ CREATE TABLE IF NOT EXISTS public.student_element
 
 TABLESPACE pg_default;
 
-ALTER TABLE IF EXISTS public.student_element
+ALTER TABLE IF EXISTS public.student_learning_element
     OWNER to postgres;
 
+-- Student Learning Element Visit
+DROP TABLE IF EXISTS public.student_learning_element_visit;
 
--- Table: public.student_topic
-
-DROP TABLE IF EXISTS public.student_topic;
-
-CREATE TABLE IF NOT EXISTS public.student_topic
+CREATE TABLE IF NOT EXISTS public.student_learning_element_visit
 (
     id integer NOT NULL,
-    topic_id integer NOT NULL,
-    course_id integer NOT NULL,
     student_id integer NOT NULL,
-    is_recommended boolean NOT NULL,
-    sequence_nr integer NOT NULL,
-    done boolean NOT NULL DEFAULT false,
-    done_at date,
-    CONSTRAINT student_topic_pkey PRIMARY KEY (id),
+    learning_element_id integer NOT NULL,
+    visit_start timestamp without time zone NOT NULL,
+    visit_end timestamp without time zone,
+    CONSTRAINT student_learning_element_visit_pkey PRIMARY KEY (id),
+    CONSTRAINT learning_element_id FOREIGN KEY (learning_element_id)
+        REFERENCES public.learning_element (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT student_id FOREIGN KEY (student_id)
+        REFERENCES public.student (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.student_learning_element_visit
+    OWNER to postgres;
+
+-- Learning Element Rating
+DROP TABLE IF EXISTS public.learning_element_rating;
+
+CREATE TABLE IF NOT EXISTS public.learning_element_rating
+(
+    id integer NOT NULL,
+    learning_element_id integer NOT NULL,
+    rating integer NOT NULL,
+    message text COLLATE pg_catalog."default",
+    date timestamp without time zone NOT NULL,
+    CONSTRAINT learning_element_rating_pkey PRIMARY KEY (id),
+    CONSTRAINT learning_element_id FOREIGN KEY (learning_element_id)
+        REFERENCES public.learning_element (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.learning_element_rating
+    OWNER to postgres;
+
+-- Learning Path
+DROP TABLE IF EXISTS public.learning_path;
+
+CREATE TABLE IF NOT EXISTS public.learning_path
+(
+    id integer NOT NULL,
+    student_id integer NOT NULL,
+    course_id integer NOT NULL,
+    topic_id integer,
+    CONSTRAINT learning_path_pkey PRIMARY KEY (id),
     CONSTRAINT course_id FOREIGN KEY (course_id)
         REFERENCES public.course (id) MATCH SIMPLE
         ON UPDATE NO ACTION
@@ -165,30 +566,57 @@ CREATE TABLE IF NOT EXISTS public.student_topic
 
 TABLESPACE pg_default;
 
-ALTER TABLE IF EXISTS public.student_topic
+ALTER TABLE IF EXISTS public.learning_path
     OWNER to postgres;
 
+-- Learning Path Topic
+DROP TABLE IF EXISTS public.learning_path_topic;
 
--- Table: public.topic
-
-DROP TABLE IF EXISTS public.topic;
-
-CREATE TABLE IF NOT EXISTS public.topic
+CREATE TABLE IF NOT EXISTS public.learning_path_topic
 (
-    id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 17 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
-    name text COLLATE pg_catalog."default" NOT NULL,
-    course_id integer NOT NULL,
-    ancestor_id integer,
-    prerequisite_id integer,
-    order_depth integer NOT NULL,
-    CONSTRAINT topic_pkey PRIMARY KEY (id),
-    CONSTRAINT course_id FOREIGN KEY (course_id)
-        REFERENCES public.course (id) MATCH SIMPLE
+    id integer NOT NULL,
+    topic_id integer NOT NULL,
+    learning_path_id integer NOT NULL,
+    recommended boolean NOT NULL,
+    "position" integer NOT NULL,
+    CONSTRAINT learning_path_topic_pkey PRIMARY KEY (id),
+    CONSTRAINT learning_path_id FOREIGN KEY (learning_path_id)
+        REFERENCES public.learning_path (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT topic_id FOREIGN KEY (topic_id)
+        REFERENCES public.topic (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
 )
 
 TABLESPACE pg_default;
 
-ALTER TABLE IF EXISTS public.topic
+ALTER TABLE IF EXISTS public.learning_path_topic
+    OWNER to postgres;
+
+-- Learning Path Learning Element
+DROP TABLE IF EXISTS public.learning_path_learning_element;
+
+CREATE TABLE IF NOT EXISTS public.learning_path_learning_element
+(
+    id integer NOT NULL,
+    learning_element_id integer NOT NULL,
+    learning_path_id integer NOT NULL,
+    recommended boolean NOT NULL,
+    "position" integer NOT NULL,
+    CONSTRAINT learning_path_learning_element_pkey PRIMARY KEY (id),
+    CONSTRAINT learning_element_id FOREIGN KEY (learning_element_id)
+        REFERENCES public.learning_element (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT learning_path_id FOREIGN KEY (learning_path_id)
+        REFERENCES public.learning_path (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.learning_path_learning_element
     OWNER to postgres;

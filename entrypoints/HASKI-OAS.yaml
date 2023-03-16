@@ -1,389 +1,2621 @@
 openapi: "3.0.3"
 info:
   description: "This is the HASKI API documentation"
-  version: "0.1"
+  version: "1.0"
   title: "HASKI API"
 servers:
-- url: http://localhost:5000
+- url: http://localhost:5000/v1.0
   description: Development server (localhost)
 tags:
 - name: "HASKI-intern"
   description: "Communication between Backend and Frontend"
-- name: "moodle"
-  description: "Extension to communicate with Moodle LMS"
-- name: "logs"
+- name: "Logs"
   description: "All log data"
+- name: "Moodle"
+  description: "Extension to communicate with Moodle LMS"
+- name: "Student"
+  description: "All Student endpoints"
+- name: "User"
+  description: "All User endpoints"
+- name: "Teacher"
+  description: "All Teacher endpoints"
+- name: "CourseCreator"
+  description: "All Course Creator endpoints"
+- name: "Admin"
+  description: "All Admin endpoints"
 paths:
-  /logs/frontend:
+  /user/{user_id}/{moodle_user_id}:
     get:
       tags:
-      - "logs"
-      summary: "get all frontend logs"
-      description: "Get all available frontend log data sets"
-      operationId: "getFrontendLog"
+      - "HASKI-intern"
+      - "User"
+      summary: "Get User"
+      description: "Get the basic User data for a specific User"
+      operationId: "getUser"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          description: "The ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "moodle_user_id"
+          in: "path"
+          description: "The Moodle ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
       responses:
         "200":
-            description: "successful operation"
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/FrontendLogs'
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
         "400":
           description: "Bad Request"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: '#/components/schemas/GeneralError'
         "404":
-          description: "Logs not found"
+          description: "Not Found"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: '#/components/schemas/GeneralError'
+    put:
+      tags:
+      - "HASKI-intern"
+      - "User"
+      summary: "Update User"
+      description: "Update the basic User data for a specific User"
+      operationId: "putUser"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          description: "The ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "moodle_user_id"
+          in: "path"
+          description: "The Moodle ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Settings'
+      responses:
+        "201":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Settings'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+    delete:
+      tags:
+      - "HASKI-intern"
+      - "User"
+      summary: "Delete User"
+      description: "Delete a specific User from HASKI"
+      operationId: "deleteUser"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          description: "The ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "moodle_user_id"
+          in: "path"
+          description: "The Moodle ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+      responses:
+        "200":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Deletion'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+  /user/{user_id}/{moodle_user_id}/settings:
+    get:
+      tags:
+      - "HASKI-intern"
+      - "User"
+      summary: "Get User Settings"
+      description: "Get the basic User Settings for a specific User"
+      operationId: "getUserSettings"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          description: "The ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "moodle_user_id"
+          in: "path"
+          description: "The Moodle ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+      responses:
+        "200":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Settings'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+    put:
+      tags:
+      - "HASKI-intern"
+      - "User"
+      summary: "Update User Settings"
+      description: "Update the basic User Settings for a specific User"
+      operationId: "putUserSettings"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          description: "The ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "moodle_user_id"
+          in: "path"
+          description: "The Moodle ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Settings'
+      responses:
+        "201":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Settings'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+    delete:
+      tags:
+      - "HASKI-intern"
+      - "User"
+      summary: "Delete User Settings"
+      description: "Delete a specific User Settings from HASKI and set back to default Values"
+      operationId: "deleteUserSettings"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          description: "The ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "moodle_user_id"
+          in: "path"
+          description: "The Moodle ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+      responses:
+        "200":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Settings'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+  
+  /user/{user_id}/{moodle_user_id}/student/{student_id}/learningCharacteristics:
+    get:
+      tags:
+        - "HASKI-intern"
+        - "Student"
+      summary: "Get learning Characteristics"
+      description: "Get the learning characteristics for a specific Student"
+      operationId: "getLearningCharacteristics"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          description: "The ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "moodle_user_id"
+          in: "path"
+          description: "The Moodle ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "student_id"
+          in: "path"
+          description: "The ID of the Student"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+      responses:
+        "200":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LearningCharacteristics'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+    put:
+      tags:
+        - "HASKI-intern"
+        - "Student"
+      summary: "Update learning Characteristics"
+      description: "Update the learning characteristics for a specific Student"
+      operationId: "putLearningCharacteristics"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          description: "The ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "moodle_user_id"
+          in: "path"
+          description: "The Moodle ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "student_id"
+          in: "path"
+          description: "The ID of the Student"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LearningCharacteristics'
+      responses:
+        "201":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LearningCharacteristics'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+    delete:
+      tags:
+      - "HASKI-intern"
+      - "Student"
+      summary: "Delete Learning Characteristic"
+      description: "Delete Learning Characteristic for a specific User from HASKI"
+      operationId: "deleteLearningCharacteristic"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          description: "The ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "moodle_user_id"
+          in: "path"
+          description: "The Moodle ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "student_id"
+          in: "path"
+          description: "The ID of the Student"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+      responses:
+        "200":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Deletion'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+  /user/{user_id}/{moodle_user_id}/student/{student_id}/learningAnalytics:
+    get:
+      tags:
+        - "HASKI-intern"
+        - "Student"
+      summary: "Get learning Analytics"
+      description: "Get the learning analytics for a specific Student"
+      operationId: "getLearningAnalytics"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          description: "The ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "moodle_user_id"
+          in: "path"
+          description: "The Moodle ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "student_id"
+          in: "path"
+          description: "The ID of the Student"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+      responses:
+        "200":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LearningAnalytics'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+    delete:
+      tags:
+      - "HASKI-intern"
+      - "Student"
+      summary: "Delete Learning Analytics"
+      description: "Delete Learning Analytics for a specific User from HASKI"
+      operationId: "deleteLearningAnalytics"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          description: "The ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "moodle_user_id"
+          in: "path"
+          description: "The Moodle ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "student_id"
+          in: "path"
+          description: "The ID of the Student"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+      responses:
+        "200":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Deletion'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+  /user/{user_id}/{moodle_user_id}/student/{student_id}/learningStyle:
+    get:
+      tags:
+        - "HASKI-intern"
+        - "Student"
+      summary: "Get learning Style"
+      description: "Get the learning Style for a specific Student"
+      operationId: "getLearningStyle"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          description: "The ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "moodle_user_id"
+          in: "path"
+          description: "The Moodle ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "student_id"
+          in: "path"
+          description: "The ID of the Student"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+      responses:
+        "200":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LearningStyle'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+    put:
+      tags:
+        - "HASKI-intern"
+        - "Student"
+      summary: "Update learning Style"
+      description: "Update the learning Style for a specific Student"
+      operationId: "putLearningStyle"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          description: "The ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "moodle_user_id"
+          in: "path"
+          description: "The Moodle ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "student_id"
+          in: "path"
+          description: "The ID of the Student"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LearningStyle'
+      responses:
+        "201":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LearningStyle'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+    delete:
+      tags:
+      - "HASKI-intern"
+      - "Student"
+      summary: "Delete Learning Style"
+      description: "Delete Learning Style for a specific User from HASKI"
+      operationId: "deleteLearningStyle"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          description: "The ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "moodle_user_id"
+          in: "path"
+          description: "The Moodle ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "student_id"
+          in: "path"
+          description: "The ID of the Student"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+      responses:
+        "200":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Deletion'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+  /user/{user_id}/{moodle_user_id}/student/{student_id}/learningStrategy:
+    get:
+      tags:
+        - "HASKI-intern"
+        - "Student"
+      summary: "Get learning Strategy"
+      description: "Get the learning Strategy for a specific Student"
+      operationId: "getLearningStrategy"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          description: "The ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "moodle_user_id"
+          in: "path"
+          description: "The Moodle ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "student_id"
+          in: "path"
+          description: "The ID of the Student"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+      responses:
+        "200":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LearningStrategy'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+    delete:
+      tags:
+      - "HASKI-intern"
+      - "Student"
+      summary: "Delete Learning Strategy"
+      description: "Delete Learning Strategy for a specific User from HASKI"
+      operationId: "deleteLearningStrategy"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          description: "The ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "moodle_user_id"
+          in: "path"
+          description: "The Moodle ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "student_id"
+          in: "path"
+          description: "The ID of the Student"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+      responses:
+        "200":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Deletion'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+  /user/{user_id}/{moodle_user_id}/student/{student_id}/knowledge:
+    get:
+      tags:
+        - "HASKI-intern"
+        - "Student"
+      summary: "Get knowledge"
+      description: "Get the knowledge for a specific Student"
+      operationId: "getKnowledge"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          description: "The ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "moodle_user_id"
+          in: "path"
+          description: "The Moodle ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "student_id"
+          in: "path"
+          description: "The ID of the Student"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+      responses:
+        "200":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Knowledge'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+    delete:
+      tags:
+      - "HASKI-intern"
+      - "Student"
+      summary: "Delete knowledge"
+      description: "Delete knowledge for a specific User from HASKI"
+      operationId: "deleteKnowledge"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          description: "The ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "moodle_user_id"
+          in: "path"
+          description: "The Moodle ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "student_id"
+          in: "path"
+          description: "The ID of the Student"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+      responses:
+        "200":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Deletion'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+  /user/{user_id}/{moodle_user_id}/student/{student_id}/course:
+    get:
+      tags:
+        - "HASKI-intern"
+        - "Student"
+      summary: "Get Student Courses"
+      description: "Get all Courses for a specific Student"
+      operationId: "getStudentCourses"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          description: "The ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "moodle_user_id"
+          in: "path"
+          description: "The Moodle ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "student_id"
+          in: "path"
+          description: "The ID of the Student"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+      responses:
+        "200":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CoursesStudent'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+  /user/{user_id}/{moodle_user_id}/student/{student_id}/course/{course_id}:
+    get:
+      tags:
+        - "HASKI-intern"
+        - "Student"
+      summary: "Get Student Course"
+      description: "Get the course by ID for a specific Student"
+      operationId: "getStudentCourse"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          description: "The ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "moodle_user_id"
+          in: "path"
+          description: "The Moodle ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "student_id"
+          in: "path"
+          description: "The ID of the Student"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "course_id"
+          in: "path"
+          description: "The ID of the Course"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+      responses:
+        "200":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseStudent'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+  /user/{user_id}/{moodle_user_id}/student/{student_id}/course/{course_id}/recommendation:
+    get:
+      tags:
+        - "HASKI-intern"
+        - "Student"
+      summary: "Get Student Courses Recommendation"
+      description: "Get a topic recommendation for a specific Student in a specific Course"
+      operationId: "getStudentCoursesRecommendation"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          description: "The ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "moodle_user_id"
+          in: "path"
+          description: "The Moodle ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "student_id"
+          in: "path"
+          description: "The ID of the Student"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "course_id"
+          in: "path"
+          description: "The ID of the Course"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+      responses:
+        "200":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TopicStudent'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+  /user/{user_id}/{moodle_user_id}/student/{student_id}/course/{course_id}/learningPath:
+    get:
+      tags:
+        - "HASKI-intern"
+        - "Student"
+      summary: "Get Student Courses Learning Path"
+      description: "Get a topic learning path for a specific Student in a specific Course"
+      operationId: "getStudentCoursesLearningPath"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          description: "The ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "moodle_user_id"
+          in: "path"
+          description: "The Moodle ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "student_id"
+          in: "path"
+          description: "The ID of the Student"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "course_id"
+          in: "path"
+          description: "The ID of the Course"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+      responses:
+        "200":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TopicsPath'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+  /user/{user_id}/{moodle_user_id}/student/{student_id}/course/{course_id}/topic:
+    get:
+      tags:
+        - "HASKI-intern"
+        - "Student"
+      summary: "Get Student Courses Topics"
+      description: "Get all Topics for a specific Course for a specific Student"
+      operationId: "getStudentCoursesTopics"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          description: "The ID of the User"
+          required: true
+          schema:
+            type: "integer"
+          example: 1
+        - name: "moodle_user_id"
+          in: "path"
+          description: "The Moodle ID of the User"
+          required: true
+          schema:
+            type: "integer"
+          example: 1
+        - name: "student_id"
+          in: "path"
+          description: "The ID of the Student"
+          required: true
+          schema:
+            type: "integer"
+          example: 1
+        - name: "course_id"
+          in: path
+          description: "The ID of the course"
+          required: true
+          schema:
+            type: "integer"
+          example: 1
+      responses:
+        "200":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TopicsStudent'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+  /user/{user_id}/{moodle_user_id}/student/{student_id}/course/{course_id}/learningElement:
+    get:
+      tags:
+        - "HASKI-intern"
+        - "Student"
+      summary: "Get Student Courses LEs"
+      description: "Get all Learning Elements for a specific Course for a specific Student"
+      operationId: "getStudentCoursesLEs"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          description: "The ID of the User"
+          required: true
+          schema:
+            type: "integer"
+          example: 1
+        - name: "moodle_user_id"
+          in: "path"
+          description: "The Moodle ID of the User"
+          required: true
+          schema:
+            type: "integer"
+          example: 1
+        - name: "student_id"
+          in: "path"
+          description: "The ID of the Student"
+          required: true
+          schema:
+            type: "integer"
+          example: 1
+        - name: "course_id"
+          in: path
+          description: "The ID of the course"
+          required: true
+          schema:
+            type: "integer"
+          example: 1
+      responses:
+        "200":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LearningElementsStudent'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+  /user/{user_id}/{moodle_user_id}/student/{student_id}/course/{course_id}/topic/{topic_id}:
+    get:
+      tags:
+        - "HASKI-intern"
+        - "Student"
+      summary: "Get Student Courses Topic"
+      description: "Get a specific Topic for a specific Course for a specific Student"
+      operationId: "getStudentCoursesTopic"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          description: "The ID of the User"
+          required: true
+          schema:
+            type: "integer"
+          example: 1
+        - name: "moodle_user_id"
+          in: "path"
+          description: "The Moodle ID of the User"
+          required: true
+          schema:
+            type: "integer"
+          example: 1
+        - name: "student_id"
+          in: "path"
+          description: "The ID of the Student"
+          required: true
+          schema:
+            type: "integer"
+          example: 1
+        - name: "course_id"
+          in: path
+          description: "The ID of the course"
+          required: true
+          schema:
+            type: "integer"
+          example: 1
+        - name: "topic_id"
+          in: path
+          description: "The ID of the topic"
+          required: true
+          schema:
+            type: "integer"
+          example: 1
+      responses:
+        "200":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TopicStudent'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+  /user/{user_id}/{moodle_user_id}/student/{student_id}/course/{course_id}/topic/{topic_id}/recommendation: 
+    get:
+      tags:
+        - "HASKI-intern"
+        - "Student"
+      summary: "Get Student Courses Topic Recommendation"
+      description: "Get a recommendation for a Topic for a specific Course for a specific Student"
+      operationId: "getStudentCoursesTopicREcommendation"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          description: "The ID of the User"
+          required: true
+          schema:
+            type: "integer"
+          example: 1
+        - name: "moodle_user_id"
+          in: "path"
+          description: "The Moodle ID of the User"
+          required: true
+          schema:
+            type: "integer"
+          example: 1
+        - name: "student_id"
+          in: "path"
+          description: "The ID of the Student"
+          required: true
+          schema:
+            type: "integer"
+          example: 1
+        - name: "course_id"
+          in: path
+          description: "The ID of the course"
+          required: true
+          schema:
+            type: "integer"
+          example: 1
+        - name: "topic_id"
+          in: path
+          description: "The ID of the topic"
+          required: true
+          schema:
+            type: "integer"
+          example: 1
+      responses:
+        "200":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TopicStudent'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+  /user/{user_id}/{moodle_user_id}/student/{student_id}/course/{course_id}/topic/{topic_id}/learningPath:
+    get:
+      tags:
+        - "HASKI-intern"
+        - "Student"
+      summary: "Get Student Courses Learning Path"
+      description: "Get a topic learning path for a specific Student in a specific Course"
+      operationId: "getStudentCoursesTopicLearningPath"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          description: "The ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "moodle_user_id"
+          in: "path"
+          description: "The Moodle ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "student_id"
+          in: "path"
+          description: "The ID of the Student"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "course_id"
+          in: "path"
+          description: "The ID of the Course"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "topic_id"
+          in: "path"
+          description: "The ID of the Topic"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+      responses:
+        "200":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LearningElementsPath'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+  /user/{user_id}/{moodle_user_id}/student/{student_id}/course/{course_id}/topic/{topic_id}/subtopic:
+    get:
+      tags:
+        - "HASKI-intern"
+        - "Student"
+      summary: "Get Student Courses Topics Sub-Topics"
+      description: "Get all Sub-Topics for a specific Topic for a specific Course for a specific Student"
+      operationId: "getStudentCoursesTopicsSubTopic"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          description: "The ID of the User"
+          required: true
+          schema:
+            type: "integer"
+          example: 1
+        - name: "moodle_user_id"
+          in: "path"
+          description: "The Moodle ID of the User"
+          required: true
+          schema:
+            type: "integer"
+          example: 1
+        - name: "student_id"
+          in: "path"
+          description: "The ID of the Student"
+          required: true
+          schema:
+            type: "integer"
+          example: 1
+        - name: "course_id"
+          in: path
+          description: "The ID of the course"
+          required: true
+          schema:
+            type: "integer"
+          example: 1
+        - name: "topic_id"
+          in: path
+          description: "The ID of the topic"
+          required: true
+          schema:
+            type: "integer"
+          example: 1
+      responses:
+        "200":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TopicsStudent'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+  /user/{user_id}/{moodle_user_id}/student/{student_id}/course/{course_id}/topic/{topic_id}/learningElement:
+    get:
+      tags:
+        - "HASKI-intern"
+        - "Student"
+      summary: "Get Student Courses Topic LEs"
+      description: "Get all Learning Elements for a specific topic for a specific Course for a specific Student"
+      operationId: "getStudentCoursesTopicLEs"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          description: "The ID of the User"
+          required: true
+          schema:
+            type: "integer"
+          example: 1
+        - name: "moodle_user_id"
+          in: "path"
+          description: "The Moodle ID of the User"
+          required: true
+          schema:
+            type: "integer"
+          example: 1
+        - name: "student_id"
+          in: "path"
+          description: "The ID of the Student"
+          required: true
+          schema:
+            type: "integer"
+          example: 1
+        - name: "course_id"
+          in: path
+          description: "The ID of the course"
+          required: true
+          schema:
+            type: "integer"
+          example: 1
+        - name: "topic_id"
+          in: path
+          description: "The ID of the topic"
+          required: true
+          schema:
+            type: "integer"
+          example: 1
+      responses:
+        "200":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LearningElementsStudent'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+  /user/{user_id}/{moodle_user_id}/student/{student_id}/course/{course_id}/topic/{topic_id}/learningElement/{learning_element_id}:
+    get:
+      tags:
+        - "HASKI-intern"
+        - "Student"
+      summary: "Get Student Courses Topic LE"
+      description: "Get a specific Learning Element for a specific topic for a specific Course for a specific Student"
+      operationId: "getStudentCoursesTopicLE"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          description: "The ID of the User"
+          required: true
+          schema:
+            type: "integer"
+          example: 1
+        - name: "moodle_user_id"
+          in: "path"
+          description: "The Moodle ID of the User"
+          required: true
+          schema:
+            type: "integer"
+          example: 1
+        - name: "student_id"
+          in: "path"
+          description: "The ID of the Student"
+          required: true
+          schema:
+            type: "integer"
+          example: 1
+        - name: "course_id"
+          in: path
+          description: "The ID of the course"
+          required: true
+          schema:
+            type: "integer"
+          example: 1
+        - name: "topic_id"
+          in: path
+          description: "The ID of the topic"
+          required: true
+          schema:
+            type: "integer"
+          example: 1
+        - name: "learning_element_id"
+          in: path
+          description: "The ID of the learning element"
+          required: true
+          schema:
+            type: "integer"
+          example: 1
+      responses:
+        "200":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LearningElementStudent'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+  /user/{user_id}/{moodle_user_id}/student/{student_id}/dashboard/overview:
+    get:
+      tags:
+        - "HASKI-intern"
+        - "Student"
+      summary: "Get Student Dashboard Overview"
+      description: "Get the Dashboard Overview for a specific Student"
+      operationId: "getStudentDashbaordOverview"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          description: "The ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "moodle_user_id"
+          in: "path"
+          description: "The Moodle ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "student_id"
+          in: "path"
+          description: "The ID of the Student"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+      responses:
+        "200":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardStudentOverview'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+  /user/{user_id}/{moodle_user_id}/student/{student_id}/dashboard/course/{course_id}:
+    get:
+      tags:
+        - "HASKI-intern"
+        - "Student"
+      summary: "Get Student Dashboard Course"
+      description: "Get the Dashboard for a Course for a specific Student"
+      operationId: "getStudentDashbaordCourse"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          description: "The ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "moodle_user_id"
+          in: "path"
+          description: "The Moodle ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "student_id"
+          in: "path"
+          description: "The ID of the Student"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "course_id"
+          in: "path"
+          description: "The ID of the Course"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+      responses:
+        "200":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardStudentCourse'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+  /user/{user_id}/{moodle_user_id}/student/{student_id}/dashboard/course/{course_id}/topic/{topic_id}:
+    get:
+      tags:
+        - "HASKI-intern"
+        - "Student"
+      summary: "Get Student Dashboard Topic"
+      description: "Get the Dashboard for a Topic for a specific Student"
+      operationId: "getStudentDashbaordTopic"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          description: "The ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "moodle_user_id"
+          in: "path"
+          description: "The Moodle ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "student_id"
+          in: "path"
+          description: "The ID of the Student"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "course_id"
+          in: "path"
+          description: "The ID of the Course"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "topic_id"
+          in: "path"
+          description: "The ID of the Topic"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+      responses:
+        "200":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/DashboardStudentTopic'
+                - $ref: '#/components/schemas/DashboardStudentSubTopic'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+
+  /user/{user_id}/{moodle_user_id}/teacher/{teacher_id}/course:
+    get:
+      tags:
+        - "HASKI-intern"
+        - "Teacher"
+      summary: "Get Teacher Courses"
+      description: "Get all Courses for a specific Teacher"
+      operationId: "getTeacherCourses"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          description: "The ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "moodle_user_id"
+          in: "path"
+          description: "The Moodle ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "teacher_id"
+          in: "path"
+          description: "The ID of the Teacher"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+      responses:
+        "200":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CoursesTeacher'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+  /user/{user_id}/{moodle_user_id}/teacher/{teacher_id}/dashboard/course/{course_id}:
+    get:
+      tags:
+        - "HASKI-intern"
+        - "Teacher"
+      summary: "Get Teacher Daschboard Course"
+      description: "Get the Dashboard for a Course for a specific Teacher"
+      operationId: "getTeacherDashboardCourse"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          description: "The ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "moodle_user_id"
+          in: "path"
+          description: "The Moodle ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "teacher_id"
+          in: "path"
+          description: "The ID of the Teacher"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "course_id"
+          in: "path"
+          description: "The ID of the Course"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+      responses:
+        "200":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardTeacherCourse'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+  /user/{user_id}/{moodle_user_id}/teacher/{teacher_id}/dashboard/course/{course_id}/topic:
+    get:
+      tags:
+        - "HASKI-intern"
+        - "Teacher"
+      summary: "Get Teacher Daschboard Topic"
+      description: "Get the Dashboard for a Topic for a specific Teacher"
+      operationId: "getTeacherDashboardTopic"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          description: "The ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "moodle_user_id"
+          in: "path"
+          description: "The Moodle ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "teacher_id"
+          in: "path"
+          description: "The ID of the Teacher"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "course_id"
+          in: "path"
+          description: "The ID of the Course"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+      responses:
+        "200":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardTeacherTopic'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+  /user/{user_id}/{moodle_user_id}/teacher/{teacher_id}/dashboard/course/{course_id}/topic/{topic_id}:
+    get:
+      tags:
+        - "HASKI-intern"
+        - "Teacher"
+      summary: "Get Teacher Daschboard LE"
+      description: "Get the Dashboard for Learning Elements for a specific Teacher"
+      operationId: "getTeacherDashboardLE"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          description: "The ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "moodle_user_id"
+          in: "path"
+          description: "The Moodle ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "teacher_id"
+          in: "path"
+          description: "The ID of the Teacher"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "course_id"
+          in: "path"
+          description: "The ID of the Course"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "topic_id"
+          in: "path"
+          description: "The ID of the Topic"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+      responses:
+        "200":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardTeacherLearningElements'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+  
+  /user/{user_id}/{moodle_user_id}/courseCreator/{course_creator_id}/course:
+    get:
+      tags:
+        - "HASKI-intern"
+        - "CourseCreator"
+      summary: "Get Course Creator Courses"
+      description: "Get all Courses for a specific Teacher"
+      operationId: "getCourseCreatorCourses"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          description: "The ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "moodle_user_id"
+          in: "path"
+          description: "The Moodle ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "course_creator_id"
+          in: "path"
+          description: "The ID of the Course Creator"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+      responses:
+        "200":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CoursesCourseCreator'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+  
+  /user/{user_id}/{moodle_user_id}/admin/{admin_id}/course:
+    get:
+      tags:
+        - "HASKI-intern"
+        - "Admin"
+      summary: "Get Admin Courses"
+      description: "Get all Courses for a specific Admin"
+      operationId: "getAdminCourses"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          description: "The ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "moodle_user_id"
+          in: "path"
+          description: "The Moodle ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "admin_id"
+          in: "path"
+          description: "The ID of the Admin"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+      responses:
+        "200":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CoursesAdmin'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+  /user/{user_id}/{moodle_user_id}/admin/{admin_id}/user:
+    get:
+      tags:
+        - "HASKI-intern"
+        - "Admin"
+      summary: "Get Admin User"
+      description: "Get all Users for a specific Admin"
+      operationId: "getAdminUser"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          description: "The ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "moodle_user_id"
+          in: "path"
+          description: "The Moodle ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "admin_id"
+          in: "path"
+          description: "The ID of the Admin"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+      responses:
+        "200":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsersListAdmin'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+  /user/{user_id}/{moodle_user_id}/admin/{admin_id}/logs:
+    get:
+      tags:
+        - "HASKI-intern"
+        - "Admin"
+        - "Logs"
+      summary: "Get AdminLogs"
+      description: "Get all Logs for a specific Admin"
+      operationId: "getAdminLogs"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          description: "The ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "moodle_user_id"
+          in: "path"
+          description: "The Moodle ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "admin_id"
+          in: "path"
+          description: "The ID of the Admin"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+      responses:
+        "200":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Logs'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+  /user/{user_id}/{moodle_user_id}/admin/{admin_id}/logs/accessLogs:
+    get:
+      tags:
+        - "HASKI-intern"
+        - "Admin"
+        - "Logs"
+      summary: "Get Acess Logs"
+      description: "Get Access Logs for a specific Admin"
+      operationId: "getAccessLogs"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          description: "The ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "moodle_user_id"
+          in: "path"
+          description: "The Moodle ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "admin_id"
+          in: "path"
+          description: "The ID of the Admin"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+      responses:
+        "200":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: '#/components/schemas/AccessLog'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+  /user/{user_id}/{moodle_user_id}/admin/{admin_id}/logs/frontendLogs:
+    get:
+      tags:
+        - "HASKI-intern"
+        - "Admin"
+        - "Logs"
+      summary: "Get Frontend Logs"
+      description: "Get Frontend Logs for a specific Admin"
+      operationId: "getFrontendLogs"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          description: "The ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "moodle_user_id"
+          in: "path"
+          description: "The Moodle ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "admin_id"
+          in: "path"
+          description: "The ID of the Admin"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+      responses:
+        "200":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: '#/components/schemas/FrontendLog'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+  /user/{user_id}/{moodle_user_id}/admin/{admin_id}/logs/mainLogs:
+    get:
+      tags:
+        - "HASKI-intern"
+        - "Admin"
+        - "Logs"
+      summary: "Get Main Logs"
+      description: "Get Main Logs for a specific Admin"
+      operationId: "getMainLogs"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          description: "The ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "moodle_user_id"
+          in: "path"
+          description: "The Moodle ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "admin_id"
+          in: "path"
+          description: "The ID of the Admin"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+      responses:
+        "200":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: '#/components/schemas/MainLog'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+  /user/{user_id}/{moodle_user_id}/admin/{admin_id}/logs/errorLogs:
+    get:
+      tags:
+        - "HASKI-intern"
+        - "Admin"
+        - "Logs"
+      summary: "Get Error Logs"
+      description: "Get Error Logs for a specific Admin"
+      operationId: "getErrorLogs"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          description: "The ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "moodle_user_id"
+          in: "path"
+          description: "The Moodle ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "admin_id"
+          in: "path"
+          description: "The ID of the Admin"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+      responses:
+        "200":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: '#/components/schemas/ErrorLog'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+  /user/{user_id}/{moodle_user_id}/admin/{admin_id}/logs/systemLogs:
+    get:
+      tags:
+        - "HASKI-intern"
+        - "Admin"
+        - "Logs"
+      summary: "Get System Logs"
+      description: "Get System Logs for a specific Admin"
+      operationId: "getSystemLogs"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          description: "The ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "moodle_user_id"
+          in: "path"
+          description: "The Moodle ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "admin_id"
+          in: "path"
+          description: "The ID of the Admin"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+      responses:
+        "200":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: '#/components/schemas/SystemLog'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+
+  /logs/frontend:
     post:
       tags:
-      - "logs"
-      summary: "post frontend log"
-      description: "Post a new frontend log dataset"
+      - "HASKI-intern"
+      - "Logs"
+      summary: "Post Frontend Logs"
+      description: "Post a new Frontend Log to the Backend"
       operationId: "postFrontendLog"
       requestBody:
+        required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/FrontendLog'
       responses:
         "201":
-          description: "successful operation"
+          description: "Successful Operation"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SuccessMessage'
+                $ref: '#/components/schemas/FrontendLog'
         "400":
           description: "Bad Request"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: '#/components/schemas/GeneralError'
         "404":
-          description: "Logs not found"
+          description: "Not Found"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
-  /learningPath/{studentId}/{courseId}/{orderDepth}:
-    get:
-      tags:
-      - "HASKI-intern"
-      summary: "get a learning path"
-      description: "Get a user specific learning path without new calculation"
-      operationId: "getLearningPath"
-      parameters:
-        - name: "studentId"
-          in: "path"
-          description: "ID of the student"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-        - name: "courseId"
-          in: "path"
-          description: "ID of the course"
-          required: true
-          schema:
-            type: "integer"
-            format: "int64"
-          example: 1
-        - name: "orderDepth"
-          in: "path"
-          description: "Depth of the learning path as number (Topic, Sub-Topic, Learning-Element...)"
-          required: true
-          schema:
-            type: "integer"
-            format: "int64"
-          example: 1
-      responses: 
-        "200":
-            description: "successful operation"
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/LearningPath'
-        "400":
-          description: "Bad Request"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GeneralError"
-        "404":
-          description: "Learning Path not found"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: '#/components/schemas/GeneralError'
+  
+  /moodle/user:
     post:
       tags:
-      - "HASKI-intern"
-      summary: "calculate learning path"
-      description: "Generate a new learning path for a student in a module"
-      operationId: "postLearningPath"
-      parameters:
-        - name: "studentId"
-          in: "path"
-          description: "ID of the student"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-        - name: "courseId"
-          in: "path"
-          description: "ID of the course"
-          required: true
-          schema:
-            type: "integer"
-            format: "int64"
-          example: 1
-        - name: "orderDepth"
-          in: "path"
-          description: "Depth of the learning path as number (Topic, Sub-Topic, Learning-Element...)"
-          required: true
-          schema:
-            type: "integer"
-            format: "int64"
-          example: 1
-      requestBody:
-        required: false
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                algorithm:
-                  type: string
-                  description: "What algorithm the learning path should be calculated on. Available Options: Graf, ACO, GA. Default is Graf"
-                  example: "Graf"
-                learningStyle:
-                  type: string
-                  description: "The learning style of the student based on FSLSM. Default is AKT: 0, INT: 0, VIS: 0, GLO: 0"
-                  example: {"AKT": 0, "INT": 0, "VIS": 0, "GLO": 0}
-      responses:
-        "201":
-          description: "successful operation"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LearningPath'
-        "400":
-          description: "Bad Request"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GeneralError"
-        "404":
-          description: "Logs not found"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GeneralError"
-  /learningElement:
-    get:
-      tags:
-      - "HASKI-intern"
-      summary: "get all learning elements"
-      description: "Get all existing learning elements in the system"
-      operationId: "getLearningElements"
-      responses: 
-        "200":
-            description: "successful operation"
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/LearningElements'
-        "400":
-          description: "Bad Request"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GeneralError"
-        "404":
-          description: "Learning Path not found"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GeneralError"
-    post:
-      tags:
-      - "HASKI-intern"
-      summary: "create learning element"
-      description: "Post a new learning element to the HASSKI Backend"
-      operationId: "postLearningElement"
+      - "Moodle"
+      summary: "Create User from Moodle"
+      description: "Post the basic User data for a new User from Moodle"
+      operationId: "postUserMoodle"
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/LearningElement"
+              $ref: '#/components/schemas/User'
       responses:
         "201":
-          description: "successful operation"
+          description: "Successful Operation"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LearningElement'
+                $ref: '#/components/schemas/User'
         "400":
           description: "Bad Request"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: '#/components/schemas/GeneralError'
         "404":
-          description: "Logs not found"
+          description: "Not Found"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
-  /learningElement/{elementId}:
-    get:
-      tags:
-      - "HASKI-intern"
-      summary: "get learning element"
-      description: "Get a specific learning element by its ID"
-      operationId: "getLearningElement"
-      parameters:
-        - name: "elementId"
-          in: "path"
-          description: "ID of the learning element"
-          required: true
-          schema:
-            type: "integer"
-            format: "int64"
-      responses: 
-        "200":
-            description: "successful operation"
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/LearningElement'
-        "400":
-          description: "Bad Request"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GeneralError"
-        "404":
-          description: "Learning Path not found"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: '#/components/schemas/GeneralError'
+  /moodle/user/{user_id}/{moodle_user_id}:
     put:
       tags:
-      - "HASKI-intern"
-      summary: "update learning element"
-      description: "Update a specific learning element by its ID"
-      operationId: "putLearningElement"
+      - "Moodle"
+      summary: "Update User Moodle"
+      description: "Update the basic User data for a specific User from Moodle"
+      operationId: "putUserMoodle"
       parameters:
-        - name: "elementId"
+        - name: "user_id"
           in: "path"
-          description: "ID of the learning element"
+          description: "The ID of the User"
           required: true
           schema:
-            type: "integer"
-            format: "int64"
+            type: "string"
+          example: 1
+        - name: "moodle_user_id"
+          in: "path"
+          description: "The Moodle ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/LearningElement"
-      responses: 
-        "200":
-            description: "successful operation"
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/LearningElement'
-        "400":
-          description: "Bad Request"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GeneralError"
-        "404":
-          description: "Learning Path not found"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GeneralError"
-    delete:
-      tags:
-      - "HASKI-intern"
-      summary: "delete learning element"
-      description: "Delete a specific learning element by its ID"
-      operationId: "deleteLearningElement"
-      parameters:
-        - name: "elementId"
-          in: "path"
-          description: "ID of the learning element"
-          required: true
-          schema:
-            type: "integer"
-            format: "int64"
-      responses: 
-        "204":
-            description: "successful operation"
-        "400":
-          description: "Bad Request"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GeneralError"
-        "404":
-          description: "Learning Path not found"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GeneralError"
-  /course:
-    get:
-      tags:
-      - "HASKI-intern"
-      summary: "get all courses"
-      description: "Get all existing courses in the system"
-      operationId: "getCourses"
-      responses: 
-        "200":
-          description: "successful operation"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Courses"
-        "400":
-          description: "Bad Request"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GeneralError"
-        "404":
-          description: "Learning Path not found"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GeneralError"
-    post:
-      tags:
-      - "HASKI-intern"
-      summary: "create course"
-      description: "Post a new course to the HASSKI Backend"
-      operationId: "postCourse"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Course"
+              $ref: '#/components/schemas/User'
       responses:
         "201":
-          description: "successful operation"
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+    delete:
+      tags:
+      - "Moodle"
+      summary: "Delete User Moodle"
+      description: "Delete a specific User from HASKI from Moodle"
+      operationId: "deleteUserMoodle"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          description: "The ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "moodle_user_id"
+          in: "path"
+          description: "The Moodle ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+      responses:
+        "200":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Deletion'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+  /moodle/course:
+    post:
+      tags:
+      - "Moodle"
+      summary: "Create Course from Moodle"
+      description: "Post a new Course from Moodle"
+      operationId: "postCourseMoodle"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Course'
+      responses:
+        "201":
+          description: "Successful Operation"
           content:
             application/json:
               schema:
@@ -393,475 +2625,131 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: '#/components/schemas/GeneralError'
         "404":
-          description: "Logs not found"
+          description: "Not Found"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
-  /course/{courseId}:
-    get:
-      tags:
-      - "HASKI-intern"
-      summary: "get course"
-      description: "Get a specific course by its ID"
-      operationId: "getCourse"
-      parameters:
-        - name: "courseId"
-          in: "path"
-          description: "ID of the course"
-          required: true
-          schema:
-            type: "integer"
-            format: "int64"
-      responses: 
-        "200":
-            description: "successful operation"
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/Course'
-        "400":
-          description: "Bad Request"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GeneralError"
-        "404":
-          description: "Learning Path not found"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: '#/components/schemas/GeneralError'
+  /moodle/course/{course_id}/{moodle_course_id}:
     put:
       tags:
-      - "HASKI-intern"
-      summary: "update course"
-      description: "Update a specific course by its ID"
-      operationId: "putCourse"
+      - "Moodle"
+      summary: "Update Course Moodle"
+      description: "Update the basic Course data from Moodle"
+      operationId: "putCourseMoodle"
       parameters:
-        - name: "courseId"
+        - name: "course_id"
           in: "path"
-          description: "ID of the course"
+          description: "The ID of the Course"
           required: true
           schema:
-            type: "integer"
-            format: "int64"
+            type: "string"
+          example: 1
+        - name: "moodle_course_id"
+          in: "path"
+          description: "The ID of the Course in Moodle"
+          required: true
+          schema:
+            type: "string"
+          example: 1
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Course"
-      responses: 
-        "200":
-            description: "successful operation"
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/Course'
+              $ref: '#/components/schemas/Course'
+      responses:
+        "201":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
         "400":
           description: "Bad Request"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: '#/components/schemas/GeneralError'
         "404":
-          description: "Learning Path not found"
+          description: "Not Found"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: '#/components/schemas/GeneralError'
     delete:
       tags:
-      - "HASKI-intern"
-      summary: "delete course"
-      description: "Delete a specific course by its ID"
-      operationId: "deleteCourse"
+      - "Moodle"
+      summary: "Delete Course Moodle"
+      description: "Delete a Course from Moodle"
+      operationId: "deleteCourseMoodle"
       parameters:
-        - name: "courseId"
+        - name: "course_id"
           in: "path"
-          description: "ID of thecourse"
+          description: "The ID of the Course"
           required: true
           schema:
-            type: "integer"
-            format: "int64"
-      responses: 
-        "204":
-            description: "successful operation"
-        "400":
-          description: "Bad Request"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GeneralError"
-        "404":
-          description: "Learning Path not found"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GeneralError"
-  /student:
-    get:
-      tags:
-      - "HASKI-intern"
-      summary: "get all students"
-      description: "Get all existing students in the system"
-      operationId: "getStudents"
-      responses: 
+            type: "string"
+          example: 1
+        - name: "moodle_course_id"
+          in: "path"
+          description: "The ID of the Course in Moodle"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+      responses:
         "200":
-          description: "successful operation"
+          description: "Successful Operation"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Students"
+                $ref: '#/components/schemas/Deletion'
         "400":
           description: "Bad Request"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: '#/components/schemas/GeneralError'
         "404":
-          description: "Learning Path not found"
+          description: "Not Found"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: '#/components/schemas/GeneralError'
+  /moodle/course/{course_id}/{moodle_course_id}/topic:
     post:
       tags:
-      - "HASKI-intern"
-      summary: "create student"
-      description: "Post a new student to the HASSKI Backend"
-      operationId: "postStudent"
+      - "Moodle"
+      summary: "Create Topic from Moodle"
+      description: "Post a new Topic from Moodle"
+      operationId: "postTopicMoodle"
+      parameters:
+        - name: "course_id"
+          in: "path"
+          description: "The ID of the Course"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "moodle_course_id"
+          in: "path"
+          description: "The ID of the Course in Moodle"
+          required: true
+          schema:
+            type: "string"
+          example: 1
       requestBody:
         required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Student"
-      responses:
-        "201":
-          description: "successful operation"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Student'
-        "400":
-          description: "Bad Request"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GeneralError"
-        "404":
-          description: "Logs not found"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GeneralError"
-  /student/{studentId}:
-    get:
-      tags:
-      - "HASKI-intern"
-      summary: "get student"
-      description: "Get a specific student by its ID"
-      operationId: "getStudent"
-      parameters:
-        - name: "studentId"
-          in: "path"
-          description: "ID of the student"
-          required: true
-          schema:
-            type: "integer"
-            format: "int64"
-      responses: 
-        "200":
-            description: "successful operation"
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/Student'
-        "400":
-          description: "Bad Request"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GeneralError"
-        "404":
-          description: "Learning Path not found"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GeneralError"
-    put:
-      tags:
-      - "HASKI-intern"
-      summary: "update student"
-      description: "Update a student in the DB"
-      operationId: "putStudent"
-      parameters:
-        - name: "studentId"
-          in: "path"
-          description: "ID of the student"
-          required: true
-          schema:
-            type: "integer"
-            format: "int64"
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Student'
-      responses:
-        "201":
-          description: "successful operation"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Student'
-        "400":
-          description: "Bad Request"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GeneralError"
-        "404":
-          description: "Logs not found"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GeneralError"
-    delete:
-      tags:
-      - "HASKI-intern"
-      summary: "delete student"
-      description: "Delete a specific student by its ID"
-      operationId: "deleteStudent"
-      parameters:
-        - name: "studentId"
-          in: "path"
-          description: "ID of the student"
-          required: true
-          schema:
-            type: "integer"
-            format: "int64"
-      responses: 
-        "204":
-            description: "successful operation"
-        "400":
-          description: "Bad Request"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GeneralError"
-        "404":
-          description: "Learning Path not found"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GeneralError"
-  /topic:
-    get:
-      tags:
-      - "HASKI-intern"
-      summary: "get all topics"
-      description: "Get all existing topics in the system"
-      operationId: "getTopics"
-      responses: 
-        "200":
-          description: "successful operation"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Topics"
-        "400":
-          description: "Bad Request"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GeneralError"
-        "404":
-          description: "Learning Path not found"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GeneralError"
-    post:
-      tags:
-      - "HASKI-intern"
-      summary: "create topic"
-      description: "Post a new topic to the HASSKI Backend"
-      operationId: "postTopic"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Topic"
-      responses:
-        "201":
-          description: "successful operation"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Topic'
-        "400":
-          description: "Bad Request"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GeneralError"
-        "404":
-          description: "Logs not found"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GeneralError"
-  /topic/{courseId}/{orderDepth}:
-    get:
-      tags:
-      - "HASKI-intern"
-      summary: "get topics for order Depth"
-      description: "Get all existing topics in the system based on a specific order depth "
-      operationId: "getTopicsByOrder"
-      parameters:
-        - name: "courseId"
-          in: "path"
-          description: "ID of the course"
-          required: true
-          schema:
-            type: "integer"
-            format: "int64"
-        - name: "orderDepth"
-          in: "path"
-          description: "The depth of the topics"
-          required: true
-          schema:
-            type: "integer"
-            format: "int64"
-      responses: 
-        "200":
-          description: "successful operation"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/TopicsAncestor"
-        "400":
-          description: "Bad Request"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GeneralError"
-        "404":
-          description: "Learning Path not found"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GeneralError"
-  /topic/{courseId}/{orderDepth}/{ancestorId}:
-    get:
-      tags:
-      - "HASKI-intern"
-      summary: "get topics for order Depth and ancestor"
-      description: "Get all existing topics in the system based on a specific order depth and an ancestor ID"
-      operationId: "getTopicsByOrderAndAncestor"
-      parameters:
-        - name: "courseId"
-          in: "path"
-          description: "ID of the course"
-          required: true
-          schema:
-            type: "integer"
-            format: "int64"
-        - name: "orderDepth"
-          in: "path"
-          description: "The depth of the topics"
-          required: true
-          schema:
-            type: "integer"
-            format: "int64"
-        - name: "ancestorId"
-          in: "path"
-          description: "ID of the ancestor topic"
-          required: true
-          schema:
-            type: "integer"
-            format: "int64"
-      responses: 
-        "200":
-          description: "successful operation"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/TopicsAncestor"
-        "400":
-          description: "Bad Request"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GeneralError"
-        "404":
-          description: "Learning Path not found"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GeneralError"
-  /topic/{topicId}:
-    get:
-      tags:
-      - "HASKI-intern"
-      summary: "get topic"
-      description: "Get a specific topic by its ID"
-      operationId: "getTopic"
-      parameters:
-        - name: "topicId"
-          in: "path"
-          description: "ID of the topic"
-          required: true
-          schema:
-            type: "integer"
-            format: "int64"
-      responses: 
-        "200":
-            description: "successful operation"
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/Topic'
-        "400":
-          description: "Bad Request"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GeneralError"
-        "404":
-          description: "Learning Path not found"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GeneralError"
-    put:
-      tags:
-      - "HASKI-intern"
-      summary: "update topic"
-      description: "Update a topic in the DB"
-      operationId: "putTopic"
-      parameters:
-        - name: "topicId"
-          in: "path"
-          description: "ID of the topic"
-          required: true
-          schema:
-            type: "integer"
-            format: "int64"
-      requestBody:
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/Topic'
       responses:
         "201":
-          description: "successful operation"
+          description: "Successful Operation"
           content:
             application/json:
               schema:
@@ -871,84 +2759,951 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: '#/components/schemas/GeneralError'
         "404":
-          description: "Logs not found"
+          description: "Not Found"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
-    delete:
+                $ref: '#/components/schemas/GeneralError'
+  /moodle/course/{course_id}/{moodle_course_id}/topic/{topic_id}/{moodle_topic_id}:
+    put:
       tags:
-      - "HASKI-intern"
-      summary: "delete topic"
-      description: "Delete a specific topic by its ID"
-      operationId: deletetTopic"
+      - "Moodle"
+      summary: "Update Topic Moodle"
+      description: "Update the basic Topic data from Moodle"
+      operationId: "putTopicMoodle"
       parameters:
-        - name: "topicId"
+        - name: "course_id"
           in: "path"
-          description: "ID of the topic"
+          description: "The ID of the Course"
           required: true
           schema:
-            type: "integer"
-            format: "int64"
-      responses: 
-        "200":
-            description: "successful operation"
+            type: "string"
+          example: 1
+        - name: "moodle_course_id"
+          in: "path"
+          description: "The ID of the Course in Moodle"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "topic_id"
+          in: "path"
+          description: "The ID of the Topic"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "moodle_topic_id"
+          in: "path"
+          description: "The ID of the Topic in Moodle"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Topic'
+      responses:
+        "201":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Topic'
         "400":
           description: "Bad Request"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: '#/components/schemas/GeneralError'
         "404":
-          description: "Learning Path not found"
+          description: "Not Found"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: '#/components/schemas/GeneralError'
+    delete:
+      tags:
+      - "Moodle"
+      summary: "Delete Topic Moodle"
+      description: "Delete a Topic from Moodle"
+      operationId: "deleteTopicMoodle"
+      parameters:
+        - name: "course_id"
+          in: "path"
+          description: "The ID of the Course"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "moodle_course_id"
+          in: "path"
+          description: "The ID of the Course in Moodle"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "topic_id"
+          in: "path"
+          description: "The ID of the Topic"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "moodle_topic_id"
+          in: "path"
+          description: "The ID of the Topic in Moodle"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+      responses:
+        "200":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Deletion'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+  /moodle/course/{course_id}/{moodle_course_id}/topic/{topic_id}/{moodle_topic_id}/learningElement:
+    post:
+      tags:
+      - "Moodle"
+      summary: "Create Learning Element from Moodle"
+      description: "Post a new Learning Element from Moodle"
+      operationId: "postLEMoodle"
+      parameters:
+        - name: "course_id"
+          in: "path"
+          description: "The ID of the Course"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "moodle_course_id"
+          in: "path"
+          description: "The ID of the Course in Moodle"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "topic_id"
+          in: "path"
+          description: "The ID of the Topic"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "moodle_topic_id"
+          in: "path"
+          description: "The ID of the Topic in Moodle"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LearningElement'
+      responses:
+        "201":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LearningElement'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+  /moodle/course/{course_id}/{moodle_course_id}/topic/{topic_id}/{moodle_topic_id}/learningElement/{learning_element_id}/{moodle_learning_element_id}:
+    put:
+      tags:
+      - "Moodle"
+      summary: "Update Learning Element Moodle"
+      description: "Update the basic Learning Element data from Moodle"
+      operationId: "putLEMoodle"
+      parameters:
+        - name: "course_id"
+          in: "path"
+          description: "The ID of the Course"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "moodle_course_id"
+          in: "path"
+          description: "The ID of the Course in Moodle"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "topic_id"
+          in: "path"
+          description: "The ID of the Topic"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "moodle_topic_id"
+          in: "path"
+          description: "The ID of the Topic in Moodle"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "learning_element_id"
+          in: "path"
+          description: "The ID of the Learning Element"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "moodle_learning_element_id"
+          in: "path"
+          description: "The ID of the Learning Element in Moodle"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LearningElement'
+      responses:
+        "201":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LearningElement'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+    delete:
+      tags:
+      - "Moodle"
+      summary: "Delete Learning Element Moodle"
+      description: "Delete a Learning Element from Moodle"
+      operationId: "deleteLEMoodle"
+      parameters:
+        - name: "course_id"
+          in: "path"
+          description: "The ID of the Course"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "moodle_course_id"
+          in: "path"
+          description: "The ID of the Course in Moodle"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "topic_id"
+          in: "path"
+          description: "The ID of the Topic"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "moodle_topic_id"
+          in: "path"
+          description: "The ID of the Topic in Moodle"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "learning_element_id"
+          in: "path"
+          description: "The ID of the Learning Element"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "moodle_learning_element_id"
+          in: "path"
+          description: "The ID of the Learning Element in Moodle"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+      responses:
+        "200":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Deletion'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+  /moodle/student/{student_id}/{moodle_user_id}/questionnaire:
+    post:
+      tags:
+      - "Moodle"
+      summary: "Post ILS Questionnaire"
+      description: "Post the answers to the ILS Questionnaire for a specific User from Moodle"
+      operationId: "postIlsMoodle"
+      parameters:
+        - name: "student_id"
+          in: "path"
+          description: "The ID of the Student"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "moodle_user_id"
+          in: "path"
+          description: "The Moodle ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IlsQuestionnaire'
+      responses:
+        "201":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LearningStyle'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+  /moodle/student/{student_id}/{moodle_user_id}/topic/{topic_id}:
+    post:
+      tags:
+      - "Moodle"
+      summary: "Update User Topic Moodle"
+      description: "Update the topic user data for a specific User from Moodle"
+      operationId: "putUserTopicMoodle"
+      parameters:
+        - name: "student_id"
+          in: "path"
+          description: "The ID of the Student"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "moodle_user_id"
+          in: "path"
+          description: "The Moodle ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "topic_id"
+          in: "path"
+          description: "The ID of the Topic"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TopicVisit'
+      responses:
+        "201":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TopicVisit'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+  /moodle/student/{student_id}/{moodle_user_id}/learning_element/{learning_element_id}:
+    post:
+      tags:
+      - "Moodle"
+      summary: "Update User Learning Element Moodle"
+      description: "Update the Learning Element user data for a specific User from Moodle"
+      operationId: "putUserLearningElementMoodle"
+      parameters:
+        - name: "student_id"
+          in: "path"
+          description: "The ID of the Student"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "moodle_user_id"
+          in: "path"
+          description: "The Moodle ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "learning_element_id"
+          in: "path"
+          description: "The ID of the Learning Element"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LearningElementVisit'
+      responses:
+        "201":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LearningElementVisit'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+  
 components:
-  securitySchemes:
-    BasicAuth:
-      type: http
-      scheme: basic
   schemas:
+    AccessLog:
+      type: "object"
+      properties:
+        time:
+          type: "string"
+          format: "date-time"
+          example: "2017-07-21T17:32:28Z"
+          description: "When was the Access"
+        user:
+          type: "string"
+          example: "Max Mustermann"
+          description: "Who accessed the System"
+        session_id:
+          type: "string"
+          example: "1a2b3c4d"
+          description: "The session id (randomly generated)"
+        message:
+          type: "string"
+          example: "Accessed was Endpoint xyz."
+          description: "Message from the log"
     Course:
       type: "object"
-      required: 
-      - "name"
-      properties: 
+      properties:
         id:
-          type: "number"
+          type: "integer"
           format: "int64"
           example: 1
-          description: "The ID of the course"
+          description: "The course ID within HASKI"
         name:
           type: "string"
           example: "Test Course"
           description: "The name of the course"
-    Courses:
+        lms_id:
+          type: "integer"
+          format: "int64"
+          example: 1
+          description: "The ID of the course from the LMS"
+        created_by:
+          type: "string"
+          example: "Maria Musterfrau"
+          description: "Who created the course"
+        created_at:
+          type: "string"
+          format: "date-time"
+          example: "2017-07-21T17:32:28Z"
+          description: "When was the course created"
+        last_updated:
+          type: "string"
+          format: "date-time"
+          example: "2017-07-21T17:32:28Z"
+          description: "When was the course last updated"
+        university:
+          type: "string"
+          example: "TH-AB"
+          description: "To which university belongs the Course"
+    CourseAdmin:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int64"
+          example: 1
+          description: "The course ID within HASKI"
+        name:
+          type: "string"
+          example: "Test Course"
+          description: "The name of the course"
+        lms_id:
+          type: "integer"
+          format: "int64"
+          example: 1
+          description: "The ID of the course from the LMS"
+        created_by:
+          type: "string"
+          example: "Maria Musterfrau"
+          description: "Who created the course"
+        created_at:
+          type: "string"
+          format: "date-time"
+          example: "2017-07-21T17:32:28Z"
+          description: "When was the course created"
+        last_updated:
+          type: "string"
+          format: "date-time"
+          example: "2017-07-21T17:32:28Z"
+          description: "When was the course last updated"
+        university:
+          type: "string"
+          example: "TH-AB"
+          description: "To which university belongs the Course"
+    CoursesAdmin:
       type: "object"
       properties:
         courses:
           type: "array"
-          items: 
-            $ref: "#/components/schemas/Course"
-    GeneralError:
+          items:
+            $ref: '#/components/schemas/CourseAdmin'
+    CourseCourseCreator:
       type: "object"
-      required: 
-      - "code"
-      - "message"
-      properties: 
-        code: 
+      properties:
+        id:
           type: "integer"
-          format: "int32"
-          example: 404
-          description: "The http error code of the error"
-        message: 
+          format: "int64"
+          example: 1
+          description: "The course ID within HASKI"
+        name:
           type: "string"
-          example: "Not found"
-          description: "A short description of the error"
+          example: "Test Course"
+          description: "The name of the course"
+        lms_id:
+          type: "integer"
+          format: "int64"
+          example: 1
+          description: "The ID of the course from the LMS"
+        created_at:
+          type: "string"
+          format: "date-time"
+          example: "2017-07-21T17:32:28Z"
+          description: "When was the course created"
+        last_updated:
+          type: "string"
+          format: "date-time"
+          example: "2017-07-21T17:32:28Z"
+          description: "When was the course last updated"
+        nr_teachers:
+          type: "integer"
+          format: "int64"
+          example: 3
+          description: "The number of Teachers within the course"
+        teachers:
+          $ref: '#/components/schemas/UsersList'
+    CoursesCourseCreator:
+      type: "object"
+      properties:
+        courses:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/CourseCourseCreator'
+    CourseStudent:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int64"
+          example: 1
+          description: "The course ID within HASKI"
+        name:
+          type: "string"
+          example: "Test Course"
+          description: "The name of the course"
+        lms_id:
+          type: "integer"
+          format: "int64"
+          example: 1
+          description: "The ID of the course from the LMS"
+        time_spend:
+          type: "number"
+          format: "double"
+          example: 234.56
+          description: "The time spend in the course in minutes"
+    CoursesStudent:
+      type: "object"
+      properties:
+        courses:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/CourseStudent'
+    CourseTeacher:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int64"
+          example: 1
+          description: "The course ID within HASKI"
+        name:
+          type: "string"
+          example: "Test Course"
+          description: "The name of the course"
+        lms_id:
+          type: "integer"
+          format: "int64"
+          example: 1
+          description: "The ID of the course from the LMS"
+        user_nr:
+          type: "integer"
+          format: "int64"
+          example: 42
+          description: "The number of students enrolled in the course"
+        created_at:
+          type: "string"
+          format: "date-time"
+          example: "2017-07-21T17:32:28Z"
+          description: "When was the course created"
+        last_updated:
+          type: "string"
+          format: "date-time"
+          example: "2017-07-21T17:32:28Z"
+          description: "When was the course last updated"
+    CoursesTeacher:
+      type: "object"
+      properties:
+        courses:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/CourseTeacher'
+    DashboardStudentCourse:
+      type: "object"
+      properties:
+        topics:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/TopicStudent"
+        learning_style:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/LearningStyle'
+        learning_style_course:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/LearningStyle'
+    DashboardStudentOverview:
+      type: "object"
+      properties:
+        courses:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/CourseStudent'
+        learning_style:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/LearningStyle'
+        learning_strategy:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/LearningStrategy'
+    DashboardStudentTopic:
+      type: "object"
+      properties:
+        topics:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/TopicStudent"
+    DashboardStudentSubTopic:
+      type: "object"
+      properties:
+        learning_elements:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/LearningElementStudent"
+    DashboardTeacherClicks:
+      type: "object"
+      properties:
+        topic_name:
+          type: "string"
+          example: "Test Topic 1"
+          description: "The name of the topic"
+        popularity:
+          type: "number"
+          format: "double"
+          example: 7.8
+          description: "The popularity value of the topics"
+    DashboardTeacherClicksLE:
+      type: "object"
+      properties:
+        topic_name:
+          type: "string"
+          example: "Test Learning Element 1"
+          description: "The name of the LE"
+        visits:
+          type: "integer"
+          format: "int64"
+          example: 42
+          description: "The nr of visits of the learning element"
+    DashboardTeacherCourse:
+      type: "object"
+      properties:
+        learning_style:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/LearningStyleTeacher'
+        performer:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/Performer'
+        time_spend:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/TimeTrackerTeacher'
+    DashboardTeacherFeedback:
+      type: "object"
+      properties:
+        learning_element_name:
+          type: "string"
+          example: "Test Learning Element 1"
+          description: "The name of the learning element"
+        score:
+          type: "number"
+          format: "double"
+          example: 4.2
+          description: "The rating of the LE"
+    DashboardTeacherKnowledge:
+      type: "object"
+      properties:
+        score:
+          type: "number"
+          format: "double"
+          example: 56.7
+          description: "The knowledge score of a student"
+    DashboardTeacherKnowledgeLE:
+      type: "object"
+      properties:
+        error_analysis:
+          type: "array"
+          items:
+            type: "object"
+            properties:
+              learning_element_name:
+                type: "string"
+                example: "Test Learning Element 1"
+                description: "The name of the learning element"
+              first_try:
+                type: "integer"
+                format: "int64"
+                example: 10
+                description: "The nr of students, that managed to have correct answers in the first try"
+              second_try:
+                type: "integer"
+                format: "int64"
+                example: 30
+                description: "The nr of students, that managed to have correct answers in the second try"
+              third_try:
+                type: "integer"
+                format: "int64"
+                example: 8
+                description: "The nr of students, that managed to have correct answers in the third or more tries"
+        learning_progress:
+          type: "array"
+          items:
+            type: "object"
+            properties:
+              learning_element_name:
+                type: "string"
+                example: "Test Learning Element 1"
+                description: "The name of the learning element"
+              min_point:
+                type: "number"
+                format: "double"
+                example: 0.15
+                description: "The percantage of points scored minimum"
+              avg_point:
+                type: "number"
+                format: "double"
+                example: 0.6
+                description: "The percantage of points scored on average"
+              max_point:
+                type: "number"
+                format: "do2le"
+                example: 0.25
+                description: "The percantage of points scored maximum"
+    DashboardTeacherLearningElements:
+      type: "object"
+      properties:
+        feedback:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/DashboardTeacherFeedback'
+        clicks:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/DashboardTeacherClicksLE'
+        knowledge:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/DashboardTeacherKnowledgeLE'
+        time:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/DashboardTeacherTimeLE'
+    DashboardTeacherTime:
+      type: "object"
+      properties:
+        month:
+          type: "integer"
+          format: "int64"
+          example: 1
+          description: "The number of the month that is measured"
+        topics:
+          type: "array"
+          items:
+            type: "object"
+            properties:
+              topic_name: 
+                type: "string"
+                example: "Test Topic 1"
+                description: "The name of the topic"
+              time_spend:
+                type: "number"
+                format: "double"
+                example: 50.3
+                description: "The time spend in the topic on average"
+    DashboardTeacherTimeLE:
+      type: "object"
+      properties:
+        learning_element_name:
+          type: "string"
+          example: "Test Learning Element 1"
+          description: "The name of the learning element"
+        min_time:
+          type: "number"
+          format: "double"
+          example: 3.5
+          description: "The time spend minimum in that LE"
+        avg_time:
+          type: "number"
+          format: "double"
+          example: 7.2
+          description: "The time spend on average in that LE"
+        max_time:
+          type: "number"
+          format: "double"
+          example: 12.9
+          description: "The time spend maximum in that LE"
+    DashboardTeacherTopic:
+      type: "object"
+      properties:
+        clicks:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/DashboardTeacherClicks'
+        knowledge:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/DashboardTeacherKnowledge'
+        time:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/DashboardTeacherTime'
+    Deletion:
+      type: "object"
+      properties:
+        message:
+          type: "string"
+          example: "Deletion was successful"
+          description: "A message describing what was deleted"
+    ErrorLog:
+      type: "object"
+      properties:
+        time:
+          type: "string"
+          format: "date-time"
+          example: "2017-07-21T17:32:28Z"
+          description: "When was the Access"
+        session_id:
+          type: "string"
+          example: "1a2b3c4d"
+          description: "The session id (randomly generated)"
+        message:
+          type: "string"
+          example: "Error on updating the learner model."
+          description: "Message from the log"
     FrontendLogEntryFCP:
       type: "object"
       properties:
@@ -1225,7 +3980,7 @@ components:
           type: "array"
           description: "A frontend log data entry"
           items:
-            oneOf: 
+            anyOf: 
               - $ref: '#/components/schemas/FrontendLogEntryFCP'
               - $ref: '#/components/schemas/FrontendLogEntryTTFB'
               - $ref: '#/components/schemas/FrontendLogEntryCLS'
@@ -1241,179 +3996,598 @@ components:
           example: "navigate"
           description: "The navigation type of the log data"
           enum: ["navigate", "reload", "back-forward", "back-forward-cache", "prerender"]
-    FrontendLogs:
+    GeneralError:
       type: "object"
       properties:
-        logs:
+        error:
+          type: "string"
+          example: "Ups! Something went wrong..."
+          description: "A message describing what went wrong"
+    IlsQuestionnaire:
+      type: "object"
+      properties:
+        answers:
           type: "array"
-          items: 
-            $ref: '#/components/schemas/FrontendLog'
+          items:
+            type: "object"
+            properties:
+              question_id: 
+                type: "string"
+                example: "VV_1"
+                description: "The ID of the question from the ILS"
+              answer:
+                type: "string"
+                example: "a"
+                description: "The answer the student selected"
+    Knowledge:
+      type: "object"
+    LearningAnalytics:
+      type: "object"
+    LearningCharacteristics:
+      type: "object"
+      properties:
+        learning_style:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/LearningStyle'
+        learning_strategy:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/LearningStrategy'
+        knowledge:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/Knowledge'
+        learning_analytics:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/LearningAnalytics'
     LearningElement:
       type: "object"
-      required: 
-      - "name"
-      - "classification"
-      - "order_depth"
-      - "ancestor_id"
-      - "prerequisite_id"
-      properties: 
+      properties:
         id:
-          type: "number"
+          type: "integer"
           format: "int64"
           example: 1
-          description: "The ID of the learning element"
-        name:
+          description: "The id of the learning element"
+        lms_id:
+          type: "integer"
+          format: "int64"
+          example: 1
+          description: "The ID of the learning element from the LMS"
+        activity_type:
           type: "string"
-          example: "Test learning element"
-          description: "The name of the learning element"
+          example: "Quiz"
+          description: "The type of activity from the LMS"
         classification:
           type: "string"
-          example: "KÜ"
-          description: "The classification of the learning element"
-        order_depth:
+          example: "RQ"
+          description: "The classification of the LE according to Graf et al."
+        name:
+          type: "string"
+          example: "Test Learning Element"
+          description: "The name of the LE"
+        created_by:
+          type: "string"
+          example: "Maria Musterfrau"
+          description: "Who created the LE?"
+        created_at:
           type: "number"
+          format: "date-time"
+          example: "2017-07-21T17:32:28Z"
+          description: "When was the LE completed"
+        last_updated:
+          type: "string"
+          format: "date-time"
+          example: "2017-07-21T17:32:28Z"
+          description: "When was the last time, the LE was opened?"
+        university:
+          type: "string"
+          example: "TH-AB"
+          description: "The university the LE belongs to"
+    LearningElementStudent:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int64"
+          example: 1
+          description: "The id of the learning element"
+        lms_id:
+          type: "integer"
+          format: "int64"
+          example: 1
+          description: "The ID of the learning element from the LMS"
+        activity_type:
+          type: "string"
+          example: "Quiz"
+          description: "The type of activity from the LMS"
+        classification:
+          type: "string"
+          example: "RQ"
+          description: "The classification of the LE according to Graf et al."
+        name:
+          type: "string"
+          example: "Test Learning Element"
+          description: "The name of the LE"
+        done:
+          type: "boolean"
+          example: false
+          description: "Are all learning elements done within the topic"
+        done_at:
+          type: "number"
+          format: "date-time"
+          example: "2017-07-21T17:32:28Z"
+          description: "When was the LE completed"
+        nr_of_visits:
+          type: "integer"
           format: "int64"
           example: 3
-          description: "The level, on which a learning element is depending on how many sub-topics there are. E.g. topic = 1, sub-topic = 2, learning element = 3"
-        ancestor_id:
-          type: "number"
-          format: "int64"
-          example: 2
-          description: "The ID of the (sub-)topic, the element belongs to."
-        prerequisite_id:
+          description: "The number of times the LE was clicked on"
+        last_visit:
           type: "string"
-          example: "1,2,3"
-          description: "The IDs of the learning elements, that should be done before recommending this element"
-    LearningElements:
+          format: "date-time"
+          example: "2017-07-21T17:32:28Z"
+          description: "When was the last time, the LE was opened?"
+        time_spend:
+          type: "number"
+          format: "double"
+          example: 123.45
+          description: "The time spend within the LE in minutes"
+        is_recommended:
+          type: "boolean"
+          example: true
+          description: "Is the LE recommended"
+    LearningElementsStudent:
       type: "object"
       properties:
         learning_elements:
           type: "array"
-          items: 
-            $ref: '#/components/schemas/LearningElement'
-    LearningPath:
+          items:
+            $ref: '#/components/schemas/LearningElementStudent'
+    LearningElementsPath:
+      type: "array"
+      items:
+        type: "object"
+        properties:
+          position:
+            type: "integer"
+            format: "int64"
+            example: 1
+            description: "The position of the learning element within the path"
+          learning_element:
+            $ref: '#/components/schemas/LearningElementStudent'
+    LearningElementVisit:
       type: "object"
-      required: 
-      - ""
+      properties:
+        visit_start_time:
+          type: "string"
+          format: "date-time"
+          example: "2017-07-21T17:32:28Z"
+          description: "When was the learning element visited"
+        previous_learning_element_id:
+          type: "number"
+          format: "integer"
+          example: 1
+          description: "The ID of the learning element, that was clicked before"
+    LearningStrategy:
+      type: "object"
+    LearningStyle:
+      type: "object"
+      properties:
+        perception_dimension:
+          type: "string"
+          example: "SNS"
+          description: "The dimension expression for perception according to Felder-Silverman"
+        perception_value:
+          type: "number"
+          format: "int64"
+          example: 7
+          description: "The dimension value for perception according to Felder-Silverman"
+        input_dimension:
+          type: "string"
+          example: "VIS"
+          description: "The dimension expression for input according to Felder-Silverman"
+        input_value:
+          type: "number"
+          format: "int64"
+          example: 7
+          description: "The dimension value for input according to Felder-Silverman"
+        processing_dimension:
+          type: "string"
+          example: "ACT"
+          description: "The dimension expression for processing according to Felder-Silverman"
+        processing_value:
+          type: "number"
+          format: "int64"
+          example: 7
+          description: "The dimension value for processing according to Felder-Silverman"
+        understanding_dimension:
+          type: "string"
+          example: "GLO"
+          description: "The dimension expression for understanding according to Felder-Silverman"
+        understanding_value:
+          type: "number"
+          format: "int64"
+          example: 7
+          description: "The dimension value for understanding according to Felder-Silverman"
+    LearningStyleTeacher:
+      type: "object"
+      properties:
+        perception_avg:
+          type: "number"
+          format: "double"
+          example: 3.1
+          description: "The average of the perception dimension"
+        perception_min:
+          type: "number"
+          format: "double"
+          example: -9.5
+          description: "The minimum of the perception dimension"  
+        perception_max:
+          type: "number"
+          format: "double"
+          example: 8.7
+          description: "The maximum of the perception dimension"
+        input_avg:
+          type: "number"
+          format: "double"
+          example: 3.1
+          description: "The average of the input dimension"
+        input_min:
+          type: "number"
+          format: "double"
+          example: -9.5
+          description: "The minimum of the input dimension"  
+        input_max:
+          type: "number"
+          format: "double"
+          example: 8.7
+          description: "The maximum of the input dimension"
+        processing_avg:
+          type: "number"
+          format: "double"
+          example: 3.1
+          description: "The average of the processing dimension"
+        processing_min:
+          type: "number"
+          format: "double"
+          example: -9.5
+          description: "The minimum of the processing dimension"  
+        processing_max:
+          type: "number"
+          format: "double"
+          example: 8.7
+          description: "The maximum of the processing dimension"
+        understanding_avg:
+          type: "number"
+          format: "double"
+          example: 3.1
+          description: "The average of the understanding dimension"
+        understanding_min:
+          type: "number"
+          format: "double"
+          example: -9.5
+          description: "The minimum of the understanding dimension"  
+        understanding_max:
+          type: "number"
+          format: "double"
+          example: 8.7
+          description: "The maximum of the understanding dimension"
+    Logs:
+      type: "object"
+      properties:
+        access_logs:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/AccessLog'
+        frontend_logs:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/FrontendLog'
+        main_logs:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/MainLog'
+        error_logs:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/ErrorLog'
+        system_logs:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/SystemLog'
+    MainLog:
+      type: "object"
+      properties:
+        time:
+          type: "string"
+          format: "date-time"
+          example: "2017-07-21T17:32:28Z"
+          description: "When was the Access"
+        session_id:
+          type: "string"
+          example: "1a2b3c4d"
+          description: "The session id (randomly generated)"
+        message:
+          type: "string"
+          example: "Calculation of new learning Path"
+          description: "Message from the log"
+    Performer:
+      type: "object"
+      properties:
+        poor_performer:
+          type: "number"
+          format: "double"
+          example: 0.1
+          description: "The percentage of poor performer"
+        average_performer:
+          type: "number"
+          format: "double"
+          example: 0.6
+          description: "The percentage of average performer"
+        high_performer:
+          type: "number"
+          format: "double"
+          example: 0.3
+          description: "The percentage of high performer"
+    Settings:
+      type: "object"
+      required:
+      - "password"
+      properties:
+        theme:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/Theme'
+        password:
+          type: "string"
+          example: "password"
+          description: "The password of the User"
+    SystemLog:
+      type: "object"
+      properties:
+        time:
+          type: "string"
+          format: "date-time"
+          example: "2017-07-21T17:32:28Z"
+          description: "When was the Access"
+        message:
+          type: "string"
+          example: "System is up and running."
+          description: "Message from the log"
+    Theme:
+      type: "object"
+      properties:
+        color:
+          type: "string"
+          example: "dark"
+          description: "The prefered color of the User"
+        style:
+          type: "string"
+          example: "dark"
+          description: "The prefered style of the User"
+        typography:
+          type: "string"
+          example: "Arial Black"
+          description: "The prefered typography of the User"
+        language:
+          type: "string"
+          example: "DE"
+          description: "The prefered language of the USer"
+    TimeTrackerTeacher:
+      type: "object"
+      properties:
+        month:
+          type: "integer"
+          format: "int64"
+          example: 1
+          description: "The month, the time is measured in"
+        min_time:
+          type: "number"
+          format: "double"
+          example: 15.4
+          description: "The minimum time a student spend in the course"
+        max_time:
+          type: "number"
+          format: "double"
+          example: 52.7
+          description: "The maximum time a student spend in the course"
+        avg_time:
+          type: "number"
+          format: "double"
+          example: 52.7
+          description: "The average time a student spend in the course"
+    Topic:
+      type: "object"
       properties:
         id:
           type: "integer"
           format: "int64"
-          description: "The ID of the learning path"
-          example: 123
-        course_id:
-          type: "integer"
-          format: "int64"
-          description: "The ID of the course"
-          example: 12345
-        student_id:
-          type: "string"
-          example: "s12345"
-          description: "The ID of the student"
-        order_depth:
-          type: "integer"
-          format: "int64"
-          description: "The order depth of the learning path (e.g. topic, subtopic, learning element level) as number"
           example: 1
-        conatins_le:
-          type: "boolean"
-          description: "Contains the path learning elements (true) or topics? (false)"
-          example: True
-        path:
+          description: "The topic ID within HASKI"
+        name:
           type: "string"
-          description: "The actual learning path"
-          example: "ZF, UB, SE, AN, RQ, AB, ZL, BE, FO"
-    Student:
+          example: "Test Topic"
+          description: "The name of the topic"
+        lms_id:
+          type: "integer"
+          format: "int64"
+          example: 1
+          description: "The ID of the topic from the LMS"
+        is_topic:
+          type: "boolean"
+          example: true
+          description: "Declare whether a topic is a topic or a sub-topic"
+        parent_id:
+          type: "integer"
+          format: "int64"
+          example: 1
+          description: "The ID of the parent topic (if exists)"
+        contains_le:
+          type: "boolean"
+          example: false
+          description: "Does determine, whether a topic contais LEs (true) or other sub-topics (false)"
+        created_by:
+          type: "string"
+          example: "Maria Musterfrau"
+          description: "Who created the topic"
+        created_at:
+          type: "string"
+          format: "date-time"
+          example: "2017-07-21T17:32:28Z"
+          description: "When was the topic created?"
+        updated_at:
+          type: "string"
+          format: "date-time"
+          example: "2017-07-21T17:32:28Z"
+          description: "When was the last time, the topic was modified?"
+        university:
+          type: "string"
+          example: "TH-AB"
+          description: "The university the topic belongs to"
+    TopicStudent:
       type: "object"
-      required: 
+      properties:
+        id:
+          type: "integer"
+          format: "int64"
+          example: 1
+          description: "The topic ID within HASKI"
+        name:
+          type: "string"
+          example: "Test Topic"
+          description: "The name of the topic"
+        lms_id:
+          type: "integer"
+          format: "int64"
+          example: 1
+          description: "The ID of the topic from the LMS"
+        is_topic:
+          type: "boolean"
+          example: true
+          description: "Declare whether a topic is a topic or a sub-topic"
+        parent_id:
+          type: "integer"
+          format: "int64"
+          example: 1
+          description: "The ID of the parent topic (if exists)"
+        contains_le:
+          type: "boolean"
+          example: false
+          description: "Does determine, whether a topic contais LEs (true) or other sub-topics (false)"
+        done:
+          type: "boolean"
+          example: false
+          description: "Are all learning elements/ sub-topics done within the topic"
+        done_percantage:
+          type: "number"
+          format: "double"
+          example: 75.25
+          description: "The percantage of done LEs/Sub-topics"
+        last_visit:
+          type: "string"
+          format: "date-time"
+          example: "2017-07-21T17:32:28Z"
+          description: "When was the last time, the topic was opened?"
+        time_spend:
+          type: "number"
+          format: "double"
+          example: 123.45
+          description: "The time spend within the topic in minutes"
+        is_recommended:
+          type: "boolean"
+          example: true
+          description: "Is the topic recommended"
+    TopicsStudent:
+      type: "object"
+      properties:
+        topics:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/TopicStudent'
+    TopicsPath:
+      type: "array"
+      items:
+        type: "object"
+        properties:
+          position:
+            type: "integer"
+            format: "int64"
+            example: 1
+            description: "The position of the topic within the path"
+          topic:
+            $ref: '#/components/schemas/TopicStudent'
+    TopicVisit:
+      type: "object"
+      properties:
+        visit_start_time:
+          type: "string"
+          format: "date-time"
+          example: "2017-07-21T17:32:28Z"
+          description: "When was the topic visited"
+        previous_topic_id:
+          type: "number"
+          format: "integer"
+          example: 1
+          description: "The ID of the topic, that was clicked before"
+    User:
+      type: "object"
+      required:
       - "name"
-      properties: 
+      - "university"
+      - "lms_user_id"
+      - "role"
+      properties:
         id:
           type: "number"
           format: "int64"
           example: 1
-          description: "The ID of the student"
+          description: "HASKI intern id for Users. Autogenerated by DB."
         name:
           type: "string"
           example: "Max Mustermann"
-          description: "The name of the student"
-        learning_style:
+          description: "Name of the User"
+        university:
           type: "string"
-          example: "{'AKT': 5, 'INT': 9, 'VIS': 9, 'GLO': 9}"
-          description: "The learning style based on Felder & Silverman"
-    Students:
-      type: "object"
-      properties:
-        students:
+          example: "TH-AB"
+          description: "The University the User belongs to"
+        lms_user_id:
+          type: "number"
+          format: "int64"
+          example: 123
+          description: "The User ID provided by the LMS"
+        role:
+          type: "string"
+          example: "Student"
+          description: "The role the User has in the System"
+        settings:
           type: "array"
           items: 
-            $ref: "#/components/schemas/Student"
-    SuccessMessage:
-      type: "object"
-      required: 
-      - "code"
-      - "message"
-      properties: 
-        code: 
-          type: "integer"
-          format: "int32"
-          example: 201
-          description: "The http code"
-        message: 
-          type: "string"
-          example: "Item successfully created"
-          description: "A short description"
-    Topic:
-      type: "object"
-      required: 
-      - "name"
-      - "course_id"
-      - "order_depth"
-      properties: 
-        id:
-          type: "number"
-          format: "int64"
-          example: 1
-          description: "The ID of the learning element"
-        name:
-          type: "string"
-          example: "Test topic"
-          description: "The name of the learning element"
-        course_id:
-          type: "integer"
-          format: "int64"
-          example: 1
-          description: "The course id, the topic belongs to"
-        order_depth:
-          type: "number"
-          format: "int64"
-          example: 2
-          description: "The level, on which a learning element is depending on how many sub-topics there are. E.g. topic = 1, sub-topic = 2, learning element = 3"
-        ancestor_id:
-          type: "number"
-          format: "int64"
-          example: 2
-          description: "The ID of the (sub-)topic, the topic belongs to."
-        prerequisite_id:
-          type: "string"
-          example: "1,2,3"
-          description: "The IDs of the topics, that should be done before recommending this topic"
-    Topics:
-      type: "object"
-      properties:
-        topics:
-          type: "array"
-          items: 
-            $ref: '#/components/schemas/Topic'
-    TopicsAncestor:
-      type: "object"
-      properties:
-        course_id:
-          type: "number"
-          format: "int64"
-          example: 1
-          description: "The ID of the course"
-        topics:
-          type: "array"
-          items: 
-            $ref: '#/components/schemas/Topic'
+            $ref: '#/components/schemas/Settings'
+    UsersList:
+      type: "array"
+      items:
+        type: "object"
+        properties:
+          name:
+            type: "string"
+            example: "Maria Musterfrau"
+            description: "The name of the User"
+    UsersListAdmin:
+      type: "array"
+      items:
+        type: "object"
+        properties:
+          name:
+            type: "string"
+            example: "Maria Musterfrau"
+            description: "The name of the User"
+          role:
+            type: "string"
+            example: "Student"
+            description: "The role of the User"
+          university:
+            type: "string"
+            example: "TH-AB"
+            description: "The university of the User"

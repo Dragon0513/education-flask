@@ -1,7 +1,7 @@
 -- User
-DROP TABLE IF EXISTS public."user";
+DROP TABLE IF EXISTS public."haski_user";
 
-CREATE TABLE IF NOT EXISTS public."user"
+CREATE TABLE IF NOT EXISTS public."haski_user"
 (
     id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
     name text COLLATE pg_catalog."default" NOT NULL,
@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS public."user"
 
 TABLESPACE pg_default;
 
-ALTER TABLE IF EXISTS public."user"
+ALTER TABLE IF EXISTS public."haski_user"
     OWNER to postgres;
 
 --Settings
@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS public.settings
     pswd text COLLATE pg_catalog."default",
     CONSTRAINT settings_pkey PRIMARY KEY (id),
     CONSTRAINT user_id FOREIGN KEY (user_id)
-        REFERENCES public."user" (id) MATCH SIMPLE
+        REFERENCES public."haski_user" (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
         NOT VALID
@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS public.admin
     user_id integer NOT NULL,
     CONSTRAINT admin_pkey PRIMARY KEY (id),
     CONSTRAINT user_id FOREIGN KEY (user_id)
-        REFERENCES public."user" (id) MATCH SIMPLE
+        REFERENCES public."haski_user" (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
 )
@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS public.course_creator
     user_id integer,
     CONSTRAINT course_creator_pkey PRIMARY KEY (id),
     CONSTRAINT user_id FOREIGN KEY (user_id)
-        REFERENCES public."user" (id) MATCH SIMPLE
+        REFERENCES public."haski_user" (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
 )
@@ -84,7 +84,7 @@ CREATE TABLE IF NOT EXISTS public.teacher
     user_id integer NOT NULL,
     CONSTRAINT teacher_pkey PRIMARY KEY (id),
     CONSTRAINT user_id FOREIGN KEY (user_id)
-        REFERENCES public."user" (id) MATCH SIMPLE
+        REFERENCES public."haski_user" (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
 )
@@ -103,7 +103,7 @@ CREATE TABLE IF NOT EXISTS public.student
     user_id integer NOT NULL,
     CONSTRAINT student_pkey PRIMARY KEY (id),
     CONSTRAINT user_id FOREIGN KEY (user_id)
-        REFERENCES public."user" (id) MATCH SIMPLE
+        REFERENCES public."haski_user" (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
 )
@@ -237,7 +237,7 @@ CREATE TABLE IF NOT EXISTS public.learning_characteristics
     user_id integer NOT NULL,
     CONSTRAINT learning_characteristics_pkey PRIMARY KEY (id),
     CONSTRAINT user_id FOREIGN KEY (user_id)
-        REFERENCES public."user" (id) MATCH SIMPLE
+        REFERENCES public."haski_user" (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
 )

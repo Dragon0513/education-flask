@@ -5,11 +5,10 @@ import os
 conn = psycopg2.connect(
     database="postgres",
     user='postgres',
-    password="HASKI-Adm",
+    password=os.environ.get("DB_PASSWORD", "postgres"),
     host=os.environ.get("DB_HOST", "localhost"),
     port=os.environ.get("DB_PORT", 5432)
 )
-
 conn.autocommit = True
 
 # Creating a cursor object using the cursor() method
@@ -27,9 +26,9 @@ conn.close()
 
 # Establishing the connection
 conn = psycopg2.connect(
-    database="haski_test",
+    database=os.environ.get("DB_NAME", "haski"),
     user='postgres',
-    password=os.environ.get("DB_PASSWORD", "HASKI-Adm"),
+    password=os.environ.get("DB_PASSWORD", "postgres"),
     host=os.environ.get("DB_HOST", "127.0.0.1"),
     port=os.environ.get("DB_PORT", 5432)
 )

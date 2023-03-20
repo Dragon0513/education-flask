@@ -1,23 +1,25 @@
 import json
 import os
-from service_layer.crypto.cryptorandom import CryptoRandom
-from service_layer.lti.OIDCLogin import OIDCLogin
-from service_layer.service.StateServiceFlask import StateServiceFlask
-from service_layer.service.CookieServiceFlask import CookieServiceFlask
-from service_layer.lti.config.ToolConfigJson import ToolConfigJson
-from errors import errors as err
-import service_layer.crypto.JWTKeyManagement as JWTKeyManagement
 import urllib.parse
+import service_layer.crypto.JWTKeyManagement as JWTKeyManagement
+from errors import errors as err
 from flask import redirect,make_response
 from flask.wrappers import Request
 from werkzeug.wrappers.response import Response
+from service_layer.crypto.cryptorandom import CryptoRandom
+from service_layer.lti import LaunchDataStorage
+from service_layer.lti.Messages import LTIIDToken
+from service_layer.lti.OIDCLogin import OIDCLogin
+from service_layer.service.CookieServiceFlask import CookieServiceFlask
+from service_layer.lti.config.ToolConfigJson import ToolConfigJson
+import service_layer.service.SessionServiceFlask as SessionServiceFlask
+
 
 class OIDCLoginFlask(OIDCLogin):
     ''' Flask implementation of OIDC login '''
     def __init__(self, request : Request, tool_config : ToolConfigJson, session_service=None, cookie_service=None, session=None):
         self._request = request
         self._cookie_service = cookie_service if cookie_service else CookieServiceFlask(request)
-        self._session_service = session_service if session_service else StateServiceFlask(session)
         self.oidc_login_params = {'iss', 'client_id', 'login_hint', 'lti_message_hint',  'target_link_uri', 'lti_deployment_id'}
         super(OIDCLoginFlask, self).__init__(request, tool_config)
 
@@ -68,17 +70,14 @@ class OIDCLoginFlask(OIDCLogin):
             Crafts the redirect url by adding the necessary parameters
         '''
 
-        # Create a unique nonce for this flow to prevent replay attacks
+
+        # Create a unique nonce in session for this flow to prevent replay attacks
         nonce = CryptoRandom().getrandomstring(32)
+        # Create a unique state and state jwt for this flow to ensure integrity of the response
+        # Store nonce and state pair in server side storage for later verification
+        state_jwt = SessionServiceFlask.set_state_jwt(nonce,self._platform.auth_login_url, self._tool_config.get_tool_url(self._request.environ.get('HTTP_ORIGIN', '')))
 
-        # Create a unique state for this flow to ensure integrity of the response
-        state = CryptoRandom().getrandomstring(32)
 
-        state_jwt = JWTKeyManagement.generate_state_jwt(nonce,
-                                                        state, 
-                                                        self._platform.auth_login_url, 
-                                                        self._tool_config.get_tool_url(self._request.environ.get('HTTP_ORIGIN', '')))
-        
         platform = self._tool_config.get_platform(self._request.environ.get('HTTP_ORIGIN', ''))
         ru = self.make_url_accept_param(platform['auth_login_url'])
         params = {
@@ -146,13 +145,17 @@ class OIDCLoginFlask(OIDCLogin):
         if not hmac_key: # TODO try to get new keys, if that fails return error
             self._response = "Invalid decryption key", 400
             return self
-        
         self.id_token = JWTKeyManagement.verify_jwt(id_token_jwt, JWTKeyManagement.construct_key(hmac_key))
         if not self.id_token:
             self._response = "Invalid id_token signature", 403
             return self
-        # self.id_token = LTIIDToken(**id_token)
-        # TODO🧾 parse token and write into structures       
+        try:
+            # TODO🧾 parse token and write into structures       
+            self.id_token = LTIIDToken(**self.id_token)
+            SessionServiceFlask.set(self.id_token.nonce, 'id_token', self.id_token)
+        except Exception as e:
+            self._response = "Invalid id_token", 403
+            return self
 
         return self
 
@@ -167,9 +170,8 @@ class OIDCLoginFlask(OIDCLogin):
         assert(JWTKeyManagement.verify_state_jwt_payload(state_form))
 
         # generate nonce to obtain cookie
-        nonce = CryptoRandom().getrandomstring(32)
-        nonce_jwt = JWTKeyManagement.generate_nonce_jwt(nonce, self._request.referrer, os.environ.get('BACKEND_URL', 'http://localhost:5000'))
-
+        nonce_jwt = JWTKeyManagement.generate_nonce_jwt(self.id_token.nonce, self._request.referrer, os.environ.get('BACKEND_URL', 'http://localhost:5000'))
+        SessionServiceFlask.set(self.id_token.nonce, 'nonce_jwt', nonce_jwt)
         # get platform
         try:
             self._platform = self._tool_config.decode_platform(self._tool_config.get_platform(self._request.environ.get('HTTP_ORIGIN', '')))
@@ -200,6 +202,8 @@ class OIDCLoginFlask(OIDCLogin):
             self._response = "Invalid nonce", 403
             return make_response(self._response)
         # TODO🧾 this cookie holds authorization data. implement right and role management
+        # use session service id_token to get user data and write into cookie, create new user if not exist
+
         cookie_expiration = 2 # 1 Minutes
         state_jwt = JWTKeyManagement.generate_state_jwt(nonce=CryptoRandom.createuniqueid(32), 
                                                         state=CryptoRandom.createuniqueid(32), 
@@ -214,7 +218,7 @@ class OIDCLoginFlask(OIDCLogin):
             mimetype='application/json'
         )
         # set 🔑 auth 🍪 cookie
-        self._cookie_service.set_cookie(response=response,key='haski_state',value=state_jwt, secure=False, httponly=True, samesite='Lax', max_age=cookie_expiration*60)
+        self._cookie_service.set_cookie(response=response,key='haski_state',value=state_jwt, secure=False, httponly=True, samesite='Lax', max_age=cookie_expiration*60, domain="fakedomain.com")
         return response
 
     def get_loginstatus(self) -> Response:

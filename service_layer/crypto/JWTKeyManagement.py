@@ -10,6 +10,7 @@ from errors.errors import InvalidJWTError
 
 from service_layer.crypto.cryptorandom import CryptoRandom
 from service_layer.lti import LaunchDataStorage
+import service_layer.service.SessionServiceFlask as SessionServiceFlask
 
 private_key_location : str = "keys/private.pem"
 public_key_location : str = "keys/public.pem"
@@ -74,7 +75,7 @@ def generate_state_jwt(nonce : str, state : str, audience : str, issuer : str, a
 
 def verify_jwt_payload(jwt_payload, verify_nonce=True) -> bool:
     """Verifies the payload of a JWT token. Returns True if the payload is valid, otherwise False."""
-    if verify_nonce and not LaunchDataStorage.get_value(jwt_payload['nonce']):
+    if verify_nonce and not SessionServiceFlask.get(jwt_payload['nonce'],'state'):
         return False
     # verify issued at
     if jwt_payload['iat'] > datetime.datetime.utcnow().timestamp():
@@ -94,6 +95,6 @@ def verify_state_jwt_payload(state_jwt_payload) -> bool:
     if verify_jwt_payload(state_jwt_payload) == False:
         return False
     # verify state in storage
-    if LaunchDataStorage.get_value(state_jwt_payload['nonce']) != state_jwt_payload['state']:
+    if SessionServiceFlask.get(state_jwt_payload['nonce'],'state') != state_jwt_payload['state']:
         return False
     return True

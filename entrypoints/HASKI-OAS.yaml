@@ -3112,7 +3112,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/IlsQuestionnaire'
+              $ref: '#/components/schemas/Questionnaire'
       responses:
         "201":
           description: "Successful Operation"
@@ -4004,21 +4004,18 @@ components:
           example: "Ups! Something went wrong..."
           description: "A message describing what went wrong"
     IlsQuestionnaire:
-      type: "object"
-      properties:
-        answers:
-          type: "array"
-          items:
-            type: "object"
-            properties:
-              question_id: 
-                type: "string"
-                example: "VV_1"
-                description: "The ID of the question from the ILS"
-              answer:
-                type: "string"
-                example: "a"
-                description: "The answer the student selected"
+      type: "array"
+      items:
+        type: "object"
+        properties:
+          question_id: 
+            type: "string"
+            example: "VV_1"
+            description: "The ID of the question from the ILS"
+          answer:
+            type: "string"
+            example: "a"
+            description: "The answer the student selected"
     Knowledge:
       type: "object"
     LearningAnalytics:
@@ -4274,6 +4271,10 @@ components:
           format: "double"
           example: 8.7
           description: "The maximum of the understanding dimension"
+    ListKQuestionnaire:
+      type: "array"
+      items:
+        type: "object"
     Logs:
       type: "object"
       properties:
@@ -4331,6 +4332,13 @@ components:
           format: "double"
           example: 0.3
           description: "The percentage of high performer"
+    Questionnaire:
+      type: "object"
+      properties:
+        ils:
+          $ref: '#/components/schemas/IlsQuestionnaire'
+        list_k:
+          $ref: '#/components/schemas/ListKQuestionnaire'
     Settings:
       type: "object"
       required:

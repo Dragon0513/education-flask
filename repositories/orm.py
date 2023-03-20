@@ -58,6 +58,78 @@ haski_user = Table(
     Column("lms_user_id", Integer, nullable=False)
 )
 
+ils_input_answers = Table(
+    "ils_input_answers",
+    metadata,
+    Column("id", Integer, primary_key=True, autoincrement=True),
+    Column("questionnaire_id", Integer, nullable=False),
+    Column("vv_1", Integer, nullable=True),
+    Column("vv_2", Integer, nullable=False),
+    Column("vv_3", Integer, nullable=True),
+    Column("vv_4", Integer, nullable=True),
+    Column("vv_5", Integer, nullable=False),
+    Column("vv_6", Integer, nullable=True),
+    Column("vv_7", Integer, nullable=False),
+    Column("vv_8", Integer, nullable=True),
+    Column("vv_9", Integer, nullable=True),
+    Column("vv_10", Integer, nullable=False),
+    Column("vv_11", Integer, nullable=False)
+)
+
+ils_perception_answers = Table(
+    "ils_perception_answers",
+    metadata,
+    Column("id", Integer, primary_key=True, autoincrement=True),
+    Column("questionnaire_id", Integer, nullable=False),
+    Column("si_1", Integer, nullable=False),
+    Column("si_2", Integer, nullable=True),
+    Column("si_3", Integer, nullable=True),
+    Column("si_4", Integer, nullable=False),
+    Column("si_5", Integer, nullable=True),
+    Column("si_6", Integer, nullable=True),
+    Column("si_7", Integer, nullable=False),
+    Column("si_8", Integer, nullable=True),
+    Column("si_9", Integer, nullable=True),
+    Column("si_10", Integer, nullable=False),
+    Column("si_11", Integer, nullable=False)
+)
+
+ils_processing_answers = Table(
+    "ils_processing_answers",
+    metadata,
+    Column("id", Integer, primary_key=True, autoincrement=True),
+    Column("questionnaire_id", Integer, nullable=False),
+    Column("ar_1", Integer, nullable=True),
+    Column("ar_2", Integer, nullable=True),
+    Column("ar_3", Integer, nullable=False),
+    Column("ar_4", Integer, nullable=False),
+    Column("ar_5", Integer, nullable=True),
+    Column("ar_6", Integer, nullable=False),
+    Column("ar_7", Integer, nullable=False),
+    Column("ar_8", Integer, nullable=False),
+    Column("ar_9", Integer, nullable=True),
+    Column("ar_10", Integer, nullable=True),
+    Column("ar_11", Integer, nullable=True)
+)
+
+ils_understanding_answers = Table(
+    "ils_understanding_answers",
+    metadata,
+    Column("id", Integer, primary_key=True, autoincrement=True),
+    Column("questionnaire_id", Integer, nullable=False),
+    Column("sg_1", Integer, nullable=False),
+    Column("sg_2", Integer, nullable=False),
+    Column("sg_3", Integer, nullable=True),
+    Column("sg_4", Integer, nullable=False),
+    Column("sg_5", Integer, nullable=True),
+    Column("sg_6", Integer, nullable=True),
+    Column("sg_7", Integer, nullable=True),
+    Column("sg_8", Integer, nullable=True),
+    Column("sg_9", Integer, nullable=True),
+    Column("sg_10", Integer, nullable=False),
+    Column("sg_11", Integer, nullable=False)
+)
+
 knowledge = Table(
     "knowledge",
     metadata,
@@ -152,6 +224,13 @@ learning_style = Table(
     Column("processing_value", Integer, nullable=False),
     Column("understanding_dimension", String, nullable=False),
     Column("understanding_value", Integer, nullable=False)
+)
+
+questionnaire = Table(
+    "questionnaire",
+    metadata,
+    Column("id", Integer, primary_key=True, autoincrement=True),
+    Column("student_id", Integer, nullable=False)
 )
 
 settings = Table(
@@ -285,6 +364,18 @@ def start_mappers():
         UA.User, haski_user
     )
     mapper(
+        LM.IlsInputAnswers, ils_input_answers
+    )
+    mapper(
+        LM.IlsPerceptionAnswers, ils_perception_answers
+    )
+    mapper(
+        LM.IlsProcessingAnswers, ils_processing_answers
+    )
+    mapper(
+        LM.IlsUnderstandingAnswers, ils_understanding_answers
+    )
+    mapper(
         LM.Knowledge, knowledge
     )
     mapper(
@@ -315,10 +406,13 @@ def start_mappers():
         LM.LearningStyle, learning_style
     )
     mapper(
+        LM.Questionnaire, questionnaire
+    )
+    mapper(
         UA.Settings, settings
     )
     mapper(
-        LM.Student, student
+        UA.Student, student
     )
     mapper(
         DM.StudentCourse, student_course

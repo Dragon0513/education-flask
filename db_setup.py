@@ -66,6 +66,11 @@ cursor.execute("DROP TABLE IF EXISTS learning_element_rating")
 cursor.execute("DROP TABLE IF EXISTS learning_path")
 cursor.execute("DROP TABLE IF EXISTS learning_path_topic")
 cursor.execute("DROP TABLE IF EXISTS learning_path_learning_element")
+cursor.execute("DROP TABLE IF EXISTS questionnaire")
+cursor.execute("DROP TABLE IF EXISTS ils_input_answers")
+cursor.execute("DROP TABLE IF EXISTS ils_perception_answers")
+cursor.execute("DROP TABLE IF EXISTS ils_processing_answers")
+cursor.execute("DROP TABLE IF EXISTS ils_understanding_answers")
 
 # Creating table as per requirement
 sql = '''
@@ -687,6 +692,146 @@ sql = '''
     TABLESPACE pg_default;
 
     ALTER TABLE IF EXISTS public.learning_path_learning_element
+        OWNER to postgres;
+'''
+cursor.execute(sql)
+
+sql = '''
+    CREATE TABLE IF NOT EXISTS public.questionnaire
+    (
+        id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+        student_id integer NOT NULL,
+        CONSTRAINT questionnaire_pkey PRIMARY KEY (id),
+        CONSTRAINT student_id FOREIGN KEY (student_id)
+            REFERENCES public.student (id) MATCH SIMPLE
+            ON UPDATE NO ACTION
+            ON DELETE NO ACTION
+    )
+
+    TABLESPACE pg_default;
+
+    ALTER TABLE IF EXISTS public.questionnaire
+        OWNER to postgres;
+'''
+cursor.execute(sql)
+
+sql = '''
+    CREATE TABLE IF NOT EXISTS public.ils_input_answers
+    (
+        id integer NOT NULL,
+        questionnaire_id integer NOT NULL,
+        vv_1 text COLLATE pg_catalog."default",
+        vv_2 text COLLATE pg_catalog."default" NOT NULL,
+        vv_3 text COLLATE pg_catalog."default",
+        vv_4 text COLLATE pg_catalog."default",
+        vv_5 text COLLATE pg_catalog."default" NOT NULL,
+        vv_6 text COLLATE pg_catalog."default",
+        vv_7 text COLLATE pg_catalog."default" NOT NULL,
+        vv_8 text COLLATE pg_catalog."default",
+        vv_9 text COLLATE pg_catalog."default",
+        vv_10 text COLLATE pg_catalog."default" NOT NULL,
+        vv_11 text COLLATE pg_catalog."default" NOT NULL,
+        CONSTRAINT ils_input_answers_pkey PRIMARY KEY (id),
+        CONSTRAINT questionnaire_id FOREIGN KEY (questionnaire_id)
+            REFERENCES public.questionnaire (id) MATCH SIMPLE
+            ON UPDATE NO ACTION
+            ON DELETE NO ACTION
+    )
+
+    TABLESPACE pg_default;
+
+    ALTER TABLE IF EXISTS public.ils_input_answers
+        OWNER to postgres;
+'''
+cursor.execute(sql)
+
+sql = '''
+    CREATE TABLE IF NOT EXISTS public.ils_perception_answers
+    (
+        id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+        si_1 text COLLATE pg_catalog."default" NOT NULL,
+        si_2 text COLLATE pg_catalog."default",
+        si_3 text COLLATE pg_catalog."default",
+        si_4 text COLLATE pg_catalog."default" NOT NULL,
+        si_5 text COLLATE pg_catalog."default",
+        si_6 text COLLATE pg_catalog."default",
+        si_7 text COLLATE pg_catalog."default" NOT NULL,
+        si_8 text COLLATE pg_catalog."default",
+        si_9 text COLLATE pg_catalog."default",
+        si_10 text COLLATE pg_catalog."default" NOT NULL,
+        si_11 text COLLATE pg_catalog."default" NOT NULL,
+        questionnaire_id integer NOT NULL,
+        CONSTRAINT ils_perception_answers_pkey PRIMARY KEY (id),
+        CONSTRAINT questionnaire_id FOREIGN KEY (questionnaire_id)
+            REFERENCES public.questionnaire (id) MATCH SIMPLE
+            ON UPDATE NO ACTION
+            ON DELETE NO ACTION
+            NOT VALID
+    )
+
+    TABLESPACE pg_default;
+
+    ALTER TABLE IF EXISTS public.ils_perception_answers
+        OWNER to postgres;
+'''
+cursor.execute(sql)
+
+sql = '''
+    CREATE TABLE IF NOT EXISTS public.ils_processing_answers
+    (
+        id integer NOT NULL,
+        questionnaire_id integer NOT NULL,
+        ar_1 text COLLATE pg_catalog."default",
+        ar_2 text COLLATE pg_catalog."default",
+        ar_3 text COLLATE pg_catalog."default" NOT NULL,
+        ar_4 text COLLATE pg_catalog."default" NOT NULL,
+        ar_5 text COLLATE pg_catalog."default",
+        ar_6 text COLLATE pg_catalog."default" NOT NULL,
+        ar_7 text COLLATE pg_catalog."default" NOT NULL,
+        ar_8 text COLLATE pg_catalog."default" NOT NULL,
+        ar_9 text COLLATE pg_catalog."default",
+        ar_10 text COLLATE pg_catalog."default",
+        ar_11 text COLLATE pg_catalog."default",
+        CONSTRAINT ils_processing_answers_pkey PRIMARY KEY (id),
+        CONSTRAINT questionnaire_id FOREIGN KEY (questionnaire_id)
+            REFERENCES public.questionnaire (id) MATCH SIMPLE
+            ON UPDATE NO ACTION
+            ON DELETE NO ACTION
+    )
+
+    TABLESPACE pg_default;
+
+    ALTER TABLE IF EXISTS public.ils_processing_answers
+        OWNER to postgres;
+'''
+cursor.execute(sql)
+
+sql = '''
+    CREATE TABLE IF NOT EXISTS public.ils_understanding_answers
+    (
+        id integer NOT NULL,
+        questionnaire_id integer NOT NULL,
+        sg_1 text COLLATE pg_catalog."default" NOT NULL,
+        sg_2 text COLLATE pg_catalog."default" NOT NULL,
+        sg_3 text COLLATE pg_catalog."default",
+        sg_4 text COLLATE pg_catalog."default" NOT NULL,
+        sg_5 text COLLATE pg_catalog."default",
+        sg_6 text COLLATE pg_catalog."default",
+        sg_7 text COLLATE pg_catalog."default",
+        sg_8 text COLLATE pg_catalog."default",
+        sg_9 text COLLATE pg_catalog."default",
+        sg_10 text COLLATE pg_catalog."default" NOT NULL,
+        sg_11 text COLLATE pg_catalog."default" NOT NULL,
+        CONSTRAINT ils_understanding_answers_pkey PRIMARY KEY (id),
+        CONSTRAINT questionnaire_id FOREIGN KEY (questionnaire_id)
+            REFERENCES public.questionnaire (id) MATCH SIMPLE
+            ON UPDATE NO ACTION
+            ON DELETE NO ACTION
+    )
+
+    TABLESPACE pg_default;
+
+    ALTER TABLE IF EXISTS public.ils_understanding_answers
         OWNER to postgres;
 '''
 cursor.execute(sql)

@@ -96,168 +96,168 @@ class Questionnaire:
 
 class IlsInputAnswers:
     def __init__(self,
-                vv_1,
-                vv_2,
-                vv_3,
-                vv_4,
-                vv_5,
-                vv_6,
-                vv_7,
-                vv_8,
-                vv_9,
-                vv_10,
-                vv_11) -> None:
-        self.vv_1 = vv_1
-        self.vv_2 = vv_2
-        self.vv_3 = vv_3
-        self.vv_4 = vv_4
-        self.vv_5 = vv_5
-        self.vv_6 = vv_6
-        self.vv_7 = vv_7
-        self.vv_8 = vv_8
-        self.vv_9 = vv_9
-        self.vv_10 = vv_10
-        self.vv_11 = vv_11
+                vv_1_f3,
+                vv_2_f7,
+                vv_3_f11,
+                vv_4_f15,
+                vv_5_f19,
+                vv_6_f23,
+                vv_7_f27,
+                vv_8_f31,
+                vv_9_f35,
+                vv_10_f39,
+                vv_11_f43) -> None:
+        self.vv_1_f3 = vv_1_f3
+        self.vv_2_f7 = vv_2_f7
+        self.vv_3_f11 = vv_3_f11
+        self.vv_4_f15 = vv_4_f15
+        self.vv_5_f19 = vv_5_f19
+        self.vv_6_f23 = vv_6_f23
+        self.vv_7_f27 = vv_7_f27
+        self.vv_8_f31 = vv_8_f31
+        self.vv_9_f35 = vv_9_f35
+        self.vv_10_f39 = vv_10_f39
+        self.vv_11_f43 = vv_11_f43
 
     def serialize(self):
         return {
             'id': self.id,
-            'vv_1': self.vv_1,
-            'vv_2': self.vv_2,
-            'vv_3': self.vv_3,
-            'vv_4': self.vv_4,
-            'vv_5': self.vv_5,
-            'vv_6': self.vv_6,
-            'vv_7': self.vv_7,
-            'vv_8': self.vv_8,
-            'vv_9': self.vv_9,
-            'vv_10': self.vv_10,
-            'vv_11': self.vv_11
+            'vv_1_f3': self.vv_1_f3,
+            'vv_2_f7': self.vv_2_f7,
+            'vv_3_f11': self.vv_3_f11,
+            'vv_4_f15': self.vv_4_f15,
+            'vv_5_f19': self.vv_5_f19,
+            'vv_6_f23': self.vv_6_f23,
+            'vv_7_f27': self.vv_7_f27,
+            'vv_8_f31': self.vv_8_f31,
+            'vv_9_f35': self.vv_9_f35,
+            'vv_10_f39': self.vv_10_f39,
+            'vv_11_f43': self.vv_11_f43
         }
 
 
 class IlsPerceptionAnswers:
     def __init__(self,
-                si_1,
-                si_2,
-                si_3,
-                si_4,
-                si_5,
-                si_6,
-                si_7,
-                si_8,
-                si_9,
-                si_10,
-                si_11) -> None:
-        self.si_1 = si_1
-        self.si_2 = si_2
-        self.si_3 = si_3
-        self.si_4 = si_4
-        self.si_5 = si_5
-        self.si_6 = si_6
-        self.si_7 = si_7
-        self.si_8 = si_8
-        self.si_9 = si_9
-        self.si_10 = si_10
-        self.si_11 = si_11
+                si_1_f2,
+                si_2_f6,
+                si_3_f10,
+                si_4_f14,
+                si_5_f18,
+                si_6_f22,
+                si_7_f26,
+                si_8_f30,
+                si_9_f34,
+                si_10_f38,
+                si_11_f42) -> None:
+        self.si_1_f2 = si_1_f2
+        self.si_2_f6 = si_2_f6
+        self.si_3_f10 = si_3_f10
+        self.si_4_f14 = si_4_f14
+        self.si_5_f18 = si_5_f18
+        self.si_6_f22 = si_6_f22
+        self.si_7_f26 = si_7_f26
+        self.si_8_f30 = si_8_f30
+        self.si_9_f34 = si_9_f34
+        self.si_10_f38 = si_10_f38
+        self.si_11_f42 = si_11_f42
 
     def serialize(self):
         return {
             'id': self.id,
-            'si_1': self.si_1,
-            'si_2': self.si_2,
-            'si_3': self.si_3,
-            'si_4': self.si_4,
-            'si_5': self.si_5,
-            'si_6': self.si_6,
-            'si_7': self.si_7,
-            'si_8': self.si_8,
-            'si_9': self.si_9,
-            'si_10': self.si_10,
-            'si_11': self.si_11
+            'si_1_f2': self.si_1_f2,
+            'si_2_f6': self.si_2_f6,
+            'si_3_f10': self.si_3_f10,
+            'si_4_f14': self.si_4_f14,
+            'si_5_f18': self.si_5_f18,
+            'si_6_f22': self.si_6_f22,
+            'si_7_f26': self.si_7_f26,
+            'si_8_f30': self.si_8_f30,
+            'si_9_f34': self.si_9_f34,
+            'si_10_f38': self.si_10_f38,
+            'si_11_f42': self.si_11_f42
         }
 
 
 class IlsProcessingAnswers:
     def __init__(self,
-                ar_1,
-                ar_2,
-                ar_3,
-                ar_4,
-                ar_5,
-                ar_6,
-                ar_7,
-                ar_8,
-                ar_9,
-                ar_10,
-                ar_11) -> None:
-        self.ar_1 = ar_1
-        self.ar_2 = ar_2
-        self.ar_3 = ar_3
-        self.ar_4 = ar_4
-        self.ar_5 = ar_5
-        self.ar_6 = ar_6
-        self.ar_7 = ar_7
-        self.ar_8 = ar_8
-        self.ar_9 = ar_9
-        self.ar_10 = ar_10
-        self.ar_11 = ar_11
+                ar_1_f1,
+                ar_2_f5,
+                ar_3_f9,
+                ar_4_f13,
+                ar_5_f17,
+                ar_6_f21,
+                ar_7_f25,
+                ar_8_f29,
+                ar_9_f33,
+                ar_10_f37,
+                ar_11_f41) -> None:
+        self.ar_1_f1 = ar_1_f1
+        self.ar_2_f5 = ar_2_f5
+        self.ar_3_f9 = ar_3_f9
+        self.ar_4_f13 = ar_4_f13
+        self.ar_5_f17 = ar_5_f17
+        self.ar_6_f21 = ar_6_f21
+        self.ar_7_f25 = ar_7_f25
+        self.ar_8_f29 = ar_8_f29
+        self.ar_9_f33 = ar_9_f33
+        self.ar_10_f37 = ar_10_f37
+        self.ar_11_f41 = ar_11_f41
 
     def serialize(self):
         return {
             'id': self.id,
-            'ar_1': self.ar_1,
-            'ar_2': self.ar_2,
-            'ar_3': self.ar_3,
-            'ar_4': self.ar_4,
-            'ar_5': self.ar_5,
-            'ar_6': self.ar_6,
-            'ar_7': self.ar_7,
-            'ar_8': self.ar_8,
-            'ar_9': self.ar_9,
-            'ar_10': self.ar_10,
-            'ar_11': self.ar_11
+            'ar_1_f1': self.ar_1_f1,
+            'ar_2_f5': self.ar_2_f5,
+            'ar_3_f9': self.ar_3_f9,
+            'ar_4_f13': self.ar_4_f13,
+            'ar_5_f17': self.ar_5_f17,
+            'ar_6_f21': self.ar_6_f21,
+            'ar_7_f25': self.ar_7_f25,
+            'ar_8_f29': self.ar_8_f29,
+            'ar_9_f33': self.ar_9_f33,
+            'ar_10_f37': self.ar_10_f37,
+            'ar_11_f41': self.ar_11_f41
         }
 
 
 class IlsUnderstandingAnswers:
     def __init__(self,
-                sg_1,
-                sg_2,
-                sg_3,
-                sg_4,
-                sg_5,
-                sg_6,
-                sg_7,
-                sg_8,
-                sg_9,
-                sg_10,
-                sg_11) -> None:
-        self.sg_1 = sg_1
-        self.sg_2 = sg_2
-        self.sg_3 = sg_3
-        self.sg_4 = sg_4
-        self.sg_5 = sg_5
-        self.sg_6 = sg_6
-        self.sg_7 = sg_7
-        self.sg_8 = sg_8
-        self.sg_9 = sg_9
-        self.sg_10 = sg_10
-        self.sg_11 = sg_11
+                sg_1_f4,
+                sg_2_f8,
+                sg_3_f12,
+                sg_4_f16,
+                sg_5_f20,
+                sg_6_f24,
+                sg_7_f28,
+                sg_8_f32,
+                sg_9_f36,
+                sg_10_f40,
+                sg_11_f44) -> None:
+        self.sg_1_f4 = sg_1_f4
+        self.sg_2_f8 = sg_2_f8
+        self.sg_3_f12 = sg_3_f12
+        self.sg_4_f16 = sg_4_f16
+        self.sg_5_f20 = sg_5_f20
+        self.sg_6_f24 = sg_6_f24
+        self.sg_7_f28 = sg_7_f28
+        self.sg_8_f32 = sg_8_f32
+        self.sg_9_f36 = sg_9_f36
+        self.sg_10_f40 = sg_10_f40
+        self.sg_11_f44 = sg_11_f44
 
     def serialize(self):
         return {
             'id': self.id,
-            'sg_1': self.sg_1,
-            'sg_2': self.sg_2,
-            'sg_3': self.sg_3,
-            'sg_4': self.sg_4,
-            'sg_5': self.sg_5,
-            'sg_6': self.sg_6,
-            'sg_7': self.sg_7,
-            'sg_8': self.sg_8,
-            'sg_9': self.sg_9,
-            'sg_10': self.sg_10,
-            'sg_11': self.sg_11
+            'sg_1_f4': self.sg_1_f4,
+            'sg_2_f8': self.sg_2_f8,
+            'sg_3_f12': self.sg_3_f12,
+            'sg_4_f16': self.sg_4_f16,
+            'sg_5_f20': self.sg_5_f20,
+            'sg_6_f24': self.sg_6_f24,
+            'sg_7_f28': self.sg_7_f28,
+            'sg_8_f32': self.sg_8_f32,
+            'sg_9_f36': self.sg_9_f36,
+            'sg_10_f40': self.sg_10_f40,
+            'sg_11_f44': self.sg_11_f44
         }
 

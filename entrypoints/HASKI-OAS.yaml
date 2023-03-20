@@ -4010,8 +4010,8 @@ components:
         properties:
           question_id: 
             type: "string"
-            example: "VV_1"
-            description: "The ID of the question from the ILS"
+            example: "vv_1_f3"
+            description: "The ID of the question from the ILS and the number of the question in the questionnaire"
           answer:
             type: "string"
             example: "a"

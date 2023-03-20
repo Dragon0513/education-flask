@@ -4,6 +4,7 @@ from domain.tutoringModel import graf as LP
 from domain.domainModel import model as DM
 from domain.learnersModel import model as LM
 from domain.tutoringModel import model as TM
+from domain.userAdministartion import model as UA
 
 metadata = MetaData()
 
@@ -38,6 +39,23 @@ course_creator_course = Table(
     Column("course_id", Integer, nullable=False),
     Column("created_at", Date, nullable=False),
     Column("last_updated", Date, nullable=True)
+)
+
+course_topic = Table(
+    "course_topic",
+    metadata,
+    Column("id", Integer, primary_key=True, autoincrement=True),
+    Column("course_id", Integer, nullable=False),
+    Column("topic_id", Integer, nullable=False)
+)
+
+haski_user = Table(
+    "haski_user",
+    metadata,
+    Column("id", Integer, primary_key=True, autoincrement=True),
+    Column("name", String, nullable=False),
+    Column("university", String, nullable=False),
+    Column("lms_user_id", Integer, nullable=False)
 )
 
 knowledge = Table(
@@ -246,30 +264,86 @@ topic_learning_element = Table(
     Column("learning_element_id", Integer, nullable=False)
 )
 
-user = Table(
-    "user",
-    metadata,
-    Column("id", Integer, primary_key=True, autoincrement=True),
-    Column("name", String, nullable=False),
-    Column("university", String, nullable=False),
-    Column("lms_user_id", Integer, nullable=False)
-)
 
-"""
 def start_mappers():
     mapper(
-        DM.LearningElement, learning_element
-    )
-    mapper(
-        TM.LearningPath, learning_path
+        UA.Admin, admin
     )
     mapper(
         DM.Course, course
     )
     mapper(
+        UA.CourseCreator, course_creator
+    )
+    mapper(
+        DM.CourseCreatorCourse, course_creator_course
+    )
+    mapper(
+        DM.CourseTopic, course_topic
+    )
+    mapper(
+        UA.User, haski_user
+    )
+    mapper(
+        LM.Knowledge, knowledge
+    )
+    mapper(
+        LM.LearningAnalytics, learning_analytics
+    )
+    mapper(
+        LM.LearningCharacteristic, learning_charcteristics
+    )
+    mapper(
+        DM.LearningElement, learning_element
+    )
+    mapper(
+        DM.LearningElementRating, learning_element_rating
+    )
+    mapper(
+        TM.LearningPath, learning_path
+    )
+    mapper(
+        TM.LearningPathLearningElement, learning_path_learning_element
+    )
+    mapper(
+        TM.LearningPathTopic, learning_path_topic
+    )
+    mapper(
+        LM.LearningStrategy, learning_strategy
+    )
+    mapper(
+        LM.LearningStyle, learning_style
+    )
+    mapper(
+        UA.Settings, settings
+    )
+    mapper(
         LM.Student, student
+    )
+    mapper(
+        DM.StudentCourse, student_course
+    )
+    mapper(
+        DM.StudentLearningElement, student_learning_element
+    )
+    mapper(
+        DM.StudentLearningElementVisit, student_learning_element_visit
+    )
+    mapper(
+        DM.StudentTopic, student_topic
+    )
+    mapper(
+        DM.StudentTopicVisit, student_topic_visit
+    )
+    mapper(
+        UA.Teacher, teacher
+    )
+    mapper(
+        DM.TeacherCourse, teacher_course
     )
     mapper(
         DM.Topic, topic
     )
-"""
+    mapper(
+        DM.TopicLearningElement, topic_learning_element
+    )

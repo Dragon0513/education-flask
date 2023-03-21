@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS public."haski_user"
     name text COLLATE pg_catalog."default" NOT NULL,
     university text COLLATE pg_catalog."default" NOT NULL,
     lms_user_id integer NOT NULL,
+    role text COLLATE pg_catalog."default" NOT NULL,
     CONSTRAINT user_pkey PRIMARY KEY (id)
 )
 

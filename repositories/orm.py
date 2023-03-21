@@ -55,7 +55,8 @@ haski_user = Table(
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("name", String, nullable=False),
     Column("university", String, nullable=False),
-    Column("lms_user_id", Integer, nullable=False)
+    Column("lms_user_id", Integer, nullable=False),
+    Column("role", String, nullable=False)
 )
 
 ils_input_answers = Table(

@@ -84,7 +84,7 @@ class LearningAnalytics:
 
 class Questionnaire:
     def __init__(self,
-                student_id) -> None:
+                 student_id) -> None:
         self.student_id = student_id
 
     def serialize(self):
@@ -96,17 +96,17 @@ class Questionnaire:
 
 class IlsInputAnswers:
     def __init__(self,
-                vv_1_f3,
-                vv_2_f7,
-                vv_3_f11,
-                vv_4_f15,
-                vv_5_f19,
-                vv_6_f23,
-                vv_7_f27,
-                vv_8_f31,
-                vv_9_f35,
-                vv_10_f39,
-                vv_11_f43) -> None:
+                 vv_1_f3,
+                 vv_2_f7,
+                 vv_3_f11,
+                 vv_4_f15,
+                 vv_5_f19,
+                 vv_6_f23,
+                 vv_7_f27,
+                 vv_8_f31,
+                 vv_9_f35,
+                 vv_10_f39,
+                 vv_11_f43) -> None:
         self.vv_1_f3 = vv_1_f3
         self.vv_2_f7 = vv_2_f7
         self.vv_3_f11 = vv_3_f11
@@ -138,17 +138,17 @@ class IlsInputAnswers:
 
 class IlsPerceptionAnswers:
     def __init__(self,
-                si_1_f2,
-                si_2_f6,
-                si_3_f10,
-                si_4_f14,
-                si_5_f18,
-                si_6_f22,
-                si_7_f26,
-                si_8_f30,
-                si_9_f34,
-                si_10_f38,
-                si_11_f42) -> None:
+                 si_1_f2,
+                 si_2_f6,
+                 si_3_f10,
+                 si_4_f14,
+                 si_5_f18,
+                 si_6_f22,
+                 si_7_f26,
+                 si_8_f30,
+                 si_9_f34,
+                 si_10_f38,
+                 si_11_f42) -> None:
         self.si_1_f2 = si_1_f2
         self.si_2_f6 = si_2_f6
         self.si_3_f10 = si_3_f10
@@ -180,17 +180,17 @@ class IlsPerceptionAnswers:
 
 class IlsProcessingAnswers:
     def __init__(self,
-                ar_1_f1,
-                ar_2_f5,
-                ar_3_f9,
-                ar_4_f13,
-                ar_5_f17,
-                ar_6_f21,
-                ar_7_f25,
-                ar_8_f29,
-                ar_9_f33,
-                ar_10_f37,
-                ar_11_f41) -> None:
+                 ar_1_f1,
+                 ar_2_f5,
+                 ar_3_f9,
+                 ar_4_f13,
+                 ar_5_f17,
+                 ar_6_f21,
+                 ar_7_f25,
+                 ar_8_f29,
+                 ar_9_f33,
+                 ar_10_f37,
+                 ar_11_f41) -> None:
         self.ar_1_f1 = ar_1_f1
         self.ar_2_f5 = ar_2_f5
         self.ar_3_f9 = ar_3_f9
@@ -222,17 +222,17 @@ class IlsProcessingAnswers:
 
 class IlsUnderstandingAnswers:
     def __init__(self,
-                sg_1_f4,
-                sg_2_f8,
-                sg_3_f12,
-                sg_4_f16,
-                sg_5_f20,
-                sg_6_f24,
-                sg_7_f28,
-                sg_8_f32,
-                sg_9_f36,
-                sg_10_f40,
-                sg_11_f44) -> None:
+                 sg_1_f4,
+                 sg_2_f8,
+                 sg_3_f12,
+                 sg_4_f16,
+                 sg_5_f20,
+                 sg_6_f24,
+                 sg_7_f28,
+                 sg_8_f32,
+                 sg_9_f36,
+                 sg_10_f40,
+                 sg_11_f44) -> None:
         self.sg_1_f4 = sg_1_f4
         self.sg_2_f8 = sg_2_f8
         self.sg_3_f12 = sg_3_f12
@@ -260,4 +260,3 @@ class IlsUnderstandingAnswers:
             'sg_10_f40': self.sg_10_f40,
             'sg_11_f44': self.sg_11_f44
         }
-

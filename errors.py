@@ -47,3 +47,8 @@ class CreationError(Exception):
 class DatabaseQueryError(Exception):
     code = 500
     description = "Something went wrong while querying the Database!"
+
+
+class NoValidRoleError(Exception):
+    code = 400
+    description = "The provided role does not exist!"

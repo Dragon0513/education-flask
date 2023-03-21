@@ -76,10 +76,12 @@ cursor.execute("DROP TABLE IF EXISTS ils_understanding_answers")
 sql = '''
     CREATE TABLE IF NOT EXISTS public."haski_user"
     (
-        id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+        id integer NOT NULL GENERATED ALWAYS AS IDENTITY
+        ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
         name text COLLATE pg_catalog."default" NOT NULL,
         university text COLLATE pg_catalog."default" NOT NULL,
         lms_user_id integer NOT NULL,
+        role text COLLATE pg_catalog."default" NOT NULL,
         CONSTRAINT user_pkey PRIMARY KEY (id)
     )
 
@@ -93,7 +95,8 @@ cursor.execute(sql)
 sql = '''
     CREATE TABLE IF NOT EXISTS public.settings
     (
-        id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+        id integer NOT NULL GENERATED ALWAYS AS IDENTITY
+        ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
         user_id integer NOT NULL,
         theme text COLLATE pg_catalog."default",
         pswd text COLLATE pg_catalog."default",
@@ -115,7 +118,8 @@ cursor.execute(sql)
 sql = '''
     CREATE TABLE IF NOT EXISTS public.admin
     (
-        id integer NOT NULL,
+        id integer NOT NULL GENERATED ALWAYS AS IDENTITY
+        ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
         user_id integer NOT NULL,
         CONSTRAINT admin_pkey PRIMARY KEY (id),
         CONSTRAINT user_id FOREIGN KEY (user_id)
@@ -134,7 +138,8 @@ cursor.execute(sql)
 sql = '''
     CREATE TABLE IF NOT EXISTS public.course_creator
     (
-        id integer NOT NULL,
+        id integer NOT NULL GENERATED ALWAYS AS IDENTITY
+        ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
         user_id integer,
         CONSTRAINT course_creator_pkey PRIMARY KEY (id),
         CONSTRAINT user_id FOREIGN KEY (user_id)
@@ -153,7 +158,8 @@ cursor.execute(sql)
 sql = '''
     CREATE TABLE IF NOT EXISTS public.teacher
     (
-        id integer NOT NULL,
+        id integer NOT NULL GENERATED ALWAYS AS IDENTITY
+        ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
         user_id integer NOT NULL,
         CONSTRAINT teacher_pkey PRIMARY KEY (id),
         CONSTRAINT user_id FOREIGN KEY (user_id)
@@ -172,7 +178,8 @@ cursor.execute(sql)
 sql = '''
     CREATE TABLE IF NOT EXISTS public.student
     (
-        id integer NOT NULL,
+        id integer NOT NULL GENERATED ALWAYS AS IDENTITY
+        ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
         user_id integer NOT NULL,
         CONSTRAINT student_pkey PRIMARY KEY (id),
         CONSTRAINT user_id FOREIGN KEY (user_id)
@@ -191,7 +198,8 @@ cursor.execute(sql)
 sql = '''
     CREATE TABLE IF NOT EXISTS public.course
     (
-        id integer NOT NULL,
+        id integer NOT NULL GENERATED ALWAYS AS IDENTITY
+        ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
         lms_id integer NOT NULL,
         name text COLLATE pg_catalog."default" NOT NULL,
         university text COLLATE pg_catalog."default" NOT NULL,
@@ -208,7 +216,8 @@ cursor.execute(sql)
 sql = '''
     CREATE TABLE IF NOT EXISTS public.topic
     (
-        id integer NOT NULL,
+        id integer NOT NULL GENERATED ALWAYS AS IDENTITY
+        ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
         lms_id integer NOT NULL,
         is_topic boolean NOT NULL,
         parent_id integer,
@@ -236,7 +245,8 @@ cursor.execute(sql)
 sql = '''
     CREATE TABLE IF NOT EXISTS public.learning_element
     (
-        id integer NOT NULL,
+        id integer NOT NULL GENERATED ALWAYS AS IDENTITY
+        ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
         lms_id integer NOT NULL,
         activity_type text COLLATE pg_catalog."default" NOT NULL,
         classification text COLLATE pg_catalog."default" NOT NULL,
@@ -258,7 +268,8 @@ cursor.execute(sql)
 sql = '''
     CREATE TABLE IF NOT EXISTS public.course_topic
     (
-        id integer NOT NULL,
+        id integer NOT NULL GENERATED ALWAYS AS IDENTITY
+        ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
         course_id integer NOT NULL,
         topic_id integer NOT NULL,
         CONSTRAINT course_topic_pkey PRIMARY KEY (id),
@@ -282,7 +293,8 @@ cursor.execute(sql)
 sql = '''
     CREATE TABLE IF NOT EXISTS public.topic_learning_element
     (
-        id integer NOT NULL,
+        id integer NOT NULL GENERATED ALWAYS AS IDENTITY
+        ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
         topic_id integer NOT NULL,
         learning_element_id integer NOT NULL,
         CONSTRAINT topic_learninf_element_pkey PRIMARY KEY (id),
@@ -306,7 +318,8 @@ cursor.execute(sql)
 sql = '''
     CREATE TABLE IF NOT EXISTS public.learning_characteristics
     (
-        id integer NOT NULL,
+        id integer NOT NULL GENERATED ALWAYS AS IDENTITY
+        ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
         user_id integer NOT NULL,
         CONSTRAINT learning_characteristics_pkey PRIMARY KEY (id),
         CONSTRAINT user_id FOREIGN KEY (user_id)
@@ -325,7 +338,8 @@ cursor.execute(sql)
 sql = '''
     CREATE TABLE IF NOT EXISTS public.learning_style
     (
-        id integer NOT NULL,
+        id integer NOT NULL GENERATED ALWAYS AS IDENTITY
+        ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
         characteristic_id integer NOT NULL,
         perception_dimension text COLLATE pg_catalog."default" NOT NULL,
         perception_value integer NOT NULL,
@@ -352,7 +366,8 @@ cursor.execute(sql)
 sql = '''
     CREATE TABLE IF NOT EXISTS public.learning_strategy
     (
-        id integer NOT NULL,
+        id integer NOT NULL GENERATED ALWAYS AS IDENTITY
+        ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
         characterisitc_id integer NOT NULL,
         CONSTRAINT learning_strategy_pkey PRIMARY KEY (id),
         CONSTRAINT characterisitc_id FOREIGN KEY (characterisitc_id)
@@ -371,7 +386,8 @@ cursor.execute(sql)
 sql = '''
     CREATE TABLE IF NOT EXISTS public.knowledge
     (
-        id integer NOT NULL,
+        id integer NOT NULL GENERATED ALWAYS AS IDENTITY
+        ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
         characterisitc_id integer NOT NULL,
         CONSTRAINT knowledge_pkey PRIMARY KEY (id),
         CONSTRAINT characterisitc_id FOREIGN KEY (characterisitc_id)
@@ -390,7 +406,8 @@ cursor.execute(sql)
 sql = '''
     CREATE TABLE IF NOT EXISTS public.learning_analytics
     (
-        id integer NOT NULL,
+        id integer NOT NULL GENERATED ALWAYS AS IDENTITY
+        ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
         characterisitc_id integer NOT NULL,
         CONSTRAINT learning_analytics_pkey PRIMARY KEY (id),
         CONSTRAINT characterisitc_id FOREIGN KEY (characterisitc_id)
@@ -409,7 +426,8 @@ cursor.execute(sql)
 sql = '''
     CREATE TABLE IF NOT EXISTS public.course_creator_course
     (
-        id integer NOT NULL,
+        id integer NOT NULL GENERATED ALWAYS AS IDENTITY
+        ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
         course_creator_id integer NOT NULL,
         course_id integer NOT NULL,
         created_at timestamp without time zone NOT NULL,
@@ -435,7 +453,8 @@ cursor.execute(sql)
 sql = '''
     CREATE TABLE IF NOT EXISTS public.teacher_course
     (
-        id integer NOT NULL,
+        id integer NOT NULL GENERATED ALWAYS AS IDENTITY
+        ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
         teacher_id integer NOT NULL,
         course_id integer NOT NULL,
         CONSTRAINT teacher_course_pkey PRIMARY KEY (id),
@@ -459,7 +478,8 @@ cursor.execute(sql)
 sql = '''
     CREATE TABLE IF NOT EXISTS public.student_course
     (
-        id integer NOT NULL,
+        id integer NOT NULL GENERATED ALWAYS AS IDENTITY
+        ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
         student_id integer NOT NULL,
         course_id integer NOT NULL,
         perception_dimension text COLLATE pg_catalog."default" NOT NULL,
@@ -491,7 +511,8 @@ cursor.execute(sql)
 sql = '''
     CREATE TABLE IF NOT EXISTS public.student_topic
     (
-        id integer NOT NULL,
+        id integer NOT NULL GENERATED ALWAYS AS IDENTITY
+        ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
         student_id integer NOT NULL,
         topic_id integer NOT NULL,
         done boolean NOT NULL,
@@ -517,7 +538,8 @@ cursor.execute(sql)
 sql = '''
     CREATE TABLE IF NOT EXISTS public.student_topic_visit
     (
-        id integer NOT NULL,
+        id integer NOT NULL GENERATED ALWAYS AS IDENTITY
+        ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
         student_id integer NOT NULL,
         topic_id integer NOT NULL,
         visit_start timestamp without time zone NOT NULL,
@@ -543,7 +565,8 @@ cursor.execute(sql)
 sql = '''
     CREATE TABLE IF NOT EXISTS public.student_learning_element
     (
-        id integer NOT NULL,
+        id integer NOT NULL GENERATED ALWAYS AS IDENTITY
+        ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
         student_id integer NOT NULL,
         learning_element_id integer NOT NULL,
         done boolean NOT NULL,
@@ -569,7 +592,8 @@ cursor.execute(sql)
 sql = '''
     CREATE TABLE IF NOT EXISTS public.student_learning_element_visit
     (
-        id integer NOT NULL,
+        id integer NOT NULL GENERATED ALWAYS AS IDENTITY
+        ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
         student_id integer NOT NULL,
         learning_element_id integer NOT NULL,
         visit_start timestamp without time zone NOT NULL,
@@ -595,7 +619,8 @@ cursor.execute(sql)
 sql = '''
     CREATE TABLE IF NOT EXISTS public.learning_element_rating
     (
-        id integer NOT NULL,
+        id integer NOT NULL GENERATED ALWAYS AS IDENTITY
+        ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
         learning_element_id integer NOT NULL,
         rating integer NOT NULL,
         message text COLLATE pg_catalog."default",
@@ -618,7 +643,8 @@ cursor.execute(sql)
 sql = '''
     CREATE TABLE IF NOT EXISTS public.learning_path
     (
-        id integer NOT NULL,
+        id integer NOT NULL GENERATED ALWAYS AS IDENTITY
+        ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
         student_id integer NOT NULL,
         course_id integer NOT NULL,
         topic_id integer,
@@ -647,7 +673,8 @@ cursor.execute(sql)
 sql = '''
     CREATE TABLE IF NOT EXISTS public.learning_path_topic
     (
-        id integer NOT NULL,
+        id integer NOT NULL GENERATED ALWAYS AS IDENTITY
+        ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
         topic_id integer NOT NULL,
         learning_path_id integer NOT NULL,
         recommended boolean NOT NULL,
@@ -673,7 +700,8 @@ cursor.execute(sql)
 sql = '''
     CREATE TABLE IF NOT EXISTS public.learning_path_learning_element
     (
-        id integer NOT NULL,
+        id integer NOT NULL GENERATED ALWAYS AS IDENTITY
+        ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
         learning_element_id integer NOT NULL,
         learning_path_id integer NOT NULL,
         recommended boolean NOT NULL,
@@ -699,7 +727,8 @@ cursor.execute(sql)
 sql = '''
     CREATE TABLE IF NOT EXISTS public.questionnaire
     (
-        id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+        id integer NOT NULL GENERATED ALWAYS AS IDENTITY
+        ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
         student_id integer NOT NULL,
         CONSTRAINT questionnaire_pkey PRIMARY KEY (id),
         CONSTRAINT student_id FOREIGN KEY (student_id)
@@ -718,7 +747,8 @@ cursor.execute(sql)
 sql = '''
     CREATE TABLE IF NOT EXISTS public.ils_input_answers
     (
-        id integer NOT NULL,
+        id integer NOT NULL GENERATED ALWAYS AS IDENTITY
+        ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
         questionnaire_id integer NOT NULL,
         vv_1_f3 text COLLATE pg_catalog."default",
         vv_2_f7 text COLLATE pg_catalog."default" NOT NULL,
@@ -748,7 +778,8 @@ cursor.execute(sql)
 sql = '''
     CREATE TABLE IF NOT EXISTS public.ils_perception_answers
     (
-        id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+        id integer NOT NULL GENERATED ALWAYS AS IDENTITY
+        ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
         questionnaire_id integer NOT NULL,
         si_1_f2 text COLLATE pg_catalog."default" NOT NULL,
         si_2_f6 text COLLATE pg_catalog."default",
@@ -779,7 +810,8 @@ cursor.execute(sql)
 sql = '''
     CREATE TABLE IF NOT EXISTS public.ils_processing_answers
     (
-        id integer NOT NULL,
+        id integer NOT NULL GENERATED ALWAYS AS IDENTITY
+        ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
         questionnaire_id integer NOT NULL,
             si_1_f2 text COLLATE pg_catalog."default" NOT NULL,
         si_2_f6 text COLLATE pg_catalog."default",
@@ -809,7 +841,8 @@ cursor.execute(sql)
 sql = '''
     CREATE TABLE IF NOT EXISTS public.ils_understanding_answers
     (
-        id integer NOT NULL,
+        id integer NOT NULL GENERATED ALWAYS AS IDENTITY
+        ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
         questionnaire_id integer NOT NULL,
         sg_1_f4 text COLLATE pg_catalog."default" NOT NULL,
         sg_2_f8 text COLLATE pg_catalog."default" NOT NULL,

@@ -35,42 +35,117 @@ def handle_exception(err):
     return jsonify(response), err.code
 
 
-@app.route("/learningPath/<student_id>/<course_id>/<order_depth>",
-           methods=['POST', 'GET'])
+@app.route("/lms/user", methods=['POST'])
 @cross_origin(supports_credentials=True)
-def get_learning_path(student_id, course_id, order_depth):
+def create_user():
+    method = request.method
+    match method:
+        case 'POST':
+            name = request.json["name"],
+            university = request.json["university"],
+            lms_user_id = request.json["lms_user_id"],
+            role = request.json["role"].lower()
+            available_roles = ['admin', 'course_creator', 'student', 'teacher']
+            if role not in available_roles:
+                raise err.NoValidRoleError()
+            else:
+                user = services.create_user(
+                    unit_of_work.SqlAlchemyUnitOfWork(),
+                    name,
+                    university,
+                    lms_user_id,
+                    role
+                )
+                status_code = 201
+                return jsonify(user), status_code
+
+
+@app.route("/lms/user/<user_id>/<lms_user_id>", methods=['PUT', 'DELETE'])
+@cross_origin(supports_credentials=True)
+def user_administration(user_id, lms_user_id):
+    method = request.method
+    match method:
+        case 'PUT':
+            condition1 = 'name' in request.json
+            condition2 = 'university' in request.json
+            condition3 = type(request.json['name']) is str
+            condition4 = type(request.json['university']) is str
+            if condition1 and condition2:
+                if condition3 and condition4:
+                    user = services.update_user(
+                        unit_of_work.SqlAlchemyUnitOfWork(),
+                        int(user_id),
+                        int(lms_user_id),
+                        request.json["name"],
+                        request.json["university"]
+                    )
+                    status_code = 201
+                    return jsonify(user), status_code
+                else:
+                    raise err.WrongParameterValueError()
+            else:
+                raise err.MissingParameterError()
+        case 'DELETE':
+            services.delete_user(
+                unit_of_work.SqlAlchemyUnitOfWork(),
+                user_id,
+                lms_user_id
+            )
+            result = {'message': 'Deletion was successful'}
+            status_code = 200
+            return jsonify(result), status_code
+
+
+@app.route("/user/<user_id>/<lms_user_id>", methods=['GET'])
+@cross_origin(supports_credentials=True)
+def get_user_by_id(user_id, lms_user_id):
     method = request.method
     match method:
         case 'GET':
-            learning_path = services.get_learning_path(
+            user = services.get_user_by_id(
                 unit_of_work.SqlAlchemyUnitOfWork(),
-                student_id,
-                course_id,
-                order_depth
+                user_id,
+                lms_user_id
             )
-            if learning_path == {}:
-                status_code = 404
+            status_code = 200
+            return jsonify(user), status_code
+
+
+@app.route("/user/<user_id>/<lms_user_id>/settings",
+           methods=['GET', 'PUT', 'DELETE'])
+@cross_origin(supports_credentials=True)
+def settings_by_user_id(user_id, lms_user_id):
+    method = request.method
+    match method:
+        case 'GET':
+            settings = services.get_settings_for_user(
+                unit_of_work.SqlAlchemyUnitOfWork(),
+                user_id
+            )
+            status_code = 200
+            return jsonify(settings), status_code
+        case 'PUT':
+            condition1 = 'theme' in request.json
+            condition2 = 'pswd' in request.json
+            if condition1:
+                settings = services.update_settings_for_user(
+                    unit_of_work.SqlAlchemyUnitOfWork(),
+                    user_id,
+                    request.json['theme'],
+                    request.json['pswd'] if condition2 else None
+                )
+                status_code = 201
+                return jsonify(settings), status_code
             else:
-                status_code = 200
-            return jsonify(learning_path), status_code
-        case 'POST':
-            learning_style = {"AKT": 0, "INT": 0, "VIS": 0, "GLO": 0}
-            algorithm = "Graf"
-            if request.json is not None:
-                if 'learningStyle' in request.json:
-                    learning_style = request.json["learningStyle"]
-                if 'algorithm' in request.json:
-                    algorithm = request.json["algorithm"]
-            learning_path = services.create_learning_path(
+                raise err.MissingParameterError()
+        case 'DELETE':
+            settings = services.reset_settings(
                 unit_of_work.SqlAlchemyUnitOfWork(),
-                student_id,
-                course_id,
-                order_depth,
-                learning_style=learning_style,
-                algorithm=algorithm
+                user_id
             )
-            status_code = 201
-            return jsonify(learning_path), status_code
+            result = settings
+            status_code = 200
+            return jsonify(result), status_code
 
 
 @app.route("/logs/frontend", methods=['POST', 'GET'])
@@ -120,347 +195,3 @@ def logging_frontend():
             return_message = mocked_frontend_log
             status_code = 200
     return jsonify(return_message), status_code
-
-
-@app.route("/learningElement", methods=['GET', 'POST'])
-@cross_origin(supports_credentials=True)
-def get_learning_elements():
-    method = request.method
-    match method:
-        case 'GET':
-            learning_elements = services.get_learning_elements(
-                unit_of_work.SqlAlchemyUnitOfWork()
-            )
-            if learning_elements == {}:
-                status_code = 404
-            else:
-                status_code = 200
-            return jsonify(learning_elements), status_code
-        case 'POST':
-            condition1 = request.json is None
-            condition2 = 'name' not in request.json
-            condition3 = 'classification' not in request.json
-            condition4 = 'ancestor_id' not in request.json
-            condition5 = 'order_depth' not in request.json
-            condition6 = 'prerequisite_id' in request.json
-            if (condition1 or
-                condition2 or
-                condition3 or
-                condition4 or
-                    condition5):
-                raise err.MissingParameterError()
-            else:
-                learning_element = services.create_element(
-                    unit_of_work.SqlAlchemyUnitOfWork(),
-                    request.json['name'],
-                    request.json['classification'],
-                    request.json['ancestor_id'],
-                    request.json['order_depth'],
-                    request.json['prerequisite_id'] if condition6 else None
-                )
-            status_code = 200
-            return jsonify(learning_element), status_code
-
-
-@app.route("/learningElement/<element_id>", methods=['GET', 'PUT', 'DELETE'])
-@cross_origin(supports_credentials=True)
-def get_learning_element_by_id(element_id):
-    method = request.method
-    match method:
-        case 'GET':
-            learning_element = services.get_learning_element_by_id(
-                unit_of_work.SqlAlchemyUnitOfWork(),
-                element_id
-            )
-            status_code = 200
-            return jsonify(learning_element), status_code
-        case 'PUT':
-            condition1 = request.json is None
-            condition2 = 'name' not in request.json
-            condition3 = 'classification' not in request.json
-            condition4 = 'ancestor_id' not in request.json
-            condition5 = 'order_depth' not in request.json
-            condition6 = 'prerequisite_id' in request.json
-            if condition1 or \
-                    condition2 or \
-                    condition3 or \
-                    condition4 or condition5:
-                raise err.MissingParameterError()
-            else:
-                learning_element = services.update_learning_element(
-                    unit_of_work.SqlAlchemyUnitOfWork(),
-                    element_id,
-                    request.json['name'],
-                    request.json['classification'],
-                    request.json['ancestor_id'],
-                    request.json['prerequisite_id'] if condition6 else None,
-                    request.json['order_depth']
-                )
-                if learning_element == {}:
-                    status_code = 404
-                else:
-                    status_code = 200
-                return jsonify(learning_element), status_code
-        case 'DELETE':
-            services.delete_learning_element(
-                unit_of_work.SqlAlchemyUnitOfWork(),
-                element_id
-            )
-            status_code = 204
-            return jsonify(None), status_code
-
-
-@app.route('/course', methods=['GET', 'POST'])
-@cross_origin(supports_credentials=True)
-def get_courses():
-    method = request.method
-    match method:
-        case 'GET':
-            course = services.get_courses(
-                unit_of_work.SqlAlchemyUnitOfWork()
-            )
-            if course == {}:
-                status_code = 404
-            else:
-                status_code = 200
-            return jsonify(course), status_code
-        case 'POST':
-            if request.json is None or 'name' not in request.json:
-                raise err.MissingParameterError()
-            else:
-                name = request.json['name']
-                test = services.create_course(
-                    unit_of_work.SqlAlchemyUnitOfWork(), name)
-            return jsonify(test), 201
-
-
-@app.route('/course/<course_id>', methods=['GET', 'PUT', 'DELETE'])
-@cross_origin(supports_credentials=True)
-def get_course_by_id(course_id):
-    method = request.method
-    match method:
-        case 'GET':
-            course = services.get_course_by_id(
-                unit_of_work.SqlAlchemyUnitOfWork(),
-                course_id
-            )
-            if course == {}:
-                status_code = 404
-            else:
-                status_code = 200
-            return jsonify(course), status_code
-        case 'PUT':
-            condition1 = request.json is None
-            condition2 = 'name' not in request.json
-            if condition1 or condition2:
-                raise err.MissingParameterError()
-            else:
-                course = services.update_course(
-                    unit_of_work.SqlAlchemyUnitOfWork(),
-                    course_id,
-                    request.json['name']
-                )
-                if course == {}:
-                    status_code = 404
-                else:
-                    status_code = 200
-                return jsonify(course), status_code
-        case 'DELETE':
-            services.delete_course(
-                unit_of_work.SqlAlchemyUnitOfWork(),
-                course_id
-            )
-            status_code = 204
-            return jsonify(None), status_code
-
-
-@app.route('/student', methods=['GET', 'POST'])
-@cross_origin(supports_credentials=True)
-def get_students():
-    method = request.method
-    match method:
-        case 'GET':
-            student = services.get_students(
-                unit_of_work.SqlAlchemyUnitOfWork()
-            )
-            if student == {}:
-                status_code = 404
-            else:
-                status_code = 200
-            return jsonify(student), status_code
-        case 'POST':
-            condition1 = 'name' not in request.json
-            condition2 = "learning_style" in request.json
-            if request.json is None or condition1:
-                raise err.MissingParameterError()
-            else:
-                student = services.create_student(
-                    unit_of_work.SqlAlchemyUnitOfWork(),
-                    request.json['name'],
-                    request.json['learning_style'] if condition2 else None
-                )
-            if student == {}:
-                status_code = 404
-            else:
-                status_code = 201
-            return jsonify(student), status_code
-
-
-@app.route('/student/<student_id>', methods=['GET', 'PUT', 'DELETE'])
-@cross_origin(supports_credentials=True)
-def get_student_by_id(student_id):
-    method = request.method
-    match method:
-        case 'GET':
-            student = services.get_student_by_id(
-                unit_of_work.SqlAlchemyUnitOfWork(),
-                student_id
-            )
-            if student == {}:
-                status_code = 404
-            else:
-                status_code = 200
-            return jsonify(student), status_code
-        case 'PUT':
-            condition1 = request.json is None
-            condition2 = 'name' not in request.json
-            condition3 = 'learning_style' in request.json
-            if condition1 or condition2:
-                raise err.MissingParameterError()
-            else:
-                student = services.update_student(
-                    unit_of_work.SqlAlchemyUnitOfWork(),
-                    student_id,
-                    request.json['name'],
-                    request.json['learning_style'] if condition3 else None
-                )
-            if student == {}:
-                status_code = 404
-            else:
-                status_code = 201
-            return jsonify(student), status_code
-        case 'DELETE':
-            services.delete_student(
-                unit_of_work.SqlAlchemyUnitOfWork(),
-                student_id
-            )
-            status_code = 204
-            return jsonify(None), status_code
-
-
-@app.route('/topic', methods=['GET', 'POST'])
-@cross_origin(supports_credentials=True)
-def get_topics():
-    method = request.method
-    match method:
-        case 'GET':
-            topic = services.get_topics(
-                unit_of_work.SqlAlchemyUnitOfWork()
-            )
-            if topic == {}:
-                status_code = 404
-            else:
-                status_code = 200
-            return jsonify(topic), status_code
-        case 'POST':
-            condition1 = request.json is None
-            condition2 = 'name' not in request.json
-            condition3 = 'course_id' not in request.json
-            condition4 = 'order_depth' not in request.json
-            condition5 = 'ancestor_id' in request.json
-            condition6 = 'prerequisite_id' in request.json
-            if condition1 or condition2 or condition3 or condition4:
-                raise err.MissingParameterError()
-            topic = services.create_topic(
-                unit_of_work.SqlAlchemyUnitOfWork(),
-                request.json['name'],
-                request.json['course_id'],
-                request.json['order_depth'],
-                request.json['ancestor_id'] if condition5 else None,
-                request.json['prerequisite_id'] if condition6 else None
-            )
-            if topic == {}:
-                status_code = 404
-            elif 'error' in topic:
-                status_code = 400
-            else:
-                status_code = 201
-            return jsonify(topic), status_code
-
-
-@app.route('/topic/<course_id>/<order_depth>', methods=['GET'])
-@cross_origin(supports_credentials=True)
-def get_topics_for_course(course_id, order_depth):
-    topics = services.get_topics_for_course(
-        unit_of_work.SqlAlchemyUnitOfWork(),
-        course_id,
-        order_depth
-    )
-    if topics == {}:
-        status_code = 404
-    else:
-        status_code = 200
-    return jsonify(topics), status_code
-
-
-@app.route('/topic/<course_id>/<order_depth>/<ancestor_id>', methods=['GET'])
-@cross_origin(supports_credentials=True)
-def get_topics_for_course_and_ancestor(course_id, order_depth, ancestor_id):
-    topics = services.get_topics_for_course_and_ancestor(
-        unit_of_work.SqlAlchemyUnitOfWork(),
-        course_id,
-        order_depth,
-        ancestor_id
-    )
-    if topics == {}:
-        status_code = 404
-    else:
-        status_code = 200
-    return jsonify(topics), status_code
-
-
-@app.route('/topic/<topic_id>', methods=['GET', 'PUT', 'DELETE'])
-@cross_origin(supports_credentials=True)
-def get_topic_by_id(topic_id):
-    method = request.method
-    match method:
-        case 'GET':
-            topic = services.get_topic_by_id(
-                unit_of_work.SqlAlchemyUnitOfWork(),
-                topic_id
-            )
-            if topic == {}:
-                status_code = 404
-            else:
-                status_code = 200
-            return jsonify(topic), status_code
-        case 'PUT':
-            condition1 = request.json is None
-            condition2 = 'name' not in request.json
-            condition3 = 'course_id' not in request.json
-            condition4 = 'order_depth' not in request.json
-            condition5 = 'ancestor_id' in request.json
-            condition6 = 'prerequisite_id' in request.json
-            if condition1 or condition2 or condition3 or condition4:
-                raise err.MissingParameterError()
-            topic = services.update_topic(
-                unit_of_work.SqlAlchemyUnitOfWork(),
-                topic_id,
-                request.json['name'],
-                request.json['course_id'],
-                request.json['order_depth'],
-                request.json['ancestor_id'] if condition5 else None,
-                request.json['prerequisite_id'] if condition6 else None
-            )
-            if topic == {}:
-                status_code = 404
-            else:
-                status_code = 201
-            return jsonify(topic), status_code
-        case 'DELETE':
-            services.delete_topic(
-                unit_of_work.SqlAlchemyUnitOfWork(),
-                topic_id
-            )
-            status_code = 204
-            return jsonify(None), status_code

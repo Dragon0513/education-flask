@@ -2,119 +2,141 @@ import abc
 from domain.domainModel import model as DM
 from domain.learnersModel import model as LM
 from domain.tutoringModel import model as TM
+from domain.userAdministartion import model as UA
 import errors as err
 from sqlalchemy.exc import IntegrityError
 
 
 class AbstractRepository(abc.ABC):  # pragma: no cover
     @abc.abstractmethod
-    def add_learning_path(self,
-                          learning_path: TM.LearningPath):
+    def create_admin(self,
+                     admin: UA.Admin) -> UA.Admin:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def add_course(self, course) -> DM.Course:
+    def create_course_creator(self,
+                              course_creator: UA.CourseCreator) \
+            -> UA.CourseCreator:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def add_element(self, element) -> DM.LearningElement:
+    def create_settings(self, settings) -> UA.Settings:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def add_student(self, student) -> LM.Student:
+    def create_student(self,
+                       student: UA.Student) -> UA.Student:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def add_topic(self, topic) -> DM.Topic:
+    def create_teacher(self,
+                       teacher: UA.Teacher) -> UA.Teacher:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def delete_course(self, course_id):
+    def create_user(self,
+                    user: UA.User) -> UA.User:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def delete_learning_element(self, element_id):
+    def delete_admin(self, user_id, lms_user_id, admin_id):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def delete_student(self, student_id):
+    def delete_course_creator(self, user_id, lms_user_id,
+                              course_creator_id):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def delete_topic(self, topic_id):
+    def delete_settings(self, user_id):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_learning_elements(self) -> DM.LearningElement:
+    def delete_student(self, user_id, lms_user_id, student_id):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_learning_element_by_id(self,
-                                   element_id) \
-            -> DM.LearningElement:
+    def delete_teacher(self, user_id, lms_user_id, teacher_id):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_courses(self) -> DM.Course:
+    def delete_user(self, user_id, lms_user_id):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_course_by_id(self, course_id) -> DM.Course:
+    def get_admin_by_id(self,
+                        user_id,
+                        lms_user_id,
+                        admin_id) -> UA.Admin:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_learning_path(self,
-                          student_id,
-                          course_id,
-                          order_depth) -> TM.LearningPath:
+    def get_admins_by_uni(self,
+                          university):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_students(self) -> LM.Student:
+    def get_course_creator_by_id(self,
+                                 user_id,
+                                 lms_user_id,
+                                 course_creator_id) \
+            -> UA.CourseCreator:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_student_by_id(self, student_id) -> LM.Student:
+    def get_course_creators_by_uni(self,
+                                   university):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_topics(self) -> DM.Topic:
+    def get_settings(self, user_id):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_topics_for_course(self,
-                              course_id,
-                              order_depth) -> DM.Topic:
+    def get_student_by_id(self,
+                          user_id,
+                          lms_user_id,
+                          student_id) -> UA.Student:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_topics_for_course_and_ancestor(self,
-                                           course_id,
-                                           order_depth,
-                                           ancestor_id)\
-            -> DM.Topic:
+    def get_students_by_uni(self,
+                            university):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_topic_by_id(self, topic_id) -> DM.Topic:
+    def get_teacher_by_id(self,
+                          user_id,
+                          lms_user_id,
+                          teacher_id) -> UA.Teacher:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def update_course(self, course) -> DM.Course:
+    def get_teacher_by_uni(self,
+                           university):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def update_learning_element(self,
-                                learning_element) \
-            -> DM.LearningElement:
+    def get_user_by_id(self,
+                       user_id,
+                       lms_user_id) -> UA.User:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def update_student(self, student) -> LM.Student:
+    def get_users_by_uni(self,
+                         university):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def update_topic(self, topic) -> DM.Topic:
+    def update_settings(self, user_id,
+                        settings) -> UA.Settings:
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def update_user(self,
+                    user_id,
+                    lms_user_id,
+                    user: UA.User) -> UA.User:
         raise NotImplementedError
 
 
@@ -122,201 +144,224 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
     def __init__(self, session):
         self.session = session
 
-    def add_learning_path(self, learning_path):
+    def create_admin(self, admin: UA.Admin) -> UA.Admin:
         try:
-            return self.session.add(learning_path)
+            self.session.add(admin)
         except IntegrityError:
             raise err.ForeignKeyViolation()
         except Exception:
             raise err.CreationError()
 
-    def add_course(self, course):
+    def create_course_creator(self,
+                              course_creator: UA.CourseCreator) \
+            -> UA.CourseCreator:
         try:
-            self.session.add(course)
-        except Exception:
-            raise err.CreationError()
-
-    def add_element(self, element):
-        try:
-            self.session.add(element)
+            self.session.add(course_creator)
         except IntegrityError:
             raise err.ForeignKeyViolation()
         except Exception:
             raise err.CreationError()
 
-    def add_student(self, student):
+    def create_settings(self, settings) -> UA.Settings:
+        try:
+            self.session.add(settings)
+        except Exception:
+            raise err.CreationError()
+
+    def create_student(self, student: UA.Student) -> UA.Student:
         try:
             self.session.add(student)
+        except IntegrityError:
+            raise err.ForeignKeyViolation()
         except Exception:
             raise err.CreationError()
 
-    def add_topic(self, topic):
+    def create_teacher(self, teacher: UA.Teacher) -> UA.Teacher:
         try:
-            self.session.add(topic)
+            self.session.add(teacher)
+        except IntegrityError:
+            raise err.ForeignKeyViolation()
         except Exception:
             raise err.CreationError()
 
-    def delete_course(self, course_id):
-        course = self.get_course_by_id(course_id)
-        if course != []:
-            self.session.query(DM.Course).filter_by(id=course_id).delete()
+    def create_user(self, user: UA.User) -> UA.User:
+        try:
+            self.session.add(user)
+        except Exception:
+            raise err.CreationError()
+
+    def delete_admin(self, user_id):
+        admin = self.get_admin_by_id(user_id)
+        if admin != []:
+            self.session.query(UA.Admin).filter_by(
+                user_id=user_id).delete()
         else:
             raise err.NoValidIdError()
 
-    def delete_learning_element(self, element_id):
-        element = self.get_learning_element_by_id(element_id)
-        if element != []:
-            self.session.query(DM.LearningElement).filter_by(
-                id=element_id).delete()
+    def delete_course_creator(self, user_id):
+        course_creator = self.get_course_creator_by_id(user_id)
+        if course_creator != []:
+            self.session.query(UA.CourseCreator).filter_by(
+                user_id=user_id).delete()
         else:
             raise err.NoValidIdError()
 
-    def delete_student(self, student_id):
-        student = self.get_student_by_id(student_id)
+    def delete_settings(self, user_id):
+        settings = self.get_settings(user_id)
+        if settings != []:
+            self.session.query(UA.Settings).filter_by(
+                user_id=user_id).delete()
+        else:
+            raise err.NoValidIdError()
+
+    def delete_student(self, user_id):
+        student = self.get_student_by_id(user_id)
         if student != []:
-            self.session.query(LM.Student).filter_by(id=student_id).delete()
+            self.session.query(UA.Student).filter_by(
+                user_id=user_id).delete()
         else:
             raise err.NoValidIdError()
 
-    def delete_topic(self, topic_id):
-        topic = self.get_topic_by_id(topic_id)
-        if topic != []:
-            self.session.query(DM.Topic).filter_by(id=topic_id).delete()
+    def delete_teacher(self, user_id):
+        teacher = self.get_teacher_by_id(user_id)
+        if teacher != []:
+            self.session.query(UA.Teacher).filter_by(
+                user_id=user_id).delete()
         else:
             raise err.NoValidIdError()
 
-    def get_learning_elements(self):
-        result = self.session.query(DM.LearningElement).all()
-        if result == []:
-            raise err.NoContentWarning()
+    def delete_user(self, user_id, lms_user_id):
+        user = self.get_user_by_id(user_id, lms_user_id)
+        settings = self.get_settings(user_id)
+        user[0].settings = settings[0].serialize()
+        if user != []:
+            role = user[0].serialize()['role']
+            match role:
+                case "admin":
+                    self.delete_admin(user_id)
+                case "course_creator":
+                    self.delete_course_creator(user_id)
+                case "student":
+                    self.delete_student(user_id)
+                case "teacher":
+                    self.delete_teacher(user_id)
+            self.delete_settings(user_id)
+            self.session.query(UA.User)\
+                .filter_by(id=user_id)\
+                .filter_by(lms_user_id=lms_user_id).delete()
         else:
-            return result
-
-    def get_learning_element_by_id(self, element_id):
-        result = self.session.query(DM.LearningElement)\
-            .filter_by(id=element_id).all()
-        if result == []:
             raise err.NoValidIdError()
-        else:
-            return result
 
-    def get_courses(self):
-        try:
-            return self.session.query(DM.Course).all()
-        except Exception:
-            raise err.DatabaseQueryError()
-
-    def get_course_by_id(self, course_id):
-        result = self.session.query(DM.Course).filter_by(id=course_id).all()
-        if result == []:
-            raise err.NoValidIdError()
-        else:
-            return result
-
-    def get_learning_path(self, student_id, course_id, order_depth):
-        try:
-            return self.session.query(TM.LearningPath)\
-                .filter_by(student_id=student_id)\
-                .filter_by(course_id=course_id)\
-                .filter_by(order_depth=order_depth).all()
-        except Exception:
-            raise err.DatabaseQueryError()
-
-    def get_students(self):
-        try:
-            return self.session.query(LM.Student).all()
-        except Exception:
-            raise err.DatabaseQueryError()
-
-    def get_student_by_id(self, student_id):
-        result = self.session.query(LM.Student).filter_by(id=student_id).all()
+    def get_admin_by_id(self, user_id,) -> UA.Admin:
+        result = self.session.query(UA.Admin).filter_by(
+            user_id=user_id).all()
         if result == []:
             raise err.NoValidIdError()
         else:
             return result
 
-    def get_topics(self):
+    def get_admins_by_uni(self, university):
         try:
-            return self.session.query(DM.Topic).all()
+            return self.session.query(UA.Admin).filter_by(
+                university=university).all()
         except Exception:
             raise err.DatabaseQueryError()
 
-    def get_topics_for_course(self, course_id, order_depth):
-        try:
-            return self.session.query(DM.Topic)\
-                .filter_by(course_id=course_id)\
-                .filter_by(order_depth=order_depth).all()
-        except Exception:
-            raise err.DatabaseQueryError()
-
-    def get_topics_for_course_and_ancestor(self,
-                                           course_id,
-                                           order_depth,
-                                           ancestor_id):
-        try:
-            return self.session.query(DM.Topic)\
-                .filter_by(course_id=course_id)\
-                .filter_by(order_depth=order_depth)\
-                .filter_by(ancestor_id=ancestor_id).all()
-        except Exception:
-            raise err.DatabaseQueryError()
-
-    def get_topic_by_id(self, topic_id):
-        result = self.session.query(DM.Topic).filter_by(id=topic_id).all()
+    def get_course_creator_by_id(self, user_id) -> UA.CourseCreator:
+        result = self.session.query(UA.CourseCreator).filter_by(
+            user_id=user_id).all()
         if result == []:
             raise err.NoValidIdError()
         else:
             return result
 
-    def update_course(self, course, id):
-        course_exist = self.get_course_by_id(id)
-        if course_exist != []:
-            return self.session.query(DM.Course).filter_by(id=id).update(
-                {DM.Course.name: course.name}
+    def get_course_creators_by_uni(self, university):
+        try:
+            return self.session.query(UA.CourseCreator).filter_by(
+                university=university).all()
+        except Exception:
+            raise err.DatabaseQueryError()
+
+    def get_settings(self, user_id) -> UA.Settings:
+        result = self.session.query(UA.Settings).filter_by(
+            user_id=user_id).all()
+        if result == []:
+            raise err.NoValidIdError()
+        else:
+            return result
+
+    def get_student_by_id(self, user_id) -> UA.Admin:
+        result = self.session.query(UA.Student).filter_by(
+            user_id=user_id).all()
+        if result == []:
+            raise err.NoValidIdError()
+        else:
+            return result
+
+    def get_students_by_uni(self, university):
+        try:
+            return self.session.query(UA.Student).filter_by(
+                university=university).all()
+        except Exception:
+            raise err.DatabaseQueryError()
+
+    def get_teacher_by_id(self, user_id) -> UA.Admin:
+        result = self.session.query(UA.Teacher).filter_by(
+            user_id=user_id).all()
+        if result == []:
+            raise err.NoValidIdError()
+        else:
+            return result
+
+    def get_teacher_by_uni(self, university):
+        try:
+            return self.session.query(UA.Teacher).filter_by(
+                university=university).all()
+        except Exception:
+            raise err.DatabaseQueryError()
+
+    def get_user_by_id(self, user_id, lms_user_id) -> UA.Admin:
+        result = self.session.query(UA.User)\
+            .filter_by(id=user_id)\
+            .filter_by(lms_user_id=lms_user_id).all()
+        if result == []:
+            raise err.NoValidIdError()
+        else:
+            return result
+
+    def get_users_by_uni(self, university):
+        try:
+            return self.session.query(UA.User).filter_by(
+                university=university).all()
+        except Exception:
+            raise err.DatabaseQueryError()
+
+    def update_settings(self, user_id, settings) -> UA.Settings:
+        settings_exist = self.get_settings(user_id)
+        if settings_exist != []:
+            settings.id = settings_exist[0].id
+            return self.session.query(UA.Settings)\
+                .filter_by(user_id=user_id).update(
+                {
+                    UA.Settings.theme: settings.theme,
+                    UA.Settings.pswd: settings.pswd,
+                }
             )
         else:
-            raise err.NoValidIdError()
+            raise err.NoValidIdError
 
-    def update_learning_element(self, learning_element, id):
-        element_exist = self.get_learning_element_by_id(id)
-        if element_exist != []:
-            try:
-                return self.session.query(DM.LearningElement)\
-                    .filter_by(id=id).update(
-                    {DM.LearningElement.name:
-                     learning_element.name,
-                     DM.LearningElement.classification:
-                     learning_element.classification,
-                     DM.LearningElement.ancestor_id:
-                     learning_element.ancestor_id,
-                     DM.LearningElement.prerequisite_id:
-                     learning_element.prerequisite_id,
-                     DM.LearningElement.order_depth:
-                     learning_element.order_depth, }
-                )
-            except IntegrityError:
-                raise err.ForeignKeyViolation()
-        else:
-            raise err.NoValidIdError()
-
-    def update_student(self, student, id):
-        student_exist = self.get_student_by_id(id)
-        if student_exist != []:
-            return self.session.query(LM.Student).filter_by(id=id).update(
-                {LM.Student.name: student.name,
-                 LM.Student.learning_style: student.learning_style}
+    def update_user(self, user_id, lms_user_id, user) -> UA.User:
+        user_exist = self.get_user_by_id(user_id, lms_user_id)
+        if user_exist != []:
+            user.role = user_exist[0].role
+            return self.session.query(UA.User)\
+                .filter_by(id=user_id).update(
+                {
+                    UA.User.name: user.name,
+                    UA.User.university: user.university,
+                    UA.User.lms_user_id: user.lms_user_id,
+                    UA.User.role: user.role
+                }
             )
         else:
-            raise err.NoValidIdError()
-
-    def update_topic(self, topic, id):
-        topic_exist = self.get_topic_by_id(id)
-        if topic_exist != []:
-            return self.session.query(DM.Topic).filter_by(id=id).update(
-                {DM.Topic.name: topic.name,
-                 DM.Topic.course_id: topic.course_id,
-                 DM.Topic.order_depth: topic.order_depth,
-                 DM.Topic.ancestor_id: topic.ancestor_id,
-                 DM.Topic.prerequisite_id: topic.prerequisite_id})
-        else:
-            raise err.NoValidIdError()
+            raise err.NoValidIdError

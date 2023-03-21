@@ -24,7 +24,7 @@ tags:
 - name: "Admin"
   description: "All Admin endpoints"
 paths:
-  /user/{user_id}/{moodle_user_id}:
+  /user/{user_id}/{lms_user_id}:
     get:
       tags:
       - "HASKI-intern"
@@ -40,7 +40,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_user_id"
+        - name: "lms_user_id"
           in: "path"
           description: "The Moodle ID of the User"
           required: true
@@ -66,95 +66,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GeneralError'
-    put:
-      tags:
-      - "HASKI-intern"
-      - "User"
-      summary: "Update User"
-      description: "Update the basic User data for a specific User"
-      operationId: "putUser"
-      parameters:
-        - name: "user_id"
-          in: "path"
-          description: "The ID of the User"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-        - name: "moodle_user_id"
-          in: "path"
-          description: "The Moodle ID of the User"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Settings'
-      responses:
-        "201":
-          description: "Successful Operation"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Settings'
-        "400":
-          description: "Bad Request"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralError'
-        "404":
-          description: "Not Found"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralError'
-    delete:
-      tags:
-      - "HASKI-intern"
-      - "User"
-      summary: "Delete User"
-      description: "Delete a specific User from HASKI"
-      operationId: "deleteUser"
-      parameters:
-        - name: "user_id"
-          in: "path"
-          description: "The ID of the User"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-        - name: "moodle_user_id"
-          in: "path"
-          description: "The Moodle ID of the User"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-      responses:
-        "200":
-          description: "Successful Operation"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Deletion'
-        "400":
-          description: "Bad Request"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralError'
-        "404":
-          description: "Not Found"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralError'
-  /user/{user_id}/{moodle_user_id}/settings:
+  /user/{user_id}/{lms_user_id}/settings:
     get:
       tags:
       - "HASKI-intern"
@@ -170,7 +82,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_user_id"
+        - name: "lms_user_id"
           in: "path"
           description: "The Moodle ID of the User"
           required: true
@@ -211,7 +123,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_user_id"
+        - name: "lms_user_id"
           in: "path"
           description: "The Moodle ID of the User"
           required: true
@@ -258,7 +170,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_user_id"
+        - name: "lms_user_id"
           in: "path"
           description: "The Moodle ID of the User"
           required: true
@@ -285,7 +197,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/GeneralError'
   
-  /user/{user_id}/{moodle_user_id}/student/{student_id}/learningCharacteristics:
+  /user/{user_id}/{lms_user_id}/student/{student_id}/learningCharacteristics:
     get:
       tags:
         - "HASKI-intern"
@@ -301,7 +213,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_user_id"
+        - name: "lms_user_id"
           in: "path"
           description: "The Moodle ID of the User"
           required: true
@@ -349,7 +261,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_user_id"
+        - name: "lms_user_id"
           in: "path"
           description: "The Moodle ID of the User"
           required: true
@@ -403,7 +315,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_user_id"
+        - name: "lms_user_id"
           in: "path"
           description: "The Moodle ID of the User"
           required: true
@@ -436,7 +348,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GeneralError'
-  /user/{user_id}/{moodle_user_id}/student/{student_id}/learningAnalytics:
+  /user/{user_id}/{lms_user_id}/student/{student_id}/learningAnalytics:
     get:
       tags:
         - "HASKI-intern"
@@ -452,7 +364,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_user_id"
+        - name: "lms_user_id"
           in: "path"
           description: "The Moodle ID of the User"
           required: true
@@ -500,7 +412,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_user_id"
+        - name: "lms_user_id"
           in: "path"
           description: "The Moodle ID of the User"
           required: true
@@ -533,7 +445,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GeneralError'
-  /user/{user_id}/{moodle_user_id}/student/{student_id}/learningStyle:
+  /user/{user_id}/{lms_user_id}/student/{student_id}/learningStyle:
     get:
       tags:
         - "HASKI-intern"
@@ -549,7 +461,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_user_id"
+        - name: "lms_user_id"
           in: "path"
           description: "The Moodle ID of the User"
           required: true
@@ -597,7 +509,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_user_id"
+        - name: "lms_user_id"
           in: "path"
           description: "The Moodle ID of the User"
           required: true
@@ -651,7 +563,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_user_id"
+        - name: "lms_user_id"
           in: "path"
           description: "The Moodle ID of the User"
           required: true
@@ -684,7 +596,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GeneralError'
-  /user/{user_id}/{moodle_user_id}/student/{student_id}/learningStrategy:
+  /user/{user_id}/{lms_user_id}/student/{student_id}/learningStrategy:
     get:
       tags:
         - "HASKI-intern"
@@ -700,7 +612,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_user_id"
+        - name: "lms_user_id"
           in: "path"
           description: "The Moodle ID of the User"
           required: true
@@ -748,7 +660,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_user_id"
+        - name: "lms_user_id"
           in: "path"
           description: "The Moodle ID of the User"
           required: true
@@ -781,7 +693,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GeneralError'
-  /user/{user_id}/{moodle_user_id}/student/{student_id}/knowledge:
+  /user/{user_id}/{lms_user_id}/student/{student_id}/knowledge:
     get:
       tags:
         - "HASKI-intern"
@@ -797,7 +709,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_user_id"
+        - name: "lms_user_id"
           in: "path"
           description: "The Moodle ID of the User"
           required: true
@@ -845,7 +757,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_user_id"
+        - name: "lms_user_id"
           in: "path"
           description: "The Moodle ID of the User"
           required: true
@@ -878,7 +790,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GeneralError'
-  /user/{user_id}/{moodle_user_id}/student/{student_id}/course:
+  /user/{user_id}/{lms_user_id}/student/{student_id}/course:
     get:
       tags:
         - "HASKI-intern"
@@ -894,7 +806,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_user_id"
+        - name: "lms_user_id"
           in: "path"
           description: "The Moodle ID of the User"
           required: true
@@ -927,7 +839,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GeneralError'
-  /user/{user_id}/{moodle_user_id}/student/{student_id}/course/{course_id}:
+  /user/{user_id}/{lms_user_id}/student/{student_id}/course/{course_id}:
     get:
       tags:
         - "HASKI-intern"
@@ -943,7 +855,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_user_id"
+        - name: "lms_user_id"
           in: "path"
           description: "The Moodle ID of the User"
           required: true
@@ -983,7 +895,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GeneralError'
-  /user/{user_id}/{moodle_user_id}/student/{student_id}/course/{course_id}/recommendation:
+  /user/{user_id}/{lms_user_id}/student/{student_id}/course/{course_id}/recommendation:
     get:
       tags:
         - "HASKI-intern"
@@ -999,7 +911,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_user_id"
+        - name: "lms_user_id"
           in: "path"
           description: "The Moodle ID of the User"
           required: true
@@ -1039,7 +951,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GeneralError'
-  /user/{user_id}/{moodle_user_id}/student/{student_id}/course/{course_id}/learningPath:
+  /user/{user_id}/{lms_user_id}/student/{student_id}/course/{course_id}/learningPath:
     get:
       tags:
         - "HASKI-intern"
@@ -1055,7 +967,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_user_id"
+        - name: "lms_user_id"
           in: "path"
           description: "The Moodle ID of the User"
           required: true
@@ -1095,7 +1007,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GeneralError'
-  /user/{user_id}/{moodle_user_id}/student/{student_id}/course/{course_id}/topic:
+  /user/{user_id}/{lms_user_id}/student/{student_id}/course/{course_id}/topic:
     get:
       tags:
         - "HASKI-intern"
@@ -1111,7 +1023,7 @@ paths:
           schema:
             type: "integer"
           example: 1
-        - name: "moodle_user_id"
+        - name: "lms_user_id"
           in: "path"
           description: "The Moodle ID of the User"
           required: true
@@ -1151,7 +1063,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GeneralError'
-  /user/{user_id}/{moodle_user_id}/student/{student_id}/course/{course_id}/learningElement:
+  /user/{user_id}/{lms_user_id}/student/{student_id}/course/{course_id}/learningElement:
     get:
       tags:
         - "HASKI-intern"
@@ -1167,7 +1079,7 @@ paths:
           schema:
             type: "integer"
           example: 1
-        - name: "moodle_user_id"
+        - name: "lms_user_id"
           in: "path"
           description: "The Moodle ID of the User"
           required: true
@@ -1207,7 +1119,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GeneralError'
-  /user/{user_id}/{moodle_user_id}/student/{student_id}/course/{course_id}/topic/{topic_id}:
+  /user/{user_id}/{lms_user_id}/student/{student_id}/course/{course_id}/topic/{topic_id}:
     get:
       tags:
         - "HASKI-intern"
@@ -1223,7 +1135,7 @@ paths:
           schema:
             type: "integer"
           example: 1
-        - name: "moodle_user_id"
+        - name: "lms_user_id"
           in: "path"
           description: "The Moodle ID of the User"
           required: true
@@ -1270,7 +1182,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GeneralError'
-  /user/{user_id}/{moodle_user_id}/student/{student_id}/course/{course_id}/topic/{topic_id}/recommendation: 
+  /user/{user_id}/{lms_user_id}/student/{student_id}/course/{course_id}/topic/{topic_id}/recommendation: 
     get:
       tags:
         - "HASKI-intern"
@@ -1286,7 +1198,7 @@ paths:
           schema:
             type: "integer"
           example: 1
-        - name: "moodle_user_id"
+        - name: "lms_user_id"
           in: "path"
           description: "The Moodle ID of the User"
           required: true
@@ -1333,7 +1245,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GeneralError'
-  /user/{user_id}/{moodle_user_id}/student/{student_id}/course/{course_id}/topic/{topic_id}/learningPath:
+  /user/{user_id}/{lms_user_id}/student/{student_id}/course/{course_id}/topic/{topic_id}/learningPath:
     get:
       tags:
         - "HASKI-intern"
@@ -1349,7 +1261,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_user_id"
+        - name: "lms_user_id"
           in: "path"
           description: "The Moodle ID of the User"
           required: true
@@ -1396,7 +1308,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GeneralError'
-  /user/{user_id}/{moodle_user_id}/student/{student_id}/course/{course_id}/topic/{topic_id}/subtopic:
+  /user/{user_id}/{lms_user_id}/student/{student_id}/course/{course_id}/topic/{topic_id}/subtopic:
     get:
       tags:
         - "HASKI-intern"
@@ -1412,7 +1324,7 @@ paths:
           schema:
             type: "integer"
           example: 1
-        - name: "moodle_user_id"
+        - name: "lms_user_id"
           in: "path"
           description: "The Moodle ID of the User"
           required: true
@@ -1459,7 +1371,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GeneralError'
-  /user/{user_id}/{moodle_user_id}/student/{student_id}/course/{course_id}/topic/{topic_id}/learningElement:
+  /user/{user_id}/{lms_user_id}/student/{student_id}/course/{course_id}/topic/{topic_id}/learningElement:
     get:
       tags:
         - "HASKI-intern"
@@ -1475,7 +1387,7 @@ paths:
           schema:
             type: "integer"
           example: 1
-        - name: "moodle_user_id"
+        - name: "lms_user_id"
           in: "path"
           description: "The Moodle ID of the User"
           required: true
@@ -1522,7 +1434,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GeneralError'
-  /user/{user_id}/{moodle_user_id}/student/{student_id}/course/{course_id}/topic/{topic_id}/learningElement/{learning_element_id}:
+  /user/{user_id}/{lms_user_id}/student/{student_id}/course/{course_id}/topic/{topic_id}/learningElement/{learning_element_id}:
     get:
       tags:
         - "HASKI-intern"
@@ -1538,7 +1450,7 @@ paths:
           schema:
             type: "integer"
           example: 1
-        - name: "moodle_user_id"
+        - name: "lms_user_id"
           in: "path"
           description: "The Moodle ID of the User"
           required: true
@@ -1592,7 +1504,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GeneralError'
-  /user/{user_id}/{moodle_user_id}/student/{student_id}/dashboard/overview:
+  /user/{user_id}/{lms_user_id}/student/{student_id}/dashboard/overview:
     get:
       tags:
         - "HASKI-intern"
@@ -1608,7 +1520,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_user_id"
+        - name: "lms_user_id"
           in: "path"
           description: "The Moodle ID of the User"
           required: true
@@ -1641,7 +1553,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GeneralError'
-  /user/{user_id}/{moodle_user_id}/student/{student_id}/dashboard/course/{course_id}:
+  /user/{user_id}/{lms_user_id}/student/{student_id}/dashboard/course/{course_id}:
     get:
       tags:
         - "HASKI-intern"
@@ -1657,7 +1569,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_user_id"
+        - name: "lms_user_id"
           in: "path"
           description: "The Moodle ID of the User"
           required: true
@@ -1697,7 +1609,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GeneralError'
-  /user/{user_id}/{moodle_user_id}/student/{student_id}/dashboard/course/{course_id}/topic/{topic_id}:
+  /user/{user_id}/{lms_user_id}/student/{student_id}/dashboard/course/{course_id}/topic/{topic_id}:
     get:
       tags:
         - "HASKI-intern"
@@ -1713,7 +1625,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_user_id"
+        - name: "lms_user_id"
           in: "path"
           description: "The Moodle ID of the User"
           required: true
@@ -1763,7 +1675,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/GeneralError'
 
-  /user/{user_id}/{moodle_user_id}/teacher/{teacher_id}/course:
+  /user/{user_id}/{lms_user_id}/teacher/{teacher_id}/course:
     get:
       tags:
         - "HASKI-intern"
@@ -1779,7 +1691,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_user_id"
+        - name: "lms_user_id"
           in: "path"
           description: "The Moodle ID of the User"
           required: true
@@ -1812,7 +1724,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GeneralError'
-  /user/{user_id}/{moodle_user_id}/teacher/{teacher_id}/dashboard/course/{course_id}:
+  /user/{user_id}/{lms_user_id}/teacher/{teacher_id}/dashboard/course/{course_id}:
     get:
       tags:
         - "HASKI-intern"
@@ -1828,7 +1740,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_user_id"
+        - name: "lms_user_id"
           in: "path"
           description: "The Moodle ID of the User"
           required: true
@@ -1868,7 +1780,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GeneralError'
-  /user/{user_id}/{moodle_user_id}/teacher/{teacher_id}/dashboard/course/{course_id}/topic:
+  /user/{user_id}/{lms_user_id}/teacher/{teacher_id}/dashboard/course/{course_id}/topic:
     get:
       tags:
         - "HASKI-intern"
@@ -1884,7 +1796,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_user_id"
+        - name: "lms_user_id"
           in: "path"
           description: "The Moodle ID of the User"
           required: true
@@ -1924,7 +1836,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GeneralError'
-  /user/{user_id}/{moodle_user_id}/teacher/{teacher_id}/dashboard/course/{course_id}/topic/{topic_id}:
+  /user/{user_id}/{lms_user_id}/teacher/{teacher_id}/dashboard/course/{course_id}/topic/{topic_id}:
     get:
       tags:
         - "HASKI-intern"
@@ -1940,7 +1852,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_user_id"
+        - name: "lms_user_id"
           in: "path"
           description: "The Moodle ID of the User"
           required: true
@@ -1988,7 +1900,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/GeneralError'
   
-  /user/{user_id}/{moodle_user_id}/courseCreator/{course_creator_id}/course:
+  /user/{user_id}/{lms_user_id}/courseCreator/{course_creator_id}/course:
     get:
       tags:
         - "HASKI-intern"
@@ -2004,7 +1916,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_user_id"
+        - name: "lms_user_id"
           in: "path"
           description: "The Moodle ID of the User"
           required: true
@@ -2038,7 +1950,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/GeneralError'
   
-  /user/{user_id}/{moodle_user_id}/admin/{admin_id}/course:
+  /user/{user_id}/{lms_user_id}/admin/{admin_id}/course:
     get:
       tags:
         - "HASKI-intern"
@@ -2054,7 +1966,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_user_id"
+        - name: "lms_user_id"
           in: "path"
           description: "The Moodle ID of the User"
           required: true
@@ -2087,7 +1999,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GeneralError'
-  /user/{user_id}/{moodle_user_id}/admin/{admin_id}/user:
+  /user/{user_id}/{lms_user_id}/admin/{admin_id}/user:
     get:
       tags:
         - "HASKI-intern"
@@ -2103,7 +2015,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_user_id"
+        - name: "lms_user_id"
           in: "path"
           description: "The Moodle ID of the User"
           required: true
@@ -2136,7 +2048,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GeneralError'
-  /user/{user_id}/{moodle_user_id}/admin/{admin_id}/logs:
+  /user/{user_id}/{lms_user_id}/admin/{admin_id}/logs:
     get:
       tags:
         - "HASKI-intern"
@@ -2153,7 +2065,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_user_id"
+        - name: "lms_user_id"
           in: "path"
           description: "The Moodle ID of the User"
           required: true
@@ -2186,7 +2098,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GeneralError'
-  /user/{user_id}/{moodle_user_id}/admin/{admin_id}/logs/accessLogs:
+  /user/{user_id}/{lms_user_id}/admin/{admin_id}/logs/accessLogs:
     get:
       tags:
         - "HASKI-intern"
@@ -2203,7 +2115,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_user_id"
+        - name: "lms_user_id"
           in: "path"
           description: "The Moodle ID of the User"
           required: true
@@ -2238,7 +2150,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GeneralError'
-  /user/{user_id}/{moodle_user_id}/admin/{admin_id}/logs/frontendLogs:
+  /user/{user_id}/{lms_user_id}/admin/{admin_id}/logs/frontendLogs:
     get:
       tags:
         - "HASKI-intern"
@@ -2255,7 +2167,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_user_id"
+        - name: "lms_user_id"
           in: "path"
           description: "The Moodle ID of the User"
           required: true
@@ -2290,7 +2202,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GeneralError'
-  /user/{user_id}/{moodle_user_id}/admin/{admin_id}/logs/mainLogs:
+  /user/{user_id}/{lms_user_id}/admin/{admin_id}/logs/mainLogs:
     get:
       tags:
         - "HASKI-intern"
@@ -2307,7 +2219,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_user_id"
+        - name: "lms_user_id"
           in: "path"
           description: "The Moodle ID of the User"
           required: true
@@ -2342,7 +2254,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GeneralError'
-  /user/{user_id}/{moodle_user_id}/admin/{admin_id}/logs/errorLogs:
+  /user/{user_id}/{lms_user_id}/admin/{admin_id}/logs/errorLogs:
     get:
       tags:
         - "HASKI-intern"
@@ -2359,7 +2271,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_user_id"
+        - name: "lms_user_id"
           in: "path"
           description: "The Moodle ID of the User"
           required: true
@@ -2394,7 +2306,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GeneralError'
-  /user/{user_id}/{moodle_user_id}/admin/{admin_id}/logs/systemLogs:
+  /user/{user_id}/{lms_user_id}/admin/{admin_id}/logs/systemLogs:
     get:
       tags:
         - "HASKI-intern"
@@ -2411,7 +2323,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_user_id"
+        - name: "lms_user_id"
           in: "path"
           description: "The Moodle ID of the User"
           required: true
@@ -2481,7 +2393,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/GeneralError'
   
-  /moodle/user:
+  /lms/user:
     post:
       tags:
       - "Moodle"
@@ -2513,7 +2425,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GeneralError'
-  /moodle/user/{user_id}/{moodle_user_id}:
+  /lms/user/{user_id}/{lms_user_id}:
     put:
       tags:
       - "Moodle"
@@ -2528,7 +2440,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_user_id"
+        - name: "lms_user_id"
           in: "path"
           description: "The Moodle ID of the User"
           required: true
@@ -2574,7 +2486,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_user_id"
+        - name: "lms_user_id"
           in: "path"
           description: "The Moodle ID of the User"
           required: true
@@ -2600,7 +2512,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GeneralError'
-  /moodle/course:
+  /lms/course:
     post:
       tags:
       - "Moodle"
@@ -2632,7 +2544,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GeneralError'
-  /moodle/course/{course_id}/{moodle_course_id}:
+  /lms/course/{course_id}/{lms_course_id}:
     put:
       tags:
       - "Moodle"
@@ -2647,7 +2559,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_course_id"
+        - name: "lms_course_id"
           in: "path"
           description: "The ID of the Course in Moodle"
           required: true
@@ -2693,7 +2605,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_course_id"
+        - name: "lms_course_id"
           in: "path"
           description: "The ID of the Course in Moodle"
           required: true
@@ -2719,7 +2631,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GeneralError'
-  /moodle/course/{course_id}/{moodle_course_id}/topic:
+  /lms/course/{course_id}/{lms_course_id}/topic:
     post:
       tags:
       - "Moodle"
@@ -2734,7 +2646,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_course_id"
+        - name: "lms_course_id"
           in: "path"
           description: "The ID of the Course in Moodle"
           required: true
@@ -2766,7 +2678,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GeneralError'
-  /moodle/course/{course_id}/{moodle_course_id}/topic/{topic_id}/{moodle_topic_id}:
+  /lms/course/{course_id}/{lms_course_id}/topic/{topic_id}/{lms_topic_id}:
     put:
       tags:
       - "Moodle"
@@ -2781,7 +2693,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_course_id"
+        - name: "lms_course_id"
           in: "path"
           description: "The ID of the Course in Moodle"
           required: true
@@ -2795,7 +2707,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_topic_id"
+        - name: "lms_topic_id"
           in: "path"
           description: "The ID of the Topic in Moodle"
           required: true
@@ -2841,7 +2753,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_course_id"
+        - name: "lms_course_id"
           in: "path"
           description: "The ID of the Course in Moodle"
           required: true
@@ -2855,7 +2767,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_topic_id"
+        - name: "lms_topic_id"
           in: "path"
           description: "The ID of the Topic in Moodle"
           required: true
@@ -2881,7 +2793,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GeneralError'
-  /moodle/course/{course_id}/{moodle_course_id}/topic/{topic_id}/{moodle_topic_id}/learningElement:
+  /lms/course/{course_id}/{lms_course_id}/topic/{topic_id}/{lms_topic_id}/learningElement:
     post:
       tags:
       - "Moodle"
@@ -2896,7 +2808,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_course_id"
+        - name: "lms_course_id"
           in: "path"
           description: "The ID of the Course in Moodle"
           required: true
@@ -2910,7 +2822,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_topic_id"
+        - name: "lms_topic_id"
           in: "path"
           description: "The ID of the Topic in Moodle"
           required: true
@@ -2942,7 +2854,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GeneralError'
-  /moodle/course/{course_id}/{moodle_course_id}/topic/{topic_id}/{moodle_topic_id}/learningElement/{learning_element_id}/{moodle_learning_element_id}:
+  /lms/course/{course_id}/{lms_course_id}/topic/{topic_id}/{lms_topic_id}/learningElement/{learning_element_id}/{lms_learning_element_id}:
     put:
       tags:
       - "Moodle"
@@ -2957,7 +2869,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_course_id"
+        - name: "lms_course_id"
           in: "path"
           description: "The ID of the Course in Moodle"
           required: true
@@ -2971,7 +2883,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_topic_id"
+        - name: "lms_topic_id"
           in: "path"
           description: "The ID of the Topic in Moodle"
           required: true
@@ -2985,7 +2897,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_learning_element_id"
+        - name: "lms_learning_element_id"
           in: "path"
           description: "The ID of the Learning Element in Moodle"
           required: true
@@ -3031,7 +2943,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_course_id"
+        - name: "lms_course_id"
           in: "path"
           description: "The ID of the Course in Moodle"
           required: true
@@ -3045,7 +2957,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_topic_id"
+        - name: "lms_topic_id"
           in: "path"
           description: "The ID of the Topic in Moodle"
           required: true
@@ -3059,7 +2971,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_learning_element_id"
+        - name: "lms_learning_element_id"
           in: "path"
           description: "The ID of the Learning Element in Moodle"
           required: true
@@ -3085,7 +2997,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GeneralError'
-  /moodle/student/{student_id}/{moodle_user_id}/questionnaire:
+  /lms/student/{student_id}/{lms_user_id}/questionnaire:
     post:
       tags:
       - "Moodle"
@@ -3100,7 +3012,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_user_id"
+        - name: "lms_user_id"
           in: "path"
           description: "The Moodle ID of the User"
           required: true
@@ -3132,7 +3044,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GeneralError'
-  /moodle/student/{student_id}/{moodle_user_id}/topic/{topic_id}:
+  /lms/student/{student_id}/{lms_user_id}/topic/{topic_id}:
     post:
       tags:
       - "Moodle"
@@ -3147,7 +3059,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_user_id"
+        - name: "lms_user_id"
           in: "path"
           description: "The Moodle ID of the User"
           required: true
@@ -3186,7 +3098,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GeneralError'
-  /moodle/student/{student_id}/{moodle_user_id}/learning_element/{learning_element_id}:
+  /lms/student/{student_id}/{lms_user_id}/learning_element/{learning_element_id}:
     post:
       tags:
       - "Moodle"
@@ -3201,7 +3113,7 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "moodle_user_id"
+        - name: "lms_user_id"
           in: "path"
           description: "The Moodle ID of the User"
           required: true

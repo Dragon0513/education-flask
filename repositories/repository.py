@@ -185,6 +185,10 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
             raise err.CreationError()
 
     def create_user(self, user: UA.User) -> UA.User:
+        user_exist = self.get_users_by_uni(user.university)
+        for u in user_exist:
+            if user.lms_user_id == u.lms_user_id:
+                raise err.AlreadyExisting()
         try:
             self.session.add(user)
         except Exception:

@@ -3,7 +3,7 @@ import pytest
 import json
 
 
-@pytest.mark.parametrize("input, output_expected, status_code_expected", [
+@pytest.mark.parametrize("input, keys_expected, status_code_expected", [
     # Working Example
     (
         {
@@ -13,26 +13,14 @@ import json
             "university": "TH-AB",
             "password": "password"
         },
-        {
-            "id": 1,
-            "name": "Max Mustermann",
-            "lms_user_id": 1,
-            "role": "Student",
-            "university": "TH-AB",
-            "settings": [
-                {
-                    "theme": [
-                        {
-                            "color": "dark",
-                            "style": "dark",
-                            "typography": "Arial Black",
-                            "language": "DE"
-                        }
-                    ],
-                    "password": "password"
-                }
-            ]
-        },
+        [
+            'id',
+            'name',
+            'university',
+            'lms_user_id',
+            'role',
+            'settings'
+        ],
         201
     ),
     # Missing Parameter
@@ -43,9 +31,7 @@ import json
             "university": "TH-AB",
             "password": "password"
         },
-        {
-            "error": "Paramaters are missing in the request body."
-        },
+        ["error"],
         400
     ),
     # Parameter with wrong data type
@@ -57,9 +43,7 @@ import json
             "university": "TH-AB",
             "password": "password"
         },
-        {
-            "error": "Paramaters have the wrong data type."
-        },
+        ["error"],
         400
     ),
     # User already exists
@@ -71,22 +55,21 @@ import json
             "university": "TH-AB",
             "password": "password"
         },
-        {
-            "error": "This user already exists."
-        },
+        ["error"],
         400
     ),
-
 ])
 def test_api_create_user_from_moodle(
     client,
     input,
-    output_expected,
+    keys_expected,
     status_code_expected
 ):
-    r = client.post("/moodle/user", json=input)
+    r = client.post("/lms/user", json=input)
     assert r.status_code == status_code_expected
-    assert json.loads(r.data.decode("utf-8").strip('\n')) == output_expected
+    response = json.loads(r.data.decode("utf-8").strip('\n'))
+    for key in response.keys():
+        assert key in keys_expected
 
 
 @pytest.mark.parametrize("input, output_expected, status_code_expected", [

@@ -41,23 +41,35 @@ def create_user():
     method = request.method
     match method:
         case 'POST':
-            name = request.json["name"],
-            university = request.json["university"],
-            lms_user_id = request.json["lms_user_id"],
-            role = request.json["role"].lower()
-            available_roles = ['admin', 'course_creator', 'student', 'teacher']
-            if role not in available_roles:
-                raise err.NoValidRoleError()
+            condition1 = 'name' in request.json
+            condition2 = 'university' in request.json
+            condition3 = 'lms_user_id' in request.json
+            condition4 = 'role' in request.json
+            if condition1 and condition2 and condition3 and condition4:
+                condition5 = type(request.json['name']) is str
+                condition6 = type(request.json['university']) is str
+                condition7 = type(request.json['lms_user_id']) is int
+                condition8 = type(request.json['role']) is str
+                if condition5 and condition6 and condition7 and condition8:
+                    role = request.json["role"].lower()
+                    available_roles = [
+                        'admin', 'course_creator', 'student', 'teacher']
+                    if role not in available_roles:
+                        raise err.NoValidRoleError()
+                    else:
+                        user = services.create_user(
+                            unit_of_work.SqlAlchemyUnitOfWork(),
+                            request.json["name"],
+                            request.json["university"],
+                            request.json["lms_user_id"],
+                            role
+                        )
+                        status_code = 201
+                        return jsonify(user), status_code
+                else:
+                    raise err.WrongParameterValueError()
             else:
-                user = services.create_user(
-                    unit_of_work.SqlAlchemyUnitOfWork(),
-                    name,
-                    university,
-                    lms_user_id,
-                    role
-                )
-                status_code = 201
-                return jsonify(user), status_code
+                raise err.MissingParameterError()
 
 
 @app.route("/lms/user/<user_id>/<lms_user_id>", methods=['PUT', 'DELETE'])

@@ -14,7 +14,7 @@ class WrongLearningStyleNumberError(Exception):
 
 
 class WrongParameterValueError(Exception):
-    code = 404
+    code = 400
     description = "The passed parameter values are invalid."
 
 
@@ -52,3 +52,8 @@ class DatabaseQueryError(Exception):
 class NoValidRoleError(Exception):
     code = 400
     description = "The provided role does not exist!"
+
+
+class AlreadyExisting(Exception):
+    code = 400
+    description = "The entered values already exist in the database"

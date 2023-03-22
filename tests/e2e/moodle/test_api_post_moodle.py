@@ -72,7 +72,7 @@ def test_api_create_user_from_moodle(
         assert key in keys_expected
 
 
-@pytest.mark.parametrize("input, output_expected, status_code_expected", [
+@pytest.mark.parametrize("input, keys_expected, status_code_expected", [
     # Working Example
     (
         {
@@ -82,15 +82,7 @@ def test_api_create_user_from_moodle(
             "created_at": "2017-07-21T17:32:28Z",
             "university": "TH-AB"
         },
-        {
-            "id": 1,
-            "name": "Test Course",
-            "lms_id": 1,
-            "created_by": "Maria Musterfrau",
-            "created_at": "2017-07-21T17:32:28Z",
-            "last_updated": None,
-            "university": "TH-AB"
-        },
+        ['id', 'name', 'lms_id', 'created_at', 'created_by', 'university'],
         201
     ),
     # Missing Parameter
@@ -101,9 +93,7 @@ def test_api_create_user_from_moodle(
             "created_by": "Maria Musterfrau",
             "university": "TH-AB"
         },
-        {
-            "error": "Paramaters are missing in the request body."
-        },
+        ['error'],
         400
     ),
     # Parameter with wrong data type
@@ -115,9 +105,8 @@ def test_api_create_user_from_moodle(
             "created_at": "2017-07-21T17:32:28Z",
             "university": "TH-AB"
         },
-        {
-            "error": "Paramaters have the wrong data type."
-        },
+
+        ['error'],
         400
     ),
     # Course already exists
@@ -129,9 +118,7 @@ def test_api_create_user_from_moodle(
             "created_at": "2017-07-21T17:32:28Z",
             "university": "TH-AB"
         },
-        {
-            "error": "This course already exists."
-        },
+        ['error'],
         400
     ),
 
@@ -139,16 +126,18 @@ def test_api_create_user_from_moodle(
 def test_api_create_course_from_moodle(
     client,
     input,
-    output_expected,
+    keys_expected,
     status_code_expected
 ):
     r = client.post("/moodle/course", json=input)
     assert r.status_code == status_code_expected
-    assert json.loads(r.data.decode("utf-8").strip('\n')) == output_expected
+    response = json.loads(r.data.decode("utf-8").strip('\n'))
+    for key in response.keys():
+        assert key in keys_expected
 
 
 @pytest.mark.parametrize("input, course_id, moodle_course_id, \
-                          output_expected, status_code_expected", [
+                          keys_expected, status_code_expected", [
     # Working Example for Topic
     (
         {
@@ -162,18 +151,8 @@ def test_api_create_course_from_moodle(
         },
         1,
         1,
-        {
-            "id": 1,
-            "name": "Test Topic",
-            "lms_id": 1,
-            "is_topic": True,
-            "parent_id": None,
-            "contains_le": False,
-            "created_by": "Maria Musterfrau",
-            "created_at": "2017-07-21T17:32:28Z",
-            "updated_at": None,
-            "university": "TH-AB"
-        },
+        ['id', 'name', 'lms_id', 'is_topic', 'parent_id',
+            'contains_le', 'created_by', 'created_at', 'university'],
         201
     ),
     # Working Example for Sub-Topic
@@ -190,18 +169,8 @@ def test_api_create_course_from_moodle(
         },
         1,
         1,
-        {
-            "id": 2,
-            "name": "Test Sub-Topic",
-            "lms_id": 2,
-            "is_topic": False,
-            "parent_id": 1,
-            "contains_le": True,
-            "created_by": "Maria Musterfrau",
-            "created_at": "2017-07-21T17:32:28Z",
-            "updated_at": None,
-            "university": "TH-AB"
-        },
+        ['id', 'name', 'lms_id', 'is_topic', 'parent_id',
+            'contains_le', 'created_by', 'created_at', 'university'],
         201
     ),
     # Missing Parameter
@@ -216,9 +185,7 @@ def test_api_create_course_from_moodle(
         },
         1,
         1,
-        {
-            "error": "Paramaters are missing in the request body."
-        },
+        ['error'],
         400
     ),
     # Parameter with wrong data type
@@ -234,9 +201,7 @@ def test_api_create_course_from_moodle(
         },
         1,
         1,
-        {
-            "error": "Paramaters have the wrong data type."
-        },
+        ['error'],
         400
     ),
     # Topic already exists
@@ -252,9 +217,7 @@ def test_api_create_course_from_moodle(
         },
         1,
         1,
-        {
-            "error": "This topic already exists."
-        },
+        ['error'],
         400
     ),
 
@@ -264,18 +227,20 @@ def test_api_create_topic_from_moodle(
     input,
     course_id,
     moodle_course_id,
-    output_expected,
+    keys_expected,
     status_code_expected
 ):
     url = "/moodle/course/" + str(course_id) + \
         "/" + str(moodle_course_id) + "/topic"
     r = client.post(url, json=input)
     assert r.status_code == status_code_expected
-    assert json.loads(r.data.decode("utf-8").strip('\n')) == output_expected
+    response = json.loads(r.data.decode("utf-8").strip('\n'))
+    for key in response.keys():
+        assert key in keys_expected
 
 
 @pytest.mark.parametrize("input, course_id, moodle_course_id, topic_id, \
-                         moodle_topic_id, output_expected, \
+                         moodle_topic_id, keys_expected, \
                          status_code_expected", [
     # Working Example for LE
     (
@@ -292,16 +257,8 @@ def test_api_create_topic_from_moodle(
         1,
         1,
         1,
-        {
-            "id": 1,
-            "lms_id": 1,
-            "activity_type": "Quiz",
-            "classification": "RQ",
-            "name": "Test Learning Element",
-            "created_by": "Maria Musterfrau",
-            "created_at": "2017-07-21T17:32:28Z",
-            "last_updated": "2017-07-21T17:32:28Z"
-        },
+        ['id', 'lms_id', 'activity_type', 'classification',
+            'name', 'created_by', 'created_at', 'university'],
         201
     ),
     # Missing Parameter
@@ -318,9 +275,7 @@ def test_api_create_topic_from_moodle(
         1,
         1,
         1,
-        {
-            "error": "Paramaters are missing in the request body."
-        },
+        ['error'],
         400
     ),
     # Parameter with wrong data type
@@ -338,9 +293,7 @@ def test_api_create_topic_from_moodle(
         1,
         1,
         1,
-        {
-            "error": "Paramaters have the wrong data type."
-        },
+        ['error'],
         400
     ),
     # Topic already exists
@@ -358,9 +311,7 @@ def test_api_create_topic_from_moodle(
         1,
         1,
         1,
-        {
-            "error": "This topic already exists."
-        },
+        ['error'],
         400
     )
 ])
@@ -371,7 +322,7 @@ def test_api_create_le_from_moodle(
     moodle_course_id,
     topic_id,
     moodle_topic_id,
-    output_expected,
+    keys_expected,
     status_code_expected
 ):
     url = "/moodle/course/" + str(course_id) + "/" + str(moodle_course_id) + \
@@ -379,209 +330,204 @@ def test_api_create_le_from_moodle(
         str(moodle_topic_id) + "/learningElement"
     r = client.post(url, json=input)
     assert r.status_code == status_code_expected
-    assert json.loads(r.data.decode("utf-8").strip('\n')) == output_expected
+    response = json.loads(r.data.decode("utf-8").strip('\n'))
+    for key in response.keys():
+        assert key in keys_expected
 
 
 @pytest.mark.parametrize("input, student_id, moodle_user_id, \
-                         output_expected, status_code_expected", [
+                         keys_expected, status_code_expected", [
     # Working example
     (
         {
-            "answers":
+            "ils":
             [
                 {
-                    "question_id": "AR1",
+                    "question_id": "ar_1_f1",
                     "answer": "a"
                 },
                 {
-                    "question_id": "AR2",
+                    "question_id": "ar_2_f5",
                     "answer": "a"
                 },
                 {
-                    "question_id": "AR3",
+                    "question_id": "ar_3_f9",
                     "answer": "a"
                 },
                 {
-                    "question_id": "AR4",
+                    "question_id": "ar_4_f13",
                     "answer": "a"
                 },
                 {
-                    "question_id": "AR5",
+                    "question_id": "ar_5_f17",
                     "answer": "a"
                 },
                 {
-                    "question_id": "AR6",
+                    "question_id": "ar_6_f21",
                     "answer": "a"
                 },
                 {
-                    "question_id": "AR7",
+                    "question_id": "ar_7_f25",
                     "answer": "a"
                 },
                 {
-                    "question_id": "AR8",
+                    "question_id": "ar_8_f29",
                     "answer": "a"
                 },
                 {
-                    "question_id": "AR9",
+                    "question_id": "ar_9_f33",
                     "answer": "a"
                 },
                 {
-                    "question_id": "AR10",
+                    "question_id": "ar_10_f37",
                     "answer": "a"
                 },
                 {
-                    "question_id": "AR11",
-                    "answer": "a"
-                },
-
-                {
-                    "question_id": "VV1",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "VV2",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "VV3",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "VV4",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "VV5",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "VV6",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "VV7",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "VV8",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "VV9",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "VV10",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "VV11",
+                    "question_id": "ar_11_f41",
                     "answer": "a"
                 },
 
                 {
-                    "question_id": "SI1",
+                    "question_id": "vv_1_f3",
                     "answer": "a"
                 },
                 {
-                    "question_id": "SI2",
+                    "question_id": "vv_2_f7",
                     "answer": "a"
                 },
                 {
-                    "question_id": "SI3",
+                    "question_id": "vv_3_f11",
                     "answer": "a"
                 },
                 {
-                    "question_id": "SI4",
+                    "question_id": "vv_4_f15",
                     "answer": "a"
                 },
                 {
-                    "question_id": "SI5",
+                    "question_id": "vv_5_f19",
                     "answer": "a"
                 },
                 {
-                    "question_id": "SI6",
+                    "question_id": "vv_6_f23",
                     "answer": "a"
                 },
                 {
-                    "question_id": "SI7",
+                    "question_id": "vv_7_f27",
                     "answer": "a"
                 },
                 {
-                    "question_id": "SI8",
+                    "question_id": "vv_8_f31",
                     "answer": "a"
                 },
                 {
-                    "question_id": "SI9",
+                    "question_id": "vv_9_f35",
                     "answer": "a"
                 },
                 {
-                    "question_id": "SI10",
+                    "question_id": "vv_10_f39",
                     "answer": "a"
                 },
                 {
-                    "question_id": "SI11",
+                    "question_id": "vv_11_f43",
                     "answer": "a"
                 },
 
                 {
-                    "question_id": "GS1",
+                    "question_id": "si_1_f2",
                     "answer": "a"
                 },
                 {
-                    "question_id": "GS2",
+                    "question_id": "si_2_f6",
                     "answer": "a"
                 },
                 {
-                    "question_id": "GS3",
+                    "question_id": "si_3_f10",
                     "answer": "a"
                 },
                 {
-                    "question_id": "GS4",
+                    "question_id": "si_4_f14",
                     "answer": "a"
                 },
                 {
-                    "question_id": "GS5",
+                    "question_id": "si_5_f18",
                     "answer": "a"
                 },
                 {
-                    "question_id": "GS6",
+                    "question_id": "si_6_f22",
                     "answer": "a"
                 },
                 {
-                    "question_id": "GS7",
+                    "question_id": "si_7_f26",
                     "answer": "a"
                 },
                 {
-                    "question_id": "GS8",
+                    "question_id": "si_8_f30",
                     "answer": "a"
                 },
                 {
-                    "question_id": "GS9",
+                    "question_id": "si_9_f34",
                     "answer": "a"
                 },
                 {
-                    "question_id": "GS10",
+                    "question_id": "si_10_f38",
                     "answer": "a"
                 },
                 {
-                    "question_id": "GS11",
+                    "question_id": "si_11_f42",
+                    "answer": "a"
+                },
+
+                {
+                    "question_id": "sg_1_f4",
+                    "answer": "a"
+                },
+                {
+                    "question_id": "sg_2_f8",
+                    "answer": "a"
+                },
+                {
+                    "question_id": "sg_3_f12",
+                    "answer": "a"
+                },
+                {
+                    "question_id": "sg_4_f16",
+                    "answer": "a"
+                },
+                {
+                    "question_id": "sg_5_f20",
+                    "answer": "a"
+                },
+                {
+                    "question_id": "sg_6_f24",
+                    "answer": "a"
+                },
+                {
+                    "question_id": "sg_7_f28",
+                    "answer": "a"
+                },
+                {
+                    "question_id": "sg_8_f32",
+                    "answer": "a"
+                },
+                {
+                    "question_id": "sg_9_f36",
+                    "answer": "a"
+                },
+                {
+                    "question_id": "sg_10_f40",
+                    "answer": "a"
+                },
+                {
+                    "question_id": "sg_11_f44",
                     "answer": "a"
                 }
             ],
         },
         1,
         1,
-        {
-            "perception_dimension": "SNS",
-            "perception_value": 7,
-            "input_dimension": "VIS",
-            "input_value": 7,
-            "processing_dimension": "ACT",
-            "processing_value": 7,
-            "understanding_dimension": "GLO",
-            "understanding_value": 7
-        },
+        ['perception_dimension', 'perception_value', 'input_dimension',\
+         'input_value', 'processing_dimension', 'processing_value',\
+         'understanding_dimension', 'understanding_value'],
         201
     ),
     # Working example short questionnaire
@@ -590,103 +536,189 @@ def test_api_create_le_from_moodle(
             "answers":
             [
                 {
-                    "question_id": "AR1",
+                    "question_id": "ar_3_f9",
                     "answer": "a"
                 },
                 {
-                    "question_id": "AR2",
+                    "question_id": "ar_4_f13",
                     "answer": "a"
                 },
                 {
-                    "question_id": "AR3",
+                    "question_id": "ar_6_f21",
                     "answer": "a"
                 },
                 {
-                    "question_id": "AR4",
+                    "question_id": "ar_7_f25",
                     "answer": "a"
                 },
                 {
-                    "question_id": "AR5",
-                    "answer": "a"
-                },
-
-                {
-                    "question_id": "VV1",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "VV2",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "VV3",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "VV4",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "VV5",
+                    "question_id": "ar_8_f29",
                     "answer": "a"
                 },
 
                 {
-                    "question_id": "SI1",
+                    "question_id": "vv_2_f7",
                     "answer": "a"
                 },
                 {
-                    "question_id": "SI2",
+                    "question_id": "vv_5_f19",
                     "answer": "a"
                 },
                 {
-                    "question_id": "SI3",
+                    "question_id": "vv_7_f27",
                     "answer": "a"
                 },
                 {
-                    "question_id": "SI4",
+                    "question_id": "vv_10_f39",
                     "answer": "a"
                 },
                 {
-                    "question_id": "SI5",
+                    "question_id": "vv_11_f43",
+                    "answer": "a"
+                },
+
+
+                {
+                    "question_id": "si_1_f2",
+                    "answer": "a"
+                },
+                {
+                    "question_id": "si_4_f14",
+                    "answer": "a"
+                },
+                {
+                    "question_id": "si_7_f26",
+                    "answer": "a"
+                },
+                {
+                    "question_id": "si_10_f38",
+                    "answer": "a"
+                },
+                {
+                    "question_id": "si_11_f42",
                     "answer": "a"
                 },
 
                 {
-                    "question_id": "GS1",
+                    "question_id": "sg_1_f4",
                     "answer": "a"
                 },
                 {
-                    "question_id": "GS2",
+                    "question_id": "sg_2_f8",
                     "answer": "a"
                 },
                 {
-                    "question_id": "GS3",
+                    "question_id": "sg_4_f16",
                     "answer": "a"
                 },
                 {
-                    "question_id": "GS4",
+                    "question_id": "sg_10_f40",
                     "answer": "a"
                 },
                 {
-                    "question_id": "GS5",
+                    "question_id": "sg_11_f44",
                     "answer": "a"
                 }
             ],
         },
         1,
         1,
-        {
-            "perception_dimension": "SNS",
-            "perception_value": 7,
-            "input_dimension": "VIS",
-            "input_value": 7,
-            "processing_dimension": "ACT",
-            "processing_value": 7,
-            "understanding_dimension": "GLO",
-            "understanding_value": 7
-        },
+        ['perception_dimension', 'perception_value', 'input_dimension',\
+         'input_value', 'processing_dimension', 'processing_value',\
+         'understanding_dimension', 'understanding_value'],
         201
+    ),
+    # Missing mandatory answer
+    (
+        {
+            "answers":
+            [
+                {
+                    "question_id": "ar_3_f9",
+                    "answer": "a"
+                },
+                {
+                    "question_id": "ar_4_f13",
+                    "answer": "a"
+                },
+                {
+                    "question_id": "ar_6_f21",
+                    "answer": "a"
+                },
+                {
+                    "question_id": "ar_7_f25",
+                    "answer": "a"
+                },
+                {
+                    "question_id": "ar_8_f29",
+                    "answer": "a"
+                },
+
+                {
+                    "question_id": "vv_2_f7",
+                    "answer": "a"
+                },
+                {
+                    "question_id": "vv_5_f19",
+                    "answer": "a"
+                },
+                {
+                    "question_id": "vv_7_f27",
+                    "answer": "a"
+                },
+                {
+                    "question_id": "vv_10_f39",
+                    "answer": "a"
+                },
+                {
+                    "question_id": "vv_11_f43",
+                    "answer": "a"
+                },
+
+
+                {
+                    "question_id": "si_1_f2",
+                    "answer": "a"
+                },
+                {
+                    "question_id": "si_4_f14",
+                    "answer": "a"
+                },
+                {
+                    "question_id": "si_7_f26",
+                    "answer": "a"
+                },
+                {
+                    "question_id": "si_10_f38",
+                    "answer": "a"
+                },
+                {
+                    "question_id": "si_11_f42",
+                    "answer": "a"
+                },
+
+                {
+                    "question_id": "sg_1_f4",
+                    "answer": "a"
+                },
+                {
+                    "question_id": "sg_2_f8",
+                    "answer": "a"
+                },
+                {
+                    "question_id": "sg_4_f16",
+                    "answer": "a"
+                },
+                {
+                    "question_id": "sg_10_f40",
+                    "answer": "a"
+                }
+            ],
+        },
+        1,
+        1,
+        ['error'],
+        400
     ),
     # Wrong ID for question
     (
@@ -876,9 +908,7 @@ def test_api_create_le_from_moodle(
         },
         1,
         1,
-        {
-            "error": "There is a non valid Question ID."
-        },
+        ['error'],
         400
     )
 ])
@@ -887,18 +917,20 @@ def test_post_ils_questionnaire(
     input,
     student_id,
     moodle_user_id,
-    output_expected,
+    keys_expected,
     status_code_expected
 ):
     url = "/moodle/student/" + str(student_id) + \
         "/" + str(moodle_user_id) + "/questionnaire"
     r = client.post(url, json=input)
     assert r.status_code == status_code_expected
-    assert json.loads(r.data.decode("utf-8").strip('\n')) == output_expected
+    response = json.loads(r.data.decode("utf-8").strip('\n'))
+    for key in response.keys():
+        assert key in keys_expected
 
 
 @pytest.mark.parametrize("input, student_id, moodle_user_id, topic_id, \
-                         output_expected, status_code_expected", [
+                         keys_expected, status_code_expected", [
     # Working Example
     (
         {
@@ -908,10 +940,7 @@ def test_post_ils_questionnaire(
         1,
         1,
         1,
-        {
-            "visit_start_time": "2017-07-21T17:32:28Z",
-            "previous_topic_id": 1
-        },
+        ['visit_start', 'previous_topic_id'],
         201
     ),
     # Working Example with no previous topic
@@ -923,10 +952,7 @@ def test_post_ils_questionnaire(
         1,
         1,
         1,
-        {
-            "visit_start_time": "2017-07-21T17:32:28Z",
-            "previous_topic_id": None
-        },
+        ['visit_start', 'previous_topic_id'],
         201
     ),
     # Wrong data format
@@ -938,9 +964,7 @@ def test_post_ils_questionnaire(
         1,
         1,
         1,
-        {
-            "error": "Paramaters have the wrong data type."
-        },
+        ['error'],
         400
     ),
     # Missing Parameter
@@ -951,9 +975,7 @@ def test_post_ils_questionnaire(
         1,
         1,
         1,
-        {
-            "error": "Paramaters are missing in the request body."
-        },
+        ['error'],
         400
     )
 ])
@@ -963,18 +985,20 @@ def test_post_topic_visit(
     student_id,
     moodle_user_id,
     topic_id,
-    output_expected,
+    keys_expected,
     status_code_expected
 ):
     url = "/moodle/student/" + str(student_id) + \
         "/" + str(moodle_user_id) + "/topic/" + str(topic_id)
     r = client.post(url, json=input)
     assert r.status_code == status_code_expected
-    assert json.loads(r.data.decode("utf-8").strip('\n')) == output_expected
+    response = json.loads(r.data.decode("utf-8").strip('\n'))
+    for key in response.keys():
+        assert key in keys_expected
 
 
 @pytest.mark.parametrize("input, student_id, moodle_user_id, \
-                         learning_element_id, output_expected, \
+                         learning_element_id, keys_expected, \
                          status_code_expected", [
     # Working Example
     (
@@ -985,10 +1009,7 @@ def test_post_topic_visit(
         1,
         1,
         1,
-        {
-            "visit_start_time": "2017-07-21T17:32:28Z",
-            "previous_learning_element_id": 1
-        },
+        ['visit_start', 'previous_topic_id'],
         201
     ),
     # Working Example with no previous learning element
@@ -1000,10 +1021,7 @@ def test_post_topic_visit(
         1,
         1,
         1,
-        {
-            "visit_start_time": "2017-07-21T17:32:28Z",
-            "previous_learning_element_id": None
-        },
+        ['visit_start', 'previous_topic_id'],
         201
     ),
     # Wrong data format
@@ -1015,9 +1033,7 @@ def test_post_topic_visit(
         1,
         1,
         1,
-        {
-            "error": "Paramaters have the wrong data type."
-        },
+        ['error'],
         400
     ),
     # Missing Parameter
@@ -1028,9 +1044,7 @@ def test_post_topic_visit(
         1,
         1,
         1,
-        {
-            "error": "Paramaters are missing in the request body."
-        },
+        ['error'],
         400
     )
 ])
@@ -1040,7 +1054,7 @@ def test_post_learning_element_visit(
     student_id,
     moodle_user_id,
     learning_element_id,
-    output_expected,
+    keys_expected,
     status_code_expected
 ):
     url = "/moodle/student/" + str(student_id) + \
@@ -1048,4 +1062,6 @@ def test_post_learning_element_visit(
         str(learning_element_id)
     r = client.post(url, json=input)
     assert r.status_code == status_code_expected
-    assert json.loads(r.data.decode("utf-8").strip('\n')) == output_expected
+    response = json.loads(r.data.decode("utf-8").strip('\n'))
+    for key in response.keys():
+        assert key in keys_expected

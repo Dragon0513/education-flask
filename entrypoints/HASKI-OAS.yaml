@@ -4069,7 +4069,7 @@ components:
     LearningElementVisit:
       type: "object"
       properties:
-        visit_start_time:
+        visit_start:
           type: "string"
           format: "date-time"
           example: "2017-07-21T17:32:28Z"
@@ -4441,7 +4441,7 @@ components:
     TopicVisit:
       type: "object"
       properties:
-        visit_start_time:
+        visit_start:
           type: "string"
           format: "date-time"
           example: "2017-07-21T17:32:28Z"
@@ -4495,19 +4495,22 @@ components:
             example: "Maria Musterfrau"
             description: "The name of the User"
     UsersListAdmin:
-      type: "array"
-      items:
-        type: "object"
-        properties:
-          name:
-            type: "string"
-            example: "Maria Musterfrau"
-            description: "The name of the User"
-          role:
-            type: "string"
-            example: "Student"
-            description: "The role of the User"
-          university:
-            type: "string"
-            example: "TH-AB"
-            description: "The university of the User"
+      type: "object"
+      properties:
+        users:
+          type: "array"
+          items:
+            type: "object"
+            properties:
+              name:
+                type: "string"
+                example: "Maria Musterfrau"
+                description: "The name of the User"
+              role:
+                type: "string"
+                example: "Student"
+                description: "The role of the User"
+              university:
+                type: "string"
+                example: "TH-AB"
+                description: "The university of the User"

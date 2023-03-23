@@ -39,12 +39,11 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
-    def delete_admin(self, user_id, lms_user_id, admin_id):
+    def delete_admin(self, user_id):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def delete_course_creator(self, user_id, lms_user_id,
-                              course_creator_id):
+    def delete_course_creator(self, user_id):
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -52,11 +51,11 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
-    def delete_student(self, user_id, lms_user_id, student_id):
+    def delete_student(self, user_id):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def delete_teacher(self, user_id, lms_user_id, teacher_id):
+    def delete_teacher(self, user_id):
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -235,24 +234,12 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
             raise err.NoValidIdError()
 
     def delete_user(self, user_id, lms_user_id):
-        user = self.get_user_by_id(user_id, lms_user_id)
-        settings = self.get_settings(user_id)
-        user[0].settings = settings[0].serialize()
-        if user != []:
-            role = user[0].serialize()['role']
-            match role:
-                case "admin":
-                    self.delete_admin(user_id)
-                case "course_creator":
-                    self.delete_course_creator(user_id)
-                case "student":
-                    self.delete_student(user_id)
-                case "teacher":
-                    self.delete_teacher(user_id)
-            self.delete_settings(user_id)
-            self.session.query(UA.User)\
-                .filter_by(id=user_id)\
-                .filter_by(lms_user_id=lms_user_id).delete()
+        teacher = self.get_user_by_id(user_id, lms_user_id)
+        if teacher != []:
+            self.session.query(UA.User).filter_by(
+                id=user_id).filter_by(
+                lms_user_id=lms_user_id
+                ).delete()
         else:
             raise err.NoValidIdError()
 

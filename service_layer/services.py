@@ -74,22 +74,68 @@ def create_user(
         uow.user.create_user(user)
         uow.commit()
         user.settings = create_settings(
-            unit_of_work.SqlAlchemyUnitOfWork(), user.id)
+            uow, user.id)
         match role.lower():
             case "admin":
-                create_admin(unit_of_work.SqlAlchemyUnitOfWork(),
-                             user)
+                create_admin(uow, user)
             case "course_creator":
-                create_course_creator(unit_of_work.SqlAlchemyUnitOfWork(),
-                                      user)
+                create_course_creator(uow, user)
             case "student":
-                create_student(unit_of_work.SqlAlchemyUnitOfWork(),
-                               user)
+                create_student(uow, user)
             case "teacher":
-                create_teacher(unit_of_work.SqlAlchemyUnitOfWork(),
-                               user)
+                create_teacher(uow, user)
         result = user.serialize()
     return result
+
+
+def delete_admin(
+        uow: unit_of_work.AbstractUnitOfWork,
+        user_id
+):
+    with uow:
+        uow.admin.delete_admin(user_id)
+        uow.commit()
+        return {}
+    
+
+def delete_course_creator(
+        uow: unit_of_work.AbstractUnitOfWork,
+        user_id
+):
+    with uow:
+        uow.course_creator.delete_course_creator(user_id)
+        uow.commit()
+        return {}
+
+
+def delete_settings(
+        uow: unit_of_work.AbstractUnitOfWork,
+        user_id
+):
+    with uow:
+        uow.settings.delete_settings(user_id)
+        uow.commit()
+        return {}
+
+
+def delete_student(
+        uow: unit_of_work.AbstractUnitOfWork,
+        user_id
+):
+    with uow:
+        uow.student.delete_student(user_id)
+        uow.commit()
+        return {}
+    
+
+def delete_teacher(
+        uow: unit_of_work.AbstractUnitOfWork,
+        user_id
+):
+    with uow:
+        uow.teacher.delete_teacher(user_id)
+        uow.commit()
+        return {}
 
 
 def delete_user(
@@ -98,6 +144,17 @@ def delete_user(
         lms_user_id
 ):
     with uow:
+        user = get_user_by_id(uow, user_id, lms_user_id)
+        match user['role']:
+            case "admin":
+                delete_admin(uow, user['id'])
+            case "course_creator":
+                delete_course_creator(uow, user['id'])
+            case "student":
+                delete_student(uow, user['id'])
+            case "teacher":
+                delete_teacher(uow, user['id'])
+        delete_settings(uow, user_id)
         uow.user.delete_user(user_id, lms_user_id)
         uow.commit()
         return {}

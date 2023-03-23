@@ -873,7 +873,7 @@ cursor.execute(sql)
 sql = '''
     CREATE TABLE IF NOT EXISTS public.list_k
     (
-        id integer NOT NULL GENERATED ALWAYS AS IDENTITY 
+        id integer NOT NULL GENERATED ALWAYS AS IDENTITY
         ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
         org1_f1 integer NOT NULL,
         org2_f2 integer NOT NULL,

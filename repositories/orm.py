@@ -1,6 +1,5 @@
 from sqlalchemy import MetaData, Column, Integer, String, Table, Date, Boolean
 from sqlalchemy.orm import mapper
-from domain.tutoringModel import graf as LP
 from domain.domainModel import model as DM
 from domain.learnersModel import model as LM
 from domain.tutoringModel import model as TM
@@ -227,6 +226,52 @@ learning_style = Table(
     Column("understanding_value", Integer, nullable=False)
 )
 
+list_k = Table(
+    "list_k",
+    metadata,
+    Column("id", Integer, primary_key=True, autoincrement=True),
+    Column("questionnaire_id", Integer, nullable=False),
+    Column("org1_f1", Integer, nullable=False),
+    Column("org2_f2", Integer, nullable=False),
+    Column("org3_f3", Integer, nullable=False),
+    Column("ela1_f4", Integer, nullable=False),
+    Column("ela2_f5", Integer, nullable=False),
+    Column("ela3_f6", Integer, nullable=False),
+    Column("krp1_f7", Integer, nullable=False),
+    Column("krp2_f8", Integer, nullable=False),
+    Column("krp3_f9", Integer, nullable=False),
+    Column("wie1_f10", Integer, nullable=False),
+    Column("wie2_f11", Integer, nullable=False),
+    Column("wie3_f12", Integer, nullable=False),
+    Column("zp1_f13", Integer, nullable=False),
+    Column("zp2_f14", Integer, nullable=False),
+    Column("zp3_f15", Integer, nullable=False),
+    Column("kon1_f16", Integer, nullable=False),
+    Column("kon2_f17", Integer, nullable=False),
+    Column("kon3_f18", Integer, nullable=False),
+    Column("reg1_f19", Integer, nullable=False),
+    Column("reg2_f20", Integer, nullable=False),
+    Column("reg3_f21", Integer, nullable=False),
+    Column("auf1_f22", Integer, nullable=False),
+    Column("auf2_f23", Integer, nullable=False),
+    Column("auf3_f24", Integer, nullable=False),
+    Column("ans1_f25", Integer, nullable=False),
+    Column("ans2_f26", Integer, nullable=False),
+    Column("ans3_f27", Integer, nullable=False),
+    Column("zei1_f28", Integer, nullable=False),
+    Column("zei2_f29", Integer, nullable=False),
+    Column("zei3_f30", Integer, nullable=False),
+    Column("lms1_f31", Integer, nullable=False),
+    Column("lms2_f32", Integer, nullable=False),
+    Column("lms3_f33", Integer, nullable=False),
+    Column("lit1_f34", Integer, nullable=False),
+    Column("lit2_f35", Integer, nullable=False),
+    Column("lit3_f36", Integer, nullable=False),
+    Column("lu1_f37", Integer, nullable=False),
+    Column("lu2_f38", Integer, nullable=False),
+    Column("lu3_f39", Integer, nullable=False)
+)
+
 questionnaire = Table(
     "questionnaire",
     metadata,
@@ -405,6 +450,9 @@ def start_mappers():
     )
     mapper(
         LM.LearningStyle, learning_style
+    )
+    mapper(
+        LM.ListK, list_k
     )
     mapper(
         LM.Questionnaire, questionnaire

@@ -761,3 +761,61 @@ TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public.ils_understanding_answers
     OWNER to postgres;
+
+-- LIST K
+DROP TABLE IF EXISTS public.list_k;
+
+CREATE TABLE IF NOT EXISTS public.list_k
+(
+    id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+    org1_f1 integer NOT NULL,
+    org2_f2 integer NOT NULL,
+    org3_f3 integer NOT NULL,
+    ela1_f4 integer NOT NULL,
+    ela2_f5 integer NOT NULL,
+    ela3_f6 integer NOT NULL,
+    krp1_f7 integer NOT NULL,
+    krp2_f8 integer NOT NULL,
+    krp3_f9 integer NOT NULL,
+    wie1_f10 integer NOT NULL,
+    wie2_f11 integer NOT NULL,
+    wie3_f12 integer NOT NULL,
+    zp1_f13 integer NOT NULL,
+    zp2_f14 integer NOT NULL,
+    zp3_f15 integer NOT NULL,
+    kon1_f16 integer NOT NULL,
+    kon2_f17 integer NOT NULL,
+    kon3_f18 integer NOT NULL,
+    reg1_f19 integer NOT NULL,
+    reg2_f20 integer NOT NULL,
+    reg3_f21 integer NOT NULL,
+    auf1_f22 integer NOT NULL,
+    auf2_f23 integer NOT NULL,
+    auf3_f24 integer NOT NULL,
+    ans1_f25 integer NOT NULL,
+    ans2_f26 integer NOT NULL,
+    ans3_f27 integer NOT NULL,
+    zei1_f28 integer NOT NULL,
+    zei2_f29 integer NOT NULL,
+    zei3_f30 integer NOT NULL,
+    lms1_f31 integer NOT NULL,
+    lms2_f32 integer NOT NULL,
+    lms3_f33 integer NOT NULL,
+    lit1_f34 integer NOT NULL,
+    lit2_f35 integer NOT NULL,
+    lit3_f36 integer NOT NULL,
+    lu1_f37 integer NOT NULL,
+    lu2_f38 integer NOT NULL,
+    lu3_f39 integer NOT NULL,
+    questionnaire_id integer NOT NULL,
+    CONSTRAINT list_k_pkey PRIMARY KEY (id),
+    CONSTRAINT questionnaire_id FOREIGN KEY (questionnaire_id)
+        REFERENCES public.questionnaire (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.list_k
+    OWNER to postgres;

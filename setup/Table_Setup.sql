@@ -237,8 +237,8 @@ CREATE TABLE IF NOT EXISTS public.learning_characteristics
     id integer NOT NULL,
     user_id integer NOT NULL,
     CONSTRAINT learning_characteristics_pkey PRIMARY KEY (id),
-    CONSTRAINT user_id FOREIGN KEY (user_id)
-        REFERENCES public."haski_user" (id) MATCH SIMPLE
+    CONSTRAINT student_id FOREIGN KEY (user_id)
+        REFERENCES public."student" (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
 )
@@ -281,9 +281,9 @@ DROP TABLE IF EXISTS public.learning_strategy;
 CREATE TABLE IF NOT EXISTS public.learning_strategy
 (
     id integer NOT NULL,
-    characterisitc_id integer NOT NULL,
+    characteristic_id integer NOT NULL,
     CONSTRAINT learning_strategy_pkey PRIMARY KEY (id),
-    CONSTRAINT characterisitc_id FOREIGN KEY (characterisitc_id)
+    CONSTRAINT characteristic_id FOREIGN KEY (characteristic_id)
         REFERENCES public.learning_characteristics (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
@@ -300,9 +300,9 @@ DROP TABLE IF EXISTS public.knowledge;
 CREATE TABLE IF NOT EXISTS public.knowledge
 (
     id integer NOT NULL,
-    characterisitc_id integer NOT NULL,
+    characteristic_id integer NOT NULL,
     CONSTRAINT knowledge_pkey PRIMARY KEY (id),
-    CONSTRAINT characterisitc_id FOREIGN KEY (characterisitc_id)
+    CONSTRAINT characteristic_id FOREIGN KEY (characteristic_id)
         REFERENCES public.learning_characteristics (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
@@ -319,9 +319,9 @@ DROP TABLE IF EXISTS public.learning_analytics;
 CREATE TABLE IF NOT EXISTS public.learning_analytics
 (
     id integer NOT NULL,
-    characterisitc_id integer NOT NULL,
+    characteristic_id integer NOT NULL,
     CONSTRAINT learning_analytics_pkey PRIMARY KEY (id),
-    CONSTRAINT characterisitc_id FOREIGN KEY (characterisitc_id)
+    CONSTRAINT characteristic_id FOREIGN KEY (characteristic_id)
         REFERENCES public.learning_characteristics (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION

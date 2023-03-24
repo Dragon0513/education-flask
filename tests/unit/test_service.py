@@ -2,6 +2,7 @@ import pytest
 from repositories import repository
 from service_layer import services, unit_of_work
 from domain.userAdministartion import model as UA
+from domain.learnersModel import model as LM
 
 
 class FakeRepository(repository.AbstractRepository):
@@ -11,13 +12,23 @@ class FakeRepository(repository.AbstractRepository):
                  admin=[],
                  course_creator=[],
                  teacher=[],
-                 student=[]):
+                 student=[],
+                 learning_characteristics=[],
+                 learning_style=[],
+                 learning_strategy=[],
+                 knowledge=[],
+                 learning_analytics=[]):
         self.user = set(user)
         self.settings = set(settings)
         self.admin = set(admin)
         self.course_creator = set(course_creator)
         self.teacher = set(teacher)
         self.student = set(student)
+        self.learning_characteristics = set(learning_characteristics)
+        self.learning_style = set(learning_style)
+        self.learning_strategy = set(learning_strategy)
+        self.knowledge = set(knowledge)
+        self.learning_analytics = set(learning_analytics)
 
     def create_admin(self, admin):
         admin.id = len(self.admin) + 1
@@ -26,6 +37,26 @@ class FakeRepository(repository.AbstractRepository):
     def create_course_creator(self, course_creator):
         course_creator.id = len(self.course_creator) + 1
         self.course_creator.add(course_creator)
+
+    def create_knowledge(self, knowledge):
+        knowledge.id = len(self.knowledge) + 1
+        self.knowledge.add(knowledge)
+
+    def create_learning_analytics(self, learning_analytics):
+        learning_analytics.id = len(self.learning_analytics) + 1
+        self.learning_analytics.add(learning_analytics)
+
+    def create_learning_characteristics(self, learning_characteristics):
+        learning_characteristics.id = len(self.learning_characteristics) + 1
+        self.learning_characteristics.add(learning_characteristics)
+
+    def create_learning_strategy(self, learning_strategy):
+        learning_strategy.id = len(self.learning_strategy) + 1
+        self.learning_strategy.add(learning_strategy)
+
+    def create_learning_style(self, learning_style):
+        learning_style.id = len(self.learning_style) + 1
+        self.learning_style.add(learning_style)
 
     def create_settings(self, settings):
         settings.id = len(self.settings) + 1
@@ -152,6 +183,11 @@ class FakeUnitOfWork(unit_of_work.AbstractUnitOfWork):
         self.course_creator = FakeRepository()
         self.teacher = FakeRepository()
         self.student = FakeRepository()
+        self.learning_characteristics = FakeRepository()
+        self.learning_style = FakeRepository()
+        self.learning_strategy = FakeRepository()
+        self.knowledge = FakeRepository()
+        self.learning_analytics = FakeRepository()
         self.committed = False
 
     def commit(self):
@@ -247,7 +283,10 @@ def test_create_settings(user_id):
 ])
 def test_create_student(name, university, lms_user_id, role):
     uow = FakeUnitOfWork()
-    entries_beginning = len(uow.student.student)
+    student_entries_beginning = len(uow.student.student)
+    characteristic_entries_beginning = len(
+        uow.learning_characteristics.learning_characteristics)
+    style_entries_beginning = len(uow.learning_style.learning_style)
     user = UA.User(
         name,
         university,
@@ -260,8 +299,13 @@ def test_create_student(name, university, lms_user_id, role):
     )
     assert type(result) is dict
     assert result != {}
-    entries_after = len(uow.student.student)
-    assert entries_beginning + 1 == entries_after
+    student_entries_after = len(uow.student.student)
+    characteristic_entries_after = len(
+        uow.learning_characteristics.learning_characteristics)
+    style_entries_after = len(uow.learning_style.learning_style)
+    assert student_entries_beginning + 1 == student_entries_after
+    assert characteristic_entries_beginning + 1 == characteristic_entries_after
+    assert style_entries_beginning + 1 == style_entries_after
 
 
 @pytest.mark.parametrize("name, university, lms_user_id, role", [
@@ -339,6 +383,117 @@ def test_create_user(name, university, lms_user_id, role):
     settings_entries_after = len(uow.settings.settings)
     assert user_entries_beginning + 1 == user_entries_after
     assert settings_entries_beginning + 1 == settings_entries_after
+
+
+@pytest.mark.parametrize("name, university, lms_user_id, role", [
+    # Working Example
+    (
+        "Max Mustermann",
+        "TH-AB",
+        1,
+        "student"
+    )
+])
+def test_create_learning_characteristics(name, university, lms_user_id, role):
+    uow = FakeUnitOfWork()
+    entries_beginning = len(
+        uow.learning_characteristics.learning_characteristics)
+    result = services.create_learning_characteristics(
+        uow=uow,
+        student_id=1
+    )
+    assert type(result) is dict
+    assert result != {}
+    entries_after = len(uow.learning_characteristics.learning_characteristics)
+    assert entries_beginning + 1 == entries_after
+
+
+@pytest.mark.parametrize("name, university, lms_user_id, role", [
+    # Working Example
+    (
+        "Max Mustermann",
+        "TH-AB",
+        1,
+        "student"
+    )
+])
+def test_create_learning_style(name, university, lms_user_id, role):
+    uow = FakeUnitOfWork()
+    entries_beginning = len(uow.learning_style.learning_style)
+    result = services.create_learning_style(
+        uow=uow,
+        characteristic_id=1
+    )
+    assert type(result) is dict
+    assert result != {}
+    entries_after = len(uow.learning_style.learning_style)
+    assert entries_beginning + 1 == entries_after
+
+
+@pytest.mark.parametrize("name, university, lms_user_id, role", [
+    # Working Example
+    (
+        "Max Mustermann",
+        "TH-AB",
+        1,
+        "student"
+    )
+])
+def test_create_learning_strategy(name, university, lms_user_id, role):
+    uow = FakeUnitOfWork()
+    entries_beginning = len(uow.learning_strategy.learning_strategy)
+    result = services.create_learning_strategy(
+        uow=uow,
+        characteristic_id=1
+    )
+    assert type(result) is dict
+    assert result != {}
+    entries_after = len(uow.learning_strategy.learning_strategy)
+    assert entries_beginning + 1 == entries_after
+
+
+@pytest.mark.parametrize("name, university, lms_user_id, role", [
+    # Working Example
+    (
+        "Max Mustermann",
+        "TH-AB",
+        1,
+        "student"
+    )
+])
+def test_create_knowledge(name, university, lms_user_id, role):
+    uow = FakeUnitOfWork()
+    entries_beginning = len(uow.knowledge.knowledge)
+    result = services.create_knowledge(
+        uow=uow,
+        characteristic_id=1
+    )
+    assert type(result) is dict
+    assert result != {}
+    entries_after = len(uow.knowledge.knowledge)
+    assert entries_beginning + 1 == entries_after
+
+
+@pytest.mark.parametrize("name, university, lms_user_id, role", [
+    # Working Example
+    (
+        "Max Mustermann",
+        "TH-AB",
+        1,
+        "student"
+    )
+])
+def test_create_learning_analytics(name, university, lms_user_id, role):
+    uow = FakeUnitOfWork()
+    entries_beginning = len(uow.learning_analytics.learning_analytics)
+    result = services.create_learning_analytics(
+        uow=uow,
+        characteristic_id=1
+    )
+    assert type(result) is dict
+    assert result != {}
+    entries_after = len(uow.learning_analytics.learning_analytics)
+    assert entries_beginning + 1 == entries_after
 
 
 @pytest.mark.parametrize("name, university, lms_user_id, role", [

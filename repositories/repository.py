@@ -20,7 +20,36 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
-    def create_settings(self, settings) -> UA.Settings:
+    def create_knowledge(self, knowledge) -> LM.Knowledge:
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def create_learning_analytics(self,
+                                  learning_analytics)\
+            -> LM.LearningAnalytics:
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def create_learning_characteristics(self,
+                                        learning_characteristic)\
+            -> LM.LearningCharacteristic:
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def create_learning_strategy(self,
+                                 learning_strategy)\
+            -> LM.LearningStrategy:
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def create_learning_style(self,
+                              learning_style)\
+            -> LM.LearningStyle:
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def create_settings(self, settings)\
+            -> UA.Settings:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -161,6 +190,50 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         except Exception:
             raise err.CreationError()
 
+    def create_knowledge(self, knowledge) -> LM.Knowledge:
+        try:
+            self.session.add(knowledge)
+        except IntegrityError:
+            raise err.ForeignKeyViolation()
+        except Exception:
+            raise err.CreationError()
+
+    def create_learning_analytics(self, learning_analytics)\
+            -> LM.LearningAnalytics:
+        try:
+            self.session.add(learning_analytics)
+        except IntegrityError:
+            raise err.ForeignKeyViolation()
+        except Exception:
+            raise err.CreationError()
+
+    def create_learning_characteristics(self, learning_characteristic)\
+            -> LM.LearningCharacteristic:
+        try:
+            self.session.add(learning_characteristic)
+        except IntegrityError:
+            raise err.ForeignKeyViolation()
+        except Exception:
+            raise err.CreationError()
+
+    def create_learning_strategy(self, learning_strategy)\
+            -> LM.LearningStrategy:
+        try:
+            self.session.add(learning_strategy)
+        except IntegrityError:
+            raise err.ForeignKeyViolation()
+        except Exception:
+            raise err.CreationError()
+
+    def create_learning_style(self, learning_style)\
+            -> LM.LearningStyle:
+        try:
+            self.session.add(learning_style)
+        except IntegrityError:
+            raise err.ForeignKeyViolation()
+        except Exception:
+            raise err.CreationError()
+
     def create_settings(self, settings) -> UA.Settings:
         try:
             self.session.add(settings)
@@ -239,7 +312,7 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
             self.session.query(UA.User).filter_by(
                 id=user_id).filter_by(
                 lms_user_id=lms_user_id
-                ).delete()
+            ).delete()
         else:
             raise err.NoValidIdError()
 

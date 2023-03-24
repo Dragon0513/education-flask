@@ -148,7 +148,7 @@ learning_charcteristics = Table(
     "learning_characteristics",
     metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
-    Column("user_id", Integer, nullable=False)
+    Column("student_id", Integer, nullable=False)
 )
 
 learning_element = Table(

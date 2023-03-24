@@ -1,26 +1,26 @@
 class LearningCharacteristic:
     def __init__(self,
-                 user_id) -> None:
-        self.user_id = user_id
+                 student_id) -> None:
+        self.student_id = student_id
 
     def serialize(self):
         return {
             'id': self.id,
-            'user_id': self.user_id
+            'student_id': self.student_id
         }
 
 
 class LearningStyle:
     def __init__(self,
                  characteristic_id,
-                 perception_dimension,
-                 perception_value,
-                 input_dimension,
-                 input_value,
-                 processing_dimension,
-                 processing_value,
-                 understanding_dimension,
-                 understanding_value) -> None:
+                 perception_dimension="sns",
+                 perception_value=0,
+                 input_dimension="vrb",
+                 input_value=0,
+                 processing_dimension="act",
+                 processing_value=0,
+                 understanding_dimension="seq",
+                 understanding_value=0) -> None:
         self.characteristic_id = characteristic_id
         self.perception_dimension = perception_dimension
         self.perception_value = perception_value

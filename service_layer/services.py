@@ -1,5 +1,6 @@
 from service_layer import unit_of_work
 from domain.userAdministartion import model as UA
+from domain.learnersModel import model as LM
 
 
 def create_admin(
@@ -26,6 +27,71 @@ def create_course_creator(
         return result
 
 
+def create_knowledge(
+        uow: unit_of_work.AbstractUnitOfWork,
+        characteristic_id
+) -> dict:
+    with uow:
+        knowledge = LM.Knowledge(characteristic_id)
+        uow.knowledge.create_knowledge(knowledge)
+        uow.commit()
+        result = knowledge.serialize()
+        return result
+
+
+def create_learning_analytics(
+        uow: unit_of_work.AbstractUnitOfWork,
+        characteristic_id
+) -> dict:
+    with uow:
+        learning_analytics = LM.LearningAnalytics(characteristic_id)
+        uow.learning_analytics.create_learning_analytics(learning_analytics)
+        uow.commit()
+        result = learning_analytics.serialize()
+        return result
+
+
+def create_learning_characteristics(
+        uow: unit_of_work.AbstractUnitOfWork,
+        student_id
+) -> dict:
+    with uow:
+        characteristic = LM.LearningCharacteristic(student_id)
+        uow.learning_characteristics.create_learning_characteristics(
+            characteristic)
+        uow.commit()
+        create_knowledge(uow, characteristic.id)
+        create_learning_analytics(uow, characteristic.id)
+        create_learning_strategy(uow, characteristic.id)
+        create_learning_style(uow, characteristic.id)
+        result = characteristic.serialize()
+        return result
+
+
+def create_learning_strategy(
+        uow: unit_of_work.AbstractUnitOfWork,
+        characteristic_id
+) -> dict:
+    with uow:
+        learning_strategy = LM.LearningStrategy(characteristic_id)
+        uow.learning_strategy.create_learning_strategy(learning_strategy)
+        uow.commit()
+        result = learning_strategy.serialize()
+        return result
+
+
+def create_learning_style(
+        uow: unit_of_work.AbstractUnitOfWork,
+        characteristic_id
+) -> dict:
+    with uow:
+        learning_style = LM.LearningStyle(characteristic_id)
+        uow.learning_style.create_learning_style(learning_style)
+        uow.commit()
+        result = learning_style.serialize()
+        return result
+
+
 def create_settings(
         uow: unit_of_work.AbstractUnitOfWork,
         user_id
@@ -46,6 +112,7 @@ def create_student(
         student = UA.Student(user)
         uow.student.create_student(student)
         uow.commit()
+        create_learning_characteristics(uow, student.id)
         result = student.serialize()
         return result
 
@@ -96,7 +163,7 @@ def delete_admin(
         uow.admin.delete_admin(user_id)
         uow.commit()
         return {}
-    
+
 
 def delete_course_creator(
         uow: unit_of_work.AbstractUnitOfWork,
@@ -126,7 +193,7 @@ def delete_student(
         uow.student.delete_student(user_id)
         uow.commit()
         return {}
-    
+
 
 def delete_teacher(
         uow: unit_of_work.AbstractUnitOfWork,

@@ -71,7 +71,7 @@ cursor.execute("DROP TABLE IF EXISTS ils_input_answers")
 cursor.execute("DROP TABLE IF EXISTS ils_perception_answers")
 cursor.execute("DROP TABLE IF EXISTS ils_processing_answers")
 cursor.execute("DROP TABLE IF EXISTS ils_understanding_answers")
-cursor.execute("DROP TABLE IF EXIST list_k")
+cursor.execute("DROP TABLE IF EXISTS list_k")
 
 # Creating table as per requirement
 sql = '''
@@ -321,10 +321,10 @@ sql = '''
     (
         id integer NOT NULL GENERATED ALWAYS AS IDENTITY
         ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
-        user_id integer NOT NULL,
+        student_id integer NOT NULL,
         CONSTRAINT learning_characteristics_pkey PRIMARY KEY (id),
         CONSTRAINT user_id FOREIGN KEY (user_id)
-            REFERENCES public."haski_user" (id) MATCH SIMPLE
+            REFERENCES public."student" (id) MATCH SIMPLE
             ON UPDATE NO ACTION
             ON DELETE NO ACTION
     )
@@ -369,9 +369,9 @@ sql = '''
     (
         id integer NOT NULL GENERATED ALWAYS AS IDENTITY
         ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
-        characterisitc_id integer NOT NULL,
+        characteristic_id integer NOT NULL,
         CONSTRAINT learning_strategy_pkey PRIMARY KEY (id),
-        CONSTRAINT characterisitc_id FOREIGN KEY (characterisitc_id)
+        CONSTRAINT characteristic_id FOREIGN KEY (characteristic_id)
             REFERENCES public.learning_characteristics (id) MATCH SIMPLE
             ON UPDATE NO ACTION
             ON DELETE NO ACTION
@@ -389,9 +389,9 @@ sql = '''
     (
         id integer NOT NULL GENERATED ALWAYS AS IDENTITY
         ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
-        characterisitc_id integer NOT NULL,
+        characteristic_id integer NOT NULL,
         CONSTRAINT knowledge_pkey PRIMARY KEY (id),
-        CONSTRAINT characterisitc_id FOREIGN KEY (characterisitc_id)
+        CONSTRAINT characteristic_id FOREIGN KEY (characteristic_id)
             REFERENCES public.learning_characteristics (id) MATCH SIMPLE
             ON UPDATE NO ACTION
             ON DELETE NO ACTION
@@ -409,9 +409,9 @@ sql = '''
     (
         id integer NOT NULL GENERATED ALWAYS AS IDENTITY
         ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
-        characterisitc_id integer NOT NULL,
+        characteristic_id integer NOT NULL,
         CONSTRAINT learning_analytics_pkey PRIMARY KEY (id),
-        CONSTRAINT characterisitc_id FOREIGN KEY (characterisitc_id)
+        CONSTRAINT characteristic_id FOREIGN KEY (characteristic_id)
             REFERENCES public.learning_characteristics (id) MATCH SIMPLE
             ON UPDATE NO ACTION
             ON DELETE NO ACTION

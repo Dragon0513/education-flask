@@ -51,8 +51,8 @@ def test_nonce_jwt():
     # Arrange
     nonce = CryptoRandom().getrandomstring(32)
     LaunchDataStorage.set_value(nonce, nonce)
-    issuer = 'http://fakedomain.com:5000'
-    audience = 'http://fakedomain.com:2000'
+    issuer = 'http://localhost:5000'
+    audience = 'http://localhost:2000'
 
     # Act
     token = jwt.generate_nonce_jwt(nonce, audience, issuer)
@@ -61,14 +61,15 @@ def test_nonce_jwt():
     # Assert
     assert jwt.verify_jwt_payload(jwt.verify_jwt(token, key_public))
 
+
 def test_state_jwt():
     """Test if a state-token can be generated and verified."""
     # Arrange
     state = CryptoRandom().getrandomstring(32)
     nonce = CryptoRandom().getrandomstring(32)
     LaunchDataStorage.set_value(nonce, state)
-    issuer = 'http://fakedomain.com:5000'
-    audience = 'http://fakedomain.com:2000'
+    issuer = 'http://localhost:5000'
+    audience = 'http://localhost:2000'
     expiration = 60
     claims = {'a' : 'b'}
 

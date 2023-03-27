@@ -7,12 +7,13 @@ from jose import JWSError, jws, jwk
 from jose.backends.base import Key
 from cryptography.hazmat.primitives import serialization as crypto_serialization
 from errors.errors import InvalidJWTError
+from config import get_project_root
 
 from service_layer.crypto.cryptorandom import CryptoRandom
 from service_layer.lti import LaunchDataStorage
 
-private_key_location : str = "keys/private.pem"
-public_key_location : str = "keys/public.pem"
+private_key_location : str = os.path.join(get_project_root(),"keys/private.pem")
+public_key_location : str = os.path.join(get_project_root(),"keys/public.pem")
 
 def load_public_key():
     with open(os.path.abspath(public_key_location), "rb") as key_file:

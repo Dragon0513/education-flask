@@ -124,17 +124,17 @@ def get_learning_path(student_id, course_id, order_depth):
 
 
 # ##### LTI ENDPOINTS #####
-# 1. Initiate OIDC Login
+# 1. LTI login is the first step of the OIDC Login workflow initiated by the platform
 @app.route('/lti_login/', methods=['POST'])
 def lti_login():
     return services.get_oidc_login(request, tool_conf, session=session)
 
-# 2. Get actual LTI Launch
+# 2. After the platform has verified the LTI launch request, it uses this endpoint to which we redirected
 @app.route('/lti_launch/', methods=['POST'])
 def lti_launch():
     return services.get_lti_launch(request, tool_conf, session=session)
 
-# 3. Get cookie for frontend if end of OIDC Login workflow
+# 3. Get cookie for frontend if end of OIDC Login workflow by using a short living valid nonce
 @app.route('/login', methods=['POST'])
 def login():
     return services.get_login(request, tool_conf, session=session)
@@ -144,6 +144,15 @@ def login():
 def loginstatus():
     return services.get_loginstatus(request, tool_conf, session=session)
 
+# 5. Logout by deleting cookie
+@app.route('/logout', methods=['GET'])
+def logout():
+    return services.get_logout(request, tool_conf, session=session)
+
+# Login with username and password
+@app.route('/login_credentials', methods=['POST'])
+def login_credentials():
+    return services.get_login_credentials(request, tool_conf, session=session)
 
 # ##### LOGGING ENDPOINTS #####
 @app.route("/logs/frontend", methods=['POST', 'GET'])

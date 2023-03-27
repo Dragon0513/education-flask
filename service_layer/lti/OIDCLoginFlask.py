@@ -1,6 +1,7 @@
 import json
 import os
 from service_layer.crypto.cryptorandom import CryptoRandom
+from service_layer.lti import LaunchDataStorage
 from service_layer.lti.OIDCLogin import OIDCLogin
 from service_layer.service.StateServiceFlask import StateServiceFlask
 from service_layer.service.CookieServiceFlask import CookieServiceFlask
@@ -78,6 +79,10 @@ class OIDCLoginFlask(OIDCLogin):
                                                         state, 
                                                         self._platform.auth_login_url, 
                                                         self._tool_config.get_tool_url(self._request.environ.get('HTTP_ORIGIN', '')))
+        
+        # Store the nonce and state so they can be validated when the id_token
+        # is posted back to the tool by the Authorization Server.
+        LaunchDataStorage.set_value(key=nonce, value=state)
         
         platform = self._tool_config.get_platform(self._request.environ.get('HTTP_ORIGIN', ''))
         ru = self.make_url_accept_param(platform['auth_login_url'])
@@ -169,7 +174,7 @@ class OIDCLoginFlask(OIDCLogin):
         # generate nonce to obtain cookie
         nonce = CryptoRandom().getrandomstring(32)
         nonce_jwt = JWTKeyManagement.generate_nonce_jwt(nonce, self._request.referrer, os.environ.get('BACKEND_URL', 'http://localhost:5000'))
-
+        LaunchDataStorage.set_value(key=nonce, value=nonce_jwt)
         # get platform
         try:
             self._platform = self._tool_config.decode_platform(self._tool_config.get_platform(self._request.environ.get('HTTP_ORIGIN', '')))
@@ -230,4 +235,8 @@ class OIDCLoginFlask(OIDCLogin):
             # TODO 🧾 redirect to login
             return make_response(self._response)
         # return OK
+        return make_response("OK", 200)
+    
+    def get_logout(self) -> Response:
+        # TODO 🧾 delete cookie
         return make_response("OK", 200)

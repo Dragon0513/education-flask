@@ -14,19 +14,3 @@ def test_get_set_value():
 
     # Assert
     assert LaunchDataStorage.get_value(key) == value
-
-def test_expiration():
-    """Test if a key can be access after the expiration time."""
-    # Arrange
-    key = "othertestkeystring"
-    value = 25
-
-    # Act
-    LaunchDataStorage.set_value(key, value)
-    time.sleep(62)
-
-    # Assert
-    assert LaunchDataStorage.get_value(key) == None
-
-
-

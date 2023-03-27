@@ -2,12 +2,12 @@ import json
 import os
 from errors import errors as err
 from service_layer.lti.lms.Platform import Platform
-
+from config import get_project_root
 
 # Parses LTI Config file and returns a dictionary of the contents
 class ToolConfigJson():
     _iss_conf_dict : dict = {} # stores all the platform configurations
-    def __init__(self, config_file="../../../config/lti_config.json"):
+    def __init__(self, config_file=os.path.join(get_project_root(),"configs\\lti_config.json")):
         if not os.path.isfile(config_file):
             raise FileNotFoundError("LTI tool config file not found: " + config_file)
 

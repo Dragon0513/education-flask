@@ -1,6 +1,6 @@
 from urllib.request import Request
 
-from flask import Response
+from flask import Response, make_response
 from service_layer import unit_of_work
 from service_layer.lti.OIDCLoginFlask import OIDCLoginFlask
 from domain.tutoringModel import graf
@@ -396,12 +396,21 @@ def get_lti_launch(request : Request, tool_conf, session) -> Response:
 
 def get_login(request : Request, tool_conf, session):
     ''' Return cookie value or None'''
-    # check if request has 
     oidc_login = OIDCLoginFlask(request, tool_conf, session=session)
     return oidc_login.get_login() or None
 
 def get_loginstatus(request : Request, tool_conf, session):
-    ''' Return cookie value or None'''
-    # check if request has 
+    '''Return OK when logged in or None'''
     oidc_login = OIDCLoginFlask(request, tool_conf, session=session)
     return oidc_login.get_loginstatus() or None
+
+def get_logout(request : Request, tool_conf, session):
+    ''' Return logout url or None'''
+    oidc_login = OIDCLoginFlask(request, tool_conf, session=session)
+    return oidc_login.get_logout() or None
+
+def get_login_credentials(request : Request, tool_conf, session):
+    ''' Return login credentials or None'''
+    # TODO: implement
+    # response json
+    return make_response("OK", 200)

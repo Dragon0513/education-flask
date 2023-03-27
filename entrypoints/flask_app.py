@@ -207,3 +207,26 @@ def logging_frontend():
             return_message = mocked_frontend_log
             status_code = 200
     return jsonify(return_message), status_code
+
+
+@app.route("/user/<user_id>/<lms_user_id>/student/<student_id>" +
+           "/learningCharacteristics",
+           methods=['GET', 'DELETE'])
+@cross_origin(supports_credentials=True)
+def learning_characteristics(user_id, lms_user_id, student_id):
+    method = request.method
+    match method:
+        case 'GET':
+            characteristic = services.get_learning_characteristics(
+                unit_of_work.SqlAlchemyUnitOfWork(),
+                student_id
+            )
+            status_code = 200
+            return jsonify(characteristic), status_code
+        case 'DELETE':
+            characteristic = services.reset_learning_characteristics(
+                unit_of_work.SqlAlchemyUnitOfWork(),
+                student_id
+            )
+            status_code = 200
+            return jsonify(characteristic), status_code

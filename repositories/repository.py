@@ -76,6 +76,31 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
+    def delete_knowledge(self,
+                         characteristic_id):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def delete_learning_analytics(self,
+                                  characteristic_id):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def delete_learning_characteristics(self,
+                                        student_id):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def delete_learning_strategy(self,
+                                 characteristic_id):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def delete_learning_style(self,
+                              characteristic_id):
+        raise NotImplementedError
+
+    @abc.abstractmethod
     def delete_settings(self, user_id):
         raise NotImplementedError
 
@@ -117,14 +142,39 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
+    def get_knowledge(self,
+                      characteristic_id,
+                      knowledge) -> LM.Knowledge:
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def get_learning_analytics(self,
+                               characteristic_id) -> LM.LearningAnalytics:
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def get_learning_characteristics(self,
+                                     student_id)\
+            -> LM.LearningCharacteristic:
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def get_learning_strategy(self,
+                              characteristic_id) -> LM.LearningStrategy:
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def get_learning_style(self,
+                           characteristic_id) -> LM.LearningStyle:
+        raise NotImplementedError
+
+    @abc.abstractmethod
     def get_settings(self, user_id):
         raise NotImplementedError
 
     @abc.abstractmethod
     def get_student_by_id(self,
-                          user_id,
-                          lms_user_id,
-                          student_id) -> UA.Student:
+                          user_id) -> UA.Student:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -153,6 +203,34 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
     @abc.abstractmethod
     def get_users_by_uni(self,
                          university):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def update_knowledge(self,
+                         characteristic_id,
+                         knowledge)\
+            -> LM.Knowledge:
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def update_learning_analytics(self,
+                                  characteristic_id,
+                                  learning_analytics)\
+            -> LM.LearningAnalytics:
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def update_learning_strategy(self,
+                                 characteristic_id,
+                                 learning_strategy)\
+            -> LM.LearningStrategy:
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def update_learning_style(Self,
+                              characteristic_id,
+                              learning_style)\
+            -> LM.LearningStyle:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -198,7 +276,8 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         except Exception:
             raise err.CreationError()
 
-    def create_learning_analytics(self, learning_analytics)\
+    def create_learning_analytics(self,
+                                  learning_analytics)\
             -> LM.LearningAnalytics:
         try:
             self.session.add(learning_analytics)
@@ -207,7 +286,8 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         except Exception:
             raise err.CreationError()
 
-    def create_learning_characteristics(self, learning_characteristic)\
+    def create_learning_characteristics(self,
+                                        learning_characteristic)\
             -> LM.LearningCharacteristic:
         try:
             self.session.add(learning_characteristic)
@@ -216,7 +296,8 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         except Exception:
             raise err.CreationError()
 
-    def create_learning_strategy(self, learning_strategy)\
+    def create_learning_strategy(self,
+                                 learning_strategy)\
             -> LM.LearningStrategy:
         try:
             self.session.add(learning_strategy)
@@ -225,7 +306,8 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         except Exception:
             raise err.CreationError()
 
-    def create_learning_style(self, learning_style)\
+    def create_learning_style(self,
+                              learning_style)\
             -> LM.LearningStyle:
         try:
             self.session.add(learning_style)
@@ -282,6 +364,51 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         else:
             raise err.NoValidIdError()
 
+    def delete_knowledge(self,
+                         characteristic_id):
+        knowledge = self.get_knowledge(characteristic_id)
+        if knowledge != []:
+            self.session.query(LM.Knowledge).filter_by(
+                characteristic_id=characteristic_id).delete()
+        else:
+            raise err.NoValidIdError()
+
+    def delete_learning_analytics(self,
+                                  characteristic_id):
+        analytics = self.get_learning_analytics(characteristic_id)
+        if analytics != []:
+            self.session.query(LM.LearningAnalytics).filter_by(
+                characteristic_id=characteristic_id).delete()
+        else:
+            raise err.NoValidIdError()
+
+    def delete_learning_characteristics(self,
+                                        student_id):
+        characteristics = self.get_learning_characteristics(student_id)
+        if characteristics != []:
+            self.session.query(LM.LearningCharacteristic).filter_by(
+                student_id=student_id).delete()
+        else:
+            raise err.NoValidIdError()
+
+    def delete_learning_strategy(self,
+                                 characteristic_id):
+        strategy = self.get_learning_strategy(characteristic_id)
+        if strategy != []:
+            self.session.query(LM.LearningStrategy).filter_by(
+                characteristic_id=characteristic_id).delete()
+        else:
+            raise err.NoValidIdError()
+
+    def delete_learning_style(self,
+                              characteristic_id):
+        style = self.get_learning_style(characteristic_id)
+        if style != []:
+            self.session.query(LM.LearningStyle).filter_by(
+                characteristic_id=characteristic_id).delete()
+        else:
+            raise err.NoValidIdError()
+
     def delete_settings(self, user_id):
         settings = self.get_settings(user_id)
         if settings != []:
@@ -334,6 +461,54 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
     def get_course_creator_by_id(self, user_id) -> UA.CourseCreator:
         result = self.session.query(UA.CourseCreator).filter_by(
             user_id=user_id).all()
+        if result == []:
+            raise err.NoValidIdError()
+        else:
+            return result
+
+    def get_knowledge(self, characteristic_id) -> LM.Knowledge:
+        result = self.session.query(LM.Knowledge).filter_by(
+            characteristic_id=characteristic_id).all()
+        if result == []:
+            raise err.NoValidIdError()
+        else:
+            return result
+
+    def get_learning_analytics(self,
+                               characteristic_id)\
+            -> LM.LearningAnalytics:
+        result = self.session.query(LM.LearningAnalytics).filter_by(
+            characteristic_id=characteristic_id).all()
+        if result == []:
+            raise err.NoValidIdError()
+        else:
+            return result
+
+    def get_learning_characteristics(self,
+                                     student_id)\
+            -> LM.LearningCharacteristic:
+        result = self.session.query(LM.LearningCharacteristic).filter_by(
+            student_id=student_id).all()
+        if result == []:
+            raise err.NoValidIdError()
+        else:
+            return result
+
+    def get_learning_strategy(self,
+                              characteristic_id)\
+            -> LM.LearningStrategy:
+        result = self.session.query(LM.LearningStrategy).filter_by(
+            characteristic_id=characteristic_id).all()
+        if result == []:
+            raise err.NoValidIdError()
+        else:
+            return result
+
+    def get_learning_style(self,
+                           characteristic_id)\
+            -> LM.LearningStyle:
+        result = self.session.query(LM.LearningStyle).filter_by(
+            characteristic_id=characteristic_id).all()
         if result == []:
             raise err.NoValidIdError()
         else:
@@ -399,6 +574,75 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
                 university=university).all()
         except Exception:
             raise err.DatabaseQueryError()
+
+    def update_knowledge(self,
+                         characteristic_id,
+                         knowledge)\
+            -> LM.Knowledge:
+        knowledge_exist = self.get_knowledge(characteristic_id)
+        if knowledge_exist != []:
+            knowledge.id = knowledge_exist[0].id
+            return self.session.query(LM.Knowledge)\
+                .filter_by(characteristic_id=characteristic_id)
+        else:
+            raise err.NoValidIdError
+
+    def update_learning_analytics(self,
+                                  characteristic_id,
+                                  learning_analytics)\
+            -> LM.Knowledge:
+        analytics_exist = self.get_learning_analytics(characteristic_id)
+        if analytics_exist != []:
+            learning_analytics.id = analytics_exist[0].id
+            return self.session.query(LM.LearningAnalytics)\
+                .filter_by(characteristic_id=characteristic_id)
+        else:
+            raise err.NoValidIdError
+
+    def update_learning_strategy(self,
+                                 characteristic_id,
+                                 learning_strategy)\
+            -> LM.Knowledge:
+        strategy_exist = self.get_learning_strategy(characteristic_id)
+        if strategy_exist != []:
+            learning_strategy.id = strategy_exist[0].id
+            return self.session.query(LM.LearningStrategy)\
+                .filter_by(characteristic_id=characteristic_id)
+        else:
+            raise err.NoValidIdError
+
+    def update_learning_style(self,
+                              characteristic_id,
+                              learning_style)\
+            -> LM.Knowledge:
+        style_exist = self.get_learning_analytics(characteristic_id)
+        if style_exist != []:
+            learning_style.id = style_exist[0].id
+            return self.session.query(LM.LearningStyle)\
+                .filter_by(characteristic_id=characteristic_id).update(
+                {
+                    LM.LearningStyle.characteristic_id:
+                    learning_style.characteristic_id,
+                    LM.LearningStyle.perception_dimension:
+                    learning_style.perception_dimension,
+                    LM.LearningStyle.perception_value:
+                    learning_style.perception_value,
+                    LM.LearningStyle.input_dimension:
+                    learning_style.input_dimension,
+                    LM.LearningStyle.input_value:
+                    learning_style.input_value,
+                    LM.LearningStyle.processing_dimension:
+                    learning_style.processing_dimension,
+                    LM.LearningStyle.processing_value:
+                    learning_style.processing_value,
+                    LM.LearningStyle.understanding_dimension:
+                    learning_style.understanding_dimension,
+                    LM.LearningStyle.understanding_value:
+                    learning_style.understanding_value
+                }
+            )
+        else:
+            raise err.NoValidIdError
 
     def update_settings(self, user_id, settings) -> UA.Settings:
         settings_exist = self.get_settings(user_id)

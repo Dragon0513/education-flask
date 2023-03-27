@@ -83,6 +83,36 @@ class FakeRepository(repository.AbstractRepository):
             (p for p in self.course_creator if p.user_id == user_id), None)
         self.course_creator.remove(to_remove)
 
+    def delete_knowledge(self, characteristic_id):
+        to_remove = next(
+            (p for p in self.knowledge
+             if p.characteristic_id == characteristic_id), None)
+        self.knowledge.remove(to_remove)
+
+    def delete_learning_analytics(self, characteristic_id):
+        to_remove = next(
+            (p for p in self.learning_analytics
+             if p.characteristic_id == characteristic_id), None)
+        self.learning_analytics.remove(to_remove)
+
+    def delete_learning_characteristics(self, student_id):
+        to_remove = next(
+            (p for p in self.learning_characteristics
+             if p.student_id == student_id), None)
+        self.learning_characteristics.remove(to_remove)
+
+    def delete_learning_strategy(self, characteristic_id):
+        to_remove = next(
+            (p for p in self.learning_strategy
+             if p.characteristic_id == characteristic_id), None)
+        self.learning_strategy.remove(to_remove)
+
+    def delete_learning_style(self, characteristic_id):
+        to_remove = next(
+            (p for p in self.learning_style
+             if p.characteristic_id == characteristic_id), None)
+        self.learning_style.remove(to_remove)
+
     def delete_settings(self, user_id):
         to_remove = next(
             (p for p in self.settings if p.user_id == user_id), None)
@@ -124,6 +154,31 @@ class FakeRepository(repository.AbstractRepository):
                        p.university == university), None)
         return [result]
 
+    def get_knowledge(self, characteristic_id):
+        result = next((p for p in self.knowledge if
+                       p.characteristic_id == characteristic_id), None)
+        return [result]
+
+    def get_learning_analytics(self, characteristic_id):
+        result = next((p for p in self.learning_analytics if
+                       p.characteristic_id == characteristic_id), None)
+        return [result]
+
+    def get_learning_characteristics(self, student_id):
+        result = next((p for p in self.learning_characteristics if
+                       p.student_id == student_id), None)
+        return [result]
+
+    def get_learning_strategy(self, characteristic_id):
+        result = next((p for p in self.learning_strategy if
+                       p.characteristic_id == characteristic_id), None)
+        return [result]
+
+    def get_learning_style(self, characteristic_id):
+        result = next((p for p in self.learning_style if
+                       p.characteristic_id == characteristic_id), None)
+        return [result]
+
     def get_settings(self, user_id):
         result = next((p for p in self.settings if
                        p.user_id == user_id), None)
@@ -159,6 +214,38 @@ class FakeRepository(repository.AbstractRepository):
         result = next((p for p in self.user if
                        p.university == university), None)
         return [result]
+
+    def update_knowledge(self, characteristic_id, knowledge):
+        to_remove = next(
+            (p for p in self.knowledge
+             if p.characteristic_id == characteristic_id), None)
+        self.knowledge.remove(to_remove)
+        knowledge.id = len(self.knowledge)
+        self.knowledge.add(knowledge)
+
+    def update_learning_analytics(self, characteristic_id, learning_analytics):
+        to_remove = next(
+            (p for p in self.learning_analytics
+             if p.characteristic_id == characteristic_id), None)
+        self.learning_analytics.remove(to_remove)
+        learning_analytics.id = len(self.learning_analytics)
+        self.learning_analytics.add(learning_analytics)
+
+    def update_learning_strategy(self, characteristic_id, learning_strategy):
+        to_remove = next(
+            (p for p in self.learning_strategy
+             if p.characteristic_id == characteristic_id), None)
+        self.learning_strategy.remove(to_remove)
+        learning_strategy.id = len(self.learning_strategy)
+        self.learning_strategy.add(learning_strategy)
+
+    def update_learning_style(self, characteristic_id, learning_style):
+        to_remove = next(
+            (p for p in self.learning_style
+             if p.characteristic_id == characteristic_id), None)
+        self.learning_style.remove(to_remove)
+        learning_style.id = len(self.learning_style)
+        self.learning_style.add(learning_style)
 
     def update_settings(self, user_id, settings):
         to_remove = next(
@@ -653,6 +740,8 @@ def test_delete_user(name, university, lms_user_id, role):
     )
     entries_beginning = len(uow.user.user)
     settings_entries_beginning = len(uow.settings.settings)
+    characteristics_entries_beginning = len(
+        uow.learning_characteristics.learning_characteristics)
     result = services.delete_user(
         uow=uow,
         user_id=user['id'],
@@ -662,8 +751,13 @@ def test_delete_user(name, university, lms_user_id, role):
     assert result == {}
     entries_after = len(uow.user.user)
     settings_entries_end = len(uow.settings.settings)
+    characteristics_entries_after = len(
+        uow.learning_characteristics.learning_characteristics)
     assert settings_entries_beginning - 1 == settings_entries_end
     assert entries_beginning - 1 == entries_after
+    if role == 'student':
+        assert characteristics_entries_beginning - 1\
+            == characteristics_entries_after
 
 
 @pytest.mark.parametrize("name, university, lms_user_id, role, theme", [
@@ -773,3 +867,61 @@ def test_update_user(name, name_new, university, lms_user_id, role):
         uow, user['id'], lms_user_id, name_new, university)
     assert type(result) == dict
     assert result != {}
+
+
+@pytest.mark.parametrize("name, name_new, university,\
+                         lms_user_id, role, keys_expected", [
+    # Working Example
+    (
+        "Max Mustermann",
+        "Maria Musterfrau",
+        "TH-AB",
+        1,
+        "student",
+        ['knowledge', 'learning_analytics',\
+         'learning_strategy', 'learning_style']
+    )
+])
+def test_get_learning_characteristics(name,
+                                      name_new,
+                                      university,
+                                      lms_user_id,
+                                      role,
+                                      keys_expected):
+    uow = FakeUnitOfWork()
+    user = services.create_user(
+        uow=uow,
+        name=name,
+        university=university,
+        lms_user_id=lms_user_id,
+        role=role
+    )
+    result = services.get_learning_characteristics(
+        uow,
+        1
+    )
+    assert type(result) == dict
+    assert result != {}
+    for key in keys_expected:
+        assert key in result.keys()
+        assert result[key] is not None
+
+
+def test_reset_learning_characteristics():
+    uow = FakeUnitOfWork()
+    services.create_learning_characteristics(
+        uow=uow,
+        student_id=1
+    )
+    entries_beginning = len(
+        uow.learning_characteristics.learning_characteristics)
+    result = services.reset_learning_characteristics(
+        uow=uow,
+        student_id=1
+    )
+    entries_after = len(
+        uow.learning_characteristics.learning_characteristics)
+    assert type(result) == dict
+    assert result != {}
+    assert entries_beginning == entries_after
+    assert result['learning_style']['perception_value'] == 0

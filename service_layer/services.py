@@ -190,6 +190,8 @@ def delete_student(
         user_id
 ):
     with uow:
+        student = uow.student.get_student_by_id(user_id)
+        delete_learning_characteristics(uow, student[0].id)
         uow.student.delete_student(user_id)
         uow.commit()
         return {}
@@ -225,6 +227,214 @@ def delete_user(
         uow.user.delete_user(user_id, lms_user_id)
         uow.commit()
         return {}
+
+
+def delete_knowledge(
+        uow: unit_of_work.AbstractUnitOfWork,
+        characteristic_id
+):
+    with uow:
+        uow.knowledge.delete_knowledge(characteristic_id)
+        uow.commit()
+        return {}
+
+
+def delete_learning_analytics(
+        uow: unit_of_work.AbstractUnitOfWork,
+        characteristic_id
+):
+    with uow:
+        uow.learning_analytics.delete_learning_analytics(characteristic_id)
+        uow.commit()
+        return {}
+
+
+def delete_learning_characteristics(
+        uow: unit_of_work.AbstractUnitOfWork,
+        student_id
+):
+    with uow:
+        characteristic = get_learning_characteristics(uow, student_id)
+        delete_knowledge(uow, characteristic['id'])
+        delete_learning_analytics(uow, characteristic['id'])
+        delete_learning_strategy(uow, characteristic['id'])
+        delete_learning_style(uow, characteristic['id'])
+        uow.learning_characteristics.delete_learning_characteristics(
+            student_id)
+        uow.commit()
+        return {}
+
+
+def delete_learning_strategy(
+        uow: unit_of_work.AbstractUnitOfWork,
+        characteristic_id
+):
+    with uow:
+        uow.learning_strategy.delete_learning_strategy(characteristic_id)
+        uow.commit()
+        return {}
+
+
+def delete_learning_style(
+        uow: unit_of_work.AbstractUnitOfWork,
+        characteristic_id
+):
+    with uow:
+        uow.learning_style.delete_learning_style(characteristic_id)
+        uow.commit()
+        return {}
+
+
+def get_knowledge(
+        uow: unit_of_work.AbstractUnitOfWork,
+        characteristic_id
+) -> dict:
+    with uow:
+        knowledge = uow.knowledge.get_knowledge(characteristic_id)
+        if knowledge == []:
+            result = {}
+        else:
+            result = knowledge[0].serialize()
+        return result
+
+
+def get_learning_analytics(
+        uow: unit_of_work.AbstractUnitOfWork,
+        characteristic_id
+) -> dict:
+    with uow:
+        analytics = uow.learning_analytics\
+            .get_learning_analytics(
+                characteristic_id)
+        if analytics == []:
+            result = {}
+        else:
+            result = analytics[0].serialize()
+        return result
+
+
+def get_learning_characteristics(
+        uow: unit_of_work.AbstractUnitOfWork,
+        student_id
+) -> dict:
+    with uow:
+        characteristics = uow.learning_characteristics\
+            .get_learning_characteristics(
+                student_id)
+        if characteristics == []:
+            result = {}
+        else:
+            characteristics = characteristics[0]
+            characteristics.knowledge = get_knowledge(
+                uow,
+                characteristics.id
+            )
+            characteristics.learning_analytics = get_learning_analytics(
+                uow,
+                characteristics.id
+            )
+            characteristics.learning_strategy = get_learning_strategy(
+                uow,
+                characteristics.id
+            )
+            characteristics.learning_style = get_learning_style(
+                uow,
+                characteristics.id
+            )
+            result = characteristics.serialize()
+        return result
+
+
+def get_learning_strategy(
+        uow: unit_of_work.AbstractUnitOfWork,
+        characteristic_id
+) -> dict:
+    with uow:
+        strategy = uow.learning_strategy.get_learning_strategy(
+            characteristic_id)
+        if strategy == []:
+            result = {}
+        else:
+            result = strategy[0].serialize()
+        return result
+
+
+def get_learning_style(
+        uow: unit_of_work.AbstractUnitOfWork,
+        characteristic_id
+) -> dict:
+    with uow:
+        style = uow.learning_style.get_learning_style(characteristic_id)
+        if style == []:
+            result = {}
+        else:
+            result = style[0].serialize()
+        return result
+
+
+def reset_knowledge(
+        uow: unit_of_work.AbstractUnitOfWork,
+        characteristic_id
+) -> dict:
+    with uow:
+        knowledge = LM.Knowledge(characteristic_id)
+        uow.knowledge.update_knowledge(characteristic_id, knowledge)
+        uow.commit()
+        return knowledge.serialize()
+
+
+def reset_learning_analytics(
+        uow: unit_of_work.AbstractUnitOfWork,
+        characteristic_id
+) -> dict:
+    with uow:
+        analytics = LM.LearningAnalytics(characteristic_id)
+        uow.learning_analytics.update_learning_analytics(
+            characteristic_id, analytics)
+        uow.commit()
+        return analytics.serialize()
+
+
+def reset_learning_characteristics(
+        uow: unit_of_work.AbstractUnitOfWork,
+        student_id
+) -> dict:
+    with uow:
+        characteristics = uow.learning_characteristics\
+            .get_learning_characteristics(
+                student_id)
+        characteristics[0].knowledge = reset_knowledge(
+            uow, characteristics[0].id)
+        characteristics[0].learning_analytics = reset_learning_analytics(
+            uow, characteristics[0].id)
+        characteristics[0].learning_strategy = reset_learning_strategy(
+            uow, characteristics[0].id)
+        characteristics[0].learning_style = reset_learning_style(
+            uow, characteristics[0].id)
+        return characteristics[0].serialize()
+
+
+def reset_learning_strategy(
+        uow: unit_of_work.AbstractUnitOfWork,
+        characteristic_id
+) -> dict:
+    with uow:
+        strategy = LM.LearningStrategy(characteristic_id)
+        uow.learning_strategy.update_learning_strategy(
+            characteristic_id, strategy)
+        uow.commit()
+        return strategy.serialize()
+
+
+def reset_learning_style(
+        uow: unit_of_work.AbstractUnitOfWork,
+        characteristic_id
+) -> dict:
+    with uow:
+        style = LM.LearningStyle(characteristic_id)
+        uow.learning_style.update_learning_style(characteristic_id, style)
+        uow.commit()
+        return style.serialize()
 
 
 def reset_settings(

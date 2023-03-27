@@ -1,5 +1,6 @@
 import datetime
 from functools import wraps
+import json
 import os
 import urllib.parse
 from errors import errors as err
@@ -48,11 +49,7 @@ mocked_frontend_log = {"logs": [{
 }]}
 @app.errorhandler(Exception)
 def handle_custom_exception(ex):
-    if isinstance(ex, err.AException):
-        response = make_response(ex.message, ex.code)
-        return response
-    else:
-        raise ex
+    response = json.dumps({'error': ex.__class__.__name__, 'message': str(ex)})
     return response
 
 def authorize(permission):

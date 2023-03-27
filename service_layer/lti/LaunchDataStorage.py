@@ -11,11 +11,3 @@ def set_value(key, value, expiration= 1):
         raise err.KeyAlreadyExistsError(message="Key already exists")
 
     _dict[key] = (value, datetime.utcnow() + timedelta(minutes=expiration)) # 1 minute expiration for authorization
-
-def get_value(key) -> str | None:
-    if key in _dict:
-        value, expiration = _dict[key]
-        if expiration < datetime.utcnow():
-            del _dict[key]
-            return None
-        return value

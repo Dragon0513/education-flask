@@ -3,6 +3,8 @@ __pycache__/
 venv/
 .scannerwork/
 .dependencygraph/
+coverage.xml
+.env
 .coverage
 .vscode/launch.json
 keys/private.pem

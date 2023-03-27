@@ -10,6 +10,15 @@ class JWTMessage():
     nonce = None # REQUIRED (nonce)
     azp = None # OPTIONAL (authorized party) if multiple audiences are present
 
+    def __init__(self) -> None:
+        """Check if all member variables are set"""
+        for key in self.__dict__:
+            if key =="azp":
+                continue
+            if self.__dict__[key] is None:
+                raise ValueError(f"JWTMessage: {key} is not set")
+        
+
 class LTIContext():
     id = None # REQUIRED (context id)
     label = None # OPTIONAL (context label)
@@ -66,6 +75,7 @@ class LTIToolPlatform():
 
 class LTIIDToken(JWTMessage):
     """
+    Holds the ID Token from the LTI 1.3 OIDC Authentication Response. The token contains LTI claims and is signed by the LMS.
     https://www.imsglobal.org/spec/security/v1p0/#id-token 
     https://www.imsglobal.org/spec/security/v1p0/#authentication-response-validation
     """
@@ -85,3 +95,16 @@ class LTIIDToken(JWTMessage):
     launch_presentation : LTILaunchPresentation # OPTIONAL (launch presentation)
     tool_platform : LTIToolPlatform # OPTIONAL (tool platform)
     version = None # OPTIONAL (version)
+    nonce : str # REQUIRED (nonce)
+
+    def __init__(self, **entries):
+        """Check if all member variables are set"""
+        self.__dict__.update(entries)
+        super().__init__()
+
+        for key in self.__dict__:
+            if key == "deployment_id" or key == "target_link_uri" or key == "message_type" or key == "nonce":
+                if self.__dict__[key] is None:
+                    raise ValueError(f"LTIIDToken: {key} is not set")
+            else:
+                continue

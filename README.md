@@ -96,6 +96,14 @@ For the last step, you should check the `db_config.py` file and change the passw
 Caution, there are two passwords set during the setup of PostgreSQL!
 This is not the Masterpassword to unlock the pgAdmin 4, but the password for the superuser postgres!
 
+## Running in Docker
+This project includes a Pipeline, that will automatically create a Docker image in the repository when merging into the main branch.
+This Docker image should always be the latest running version.
+Please create a .env file first locally, so that it can be passed with docker run.
+A template is provided in the .env_template file in this repository.
+Start the Docker image as container with the following command:
+`docker run -d -p 5000:5000 --env-file <path/to/.env-File> ghcr.io/haski-rak/haski-backend:main`
+
 ## Contribution
 
 For contributing to the project, please work on the Issues and fulfill the requested tasks.

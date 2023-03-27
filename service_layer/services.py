@@ -384,12 +384,12 @@ def get_user_info(uow: unit_of_work.AbstractUnitOfWork, user_id : str) -> str:
         # return user_info
 
 # ##### LTI #####
-def get_oidc_login(request : Request, tool_conf, session) -> Response:
+def get_oidc_login(request : Request, tool_conf, session):
     ''' Return OIDC login url or error response in case of wrong parameters, unsecure or request'''     
     oidc_login = OIDCLoginFlask(request, tool_conf, session=session)
     return oidc_login.check_params().auth_redirect() or Response("Error", status=500)
 
-def get_lti_launch(request : Request, tool_conf, session) -> Response:
+def get_lti_launch(request : Request, tool_conf, session):
     ''' Return LTI launch data or error response in case of wrong parameters, unsecure or request'''     
     oidc_login = OIDCLoginFlask(request, tool_conf, session=session)
     return oidc_login.verify_state().verify_id_token().lti_launch_from_id_token() or Response("Error", status=500)

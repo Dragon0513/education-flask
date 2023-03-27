@@ -97,7 +97,7 @@ class OIDCLoginFlask(OIDCLogin):
 
 
 
-    def verify_state(self) -> OIDCLogin:
+    def verify_state(self) -> 'OIDCLoginFlask':
         ''' Verify the state parameter
             If the state parameter is not valid, the request is rejected with a 403 Forbidden response.
         '''
@@ -120,7 +120,7 @@ class OIDCLoginFlask(OIDCLogin):
 
         return self
 
-    def verify_id_token(self) -> OIDCLogin:
+    def verify_id_token(self) -> 'OIDCLoginFlask':
         ''' Verify the id_token
             If the id_token is not valid, the request is rejected with a 403 Forbidden response.
         '''

@@ -10,6 +10,10 @@ Technische Hochschule Aschaffenburg
 
 Hochschule Kempten
 
+The HASKI-Project is supported by the German Federal Ministry of Education and Research (BMBF), grant number 16DHBKI036, and the Bavarian State Ministry of Scie
+The responsibility for the content of this publication remains with the authors.
+
+
 ## Purpose of the Project
 
 The overall HASKI concept is designed to provide learners with adaptive self-directed learning.

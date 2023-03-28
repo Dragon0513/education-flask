@@ -27,6 +27,153 @@ def create_course_creator(
         return result
 
 
+def create_ils_input_answers(
+        uow: unit_of_work.AbstractUnitOfWork,
+        questionnaire_id,
+        vv_2_f7,
+        vv_5_f19,
+        vv_7_f27,
+        vv_10_f39,
+        vv_11_f43,
+        vv_1_f3=None,
+        vv_3_f11=None,
+        vv_4_f15=None,
+        vv_6_f23=None,
+        vv_8_f31=None,
+        vv_9_f35=None
+) -> dict:
+    with uow:
+        ils_input_answers = LM.IlsInputAnswers(
+            questionnaire_id,
+            vv_2_f7,
+            vv_5_f19,
+            vv_7_f27,
+            vv_10_f39,
+            vv_11_f43,
+            vv_1_f3,
+            vv_3_f11,
+            vv_4_f15,
+            vv_6_f23,
+            vv_8_f31,
+            vv_9_f35
+        )
+        uow.ils_input_answers.create_ils_input_answers(ils_input_answers)
+        uow.commit()
+        result = ils_input_answers.serialize()
+        return result
+
+
+def create_ils_perception_answers(
+        uow: unit_of_work.AbstractUnitOfWork,
+        questionnaire_id,
+        si_1_f2,
+        si_4_f14,
+        si_7_f26,
+        si_10_f38,
+        si_11_f42,
+        si_2_f6=None,
+        si_3_f10=None,
+        si_5_f18=None,
+        si_6_f22=None,
+        si_8_f30=None,
+        si_9_f34=None
+) -> dict:
+    with uow:
+        ils_perception_answers = LM.IlsPerceptionAnswers(
+            questionnaire_id,
+            si_1_f2,
+            si_4_f14,
+            si_7_f26,
+            si_10_f38,
+            si_11_f42,
+            si_2_f6,
+            si_3_f10,
+            si_5_f18,
+            si_6_f22,
+            si_8_f30,
+            si_9_f34
+        )
+        uow.ils_perception_answers\
+            .create_ils_perception_answers(ils_perception_answers)
+        uow.commit()
+        result = ils_perception_answers.serialize()
+        return result
+
+
+def create_ils_processing_answers(
+        uow: unit_of_work.AbstractUnitOfWork,
+        questionnaire_id,
+        ar_3_f9,
+        ar_4_f13,
+        ar_6_f21,
+        ar_7_f25,
+        ar_8_f29,
+        ar_1_f1=None,
+        ar_2_f5=None,
+        ar_5_f17=None,
+        ar_9_f33=None,
+        ar_10_f37=None,
+        ar_11_f41=None
+) -> dict:
+    with uow:
+        ils_processing_answers = LM.IlsProcessingAnswers(
+            questionnaire_id,
+            ar_3_f9,
+            ar_4_f13,
+            ar_6_f21,
+            ar_7_f25,
+            ar_8_f29,
+            ar_1_f1,
+            ar_2_f5,
+            ar_5_f17,
+            ar_9_f33,
+            ar_10_f37,
+            ar_11_f41
+        )
+        uow.ils_processing_answers\
+            .create_ils_processing_answers(ils_processing_answers)
+        uow.commit()
+        result = ils_processing_answers.serialize()
+        return result
+
+
+def create_ils_understanding_answers(
+        uow: unit_of_work.AbstractUnitOfWork,
+        questionnaire_id,
+        sg_1_f4,
+        sg_2_f8,
+        sg_4_f16,
+        sg_10_f40,
+        sg_11_f44,
+        sg_3_f12=None,
+        sg_5_f20=None,
+        sg_6_f24=None,
+        sg_7_f28=None,
+        sg_8_f32=None,
+        sg_9_f36=None
+) -> dict:
+    with uow:
+        ils_understanding_answers = LM.IlsUnderstandingAnswers(
+            questionnaire_id,
+            sg_1_f4,
+            sg_2_f8,
+            sg_4_f16,
+            sg_10_f40,
+            sg_11_f44,
+            sg_3_f12,
+            sg_5_f20,
+            sg_6_f24,
+            sg_7_f28,
+            sg_8_f32,
+            sg_9_f36
+        )
+        uow.ils_understanding_answers\
+            .create_ils_understanding_answers(ils_understanding_answers)
+        uow.commit()
+        result = ils_understanding_answers.serialize()
+        return result
+
+
 def create_knowledge(
         uow: unit_of_work.AbstractUnitOfWork,
         characteristic_id
@@ -89,6 +236,255 @@ def create_learning_style(
         uow.learning_style.create_learning_style(learning_style)
         uow.commit()
         result = learning_style.serialize()
+        return result
+
+
+def create_list_k(
+        uow: unit_of_work.AbstractUnitOfWork,
+        questionnaire_id,
+        org1_f1,
+        org2_f2,
+        org3_f3,
+        ela1_f4,
+        ela2_f5,
+        ela3_f6,
+        krp1_f7,
+        krp2_f8,
+        krp3_f9,
+        wie1_f10,
+        wie2_f11,
+        wie3_f12,
+        zp1_f13,
+        zp2_f14,
+        zp3_f15,
+        kon1_f16,
+        kon2_f17,
+        kon3_f18,
+        reg1_f19,
+        reg2_f20,
+        reg3_f21,
+        auf1_f22,
+        auf2_f23,
+        auf3_f24,
+        ans1_f25,
+        ans2_f26,
+        ans3_f27,
+        zei1_f28,
+        zei2_f29,
+        zei3_f30,
+        lms1_f31,
+        lms2_f32,
+        lms3_f33,
+        lit1_f34,
+        lit2_f35,
+        lit3_f36,
+        lu1_f37,
+        lu2_f38,
+        lu3_f39
+) -> dict:
+    with uow:
+        list_k = LM.ListK(
+            questionnaire_id,
+            org1_f1,
+            org2_f2,
+            org3_f3,
+            ela1_f4,
+            ela2_f5,
+            ela3_f6,
+            krp1_f7,
+            krp2_f8,
+            krp3_f9,
+            wie1_f10,
+            wie2_f11,
+            wie3_f12,
+            zp1_f13,
+            zp2_f14,
+            zp3_f15,
+            kon1_f16,
+            kon2_f17,
+            kon3_f18,
+            reg1_f19,
+            reg2_f20,
+            reg3_f21,
+            auf1_f22,
+            auf2_f23,
+            auf3_f24,
+            ans1_f25,
+            ans2_f26,
+            ans3_f27,
+            zei1_f28,
+            zei2_f29,
+            zei3_f30,
+            lms1_f31,
+            lms2_f32,
+            lms3_f33,
+            lit1_f34,
+            lit2_f35,
+            lit3_f36,
+            lu1_f37,
+            lu2_f38,
+            lu3_f39
+        )
+        uow.list_k.create_list_k(list_k)
+        uow.commit()
+        result = list_k.serialize()
+        return result
+
+
+def create_questionnaire(
+        uow: unit_of_work.AbstractUnitOfWork,
+        student_id,
+        vv_2_f7,
+        vv_5_f19,
+        vv_7_f27,
+        vv_10_f39,
+        vv_11_f43,
+        si_1_f2,
+        si_4_f14,
+        si_7_f26,
+        si_10_f38,
+        si_11_f42,
+        ar_3_f9,
+        ar_4_f13,
+        ar_6_f21,
+        ar_7_f25,
+        ar_8_f29,
+        sg_1_f4,
+        sg_2_f8,
+        sg_4_f16,
+        sg_10_f40,
+        sg_11_f44,
+        org1_f1,
+        org2_f2,
+        org3_f3,
+        ela1_f4,
+        ela2_f5,
+        ela3_f6,
+        krp1_f7,
+        krp2_f8,
+        krp3_f9,
+        wie1_f10,
+        wie2_f11,
+        wie3_f12,
+        zp1_f13,
+        zp2_f14,
+        zp3_f15,
+        kon1_f16,
+        kon2_f17,
+        kon3_f18,
+        reg1_f19,
+        reg2_f20,
+        reg3_f21,
+        auf1_f22,
+        auf2_f23,
+        auf3_f24,
+        ans1_f25,
+        ans2_f26,
+        ans3_f27,
+        zei1_f28,
+        zei2_f29,
+        zei3_f30,
+        lms1_f31,
+        lms2_f32,
+        lms3_f33,
+        lit1_f34,
+        lit2_f35,
+        lit3_f36,
+        lu1_f37,
+        lu2_f38,
+        lu3_f39,
+        **kwargs
+) -> dict:
+    with uow:
+        questionnaire = LM.Questionnaire(student_id)
+        uow.questionnaire.create_questionnaire(questionnaire)
+        uow.commit()
+        create_ils_input_answers(uow,
+                                 questionnaire.id,
+                                 vv_2_f7,
+                                 vv_5_f19,
+                                 vv_7_f27,
+                                 vv_10_f39,
+                                 vv_11_f43,
+                                 kwargs['vv_1_f3']
+                                 if 'vv_1_f3' in kwargs else None,
+                                 kwargs['vv_3_f11']
+                                 if 'vv_3_f11' in kwargs else None,
+                                 kwargs['vv_4_f15']
+                                 if 'vv_4_f15' in kwargs else None,
+                                 kwargs['vv_6_f23']
+                                 if 'vv_6_f23' in kwargs else None,
+                                 kwargs['vv_8_f31']
+                                 if 'vv_8_f31' in kwargs else None,
+                                 kwargs['vv_9_f35']
+                                 if 'vv_9_f35' in kwargs else None
+                                 )
+        create_ils_perception_answers(uow,
+                                      questionnaire.id,
+                                      si_1_f2,
+                                      si_4_f14,
+                                      si_7_f26,
+                                      si_10_f38,
+                                      si_11_f42
+                                      )
+        create_ils_processing_answers(uow,
+                                      questionnaire.id,
+                                      ar_3_f9,
+                                      ar_4_f13,
+                                      ar_6_f21,
+                                      ar_7_f25,
+                                      ar_8_f29
+                                      )
+        create_ils_understanding_answers(uow,
+                                         questionnaire.id,
+                                         sg_1_f4,
+                                         sg_2_f8,
+                                         sg_4_f16,
+                                         sg_10_f40,
+                                         sg_11_f44
+                                         )
+        create_list_k(uow,
+                      questionnaire.id,
+                      org1_f1,
+                      org2_f2,
+                      org3_f3,
+                      ela1_f4,
+                      ela2_f5,
+                      ela3_f6,
+                      krp1_f7,
+                      krp2_f8,
+                      krp3_f9,
+                      wie1_f10,
+                      wie2_f11,
+                      wie3_f12,
+                      zp1_f13,
+                      zp2_f14,
+                      zp3_f15,
+                      kon1_f16,
+                      kon2_f17,
+                      kon3_f18,
+                      reg1_f19,
+                      reg2_f20,
+                      reg3_f21,
+                      auf1_f22,
+                      auf2_f23,
+                      auf3_f24,
+                      ans1_f25,
+                      ans2_f26,
+                      ans3_f27,
+                      zei1_f28,
+                      zei2_f29,
+                      zei3_f30,
+                      lms1_f31,
+                      lms2_f32,
+                      lms3_f33,
+                      lit1_f34,
+                      lit2_f35,
+                      lit3_f36,
+                      lu1_f37,
+                      lu2_f38,
+                      lu3_f39)
+        result = questionnaire.serialize()
         return result
 
 
@@ -173,6 +569,72 @@ def delete_course_creator(
         uow.course_creator.delete_course_creator(user_id)
         uow.commit()
         return {}
+
+
+def delete_ils_input_answers(
+        uow: unit_of_work.AbstractUnitOfWork,
+        questionnaire_id
+):
+    with uow:
+        uow.ils_input_answers\
+            .delete_ils_input_answers(questionnaire_id)
+        uow.commit()
+        return{}
+
+
+def delete_ils_perception_answers(
+        uow: unit_of_work.AbstractUnitOfWork,
+        questionnaire_id
+):
+    with uow:
+        uow.ils_perception_answers\
+            .delete_ils_perception_answers(questionnaire_id)
+        uow.commit()
+        return{}
+
+
+def delete_ils_processing_answers(
+        uow: unit_of_work.AbstractUnitOfWork,
+        questionnaire_id
+):
+    with uow:
+        uow.ils_processing_answers\
+            .delete_ils_processing_answers(questionnaire_id)
+        uow.commit()
+        return{}
+
+
+def delete_ils_understanding_answers(
+        uow: unit_of_work.AbstractUnitOfWork,
+        questionnaire_id
+):
+    with uow:
+        uow.ils_understanding_answers\
+            .delete_ils_understanding_answers(questionnaire_id)
+        uow.commit()
+        return{}
+
+
+def delete_list_k(
+        uow: unit_of_work.AbstractUnitOfWork,
+        questionnaire_id
+):
+    with uow:
+        uow.list_k\
+            .delete_list_k(questionnaire_id)
+        uow.commit()
+        return{}
+
+
+def delete_questionnaire(
+        uow: unit_of_work.AbstractUnitOfWork,
+        questionnaire_id
+):
+    with uow:
+        uow.questionnaire\
+            .delete_questionnaire(questionnaire_id)
+        uow.commit()
+        return{}
 
 
 def delete_settings(

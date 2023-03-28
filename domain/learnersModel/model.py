@@ -109,17 +109,17 @@ class Questionnaire:
 class IlsInputAnswers:
     def __init__(self,
                  questionnaire_id,
-                 vv_1_f3,
                  vv_2_f7,
-                 vv_3_f11,
-                 vv_4_f15,
                  vv_5_f19,
-                 vv_6_f23,
                  vv_7_f27,
-                 vv_8_f31,
-                 vv_9_f35,
                  vv_10_f39,
-                 vv_11_f43) -> None:
+                 vv_11_f43,
+                 vv_1_f3=None,
+                 vv_3_f11=None,
+                 vv_4_f15=None,
+                 vv_6_f23=None,
+                 vv_8_f31=None,
+                 vv_9_f35=None) -> None:
         self.questionnaire_id = questionnaire_id
         self.vv_1_f3 = vv_1_f3
         self.vv_2_f7 = vv_2_f7
@@ -155,16 +155,16 @@ class IlsPerceptionAnswers:
     def __init__(self,
                  questionnaire_id,
                  si_1_f2,
-                 si_2_f6,
-                 si_3_f10,
                  si_4_f14,
-                 si_5_f18,
-                 si_6_f22,
                  si_7_f26,
-                 si_8_f30,
-                 si_9_f34,
                  si_10_f38,
-                 si_11_f42) -> None:
+                 si_11_f42,
+                 si_2_f6=None,
+                 si_3_f10=None,
+                 si_5_f18=None,
+                 si_6_f22=None,
+                 si_8_f30=None,
+                 si_9_f34=None) -> None:
         self.questionnaire_id = questionnaire_id
         self.si_1_f2 = si_1_f2
         self.si_2_f6 = si_2_f6
@@ -199,17 +199,17 @@ class IlsPerceptionAnswers:
 class IlsProcessingAnswers:
     def __init__(self,
                  questionnaire_id,
-                 ar_1_f1,
-                 ar_2_f5,
                  ar_3_f9,
                  ar_4_f13,
-                 ar_5_f17,
                  ar_6_f21,
                  ar_7_f25,
                  ar_8_f29,
-                 ar_9_f33,
-                 ar_10_f37,
-                 ar_11_f41) -> None:
+                 ar_1_f1=None,
+                 ar_2_f5=None,
+                 ar_5_f17=None,
+                 ar_9_f33=None,
+                 ar_10_f37=None,
+                 ar_11_f41=None) -> None:
         self.questionnaire_id = questionnaire_id
         self.ar_1_f1 = ar_1_f1
         self.ar_2_f5 = ar_2_f5
@@ -246,15 +246,15 @@ class IlsUnderstandingAnswers:
                  questionnaire_id,
                  sg_1_f4,
                  sg_2_f8,
-                 sg_3_f12,
                  sg_4_f16,
-                 sg_5_f20,
-                 sg_6_f24,
-                 sg_7_f28,
-                 sg_8_f32,
-                 sg_9_f36,
                  sg_10_f40,
-                 sg_11_f44) -> None:
+                 sg_11_f44,
+                 sg_3_f12=None,
+                 sg_5_f20=None,
+                 sg_6_f24=None,
+                 sg_7_f28=None,
+                 sg_8_f32=None,
+                 sg_9_f36=None) -> None:
         self.questionnaire_id = questionnaire_id
         self.sg_1_f4 = sg_1_f4
         self.sg_2_f8 = sg_2_f8

@@ -56,4 +56,9 @@ class NoValidRoleError(Exception):
 
 class AlreadyExisting(Exception):
     code = 400
-    description = "The entered values already exist in the database"
+    description = "The entered values already exist in the database!"
+
+
+class NoValidParameterValueError(Exception):
+    code = 400
+    description = "The send parameters have a wrong value!"

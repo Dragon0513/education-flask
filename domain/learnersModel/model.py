@@ -24,7 +24,7 @@ class LearningCharacteristic:
 
 class LearningStyle:
     def __init__(self,
-                 characteristic_id,
+                 characteristic_id=None,
                  perception_dimension="sns",
                  perception_value=0,
                  input_dimension="vrb",

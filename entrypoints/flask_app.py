@@ -693,3 +693,168 @@ def post_student_course(course_id, student_id):
             )
             status_code = 201
             return jsonify(student_course), status_code
+
+
+@app.route("/user/<user_id>/<lms_user_id>/student/<student_id>/" +
+           "learningCharacteristics", methods=['GET', 'DELETE'])
+@cross_origin(supports_credentials=True)
+def learning_characteristics_administration(user_id,
+                                            lms_user_id,
+                                            student_id):
+    method = request.method
+    match method:
+        case 'GET':
+            result = services.get_learning_characteristics(
+                unit_of_work.SqlAlchemyUnitOfWork(),
+                student_id
+            )
+            status_code = 200
+            return jsonify(result), status_code
+        case 'DELETE':
+            services.reset_learning_characteristics(
+                unit_of_work.SqlAlchemyUnitOfWork(),
+                student_id
+            )
+            result = {'message': 'All data about the learning ' +
+                      'characteristics have been deleted/reset.'}
+            status_code = 200
+            return jsonify(result), status_code
+
+
+@app.route("/user/<user_id>/<lms_user_id>/student/<student_id>/" +
+           "learningStyle", methods=['GET', 'PUT', 'DELETE'])
+@cross_origin(supports_credentials=True)
+def learning_style_administration(user_id, lms_user_id, student_id):
+    method = request.method
+    match method:
+        case 'GET':
+            result = services.get_learning_style_by_student_id(
+                unit_of_work.SqlAlchemyUnitOfWork(),
+                student_id
+            )
+            status_code = 200
+            return jsonify(result), status_code
+        case 'PUT':
+            condition1 = request.json is not None
+            condition2 = 'perception_dimension' in request.json
+            condition3 = 'perception_value' in request.json
+            condition4 = 'input_dimension' in request.json
+            condition5 = 'input_value' in request.json
+            condition6 = 'processing_dimension' in request.json
+            condition7 = 'processing_value' in request.json
+            condition8 = 'understanding_dimension' in request.json
+            condition9 = 'understanding_value' in request.json
+            if condition1 and condition2 and condition3 and condition4\
+                    and condition5 and condition6 and condition7\
+                    and condition8 and condition9:
+                condition10 = type(request.json['perception_dimension']) is str
+                condition11 = type(request.json['perception_value']) is int
+                condition12 = type(request.json['input_dimension']) is str
+                condition13 = type(request.json['input_value']) is int
+                condition14 = type(request.json['processing_dimension']) is str
+                condition15 = type(request.json['processing_value']) is int
+                condition16 = type(
+                    request.json['understanding_dimension']) is str
+                condition17 = type(request.json['understanding_value']) is int
+                if condition10 and condition11 and condition12\
+                        and condition13 and condition14 and condition15\
+                        and condition16 and condition17:
+                    condition18 = 0 < request.json['perception_value'] < 12
+                    condition19 = 0 < request.json['input_value'] < 12
+                    condition20 = 0 < request.json['processing_value'] < 12
+                    condition21 = 0 < request.json['understanding_value'] < 12
+                    if condition18 and condition19 and condition20\
+                            and condition21:
+                        result = services.update_learning_style_by_student_id(
+                            unit_of_work.SqlAlchemyUnitOfWork(),
+                            student_id,
+                            request.json['perception_dimension'],
+                            request.json['perception_value'],
+                            request.json['input_dimension'],
+                            request.json['input_value'],
+                            request.json['processing_dimension'],
+                            request.json['processing_value'],
+                            request.json['understanding_dimension'],
+                            request.json['understanding_value'],
+                        )
+                        status_code = 201
+                        return jsonify(result), status_code
+                    else:
+                        raise err.WrongLearningStyleDimensionError()
+                else:
+                    raise err.WrongParameterValueError()
+            else:
+                raise err.MissingParameterError()
+        case 'DELETE':
+            result = services.reset_learning_style_by_student_id(
+                unit_of_work.SqlAlchemyUnitOfWork(),
+                student_id
+            )
+            status_code = 200
+            return jsonify(result), status_code
+
+
+@app.route("/user/<user_id>/<lms_user_id>/student/<student_id>/" +
+           "learningStrategy", methods=['GET', 'DELETE'])
+@cross_origin(supports_credentials=True)
+def learning_strategy_administration(user_id, lms_user_id, student_id):
+    method = request.method
+    match method:
+        case 'GET':
+            result = services.get_learning_strategy_by_student_id(
+                unit_of_work.SqlAlchemyUnitOfWork(),
+                student_id
+            )
+            status_code = 200
+            return jsonify(result), status_code
+        case 'DELETE':
+            result = services.reset_learning_strategy_by_student_id(
+                unit_of_work.SqlAlchemyUnitOfWork(),
+                student_id
+            )
+            status_code = 200
+            return jsonify(result), status_code
+
+
+@app.route("/user/<user_id>/<lms_user_id>/student/<student_id>/" +
+           "learningAnalytics", methods=['GET', 'DELETE'])
+@cross_origin(supports_credentials=True)
+def learning_analytics_administration(user_id, lms_user_id, student_id):
+    method = request.method
+    match method:
+        case 'GET':
+            result = services.get_learning_analytics_by_student_id(
+                unit_of_work.SqlAlchemyUnitOfWork(),
+                student_id
+            )
+            status_code = 200
+            return jsonify(result), status_code
+        case 'DELETE':
+            result = services.reset_learning_analytics_by_student_id(
+                unit_of_work.SqlAlchemyUnitOfWork(),
+                student_id
+            )
+            status_code = 200
+            return jsonify(result), status_code
+
+
+@app.route("/user/<user_id>/<lms_user_id>/student/<student_id>/" +
+           "knowledge", methods=['GET', 'DELETE'])
+@cross_origin(supports_credentials=True)
+def knowledge_administration(user_id, lms_user_id, student_id):
+    method = request.method
+    match method:
+        case 'GET':
+            result = services.get_knowledge_by_student_id(
+                unit_of_work.SqlAlchemyUnitOfWork(),
+                student_id
+            )
+            status_code = 200
+            return jsonify(result), status_code
+        case 'DELETE':
+            result = services.reset_knowledge_by_student_id(
+                unit_of_work.SqlAlchemyUnitOfWork(),
+                student_id
+            )
+            status_code = 200
+            return jsonify(result), status_code

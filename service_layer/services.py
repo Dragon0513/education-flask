@@ -1078,6 +1078,22 @@ def get_knowledge(
         return result
 
 
+def get_knowledge_by_student_id(
+        uow: unit_of_work.AbstractUnitOfWork,
+        student_id
+) -> dict:
+    with uow:
+        characteristic = get_learning_characteristics(
+            uow,
+            student_id
+        )
+        learning_style = uow.learning_style.get_knowledge(
+            characteristic['id']
+        )
+        result = learning_style[0].serialize()
+        return result
+
+
 def get_learning_analytics(
         uow: unit_of_work.AbstractUnitOfWork,
         characteristic_id
@@ -1090,6 +1106,22 @@ def get_learning_analytics(
             result = {}
         else:
             result = analytics[0].serialize()
+        return result
+
+
+def get_learning_analytics_by_student_id(
+        uow: unit_of_work.AbstractUnitOfWork,
+        student_id
+) -> dict:
+    with uow:
+        characteristic = get_learning_characteristics(
+            uow,
+            student_id
+        )
+        learning_style = uow.learning_style.get_learning_analytics(
+            characteristic['id']
+        )
+        result = learning_style[0].serialize()
         return result
 
 
@@ -1151,7 +1183,7 @@ def get_learning_elements_for_topic_id(
             for le in learning_elements:
                 results.append(le.serialize())
             return results
-        except:
+        except Exception:
             return []
 
 
@@ -1169,6 +1201,22 @@ def get_learning_strategy(
         return result
 
 
+def get_learning_strategy_by_student_id(
+        uow: unit_of_work.AbstractUnitOfWork,
+        student_id
+) -> dict:
+    with uow:
+        characteristic = get_learning_characteristics(
+            uow,
+            student_id
+        )
+        learning_style = uow.learning_style.get_learning_strategy(
+            characteristic['id']
+        )
+        result = learning_style[0].serialize()
+        return result
+
+
 def get_learning_style(
         uow: unit_of_work.AbstractUnitOfWork,
         characteristic_id
@@ -1179,6 +1227,22 @@ def get_learning_style(
             result = {}
         else:
             result = style[0].serialize()
+        return result
+
+
+def get_learning_style_by_student_id(
+        uow: unit_of_work.AbstractUnitOfWork,
+        student_id
+) -> dict:
+    with uow:
+        characteristic = get_learning_characteristics(
+            uow,
+            student_id
+        )
+        learning_style = uow.learning_style.get_learning_style(
+            characteristic['id']
+        )
+        result = learning_style[0].serialize()
         return result
 
 
@@ -1206,7 +1270,7 @@ def get_topics_for_course_id(
             for topic in topics:
                 results.append(topic.serialize())
             return results
-        except:
+        except Exception:
             return[]
 
 
@@ -1253,6 +1317,22 @@ def reset_knowledge(
         return knowledge.serialize()
 
 
+def reset_knowledge_by_student_id(
+        uow: unit_of_work.AbstractUnitOfWork,
+        student_id
+) -> dict:
+    with uow:
+        characteristic = get_knowledge(
+            uow,
+            student_id
+        )
+        result = reset_knowledge(
+            uow,
+            characteristic['id']
+        )
+        return result
+
+
 def reset_learning_analytics(
         uow: unit_of_work.AbstractUnitOfWork,
         characteristic_id
@@ -1263,6 +1343,22 @@ def reset_learning_analytics(
             characteristic_id, analytics)
         uow.commit()
         return analytics.serialize()
+
+
+def reset_learning_analytics_by_student_id(
+        uow: unit_of_work.AbstractUnitOfWork,
+        student_id
+) -> dict:
+    with uow:
+        characteristic = get_learning_analytics(
+            uow,
+            student_id
+        )
+        result = reset_learning_analytics(
+            uow,
+            characteristic['id']
+        )
+        return result
 
 
 def reset_learning_characteristics(
@@ -1296,6 +1392,22 @@ def reset_learning_strategy(
         return strategy.serialize()
 
 
+def reset_learning_strategy_by_student_id(
+        uow: unit_of_work.AbstractUnitOfWork,
+        student_id
+) -> dict:
+    with uow:
+        characteristic = get_learning_characteristics(
+            uow,
+            student_id
+        )
+        result = reset_learning_strategy(
+            uow,
+            characteristic['id']
+        )
+        return result
+
+
 def reset_learning_style(
         uow: unit_of_work.AbstractUnitOfWork,
         characteristic_id
@@ -1305,6 +1417,22 @@ def reset_learning_style(
         uow.learning_style.update_learning_style(characteristic_id, style)
         uow.commit()
         return style.serialize()
+
+
+def reset_learning_style_by_student_id(
+        uow: unit_of_work.AbstractUnitOfWork,
+        student_id
+) -> dict:
+    with uow:
+        characteristic = get_learning_characteristics(
+            uow,
+            student_id
+        )
+        result = reset_learning_style(
+            uow,
+            characteristic['id']
+        )
+        return result
 
 
 def reset_settings(
@@ -1390,6 +1518,43 @@ def update_learning_element(
         )
         uow.commit()
         result = learning_element.serialize()
+        return result
+
+
+def update_learning_style_by_student_id(
+        uow: unit_of_work.AbstractUnitOfWork,
+        student_id,
+        perception_dimension,
+        perception_value,
+        input_dimension,
+        input_value,
+        processing_dimension,
+        processing_value,
+        understanding_dimension,
+        understanding_value
+) -> dict:
+    with uow:
+        characteristic = get_learning_characteristics(
+            uow,
+            student_id
+        )
+        learning_style = LM.LearningStyle(
+            characteristic['id'],
+            perception_dimension,
+            perception_value,
+            input_dimension,
+            input_value,
+            processing_dimension,
+            processing_value,
+            understanding_dimension,
+            understanding_value
+        )
+        uow.learning_style.update_learning_style(
+            characteristic['id'],
+            learning_style
+        )
+        uow.commit()
+        result = learning_style.serialize()
         return result
 
 

@@ -7,7 +7,7 @@ class AException(Exception):
         conditional_message = (message + " Inner Exception: ") if message else "" + str(exception)
         self.message = conditional_message if exception is not None else message
         self.code = status_code
-class ErrorExcepion(AException):
+class ErrorException(AException):
     """General exception for on the fly errors."""
     def __init__(self, exception : Exception | None = None, message = "An unexpected error occurred.", status_code=500):
         super().__init__(exception, message, status_code)

@@ -1,15 +1,16 @@
 import json
 import os
 import urllib.parse
+from service_layer import services, unit_of_work
 import service_layer.crypto.JWTKeyManagement as JWTKeyManagement
 from errors import errors as err
 from flask import redirect,make_response
 from flask.wrappers import Request
 from werkzeug.wrappers.response import Response
 from service_layer.crypto.cryptorandom import CryptoRandom
-from service_layer.lti import LaunchDataStorage
 from service_layer.lti.Messages import LTIIDToken
 from service_layer.lti.OIDCLogin import OIDCLogin
+from service_layer.lti.Roles import RoleMapper
 from service_layer.service.CookieServiceFlask import CookieServiceFlask
 from service_layer.lti.config.ToolConfigJson import ToolConfigJson
 import service_layer.service.SessionServiceFlask as SessionServiceFlask
@@ -32,7 +33,7 @@ class OIDCLoginFlask(OIDCLogin):
             else:
                 self._oidc_login_params_dict = {key: self._request.form.get(key) for key in self.oidc_login_params}
         except Exception as e:
-            raise err.ErrorExcepion(e,message="Error in checking parameters", status_code=400)
+            raise err.ErrorException(e,message="Error in checking parameters", status_code=400)
 
 
         # Get the platform settings (same scheme as in the tool config json)
@@ -40,28 +41,28 @@ class OIDCLoginFlask(OIDCLogin):
         try:
             self._platform = self._tool_config.decode_platform(self._tool_config.get_platform(self._request.environ.get('HTTP_ORIGIN', '')))
             if not self._platform:
-                raise err.ErrorExcepion(message="No platform found", status_code=400)
+                raise err.ErrorException(message="No platform found", status_code=400)
         except Exception as e:
-            raise err.ErrorExcepion(e,message="Error in check_auth", status_code=400)
+            raise err.ErrorException(e,message="Error in check_auth", status_code=400)
         try:
             parsed_target_link_url = urllib.parse.urlparse(self._oidc_login_params_dict.get('target_link_uri')) or None
         except ValueError as e:
-            raise err.ErrorExcepion(e,message="target_link_uri is not URL", status_code=400)
+            raise err.ErrorException(e,message="target_link_uri is not URL", status_code=400)
 
         # Verify if the target_link_uri is valid and does not redirect to other domain than our tool
         # Verify HTTPS if in production
         try:
             if os.environ.get('FLASK_ENV') == 'production':
                 if parsed_target_link_url.scheme != 'https':
-                    raise err.ErrorExcepion(message="target_link_uri is not HTTPS", status_code=400)
+                    raise err.ErrorException(message="target_link_uri is not HTTPS", status_code=400)
             if parsed_target_link_url.netloc != self._request.host:
-                raise err.ErrorExcepion(message="target_link_uri is not from the same host", status_code=400)
+                raise err.ErrorException(message="target_link_uri is not from the same host", status_code=400)
         except Exception as e:
-            raise err.ErrorExcepion(e,message="target_link_uri invalid", status_code=400)
+            raise err.ErrorException(e,message="target_link_uri invalid", status_code=400)
 
         # Verify if the target_link_uri is valid and does not redirect to other domain than our tool
         if self._oidc_login_params_dict.get('target_link_uri') != self._platform.target_link_uri:
-            raise err.ErrorExcepion(message="target_link_uri may be malicious", status_code=400)
+            raise err.ErrorException(message="target_link_uri may be malicious", status_code=400)
 
         return self
 
@@ -176,15 +177,28 @@ class OIDCLoginFlask(OIDCLogin):
         try:
             self._platform = self._tool_config.decode_platform(self._tool_config.get_platform(self._request.environ.get('HTTP_ORIGIN', '')))
             if not self._platform:
-                raise err.ErrorExcepion(message="No platform found", status_code=400)
+                raise err.ErrorException(message="No platform found", status_code=400)
         except Exception as e:
-            raise err.ErrorExcepion(e,message="Error in check_auth", status_code=400)
+            raise err.ErrorException(e,message="Error in check_auth", status_code=400)
         # redirect to tool (login url in react)
         response = redirect(self._platform.frontend_login_url + '?' + urllib.parse.urlencode({'nonce': nonce_jwt}))
-        return response
 
         # get issuer
         # TODO🧾 based on issuer platform get corresponsing implementaiton and write id token data into structures
+
+        # create user
+        # TODO🧾 create user if not exist
+        try:
+            services.create_user(unit_of_work.SqlAlchemyUnitOfWork(),
+                                self.id_token.name,
+                                self.id_token['https://purl.imsglobal.org/spec/lti/claim/tool_platform']['name'],
+                                self.id_token.sub, 
+                                RoleMapper(self.id_token['https://purl.imsglobal.org/spec/lti/claim/roles']).get_role()
+                            )
+        except Exception as e:
+            raise err.ErrorException(e,message="User could not be created", status_code=400)
+
+        return response
 
     def get_login(self) -> Response:
         # verify nonce jwt in request
@@ -204,13 +218,20 @@ class OIDCLoginFlask(OIDCLogin):
         # TODO🧾 this cookie holds authorization data. implement right and role management
         # use session service id_token to get user data and write into cookie, create new user if not exist
 
+        # get user based on id_token
+        token = SessionServiceFlask.get(nonce_payload['nonce'], 'id_token')
+        if not token:
+            self._response = "Invalid nonce", 403
+            return make_response(self._response)
+        user_id = token.sub
+        role = RoleMapper(token['https://purl.imsglobal.org/spec/lti/claim/roles']).get_role().lower()
         cookie_expiration = 2 # 1 Minutes
         state_jwt = JWTKeyManagement.generate_state_jwt(nonce=CryptoRandom.createuniqueid(32), 
                                                         state=CryptoRandom.createuniqueid(32), 
                                                         audience=self._request.referrer, 
                                                         issuer=os.environ.get('BACKEND_URL', 'http://localhost:5000'),
                                                         expiration=cookie_expiration,
-                                                        additional_claims={'user_id': 2, 'permissions': ['read:user_info']}
+                                                        additional_claims={'user_id': user_id, 'role': role, 'session_nonce': nonce_payload['nonce']}
                                                         )
         response = Response(
             response=json.dumps(state_jwt),

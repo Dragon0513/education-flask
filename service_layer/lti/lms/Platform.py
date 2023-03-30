@@ -12,6 +12,7 @@ class Platform():
                 key_set : object,
                 private_key_file : str,
                 public_key_file : str,
+                haski_lti_activity: str,
                 deployment_ids : list) -> None:
         self.default = default
         self.client_id = client_id
@@ -25,6 +26,7 @@ class Platform():
         self.key_set = key_set
         self.private_key_file = private_key_file
         self.public_key_file = public_key_file
+        self.haski_lti_activity = haski_lti_activity
         self.deployment_ids = deployment_ids
 
     def instance(self):

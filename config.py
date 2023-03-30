@@ -7,7 +7,7 @@ def get_project_root() -> str:
 
 def get_postgres_uri():  # pragma: no cover
     host = os.environ.get("DB_HOST", "127.0.0.1")
-    port = os.environ.get("DB_PORT", 5432)
+    port = 5432
     password = os.environ.get("DB_PASSWORD", "postgres")
     user = os.environ.get("DB_USER", "postgres")
     db_name = os.environ.get("DB_NAME", "haski")

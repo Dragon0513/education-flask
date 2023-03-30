@@ -52,7 +52,7 @@ def handle_custom_exception(ex):
     response = json.dumps({'error': ex.__class__.__name__, 'message': str(ex)})
     return response
 
-def authorize(permission):
+def authorize(role):
     '''🔑 Decorator for checking if user has the required permission to access the endpoint'''
     def decorator(f):
         @wraps(f)
@@ -64,9 +64,9 @@ def authorize(permission):
                 if not JWTKeyManagement.verify_jwt_payload(JWTKeyManagement.verify_jwt(state_jwt), verify_nonce=False):
                     raise err.UnauthorizedError()
                 state = JWTKeyManagement.verify_jwt(state_jwt)
-                if 'permissions' not in state:
+                if 'role' not in state:
                     raise err.UnauthorizedError()
-                if permission not in state['permissions']:
+                if role not in state['role']:
                     raise err.UnauthorizedError()
 
                 return f(state, *args, **kws)          
@@ -75,7 +75,7 @@ def authorize(permission):
 
 # ##### TEST ENDPOINT #####
 @app.route("/user")
-@authorize('read:user_info')
+@authorize('instructor')
 def get_user_info(state):
     user_info = services.get_user_info(unit_of_work.SqlAlchemyUnitOfWork(), state['user_id'])
     user_dict = {'user': user_info, 'id': state['user_id']}
@@ -169,14 +169,6 @@ def get_user_by_id(user_id, lms_user_id):
             status_code = 200
             return jsonify(user), status_code
 
-# ##### TEST ENDPOINT #####
-@app.route("/user")
-@authorize('read:user_info')
-def get_user_info(state):
-    user_info = services.get_user_info(unit_of_work.SqlAlchemyUnitOfWork(), state['user_id'])
-    user_dict = {'user': user_info, 'id': state['user_id']}
-    status_code = 200
-    return jsonify(user_dict), status_code
 
 @app.route("/user/<user_id>/<lms_user_id>/settings",
            methods=['GET', 'PUT', 'DELETE'])
@@ -233,6 +225,7 @@ def login():
 
 # 4. Get login status if user is already logged in by using a valid cookie
 @app.route('/loginstatus', methods=['GET'])
+@authorize('instructor')
 def loginstatus():
     return services.get_loginstatus(request, tool_conf, session=session)
 
@@ -240,6 +233,13 @@ def loginstatus():
 @app.route('/logout', methods=['GET'])
 def logout():
     return services.get_logout(request, tool_conf, session=session)
+
+# Send the enpoint which launches the LTI tool to the frontend
+@app.route('/lti_launch_view', methods=['GET'])
+def lti_launch_view():
+    response = make_response()
+    response.data = json.dumps({'lti_launch_view': tool_conf.get_haski_activity_url(os.environ.get('LMS_URL', "http://fakedomain.com")) })
+    return response
 
 # Login with username and password
 @app.route('/login_credentials', methods=['POST'])

@@ -3,7 +3,7 @@ from domain.domainModel import model as DM
 from domain.learnersModel import model as LM
 from domain.tutoringModel import model as TM
 from domain.userAdministartion import model as UA
-import errors as err
+from errors import errors as err
 from sqlalchemy.exc import IntegrityError
 
 
@@ -839,7 +839,7 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         try:
             return self.session.query(UA.User).filter_by(
                 university=university).all()
-        except Exception:
+        except Exception as e:
             raise err.DatabaseQueryError()
 
     def update_knowledge(self,

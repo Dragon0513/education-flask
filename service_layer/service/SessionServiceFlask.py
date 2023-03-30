@@ -1,4 +1,6 @@
 import datetime
+from typing import Optional
+from service_layer.lti.Messages import LTIIDToken
 from service_layer.service.SessionService import SessionService
 import service_layer.crypto.JWTKeyManagement as JWTKeyManagement
 
@@ -60,7 +62,7 @@ def set(nonce_identifier : str, key, value):
         sessions[nonce_identifier] = Session()
     sessions[nonce_identifier][key] = value
 
-def get(nonce_identifier : str, key):
+def get(nonce_identifier : str, key) -> LTIIDToken | None:
     if nonce_identifier in sessions:
         if key in sessions[nonce_identifier]:
             return sessions[nonce_identifier][key]

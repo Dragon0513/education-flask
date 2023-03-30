@@ -15,7 +15,7 @@ conn.autocommit = True
 cursor = conn.cursor()
 
 # Preparing query to create a database
-sql = '''CREATE database HASKI_test'''
+sql = '''CREATE database haski'''
 
 # Creating a database
 cursor.execute(sql)
@@ -323,7 +323,7 @@ sql = '''
         ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
         student_id integer NOT NULL,
         CONSTRAINT learning_characteristics_pkey PRIMARY KEY (id),
-        CONSTRAINT user_id FOREIGN KEY (user_id)
+        CONSTRAINT student_id FOREIGN KEY (student_id)
             REFERENCES public."student" (id) MATCH SIMPLE
             ON UPDATE NO ACTION
             ON DELETE NO ACTION

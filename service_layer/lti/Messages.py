@@ -90,7 +90,7 @@ class LTIIDToken(JWTMessage):
     given_name = None # OPTIONAL (given name)
     family_name = None # OPTIONAL (family name)
     email = None # OPTIONAL (email)
-    name = None # OPTIONAL (name)
+    name = None # OPTIONAL (full name)
     ext : LTIExtension # OPTIONAL (extensions)
     launch_presentation : LTILaunchPresentation # OPTIONAL (launch presentation)
     tool_platform : LTIToolPlatform # OPTIONAL (tool platform)
@@ -108,3 +108,6 @@ class LTIIDToken(JWTMessage):
                     raise ValueError(f"LTIIDToken: {key} is not set")
             else:
                 continue
+
+    def __getitem__(self, key):
+        return self.__dict__[key]

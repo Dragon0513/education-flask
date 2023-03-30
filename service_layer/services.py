@@ -553,6 +553,14 @@ def create_user(
                 create_student(uow, user)
             case "teacher":
                 create_teacher(uow, user)
+            case "learner":
+                create_student(uow, user)
+            case "instructor":
+                create_teacher(uow, user)
+            case "administrator":
+                create_admin(uow, user)
+            case "unknown":
+                raise ValueError("Unknown role")
         result = user.serialize()
     return result
 

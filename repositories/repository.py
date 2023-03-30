@@ -9,6 +9,21 @@ from sqlalchemy.exc import IntegrityError
 
 class AbstractRepository(abc.ABC):  # pragma: no cover
     @abc.abstractmethod
+    def add_student_to_course(self,
+                              student_course)\
+            -> DM.StudentCourse:
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def add_student_to_learning_element(self,
+                                        student_learning_element):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def add_student_to_topic(self, student_topic):
+        raise NotImplementedError
+
+    @abc.abstractmethod
     def create_admin(self,
                      admin: UA.Admin) -> UA.Admin:
         raise NotImplementedError
@@ -253,6 +268,10 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
+    def get_courses_for_student(self, student_id):
+        raise NotImplementedError
+
+    @abc.abstractmethod
     def get_course_topic_by_course(self, course_id) -> DM.CourseTopic:
         raise NotImplementedError
 
@@ -464,6 +483,38 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
 class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
     def __init__(self, session):
         self.session = session
+
+    def add_student_to_course(self,
+                              student_course)\
+            -> DM.StudentCourse:
+        course_exist = self.get_courses_for_student(
+            student_course.student_id
+        )
+        for c in course_exist:
+            if c.course_id == student_course.course_id:
+                raise err.AlreadyExisting()
+        try:
+            self.session.add(student_course)
+        except IntegrityError:
+            raise err.ForeignKeyViolation()
+        except Exception:
+            raise err.CreationError()
+
+    def add_student_to_learning_element(self, student_learning_element):
+        try:
+            self.session.add(student_learning_element)
+        except IntegrityError:
+            raise err.ForeignKeyViolation()
+        except Exception:
+            raise err.CreationError()
+
+    def add_student_to_topic(self, student_topic):
+        try:
+            self.session.add(student_topic)
+        except IntegrityError:
+            raise err.ForeignKeyViolation()
+        except Exception:
+            raise err.CreationError()
 
     def create_admin(self, admin: UA.Admin) -> UA.Admin:
         try:
@@ -920,6 +971,13 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
             raise err.NoValidIdError()
         else:
             return result
+
+    def get_courses_for_student(self, student_id):
+        try:
+            return self.session.query(DM.StudentCourse).filter_by(
+                student_id=student_id).all()
+        except Exception:
+            raise err.DatabaseQueryError()
 
     def get_course_topic_by_course(self, course_id) -> DM.CourseTopic:
         result = self.session.query(DM.CourseTopic).filter_by(

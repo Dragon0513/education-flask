@@ -30,6 +30,9 @@ class FakeRepository(repository.AbstractRepository):
                  learning_element=[],
                  course_topic=[],
                  topic_learning_element=[],
+                 student_course=[],
+                 student_topic=[],
+                 student_learning_element=[]
                  ):
         self.user = set(user)
         self.settings = set(settings)
@@ -53,6 +56,24 @@ class FakeRepository(repository.AbstractRepository):
         self.learning_element = set(learning_element)
         self.course_topic = set(course_topic)
         self.topic_learning_element = set(topic_learning_element)
+        self.student_course = set(student_course)
+        self.student_topic = set(student_topic)
+        self.student_learning_element = set(student_learning_element)
+
+    def add_student_to_course(self, student_course):
+        student_course.id = len(self.student_course) + 1
+        self.student_course.add(student_course)
+
+    def add_student_to_learning_element(self,
+                                        student_learning_element):
+        student_learning_element.id =\
+            len(self.student_learning_element) + 1
+        self.student_learning_element.add(student_learning_element)
+
+    def add_student_to_topic(self,
+                             student_topic):
+        student_topic.id = len(self.student_topic) + 1
+        self.student_topic.add(student_topic)
 
     def create_admin(self, admin):
         admin.id = len(self.admin) + 1
@@ -302,6 +323,11 @@ class FakeRepository(repository.AbstractRepository):
                        p.user_id == user_id), None)
         return [result]
 
+    def get_courses_for_student(self, student_id):
+        result = next((p for p in self.student_course if
+                       p.student_id == student_id), None)
+        return [result]
+
     def get_course_topic_by_course(self, course_id):
         result = next((p for p in self.course_topic if
                        p.course_id == course_id), None)
@@ -532,6 +558,9 @@ class FakeUnitOfWork(unit_of_work.AbstractUnitOfWork):
         self.learning_element = FakeRepository()
         self.course_topic = FakeRepository()
         self.topic_learning_element = FakeRepository()
+        self.student_course = FakeRepository()
+        self.student_topic = FakeRepository()
+        self.student_learning_element = FakeRepository()
         self.committed = False
 
     def commit(self):
@@ -3123,3 +3152,77 @@ def test_delete_learning_element(lms_id, activity_type, classification, name,
     assert result == {}
     entries_after = len(uow.learning_element.learning_element)
     assert entries_beginning - 1 == entries_after
+
+
+@pytest.mark.parametrize("name, university, lms_user_id, role,\
+                         lms_id_course, course_name", [
+    (
+        "Max Mustermann",
+        "TH-AB",
+        1,
+        "student",
+        "lms_id_course",
+        "Test Course"
+    )
+])
+def test_add_student_to_course(name,
+                               university,
+                               lms_user_id,
+                               role,
+                               lms_id_course,
+                               course_name):
+    uow = FakeUnitOfWork()
+    services.create_user(
+        uow=uow,
+        name=name,
+        university=university,
+        lms_user_id=lms_user_id,
+        role=role
+    )
+    services.create_course(
+        uow=uow,
+        lms_id=lms_id_course,
+        name=course_name,
+        university=university
+    )
+    services.create_topic(
+        uow=uow,
+        course_id=1,
+        lms_id=1,
+        is_topic=True,
+        contains_le=False,
+        parent_id=None,
+        name="Test Topic",
+        university=university,
+        created_at="2023-01-01",
+        created_by=name
+    )
+    services.create_learning_element(
+        uow=uow,
+        topic_id=1,
+        lms_id=1,
+        activity_type="quiz",
+        classification="RQ",
+        name="Test LE",
+        created_at="2017-01-01",
+        created_by="Max Mustermann",
+        university=university
+    )
+    entries_beginning_course = len(uow.student_course.student_course)
+    entries_beginning_topic = len(uow.student_topic.student_topic)
+    entries_beginning_le = len(uow.student_learning_element
+                               .student_learning_element)
+    result = services.add_student_to_course(
+        uow=uow,
+        student_id=1,
+        course_id=1
+    )
+    entries_after_course = len(uow.student_course.student_course)
+    entries_after_topic = len(uow.student_topic.student_topic)
+    entries_after_le = len(uow.student_learning_element
+                           .student_learning_element)
+    assert type(result) is dict
+    assert result != {}
+    assert entries_beginning_course + 1 == entries_after_course
+    assert entries_after_topic > entries_beginning_topic
+    assert entries_after_le > entries_beginning_le

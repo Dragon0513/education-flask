@@ -2943,6 +2943,47 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GeneralError'
+  /lms/course/{course_id}/student/{student_id}:
+    post:
+      tags:
+        - "Moodle"
+      summary: "Add Student Course"
+      description: "Add a Student to a Course and following also all Topics and LEs"
+      operationId: "postStudentCourse"
+      parameters:
+        - name: "course_id"
+          in: "path"
+          description: "The ID of the Course"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "student_id"
+          in: "path"
+          description: "The ID of the Student"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+      responses:
+        "201":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseStudent'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralError'
   /lms/student/{student_id}/{lms_user_id}/questionnaire:
     post:
       tags:

@@ -669,3 +669,19 @@ def learning_element_administration(course_id,
             result = {'message': 'Deletion was successful'}
             status_code = 200
             return jsonify(result), status_code
+
+
+@app.route("/lms/course/<course_id>/student/<student_id>",
+           methods=['POST'])
+@cross_origin(supports_credentials=True)
+def post_student_course(course_id, student_id):
+    method = request.method
+    match method:
+        case 'POST':
+            student_course = services.add_student_to_course(
+                unit_of_work.SqlAlchemyUnitOfWork(),
+                student_id,
+                course_id
+            )
+            status_code = 201
+            return jsonify(student_course), status_code

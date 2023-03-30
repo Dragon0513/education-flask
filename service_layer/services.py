@@ -2,6 +2,74 @@ from service_layer import unit_of_work
 from domain.userAdministartion import model as UA
 from domain.learnersModel import model as LM
 from domain.domainModel import model as DM
+import errors as err
+
+
+def add_student_to_course(
+        uow: unit_of_work.AbstractUnitOfWork,
+        student_id,
+        course_id
+) -> dict:
+    with uow:
+        characteristics = get_learning_characteristics(uow, student_id)
+        learning_style = get_learning_style(uow, characteristics['id'])
+        student_course = DM.StudentCourse(
+            student_id,
+            course_id,
+            learning_style['perception_dimension'],
+            learning_style['perception_value'],
+            learning_style['input_dimension'],
+            learning_style['input_value'],
+            learning_style['processing_dimension'],
+            learning_style['processing_value'],
+            learning_style['understanding_dimension'],
+            learning_style['understanding_value']
+        )
+        uow.student_course.add_student_to_course(
+            student_course
+        )
+        uow.commit()
+        result = student_course.serialize()
+        add_student_to_topics(uow,
+                              student_id,
+                              course_id)
+        return result
+
+
+def add_student_to_learning_element(
+        uow: unit_of_work.AbstractUnitOfWork,
+        student_id,
+        topic_id
+):
+    with uow:
+        learning_elements = get_learning_elements_for_topic_id(
+            uow,
+            topic_id
+        )
+        for le in learning_elements:
+            student_learning_element =\
+                DM.StudentLearningElement(
+                    student_id, le['learning_element_id'])
+            uow.student_learning_element.add_student_to_learning_element(
+                student_learning_element)
+            uow.commit()
+
+
+def add_student_to_topics(
+        uow: unit_of_work.AbstractUnitOfWork,
+        student_id,
+        course_id
+):
+    with uow:
+        topics = get_topics_for_course_id(
+            uow,
+            course_id
+        )
+        for topic in topics:
+            student_topic = DM.StudentTopic(student_id, topic['topic_id'])
+            uow.student_topic.add_student_to_topic(student_topic)
+            uow.commit()
+            add_student_to_learning_element(uow, student_id, topic['topic_id'])
 
 
 def create_admin(
@@ -1041,6 +1109,22 @@ def get_learning_element_by_id(
         return result
 
 
+def get_learning_elements_for_topic_id(
+        uow: unit_of_work.AbstractUnitOfWork,
+        topic_id
+) -> list:
+    with uow:
+        try:
+            learning_elements = uow.topic_learning_element\
+                .get_topic_learning_element_by_topic(topic_id)
+            results = []
+            for le in learning_elements:
+                results.append(le.serialize())
+            return results
+        except:
+            return []
+
+
 def get_learning_strategy(
         uow: unit_of_work.AbstractUnitOfWork,
         characteristic_id
@@ -1079,6 +1163,21 @@ def get_topic_by_id(
         else:
             result = topic[0].serialize()
         return result
+
+
+def get_topics_for_course_id(
+        uow: unit_of_work.AbstractUnitOfWork,
+        course_id
+) -> list:
+    with uow:
+        try:
+            topics = uow.course_topic.get_course_topic_by_course(course_id)
+            results = []
+            for topic in topics:
+                results.append(topic.serialize())
+            return results
+        except:
+            return[]
 
 
 def get_topic_learning_element_by_topic(

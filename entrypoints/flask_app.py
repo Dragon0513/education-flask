@@ -53,7 +53,7 @@ def create_user():
                 if condition5 and condition6 and condition7 and condition8:
                     role = request.json["role"].lower()
                     available_roles = [
-                        'admin', 'course_creator', 'student', 'teacher']
+                        'admin', 'course creator', 'student', 'teacher']
                     if role not in available_roles:
                         raise err.NoValidRoleError()
                     else:
@@ -411,16 +411,24 @@ def post_course():
             condition2 = 'name' in request.json
             condition3 = 'lms_id' in request.json
             condition4 = 'university' in request.json
-            if condition1 and condition2 and condition3 and condition4:
-                condition5 = type(request.json['lms_id']) is int
-                condition6 = type(request.json['name']) is str
-                condition7 = type(request.json['university']) is str
-                if condition5 and condition6 and condition7:
+            condition5 = 'created_by' in request.json
+            condition6 = 'created_at' in request.json
+            if condition1 and condition2 and condition3 and condition4\
+                    and condition5 and condition6:
+                condition7 = type(request.json['lms_id']) is int
+                condition8 = type(request.json['name']) is str
+                condition9 = type(request.json['university']) is str
+                condition10 = type(request.json['created_by']) is int
+                condition11 = type(request.json['created_at']) is str
+                if condition7 and condition8 and condition9\
+                        and condition10 and condition11:
                     course = services.create_course(
                         unit_of_work.SqlAlchemyUnitOfWork(),
                         request.json['lms_id'],
                         request.json['name'],
-                        request.json['university']
+                        request.json['university'],
+                        request.json['created_by'],
+                        request.json['created_at']
                     )
                     status_code = 201
                     return jsonify(course), status_code

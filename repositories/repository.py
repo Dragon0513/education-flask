@@ -9,6 +9,12 @@ from sqlalchemy.exc import IntegrityError
 
 class AbstractRepository(abc.ABC):  # pragma: no cover
     @abc.abstractmethod
+    def add_course_creator_to_course(self,
+                                     course_creator_cours)\
+            -> DM.CourseCreatorCourse:
+        raise NotImplementedError
+
+    @abc.abstractmethod
     def add_student_to_course(self,
                               student_course)\
             -> DM.StudentCourse:
@@ -281,9 +287,7 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
 
     @abc.abstractmethod
     def get_course_creator_by_id(self,
-                                 user_id,
-                                 lms_user_id,
-                                 course_creator_id) \
+                                 user_id) \
             -> UA.CourseCreator:
         raise NotImplementedError
 
@@ -483,6 +487,16 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
 class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
     def __init__(self, session):
         self.session = session
+
+    def add_course_creator_to_course(self,
+                                     course_creator_course)\
+            -> DM.CourseCreatorCourse:
+        try:
+            self.session.add(course_creator_course)
+        except IntegrityError:
+            raise err.ForeignKeyViolation()
+        except Exception:
+            raise err.CreationError()
 
     def add_student_to_course(self,
                               student_course)\

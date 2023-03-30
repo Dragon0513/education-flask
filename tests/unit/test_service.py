@@ -32,7 +32,8 @@ class FakeRepository(repository.AbstractRepository):
                  topic_learning_element=[],
                  student_course=[],
                  student_topic=[],
-                 student_learning_element=[]
+                 student_learning_element=[],
+                 course_creator_course=[]
                  ):
         self.user = set(user)
         self.settings = set(settings)
@@ -59,6 +60,11 @@ class FakeRepository(repository.AbstractRepository):
         self.student_course = set(student_course)
         self.student_topic = set(student_topic)
         self.student_learning_element = set(student_learning_element)
+        self.course_creator_course = set(course_creator_course)
+
+    def add_course_creator_to_course(self, course_creator_course):
+        course_creator_course.id = len(self.course_creator_course) + 1
+        self.course_creator_course.add(course_creator_course)
 
     def add_student_to_course(self, student_course):
         student_course.id = len(self.student_course) + 1
@@ -561,6 +567,7 @@ class FakeUnitOfWork(unit_of_work.AbstractUnitOfWork):
         self.student_course = FakeRepository()
         self.student_topic = FakeRepository()
         self.student_learning_element = FakeRepository()
+        self.course_creator_course = FakeRepository()
         self.committed = False
 
     def commit(self):
@@ -2468,16 +2475,24 @@ def test_delete_questionnaire(vv_2_f7, vv_5_f19, vv_7_f27, vv_10_f39,
 def test_create_course(lms_id, name, university):
     uow = FakeUnitOfWork()
     entries_beginning = len(uow.course.course)
+    entries_beginning_course_creator_course =\
+        len(uow.course_creator_course.course_creator_course)
     result = services.create_course(
         uow=uow,
         lms_id=lms_id,
         name=name,
-        university=university
+        university=university,
+        created_by=1,
+        created_at="2023-01-01"
     )
     assert type(result) is dict
     assert result != {}
     entries_after = len(uow.course.course)
+    entries_after_course_creator_course =\
+        len(uow.course_creator_course.course_creator_course)
     assert entries_beginning + 1 == entries_after
+    assert entries_beginning_course_creator_course + 1 ==\
+        entries_after_course_creator_course
 
 
 @pytest.mark.parametrize("lms_id, name, university", [
@@ -2494,7 +2509,9 @@ def test_get_course_by_id(lms_id, name, university):
         uow=uow,
         lms_id=lms_id,
         name=name,
-        university=university
+        university=university,
+        created_by=1,
+        created_at="2023-01-01"
     )
     result = services.get_course_by_id(
         uow=uow,
@@ -2518,7 +2535,9 @@ def test_update_course(lms_id, name, university):
         uow=uow,
         lms_id=lms_id,
         name=name,
-        university=university
+        university=university,
+        created_by=1,
+        created_at="2023-01-01"
     )
     entries_beginning = len(uow.course.course)
     result = services.update_course(
@@ -2547,7 +2566,9 @@ def test_delete_course(lms_id, name, university):
         uow=uow,
         lms_id=lms_id,
         name=name,
-        university=university
+        university=university,
+        created_by=1,
+        created_at="2023-01-01"
     )
     entries_beginning = len(uow.course.course)
     result = services.delete_course(
@@ -3183,7 +3204,9 @@ def test_add_student_to_course(name,
         uow=uow,
         lms_id=lms_id_course,
         name=course_name,
-        university=university
+        university=university,
+        created_by=1,
+        created_at="2023-01-01"
     )
     services.create_topic(
         uow=uow,
@@ -3226,3 +3249,18 @@ def test_add_student_to_course(name,
     assert entries_beginning_course + 1 == entries_after_course
     assert entries_after_topic > entries_beginning_topic
     assert entries_after_le > entries_beginning_le
+
+
+def test_create_course_creator_course():
+    uow = FakeUnitOfWork()
+    entries_beginning = len(uow.course_creator_course.course_creator_course)
+    result = services.add_course_creator_to_course(
+        uow=uow,
+        course_creator_id=1,
+        course_id=1,
+        created_at="2023-01-01"
+    )
+    entries_after = len(uow.course_creator_course.course_creator_course)
+    assert type(result) == dict
+    assert result != {}
+    assert entries_beginning + 1 == entries_after

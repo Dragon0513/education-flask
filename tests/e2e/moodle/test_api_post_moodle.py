@@ -31,6 +31,26 @@ topic_id_test = 0
             'settings'
         ],
         201,
+        False
+    ),
+    # Working Example
+    (
+        {
+            "name": "Maria Musterfrau",
+            "lms_user_id": 2,
+            "role": "Course Creator",
+            "university": "TH-AB",
+            "password": "password"
+        },
+        [
+            'id',
+            'name',
+            'university',
+            'lms_user_id',
+            'role',
+            'settings'
+        ],
+        201,
         True
     ),
     # Missing Parameter
@@ -96,7 +116,6 @@ def test_api_create_user_from_moodle(
         {
             "name": "Test Course",
             "lms_id": 1,
-            "created_by": "Maria Musterfrau",
             "created_at": "2017-07-21T17:32:28Z",
             "university": "TH-AB"
         },
@@ -108,7 +127,6 @@ def test_api_create_user_from_moodle(
     (
         {
             "name": "Test Course",
-            "created_by": "Maria Musterfrau",
             "university": "TH-AB"
         },
         ['error'],
@@ -120,7 +138,6 @@ def test_api_create_user_from_moodle(
         {
             "name": "Test Course",
             "lms_id": "1",
-            "created_by": "Maria Musterfrau",
             "created_at": "2017-07-21T17:32:28Z",
             "university": "TH-AB"
         },
@@ -134,7 +151,6 @@ def test_api_create_user_from_moodle(
         {
             "name": "Test Course",
             "lms_id": 1,
-            "created_by": "Maria Musterfrau",
             "created_at": "2017-07-21T17:32:28Z",
             "university": "TH-AB"
         },
@@ -151,6 +167,8 @@ def test_api_create_course_from_moodle(
     status_code_expected,
     save_id
 ):
+    global user_id_test
+    input['created_by'] = user_id_test
     r = client.post("/lms/course", json=input)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))

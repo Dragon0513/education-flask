@@ -2,7 +2,29 @@ from service_layer import unit_of_work
 from domain.userAdministartion import model as UA
 from domain.learnersModel import model as LM
 from domain.domainModel import model as DM
-import errors as err
+
+
+def add_course_creator_to_course(
+        uow: unit_of_work.AbstractUnitOfWork,
+        created_by,
+        course_id,
+        created_at
+) -> dict:
+    with uow:
+        course_creator = uow.course_creator.get_course_creator_by_id(
+            created_by
+        )
+        course_creator_course = DM.CourseCreatorCourse(
+            course_creator[0].id,
+            course_id,
+            created_at
+        )
+        uow.course_creator_course.add_course_creator_to_course(
+            course_creator_course
+        )
+        uow.commit()
+        result = course_creator_course.serialize()
+        return result
 
 
 def add_student_to_course(
@@ -88,13 +110,21 @@ def create_course(
         uow: unit_of_work.AbstractUnitOfWork,
         lms_id,
         name,
-        university
+        university,
+        created_by,
+        created_at
 ) -> dict:
     with uow:
         course = DM.Course(lms_id, name, university)
         uow.course.create_course(course)
         uow.commit()
         result = course.serialize()
+        add_course_creator_to_course(
+            uow,
+            created_by,
+            result['id'],
+            created_at
+        )
         return result
 
 
@@ -704,7 +734,7 @@ def create_user(
         match role.lower():
             case "admin":
                 create_admin(uow, user)
-            case "course_creator":
+            case "course creator":
                 create_course_creator(uow, user)
             case "student":
                 create_student(uow, user)

@@ -3139,8 +3139,9 @@ components:
           example: 1
           description: "The ID of the course from the LMS"
         created_by:
-          type: "string"
-          example: "Maria Musterfrau"
+          type: "integer"
+          format: "int64"
+          example: 1
           description: "Who created the course"
         created_at:
           type: "string"

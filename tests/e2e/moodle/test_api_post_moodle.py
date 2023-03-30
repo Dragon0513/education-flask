@@ -3,7 +3,16 @@ import pytest
 import json
 
 
-@pytest.mark.parametrize("input, keys_expected, status_code_expected", [
+# The IDs will be set during the post test to guarantee an available option
+# for tests, that need a foreign key
+user_id_test = 0
+student_id_test = 0
+course_id_test = 0
+topic_id_test = 0
+
+
+@pytest.mark.parametrize("input, keys_expected, status_code_expected,\
+                         save_id", [
     # Working Example
     (
         {
@@ -21,7 +30,28 @@ import json
             'role',
             'settings'
         ],
-        201
+        201,
+        False
+    ),
+    # Working Example
+    (
+        {
+            "name": "Maria Musterfrau",
+            "lms_user_id": 2,
+            "role": "Course Creator",
+            "university": "TH-AB",
+            "password": "password"
+        },
+        [
+            'id',
+            'name',
+            'university',
+            'lms_user_id',
+            'role',
+            'settings'
+        ],
+        201,
+        True
     ),
     # Missing Parameter
     (
@@ -32,7 +62,8 @@ import json
             "password": "password"
         },
         ["error"],
-        400
+        400,
+        False
     ),
     # Parameter with wrong data type
     (
@@ -44,7 +75,8 @@ import json
             "password": "password"
         },
         ["error"],
-        400
+        400,
+        False
     ),
     # User already exists
     (
@@ -56,70 +88,75 @@ import json
             "password": "password"
         },
         ["error"],
-        400
+        400,
+        False
     ),
 ])
 def test_api_create_user_from_moodle(
     client,
     input,
     keys_expected,
-    status_code_expected
+    status_code_expected,
+    save_id
 ):
     r = client.post("/lms/user", json=input)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
     for key in response.keys():
         assert key in keys_expected
+    if save_id:
+        global user_id_test
+        user_id_test = response['id']
 
 
-@pytest.mark.parametrize("input, keys_expected, status_code_expected", [
+@pytest.mark.parametrize("input, keys_expected, status_code_expected,\
+                         save_id", [
     # Working Example
     (
         {
             "name": "Test Course",
             "lms_id": 1,
-            "created_by": "Maria Musterfrau",
             "created_at": "2017-07-21T17:32:28Z",
             "university": "TH-AB"
         },
         ['id', 'name', 'lms_id', 'created_at', 'created_by', 'university'],
-        201
+        201,
+        True
     ),
     # Missing Parameter
     (
         {
             "name": "Test Course",
-            "lms_id": 1,
-            "created_by": "Maria Musterfrau",
             "university": "TH-AB"
         },
         ['error'],
-        400
+        400,
+        False
     ),
     # Parameter with wrong data type
     (
         {
             "name": "Test Course",
             "lms_id": "1",
-            "created_by": "Maria Musterfrau",
             "created_at": "2017-07-21T17:32:28Z",
             "university": "TH-AB"
         },
 
         ['error'],
-        400
+        400,
+        False
     ),
     # Course already exists
     (
         {
             "name": "Test Course",
             "lms_id": 1,
-            "created_by": "Maria Musterfrau",
             "created_at": "2017-07-21T17:32:28Z",
             "university": "TH-AB"
         },
         ['error'],
-        400
+        400,
+        False
     ),
 
 ])
@@ -127,17 +164,23 @@ def test_api_create_course_from_moodle(
     client,
     input,
     keys_expected,
-    status_code_expected
+    status_code_expected,
+    save_id
 ):
-    r = client.post("/moodle/course", json=input)
+    global user_id_test
+    input['created_by'] = user_id_test
+    r = client.post("/lms/course", json=input)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
     for key in response.keys():
         assert key in keys_expected
+    if save_id:
+        global course_id_test
+        course_id_test = response['id']
 
 
-@pytest.mark.parametrize("input, course_id, moodle_course_id, \
-                          keys_expected, status_code_expected", [
+@pytest.mark.parametrize("input, moodle_course_id, \
+                          keys_expected, status_code_expected, save_id", [
     # Working Example for Topic
     (
         {
@@ -150,10 +193,10 @@ def test_api_create_course_from_moodle(
             "university": "TH-AB"
         },
         1,
-        1,
         ['id', 'name', 'lms_id', 'is_topic', 'parent_id',
             'contains_le', 'created_by', 'created_at', 'university'],
-        201
+        201,
+        True
     ),
     # Working Example for Sub-Topic
     (
@@ -168,10 +211,10 @@ def test_api_create_course_from_moodle(
             "university": "TH-AB"
         },
         1,
-        1,
         ['id', 'name', 'lms_id', 'is_topic', 'parent_id',
             'contains_le', 'created_by', 'created_at', 'university'],
-        201
+        201,
+        False
     ),
     # Missing Parameter
     (
@@ -184,9 +227,9 @@ def test_api_create_course_from_moodle(
             "university": "TH-AB"
         },
         1,
-        1,
         ['error'],
-        400
+        400,
+        False
     ),
     # Parameter with wrong data type
     (
@@ -200,9 +243,9 @@ def test_api_create_course_from_moodle(
             "university": "TH-AB"
         },
         1,
-        1,
         ['error'],
-        400
+        400,
+        False
     ),
     # Topic already exists
     (
@@ -216,30 +259,36 @@ def test_api_create_course_from_moodle(
             "university": "TH-AB"
         },
         1,
-        1,
         ['error'],
-        400
+        400,
+        False
     ),
 
 ])
 def test_api_create_topic_from_moodle(
     client,
     input,
-    course_id,
     moodle_course_id,
     keys_expected,
-    status_code_expected
+    status_code_expected,
+    save_id
 ):
-    url = "/moodle/course/" + str(course_id) + \
+    global course_id_test
+    global topic_id_test
+    url = "/lms/course/" + str(course_id_test) + \
         "/" + str(moodle_course_id) + "/topic"
+    if topic_id_test != 0:
+        input['parent_id'] = topic_id_test
     r = client.post(url, json=input)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
-    for key in response.keys():
-        assert key in keys_expected
+    for key in keys_expected:
+        assert key in response.keys()
+    if save_id:
+        topic_id_test = response['id']
 
 
-@pytest.mark.parametrize("input, course_id, moodle_course_id, topic_id, \
+@pytest.mark.parametrize("input, moodle_course_id,\
                          moodle_topic_id, keys_expected, \
                          status_code_expected", [
     # Working Example for LE
@@ -253,8 +302,6 @@ def test_api_create_topic_from_moodle(
             "created_at": "2017-07-21T17:32:28Z",
             "university": "TH-AB"
         },
-        1,
-        1,
         1,
         1,
         ['id', 'lms_id', 'activity_type', 'classification',
@@ -273,8 +320,6 @@ def test_api_create_topic_from_moodle(
         },
         1,
         1,
-        1,
-        1,
         ['error'],
         400
     ),
@@ -289,8 +334,6 @@ def test_api_create_topic_from_moodle(
             "created_at": "2017-07-21T17:32:28Z",
             "university": "TH-AB"
         },
-        1,
-        1,
         1,
         1,
         ['error'],
@@ -309,8 +352,6 @@ def test_api_create_topic_from_moodle(
         },
         1,
         1,
-        1,
-        1,
         ['error'],
         400
     )
@@ -318,21 +359,21 @@ def test_api_create_topic_from_moodle(
 def test_api_create_le_from_moodle(
     client,
     input,
-    course_id,
     moodle_course_id,
-    topic_id,
     moodle_topic_id,
     keys_expected,
     status_code_expected
 ):
-    url = "/moodle/course/" + str(course_id) + "/" + str(moodle_course_id) + \
-        "/topic/" + str(topic_id) + "/" + \
+    global course_id_test
+    global topic_id_test
+    url = "/lms/course/" + str(course_id_test) + "/" + str(moodle_course_id) +\
+        "/topic/" + str(topic_id_test) + "/" + \
         str(moodle_topic_id) + "/learningElement"
     r = client.post(url, json=input)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
-    for key in response.keys():
-        assert key in keys_expected
+    for key in keys_expected:
+        assert key in response.keys()
 
 
 @pytest.mark.parametrize("input, student_id, moodle_user_id, \
@@ -1974,7 +2015,7 @@ def test_post_topic_visit(
     keys_expected,
     status_code_expected
 ):
-    url = "/moodle/student/" + str(student_id) + \
+    url = "/lms/student/" + str(student_id) + \
         "/" + str(moodle_user_id) + "/topic/" + str(topic_id)
     r = client.post(url, json=input)
     assert r.status_code == status_code_expected
@@ -2043,7 +2084,7 @@ def test_post_learning_element_visit(
     keys_expected,
     status_code_expected
 ):
-    url = "/moodle/student/" + str(student_id) + \
+    url = "/lms/student/" + str(student_id) + \
         "/" + str(moodle_user_id) + "/learning_element/" + \
         str(learning_element_id)
     r = client.post(url, json=input)

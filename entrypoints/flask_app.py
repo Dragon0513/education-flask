@@ -100,7 +100,7 @@ def create_user():
                 if condition5 and condition6 and condition7 and condition8:
                     role = request.json["role"].lower()
                     available_roles = [
-                        'admin', 'course_creator', 'student', 'teacher']
+                        'admin', 'course creator', 'student', 'teacher']
                     if role not in available_roles:
                         raise err.NoValidRoleError()
                     else:
@@ -487,6 +487,300 @@ def questionnaire(student_id, lms_user_id):
                 return jsonify(result), status_code
             else:
                 raise err.MissingParameterError()
+
+
+@app.route("/lms/course", methods=['POST'])
+@cross_origin(supports_credentials=True)
+def post_course():
+    method = request.method
+    match method:
+        case 'POST':
+            condition1 = request.json is not None
+            condition2 = 'name' in request.json
+            condition3 = 'lms_id' in request.json
+            condition4 = 'university' in request.json
+            condition5 = 'created_by' in request.json
+            condition6 = 'created_at' in request.json
+            if condition1 and condition2 and condition3 and condition4\
+                    and condition5 and condition6:
+                condition7 = type(request.json['lms_id']) is int
+                condition8 = type(request.json['name']) is str
+                condition9 = type(request.json['university']) is str
+                condition10 = type(request.json['created_by']) is int
+                condition11 = type(request.json['created_at']) is str
+                if condition7 and condition8 and condition9\
+                        and condition10 and condition11:
+                    course = services.create_course(
+                        unit_of_work.SqlAlchemyUnitOfWork(),
+                        request.json['lms_id'],
+                        request.json['name'],
+                        request.json['university'],
+                        request.json['created_by'],
+                        request.json['created_at']
+                    )
+                    status_code = 201
+                    return jsonify(course), status_code
+                else:
+                    raise err.WrongParameterValueError()
+            else:
+                raise err.MissingParameterError()
+
+
+@app.route("/lms/course/<course_id>/<lms_course_id>",
+           methods=['PUT', 'DELETE'])
+@cross_origin(supports_credentials=True)
+def course_management(course_id, lms_course_id):
+    method = request.method
+    match method:
+        case 'PUT':
+            condition1 = request.json is not None
+            condition2 = 'name' in request.json
+            condition3 = 'lms_id' in request.json
+            condition4 = 'university' in request.json
+            if condition1 and condition2 and condition3 and condition4:
+                course = services.update_course(
+                    unit_of_work.SqlAlchemyUnitOfWork(),
+                    course_id,
+                    request.json['lms_id'],
+                    request.json['name'],
+                    request.json['university']
+                )
+                status_code = 201
+                return jsonify(course), status_code
+            else:
+                raise err.MissingParameterError()
+        case 'DELETE':
+            services.delete_course(
+                unit_of_work.SqlAlchemyUnitOfWork(),
+                course_id
+            )
+            result = {'message': 'Deletion was successful'}
+            status_code = 200
+            return jsonify(result), status_code
+
+
+@app.route("/lms/course/<course_id>/<lms_course_id>/topic",
+           methods=['POST'])
+@cross_origin(supports_credentials=True)
+def post_topic(course_id, lms_course_id):
+    method = request.method
+    match method:
+        case 'POST':
+            condition1 = request.json is not None
+            condition2 = 'name' in request.json
+            condition3 = 'lms_id' in request.json
+            condition4 = 'is_topic' in request.json
+            condition5 = 'contains_le' in request.json
+            condition6 = 'created_by' in request.json
+            condition7 = 'created_at' in request.json
+            condition8 = 'university' in request.json
+            if condition1 and condition2 and condition3 and condition4\
+                    and condition5 and condition6 and condition7\
+                    and condition8:
+                condition9 = type(request.json['name']) is str
+                condition10 = type(request.json['lms_id']) is int
+                condition11 = type(request.json['is_topic']) is bool
+                condition12 = type(request.json['contains_le']) is bool
+                condition13 = type(request.json['created_by']) is str
+                condition14 = type(request.json['created_at']) is str
+                condition15 = type(request.json['university']) is str
+                if condition9 and condition10 and condition11 and\
+                        condition12 and condition13 and\
+                        condition14 and condition15:
+                    topic = services.create_topic(
+                        unit_of_work.SqlAlchemyUnitOfWork(),
+                        course_id,
+                        request.json['lms_id'],
+                        request.json['is_topic'],
+                        request.json['parent_id']
+                        if 'parent_id' in request.json else None,
+                        request.json['contains_le'],
+                        request.json['name'],
+                        request.json['university'],
+                        request.json['created_by'],
+                        request.json['created_at']
+                    )
+                    status_code = 201
+                    return jsonify(topic), status_code
+                else:
+                    raise err.WrongParameterValueError()
+            else:
+                raise err.MissingParameterError()
+
+
+@app.route("/lms/course/<course_id>/<lms_course_id>/topic/<topic_id>",
+           methods=['PUT', 'DELETE'])
+@cross_origin(supports_credentials=True)
+def topic_administration(course_id, lms_course_id, topic_id):
+    method = request.method
+    match method:
+        case 'PUT':
+            condition1 = request.json is not None
+            condition2 = 'name' in request.json
+            condition3 = 'lms_id' in request.json
+            condition4 = 'is_topic' in request.json
+            condition5 = 'contains_le' in request.json
+            condition6 = 'created_by' in request.json
+            condition7 = 'created_at' in request.json
+            condition8 = 'university' in request.json
+            condition9 = 'last_updated' in request.json
+            if condition1 and condition2 and condition3 and condition4\
+                    and condition5 and condition6 and condition7\
+                    and condition8 and condition9:
+                topic = services.update_topic(
+                    unit_of_work.SqlAlchemyUnitOfWork(),
+                    topic_id,
+                    request.json['lms_id'],
+                    request.json['is_topic'],
+                    request.json['parent_id'],
+                    request.json['contains_le'],
+                    request.json['name'],
+                    request.json['university'],
+                    request.json['created_by'],
+                    request.json['created_at'],
+                    request.json['last_updated']
+                )
+                status_code = 201
+                return jsonify(topic), status_code
+            else:
+                raise err.MissingParameterError()
+        case 'DELETE':
+            services.delete_topic(
+                unit_of_work.SqlAlchemyUnitOfWork(),
+                topic_id
+            )
+            result = {'message': 'Deletion was successful'}
+            status_code = 200
+            return jsonify(result), status_code
+
+
+@app.route("/lms/course/<course_id>/<lms_course_id>/topic/<topic_id>/" +
+           "<lms_topic_id>/learningElement", methods=['POST'])
+@cross_origin(supports_credentials=True)
+def create_learning_element(course_id,
+                            lms_course_id,
+                            topic_id,
+                            lms_topic_id):
+    method = request.method
+    match method:
+        case 'POST':
+            condition1 = request.json is not None
+            condition2 = 'lms_id' in request.json
+            condition3 = 'activity_type' in request.json
+            condition4 = 'classification' in request.json
+            condition5 = 'name' in request.json
+            condition6 = 'created_by' in request.json
+            condition7 = 'created_at' in request.json
+            condition8 = 'university' in request.json
+            if condition1 and condition2 and condition3 and condition4\
+                    and condition5 and condition6 and condition7 and\
+                    condition8:
+                condition9 = type(request.json['lms_id']) == int
+                condition10 = type(request.json['activity_type']) == str
+                condition11 = type(request.json['classification']) == str
+                condition12 = type(request.json['name']) == str
+                condition13 = type(request.json['created_by']) == str
+                condition14 = type(request.json['created_at']) == str
+                condition15 = type(request.json['university']) == str
+                if condition9 and condition10 and condition11\
+                        and condition12 and condition13\
+                        and condition14 and condition15:
+                    learning_element = services.create_learning_element(
+                        unit_of_work.SqlAlchemyUnitOfWork(),
+                        topic_id,
+                        request.json['lms_id'],
+                        request.json['activity_type'],
+                        request.json['classification'],
+                        request.json['name'],
+                        request.json['created_by'],
+                        request.json['created_at'],
+                        request.json['university']
+                    )
+                    status_code = 201
+                    return jsonify(learning_element), status_code
+                else:
+                    raise err.WrongParameterValueError()
+            else:
+                raise err.MissingParameterError()
+
+
+@app.route("/lms/course/<course_id>/<lms_course_id>/topic/<topic_id>" +
+           "<lms_topic_id>/learningElement/<learning_element_id>",
+           methods=['PUT', 'DELETE'])
+@cross_origin(supports_credentials=True)
+def learning_element_administration(course_id,
+                                    lms_course_id,
+                                    topic_id,
+                                    lms_topic_id,
+                                    learning_element_id):
+    method = request.method
+    match method:
+        case 'PUT':
+            condition1 = request.json is not None
+            condition2 = 'lms_id' in request.json
+            condition3 = 'activity_type' in request.json
+            condition4 = 'classification' in request.json
+            condition5 = 'name' in request.json
+            condition6 = 'created_by' in request.json
+            condition7 = 'created_at' in request.json
+            condition8 = 'university' in request.json
+            condition9 = 'last_updated' in request.json
+            if condition1 and condition2 and condition3 and condition4\
+                    and condition5 and condition6 and condition7\
+                    and condition8 and condition9:
+                condition9 = type(request.json['lms_id']) == int
+                condition10 = type(request.json['activity_type']) == str
+                condition11 = type(request.json['classification']) == str
+                condition12 = type(request.json['name']) == str
+                condition13 = type(request.json['created_by']) == str
+                condition14 = type(request.json['created_at']) == str
+                condition15 = type(request.json['university']) == str
+                condition16 = type(request.json['last_updated']) == str
+                if condition9 and condition10 and condition11\
+                        and condition12 and condition13 and condition14\
+                        and condition15 and condition16:
+                    learning_element = services.update_learning_element(
+                        unit_of_work.SqlAlchemyUnitOfWork(),
+                        learning_element_id,
+                        request.json['lms_id'],
+                        request.json['activity_type'],
+                        request.json['classification'],
+                        request.json['name'],
+                        request.json['created_by'],
+                        request.json['created_at'],
+                        request.json['last_updated'],
+                        request.json['university']
+                    )
+                    status_code = 201
+                    return jsonify(learning_element), status_code
+                else:
+                    raise err.WrongParameterValueError()
+            else:
+                raise err.MissingParameterError()
+        case 'DELETE':
+            services.delete_learning_element(
+                unit_of_work.SqlAlchemyUnitOfWork(),
+                learning_element_id
+            )
+            result = {'message': 'Deletion was successful'}
+            status_code = 200
+            return jsonify(result), status_code
+
+
+@app.route("/lms/course/<course_id>/student/<student_id>",
+           methods=['POST'])
+@cross_origin(supports_credentials=True)
+def post_student_course(course_id, student_id):
+    method = request.method
+    match method:
+        case 'POST':
+            student_course = services.add_student_to_course(
+                unit_of_work.SqlAlchemyUnitOfWork(),
+                student_id,
+                course_id
+            )
+            status_code = 201
+            return jsonify(student_course), status_code
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)

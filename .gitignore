@@ -1,6 +1,6 @@
 .pytest_cache/
 __pycache__/
-venv/
+.venv/
 .scannerwork/
 .dependencygraph/
 coverage.xml

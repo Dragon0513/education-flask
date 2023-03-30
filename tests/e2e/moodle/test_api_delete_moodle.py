@@ -27,7 +27,7 @@ def test_api_delete_user_from_moodle(
     keys_expected,
     status_code_expected
 ):
-    url = "/moodle/user/" + str(user_id) + "/" + str(moodle_user_id)
+    url = "/lms/user/" + str(user_id) + "/" + str(moodle_user_id)
     r = client.delete(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -59,7 +59,7 @@ def test_api_delete_course_from_moodle(
     keys_expected,
     status_code_expected
 ):
-    url = "/moodle/course/" + str(course_id) + "/" + str(moodle_course_id)
+    url = "/lms/course/" + str(course_id) + "/" + str(moodle_course_id)
     r = client.delete(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -98,7 +98,7 @@ def test_api_delete_topic_from_moodle(
     keys_expected,
     status_code_expected
 ):
-    url = "/moodle/course/" + str(course_id) + \
+    url = "/lms/course/" + str(course_id) + \
         "/" + str(moodle_course_id) + "/topic/" + \
         str(topic_id) + "/" + str(moodle_topic_id)
     r = client.post(url)
@@ -146,7 +146,7 @@ def test_api_delete_le_from_moodle(
     keys_expected,
     status_code_expected
 ):
-    url = "/moodle/course/" + str(course_id) + "/" + str(moodle_course_id) + \
+    url = "/lms/course/" + str(course_id) + "/" + str(moodle_course_id) + \
         "/topic/" + str(topic_id) + "/" + str(moodle_topic_id) + \
         "/learningElement/" + str(learning_element_id) + "/" + \
         str(moodle_learning_element_id)

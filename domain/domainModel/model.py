@@ -7,7 +7,7 @@ class LearningElement:
                  university,
                  created_by,
                  created_at,
-                 last_updated) -> None:
+                 last_updated=None) -> None:
         self.lms_id = lms_id
         self.activity_type = activity_type
         self.classification = classification
@@ -56,7 +56,7 @@ class Topic:
                  university,
                  created_by,
                  created_at,
-                 last_updated) -> None:
+                 last_updated=None) -> None:
         self.lms_id = lms_id
         self.is_topic = is_topic
         self.parent_id = parent_id

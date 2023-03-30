@@ -1,6 +1,7 @@
 from service_layer import unit_of_work
 from domain.userAdministartion import model as UA
 from domain.learnersModel import model as LM
+from domain.domainModel import model as DM
 
 
 def create_admin(
@@ -15,6 +16,20 @@ def create_admin(
         return result
 
 
+def create_course(
+        uow: unit_of_work.AbstractUnitOfWork,
+        lms_id,
+        name,
+        university
+) -> dict:
+    with uow:
+        course = DM.Course(lms_id, name, university)
+        uow.course.create_course(course)
+        uow.commit()
+        result = course.serialize()
+        return result
+
+
 def create_course_creator(
         uow: unit_of_work.AbstractUnitOfWork,
         user
@@ -24,6 +39,19 @@ def create_course_creator(
         uow.course_creator.create_course_creator(course_creator)
         uow.commit()
         result = course_creator.serialize()
+        return result
+
+
+def create_course_topic(
+        uow: unit_of_work.AbstractUnitOfWork,
+        course_id,
+        topic_id
+) -> dict:
+    with uow:
+        course_topic = DM.CourseTopic(course_id, topic_id)
+        uow.course_topic.create_course_topic(course_topic)
+        uow.commit()
+        result = course_topic.serialize()
         return result
 
 
@@ -212,6 +240,32 @@ def create_learning_characteristics(
         create_learning_strategy(uow, characteristic.id)
         create_learning_style(uow, characteristic.id)
         result = characteristic.serialize()
+        return result
+
+
+def create_learning_element(
+        uow: unit_of_work.AbstractUnitOfWork,
+        topic_id,
+        lms_id,
+        activity_type,
+        classification,
+        name,
+        created_by,
+        created_at,
+        university
+) -> dict:
+    with uow:
+        learning_element = DM.LearningElement(lms_id,
+                                              activity_type,
+                                              classification,
+                                              name,
+                                              university,
+                                              created_by,
+                                              created_at)
+        uow.learning_element.create_learning_element(learning_element)
+        uow.commit()
+        result = learning_element.serialize()
+        create_topic_learning_element(uow, topic_id, result['id'])
         return result
 
 
@@ -525,6 +579,47 @@ def create_teacher(
         return result
 
 
+def create_topic(
+    uow: unit_of_work.AbstractUnitOfWork,
+    course_id,
+    lms_id,
+    is_topic,
+    parent_id,
+    contains_le,
+    name,
+    university,
+    created_by,
+    created_at,
+
+) -> dict:
+    with uow:
+        topic = DM.Topic(lms_id, is_topic, parent_id, contains_le,
+                         name, university, created_by, created_at)
+        uow.topic.create_topic(topic)
+        uow.commit()
+        result = topic.serialize()
+        create_course_topic(uow, course_id, result['id'])
+        return result
+
+
+def create_topic_learning_element(
+        uow: unit_of_work.AbstractUnitOfWork,
+        topic_id,
+        learning_element_id
+) -> dict:
+    with uow:
+        topic_learning_element = DM.TopicLearningElement(
+            topic_id,
+            learning_element_id
+        )
+        uow.topic_learning_element.create_topic_learning_element(
+            topic_learning_element
+        )
+        uow.commit()
+        result = topic_learning_element.serialize()
+        return result
+
+
 def create_user(
         uow: unit_of_work.AbstractUnitOfWork,
         name,
@@ -561,12 +656,46 @@ def delete_admin(
         return {}
 
 
+def delete_course(
+        uow: unit_of_work.AbstractUnitOfWork,
+        course_id
+):
+    with uow:
+        uow.course.delete_course(course_id)
+        uow.commit()
+        return {}
+
+
 def delete_course_creator(
         uow: unit_of_work.AbstractUnitOfWork,
         user_id
 ):
     with uow:
         uow.course_creator.delete_course_creator(user_id)
+        uow.commit()
+        return {}
+
+
+def delete_course_topic_by_course(
+        uow: unit_of_work.AbstractUnitOfWork,
+        course_id
+) -> dict:
+    with uow:
+        uow.course_topic.delete_course_topic_by_course(
+            course_id
+        )
+        uow.commit()
+        return {}
+
+
+def delete_course_topic_by_topic(
+        uow: unit_of_work.AbstractUnitOfWork,
+        topic_id
+) -> dict:
+    with uow:
+        uow.course_topic.delete_course_topic_by_topic(
+            topic_id
+        )
         uow.commit()
         return {}
 
@@ -613,6 +742,17 @@ def delete_ils_understanding_answers(
             .delete_ils_understanding_answers(questionnaire_id)
         uow.commit()
         return{}
+
+
+def delete_learning_element(
+        uow: unit_of_work.AbstractUnitOfWork,
+        learning_element_id
+):
+    with uow:
+        uow.learning_element\
+            .delete_learning_element(learning_element_id)
+        uow.commit()
+        return {}
 
 
 def delete_list_k(
@@ -747,6 +887,86 @@ def delete_learning_style(
         return {}
 
 
+def delete_topic(
+        uow: unit_of_work.AbstractUnitOfWork,
+        topic_id
+):
+    with uow:
+        uow.topic.delete_course_topic_by_topic(topic_id)
+        uow.commit()
+        uow.topic.delete_topic(topic_id)
+        uow.commit()
+        return {}
+
+
+def delete_topic_learning_element_by_topic(
+        uow: unit_of_work.AbstractUnitOfWork,
+        topic_id
+):
+    with uow:
+        uow.topic_learning_element.delete_topic_learning_element_by_topic(
+            topic_id
+        )
+        uow.commit()
+        return {}
+
+
+def delete_topic_learning_element_by_learning_element(
+        uow: unit_of_work.AbstractUnitOfWork,
+        learning_element_id
+):
+    with uow:
+        uow.topic_learning_element\
+            .delete_topic_learning_element_by_learning_element(
+                learning_element_id
+            )
+        uow.commit()
+        return {}
+
+
+def get_course_by_id(
+        uow: unit_of_work.AbstractUnitOfWork,
+        course_id
+) -> dict:
+    with uow:
+        course = uow.course.get_course_by_id(course_id)
+        if course == []:
+            result = {}
+        else:
+            result = course[0].serialize()
+        return result
+
+
+def get_course_topic_by_course(
+        uow: unit_of_work.AbstractUnitOfWork,
+        course_id
+) -> dict:
+    with uow:
+        course_topic = uow.course_topic.get_course_topic_by_course(
+            course_id
+        )
+        if course_topic == []:
+            result = {}
+        else:
+            result = course_topic[0].serialize()
+        return result
+
+
+def get_course_topic_by_topic(
+        uow: unit_of_work.AbstractUnitOfWork,
+        topic_id
+) -> dict:
+    with uow:
+        course_topic = uow.course_topic.get_course_topic_by_topic(
+            topic_id
+        )
+        if course_topic == []:
+            result = {}
+        else:
+            result = course_topic[0].serialize()
+        return result
+
+
 def get_knowledge(
         uow: unit_of_work.AbstractUnitOfWork,
         characteristic_id
@@ -807,6 +1027,20 @@ def get_learning_characteristics(
         return result
 
 
+def get_learning_element_by_id(
+        uow: unit_of_work.AbstractUnitOfWork,
+        learning_element_id
+) -> dict:
+    with uow:
+        learning_element = uow.learning_element\
+            .get_learning_element_by_id(learning_element_id)
+        if learning_element == []:
+            result = {}
+        else:
+            result = learning_element[0].serialize()
+        return result
+
+
 def get_learning_strategy(
         uow: unit_of_work.AbstractUnitOfWork,
         characteristic_id
@@ -831,6 +1065,51 @@ def get_learning_style(
             result = {}
         else:
             result = style[0].serialize()
+        return result
+
+
+def get_topic_by_id(
+        uow: unit_of_work.AbstractUnitOfWork,
+        topic_id
+) -> dict:
+    with uow:
+        topic = uow.topic.get_topic_by_id(topic_id)
+        if topic == []:
+            result = {}
+        else:
+            result = topic[0].serialize()
+        return result
+
+
+def get_topic_learning_element_by_topic(
+        uow: unit_of_work.AbstractUnitOfWork,
+        topic_id
+) -> dict:
+    with uow:
+        topic_learning_element = uow.topic_learning_element\
+            .get_topic_learning_element_by_topic(
+                topic_id
+            )
+        if topic_learning_element == []:
+            result = {}
+        else:
+            result = topic_learning_element[0].serialize()
+        return result
+
+
+def get_topic_learning_element_by_learning_element(
+        uow: unit_of_work.AbstractUnitOfWork,
+        learning_element_id
+) -> dict:
+    with uow:
+        topic_learning_element = uow.topic_learning_element\
+            .get_topic_learning_element_by_learning_element(
+                learning_element_id
+            )
+        if topic_learning_element == []:
+            result = {}
+        else:
+            result = topic_learning_element[0].serialize()
         return result
 
 
@@ -939,6 +1218,52 @@ def get_user_by_id(
         return result
 
 
+def update_course(
+        uow: unit_of_work.AbstractUnitOfWork,
+        course_id,
+        lms_id,
+        name,
+        university
+) -> dict:
+    with uow:
+        course = DM.Course(lms_id, name, university)
+        uow.course.update_course(course_id, course)
+        uow.commit()
+        return course.serialize()
+
+
+def update_learning_element(
+        uow: unit_of_work.AbstractUnitOfWork,
+        learning_element_id,
+        lms_id,
+        activity_type,
+        classification,
+        name,
+        created_by,
+        created_at,
+        last_updated,
+        university
+) -> dict:
+    with uow:
+        learning_element = DM.LearningElement(
+            lms_id,
+            activity_type,
+            classification,
+            name,
+            university,
+            created_by,
+            created_at,
+            last_updated
+        )
+        uow.learning_element.update_learning_element(
+            learning_element_id,
+            learning_element
+        )
+        uow.commit()
+        result = learning_element.serialize()
+        return result
+
+
 def update_settings_for_user(
         uow: unit_of_work.AbstractUnitOfWork,
         user_id,
@@ -950,6 +1275,27 @@ def update_settings_for_user(
         uow.settings.update_settings(user_id, settings)
         uow.commit()
         return settings.serialize()
+
+
+def update_topic(
+    uow: unit_of_work.AbstractUnitOfWork,
+    topic_id,
+    lms_id,
+    is_topic,
+    parent_id,
+    contains_le,
+    name,
+    university,
+    created_by,
+    created_at,
+    last_updated
+) -> dict:
+    with uow:
+        topic = DM.Topic(lms_id, is_topic, parent_id, contains_le, name,
+                         university, created_at, created_by, last_updated)
+        uow.topic.update_topic(topic_id, topic)
+        uow.commit()
+        return topic.serialize()
 
 
 def update_user(

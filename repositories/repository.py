@@ -14,9 +14,17 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
+    def create_course(self, course) -> DM.Course:
+        raise NotImplementedError
+
+    @abc.abstractmethod
     def create_course_creator(self,
                               course_creator: UA.CourseCreator) \
             -> UA.CourseCreator:
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def create_course_topic(self, course_topic) -> DM.CourseTopic:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -63,6 +71,11 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
+    def create_learning_element(self, learning_element)\
+            -> DM.LearningElement:
+        raise NotImplementedError
+
+    @abc.abstractmethod
     def create_learning_strategy(self,
                                  learning_strategy)\
             -> LM.LearningStrategy:
@@ -102,12 +115,35 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
+    def create_topic(self, topic)\
+            -> DM.Topic:
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def create_topic_learning_element(self,
+                                      topic_learning_element)\
+            -> DM.TopicLearningElement:
+        raise NotImplementedError
+
+    @abc.abstractmethod
     def create_user(self,
                     user: UA.User) -> UA.User:
         raise NotImplementedError
 
     @abc.abstractmethod
     def delete_admin(self, user_id):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def delete_course(self, course_id):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def delete_course_topic_by_course(self, course_id):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def delete_course_topic_by_topic(self, topic_id):
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -154,6 +190,10 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
+    def delete_learning_element(self, learning_element_id):
+        raise NotImplementedError
+
+    @abc.abstractmethod
     def delete_learning_strategy(self,
                                  characteristic_id):
         raise NotImplementedError
@@ -176,6 +216,19 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
+    def delete_topic(self, topic_id):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def delete_topic_learning_element_by_topic(self, topic_id):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def delete_topic_learning_element_by_learning_element(self,
+                                                          learning_element_id):
+        raise NotImplementedError
+
+    @abc.abstractmethod
     def delete_user(self, user_id, lms_user_id):
         raise NotImplementedError
 
@@ -189,6 +242,22 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
     @abc.abstractmethod
     def get_admins_by_uni(self,
                           university):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def get_courses_by_uni(self, university):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def get_course_by_id(self, course_id) -> DM.Course:
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def get_course_topic_by_course(self, course_id) -> DM.CourseTopic:
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def get_course_topic_by_topic(self, topic_id) -> DM.CourseTopic:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -246,6 +315,16 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
+    def get_learning_element_by_id(self,
+                                   learning_element_id)\
+            -> DM.LearningElement:
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def get_learning_elements_by_uni(self, university):
+        raise NotImplementedError
+
+    @abc.abstractmethod
     def get_learning_strategy(self,
                               characteristic_id) -> LM.LearningStrategy:
         raise NotImplementedError
@@ -294,6 +373,27 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
+    def get_topics_by_uni(self, university):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def get_topic_by_id(self, topic_id)\
+            -> DM.Topic:
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def get_topic_learning_element_by_topic(self,
+                                            topic_id)\
+            -> DM.TopicLearningElement:
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def get_topic_learning_element_by_learning_element(self,
+                                                       learning_element_id)\
+            -> DM.TopicLearningElement:
+        raise NotImplementedError
+
+    @abc.abstractmethod
     def get_user_by_id(self,
                        user_id,
                        lms_user_id) -> UA.User:
@@ -302,6 +402,10 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
     @abc.abstractmethod
     def get_users_by_uni(self,
                          university):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def update_course(self, course_id, course) -> DM.Course:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -316,6 +420,13 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
                                   characteristic_id,
                                   learning_analytics)\
             -> LM.LearningAnalytics:
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def update_learning_element(self,
+                                learning_element_id,
+                                learning_element)\
+            -> DM.LearningElement:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -338,6 +449,11 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
+    def update_topic(self, topic_id, topic)\
+            -> DM.Topic:
+        raise NotImplementedError
+
+    @abc.abstractmethod
     def update_user(self,
                     user_id,
                     lms_user_id,
@@ -357,6 +473,16 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         except Exception:
             raise err.CreationError()
 
+    def create_course(self, course: DM.Course) -> DM.Course:
+        course_exist = self.get_courses_by_uni(course.university)
+        for c in course_exist:
+            if c.lms_id == course.lms_id:
+                raise err.AlreadyExisting()
+        try:
+            self.session.add(course)
+        except Exception:
+            raise err.CreationError()
+
     def create_course_creator(self,
                               course_creator: UA.CourseCreator) \
             -> UA.CourseCreator:
@@ -364,6 +490,13 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
             self.session.add(course_creator)
         except IntegrityError:
             raise err.ForeignKeyViolation()
+        except Exception:
+            raise err.CreationError()
+
+    def create_course_topic(self, course_topic: DM.CourseTopic)\
+            -> DM.CourseTopic:
+        try:
+            self.session.add(course_topic)
         except Exception:
             raise err.CreationError()
 
@@ -438,6 +571,19 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         except Exception:
             raise err.CreationError()
 
+    def create_learning_element(self,
+                                learning_element)\
+            -> DM.LearningElement:
+        learning_element_exist = self\
+            .get_learning_elements_by_uni(learning_element.university)
+        for le in learning_element_exist:
+            if learning_element.lms_id == le.lms_id:
+                raise err.AlreadyExisting()
+        try:
+            self.session.add(learning_element)
+        except Exception:
+            raise err.CreationError()
+
     def create_learning_strategy(self,
                                  learning_strategy)\
             -> LM.LearningStrategy:
@@ -500,6 +646,25 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         except Exception:
             raise err.CreationError()
 
+    def create_topic(self, topic: DM.Topic) -> DM.Topic:
+        topic_exist = self.get_topics_by_uni(topic.university)
+        for t in topic_exist:
+            if topic.lms_id == t.lms_id:
+                raise err.AlreadyExisting()
+        try:
+            self.session.add(topic)
+        except Exception:
+            raise err.CreationError()
+
+    def create_topic_learning_element(self,
+                                      topic_learning_element:
+                                      DM.TopicLearningElement)\
+            -> DM.TopicLearningElement:
+        try:
+            self.session.add(topic_learning_element)
+        except Exception:
+            raise err.CreationError()
+
     def create_user(self, user: UA.User) -> UA.User:
         user_exist = self.get_users_by_uni(user.university)
         for u in user_exist:
@@ -518,11 +683,35 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         else:
             raise err.NoValidIdError()
 
+    def delete_course(self, course_id):
+        course = self.get_course_by_id(course_id)
+        if course != []:
+            self.session.query(DM.Course).filter_by(
+                id=course_id).delete()
+        else:
+            raise err.NoValidIdError()
+
     def delete_course_creator(self, user_id):
         course_creator = self.get_course_creator_by_id(user_id)
         if course_creator != []:
             self.session.query(UA.CourseCreator).filter_by(
                 user_id=user_id).delete()
+        else:
+            raise err.NoValidIdError()
+
+    def delete_course_topic_by_course(self, course_id):
+        course_topic = self.get_course_topic_by_course(course_id)
+        if course_topic != []:
+            self.session.query(DM.CourseTopic).filter_by(
+                course_id=course_id).delete()
+        else:
+            raise err.NoValidIdError()
+
+    def delete_course_topic_by_topic(self, topic_id):
+        course_topic = self.get_course_topic_by_topic(topic_id)
+        if course_topic != []:
+            self.session.query(DM.CourseTopic).filter_by(
+                topic_id=topic_id).delete()
         else:
             raise err.NoValidIdError()
 
@@ -588,6 +777,16 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         else:
             raise err.NoValidIdError()
 
+    def delete_learning_element(self,
+                                learning_element_id):
+        learning_element =\
+            self.get_learning_element_by_id(learning_element_id)
+        if learning_element != []:
+            self.session.query(DM.LearningElement).filter_by(
+                id=learning_element_id).delete()
+        else:
+            raise err.NoValidIdError()
+
     def delete_learning_strategy(self,
                                  characteristic_id):
         strategy = self.get_learning_strategy(characteristic_id)
@@ -646,6 +845,34 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         else:
             raise err.NoValidIdError()
 
+    def delete_topic(self, topic_id):
+        topic = self.get_topic_by_id(topic_id)
+        if topic != []:
+            self.session.query(DM.Topic).filter_by(
+                id=topic_id).delete()
+        else:
+            raise err.NoValidIdError()
+
+    def delete_topic_learning_element_by_topic(self, topic_id):
+        topic_learning_element =\
+            self.get_topic_learning_element_by_topic(topic_id)
+        if topic_learning_element != []:
+            self.session.query(DM.TopicLearningElement).filter_by(
+                topic_id=topic_id).delete()
+        else:
+            raise err.NoValidIdError()
+
+    def delete_topic_learning_element_by_learning_element(self,
+                                                          learning_elememt_id):
+        topic_learning_element =\
+            self.get_topic_learning_element_by_learning_element(
+                learning_elememt_id)
+        if topic_learning_element != []:
+            self.session.query(DM.TopicLearningElement).filter_by(
+                learning_elememt_id=learning_elememt_id).delete()
+        else:
+            raise err.NoValidIdError()
+
     def delete_user(self, user_id, lms_user_id):
         teacher = self.get_user_by_id(user_id, lms_user_id)
         if teacher != []:
@@ -671,9 +898,40 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         except Exception:
             raise err.DatabaseQueryError()
 
+    def get_courses_by_uni(self, university):
+        try:
+            return self.session.query(DM.Course).filter_by(
+                university=university).all()
+        except Exception:
+            raise err.DatabaseQueryError()
+
+    def get_course_by_id(self, course_id) -> DM.Course:
+        result = self.session.query(DM.Course).filter_by(
+            id=course_id).all()
+        if result == []:
+            raise err.NoValidIdError()
+        else:
+            return result
+
     def get_course_creator_by_id(self, user_id) -> UA.CourseCreator:
         result = self.session.query(UA.CourseCreator).filter_by(
             user_id=user_id).all()
+        if result == []:
+            raise err.NoValidIdError()
+        else:
+            return result
+
+    def get_course_topic_by_course(self, course_id) -> DM.CourseTopic:
+        result = self.session.query(DM.CourseTopic).filter_by(
+            course_id=course_id).all()
+        if result == []:
+            raise err.NoValidIdError()
+        else:
+            return result
+
+    def get_course_topic_by_topic(self, topic_id) -> DM.CourseTopic:
+        result = self.session.query(DM.CourseTopic).filter_by(
+            topic_id=topic_id).all()
         if result == []:
             raise err.NoValidIdError()
         else:
@@ -706,6 +964,23 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
             raise err.NoValidIdError()
         else:
             return result
+
+    def get_learning_element_by_id(self,
+                                   learning_element_id)\
+            -> DM.LearningElement:
+        result = self.session.query(DM.LearningElement).filter_by(
+            id=learning_element_id).all()
+        if result == []:
+            raise err.NoValidIdError()
+        else:
+            return result
+
+    def get_learning_elements_by_uni(self, university):
+        try:
+            return self.session.query(DM.LearningElement).filter_by(
+                university=university).all()
+        except Exception:
+            raise err.DatabaseQueryError()
 
     def get_learning_strategy(self,
                               characteristic_id)\
@@ -826,6 +1101,47 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         except Exception:
             raise err.DatabaseQueryError()
 
+    def get_topics_by_uni(self, university):
+        try:
+            return self.session.query(DM.Topic).filter_by(
+                university=university).all()
+        except Exception:
+            raise err.DatabaseQueryError()
+
+    def get_topic_by_id(self, topic_id) -> DM.Topic:
+        result = self.session.query(DM.Topic).filter_by(
+            id=topic_id).all()
+        if result == []:
+            raise err.NoValidIdError()
+        else:
+            return result
+
+    def get_topic_learning_element_by_topic(self, topic_id)\
+            -> DM.TopicLearningElement:
+        result = self.session.query(DM.TopicLearningElement).filter_by(
+            topic_id=topic_id).all()
+        if result == []:
+            raise err.NoValidIdError()
+        else:
+            return result
+
+    def get_topic_learning_element_by_learning_element(self,
+                                                       learning_element_id)\
+            -> DM.TopicLearningElement:
+        result = self.session.query(DM.TopicLearningElement).filter_by(
+            learning_element_id=learning_element_id).all()
+        if result == []:
+            raise err.NoValidIdError()
+        else:
+            return result
+
+    def get_teacher_by_uni(self, university):
+        try:
+            return self.session.query(DM.Topic).filter_by(
+                university=university).all()
+        except Exception:
+            raise err.DatabaseQueryError()
+
     def get_user_by_id(self, user_id, lms_user_id) -> UA.Admin:
         result = self.session.query(UA.User)\
             .filter_by(id=user_id)\
@@ -841,6 +1157,21 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
                 university=university).all()
         except Exception:
             raise err.DatabaseQueryError()
+
+    def update_course(self, course_id, course) -> DM.Course:
+        course_exist = self.get_course_by_id(course_id)
+        if course_exist != []:
+            course.id = course_exist[0].id
+            return self.session.query(DM.Course)\
+                .filter_by(id=course_id).update(
+                {
+                    DM.Course.lms_id: course.lms_id,
+                    DM.Course.name: course.name,
+                    DM.Course.university: course.university
+                }
+            )
+        else:
+            raise err.NoValidIdError
 
     def update_knowledge(self,
                          characteristic_id,
@@ -863,6 +1194,38 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
             learning_analytics.id = analytics_exist[0].id
             return self.session.query(LM.LearningAnalytics)\
                 .filter_by(characteristic_id=characteristic_id)
+        else:
+            raise err.NoValidIdError
+
+    def update_learning_element(self,
+                                learning_element_id,
+                                learning_element)\
+            -> DM.LearningElement:
+        learning_element_exist =\
+            self.get_learning_element_by_id(learning_element_id)
+        if learning_element_exist != []:
+            learning_element.id = learning_element_exist[0].id
+            return self.session.query(DM.LearningElement)\
+                .filter_by(id=learning_element_id).update(
+                {
+                    DM.LearningElement.lms_id:
+                    learning_element.lms_id,
+                    DM.LearningElement.activity_type:
+                    learning_element.activity_type,
+                    DM.LearningElement.classification:
+                    learning_element.classification,
+                    DM.LearningElement.name:
+                    learning_element.name,
+                    DM.LearningElement.created_by:
+                    learning_element.created_by,
+                    DM.LearningElement.created_at:
+                    learning_element.created_at,
+                    DM.LearningElement.last_updated:
+                    learning_element.last_updated,
+                    DM.LearningElement.university:
+                    learning_element.university
+                }
+            )
         else:
             raise err.NoValidIdError
 
@@ -920,6 +1283,27 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
                 {
                     UA.Settings.theme: settings.theme,
                     UA.Settings.pswd: settings.pswd,
+                }
+            )
+        else:
+            raise err.NoValidIdError
+
+    def update_topic(self, topic_id, topic) -> DM.Topic:
+        topic_exist = self.get_topic_by_id(topic_id)
+        if topic_exist != []:
+            topic.id = topic_exist[0].id
+            return self.session.query(DM.Topic)\
+                .filter_by(id=topic_id).update(
+                {
+                    DM.Topic.lms_id: topic.lms_id,
+                    DM.Topic.is_topic: topic.is_topic,
+                    DM.Topic.parent_id: topic.parent_id,
+                    DM.Topic.contains_le: topic.contains_le,
+                    DM.Topic.name: topic.name,
+                    DM.Topic.university: topic.university,
+                    DM.Topic.created_by: topic.created_by,
+                    DM.Topic.created_at: topic.created_at,
+                    DM.Topic.last_updated: topic.last_updated
                 }
             )
         else:

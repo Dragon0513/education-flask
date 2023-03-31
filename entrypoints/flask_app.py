@@ -858,3 +858,134 @@ def knowledge_administration(user_id, lms_user_id, student_id):
             )
             status_code = 200
             return jsonify(result), status_code
+
+
+@app.route("/user/<user_id>/<lms_user_id>/student/<student_id>/course",
+           methods=['GET'])
+@cross_origin(supports_credentials=True)
+def get_courses_by_student_id(user_id, lms_user_id, student_id):
+    method = request.method
+    match method:
+        case 'GET':
+            result = services.get_courses_by_student_id(
+                unit_of_work.SqlAlchemyUnitOfWork(),
+                student_id
+            )
+            status_code = 200
+            return jsonify(result), status_code
+        
+
+@app.route("/user/<user_id>/<lms_user_id>/student/<student_id>/course" +
+           "/<course_id>", methods=['GET'])
+@cross_origin(supports_credentials=True)
+def get_course_by_course_id(user_id,
+                            lms_user_id,
+                            student_id,
+                            course_id):
+    method = request.method
+    match method:
+        case 'GET':
+            result = services.get_course_by_id(
+                unit_of_work.SqlAlchemyUnitOfWork(),
+                course_id
+            )
+            status_code = 200
+            return jsonify(result), status_code
+
+
+@app.route("/user/<user_id>/<lms_user_id>/student/<student_id>/course" +
+           "/<course_id>/topic", methods=['GET'])
+@cross_origin(supports_credentials=True)
+def get_topics_by_student_and_course_id(user_id,
+                            lms_user_id,
+                            student_id,
+                            course_id):
+    method = request.method
+    match method:
+        case 'GET':
+            result = services.get_topics_by_student_and_course_id(
+                unit_of_work.SqlAlchemyUnitOfWork(),
+                student_id,
+                course_id
+            )
+            status_code = 200
+            return jsonify(result), status_code
+
+
+@app.route("/user/<user_id>/<lms_user_id>/student/<student_id>/course" +
+           "/<course_id>/topic/<topic_id>", methods=['GET'])
+@cross_origin(supports_credentials=True)
+def get_topics_by_student_course_and_topic_id(user_id,
+                                              lms_user_id,
+                                              student_id,
+                                              course_id,
+                                              topic_id):
+    method = request.method
+    match method:
+        case 'GET':
+            result = services.get_topic_by_id(
+                unit_of_work.SqlAlchemyUnitOfWork(),
+                topic_id
+            )
+            status_code = 200
+            return jsonify(result), status_code
+
+
+@app.route("/user/<user_id>/<lms_user_id>/student/<student_id>/course" +
+           "/<course_id>/topic/<topic_id>/subtopic", methods=['GET'])
+@cross_origin(supports_credentials=True)
+def get_sub_topics_by_topic_id(user_id,
+                               lms_user_id,
+                               student_id,
+                               course_id,
+                               topic_id):
+    method = request.method
+    match method:
+        case 'GET':
+            result = services.get_sub_topic_by_topic_id(
+                unit_of_work.SqlAlchemyUnitOfWork(),
+                topic_id
+            )
+            status_code = 200
+            return jsonify(result), status_code
+
+
+@app.route("/user/<user_id>/<lms_user_id>/student/<student_id>/course" +
+           "/<course_id>/topic/<topic_id>/learningElement", methods=['GET'])
+@cross_origin(supports_credentials=True)
+def get_learning_element_by_student_course_and_topic_id(user_id,
+                                     lms_user_id,
+                                     student_id,
+                                     course_id,
+                                     topic_id):
+    method = request.method
+    match method:
+        case 'GET':
+            result = services.get_learning_elements_for_course_and_topic_id(
+                unit_of_work.SqlAlchemyUnitOfWork(),
+                course_id,
+                topic_id
+            )
+            status_code = 200
+            return jsonify(result), status_code
+
+
+@app.route("/user/<user_id>/<lms_user_id>/student/<student_id>/course" +
+           "/<course_id>/topic/<topic_id>/learningElement/<learning_element_id>",
+           methods=['GET'])
+@cross_origin(supports_credentials=True)
+def get_learning_element_by_le_id(user_id,
+                                     lms_user_id,
+                                     student_id,
+                                     course_id,
+                                     topic_id,
+                                     learning_element_id):
+    method = request.method
+    match method:
+        case 'GET':
+            result = services.get_learning_element_by_id(
+                unit_of_work.SqlAlchemyUnitOfWork(),
+                learning_element_id
+            )
+            status_code = 200
+            return jsonify(result), status_code

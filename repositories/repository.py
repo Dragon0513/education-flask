@@ -297,6 +297,10 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
+    def get_courses_by_student_id(self, student_id):
+        raise NotImplementedError
+
+    @abc.abstractmethod
     def get_ils_input_answers_by_id(self,
                                     questionnaire_id)\
             -> LM.IlsInputAnswers:
@@ -381,6 +385,10 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
     @abc.abstractmethod
     def get_students_by_uni(self,
                             university):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def get_sub_topics_for_topic_id(self, topic_id):
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -978,6 +986,13 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         else:
             return result
 
+    def get_courses_by_student_id(self, student_id):
+        try:
+            return self.session.query(DM.StudentCourse).filter_by(
+                student_id=student_id).all()
+        except Exception:
+            raise err.DatabaseQueryError()
+
     def get_course_creator_by_id(self, user_id) -> UA.CourseCreator:
         result = self.session.query(UA.CourseCreator).filter_by(
             user_id=user_id).all()
@@ -1155,6 +1170,13 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         try:
             return self.session.query(UA.Student).filter_by(
                 university=university).all()
+        except Exception:
+            raise err.DatabaseQueryError()
+
+    def get_sub_topics_for_topic_id(self, topic_id):
+        try:
+            return self.session.query(DM.Topic).filter_by(
+                parent_id=topic_id).all()
         except Exception:
             raise err.DatabaseQueryError()
 

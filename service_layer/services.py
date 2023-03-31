@@ -1035,6 +1035,23 @@ def get_course_by_id(
         return result
 
 
+def get_courses_by_student_id(
+        uow: unit_of_work.AbstractUnitOfWork,
+        student_id
+) -> dict:
+    with uow:
+        courses = uow.course.get_courses_by_student_id(
+            student_id
+        )
+        result_courses = []
+        for course in courses:
+            course_by_id = get_course_by_id(uow, course.course_id)
+            result_courses.append(course_by_id)
+        result = {}
+        result['courses'] = result_courses
+        return result
+
+
 def get_course_topic_by_course(
         uow: unit_of_work.AbstractUnitOfWork,
         course_id
@@ -1171,6 +1188,21 @@ def get_learning_element_by_id(
         return result
 
 
+def get_learning_elements_for_course_and_topic_id(
+        uow: unit_of_work.AbstractUnitOfWork,
+        course_id,
+        topic_id
+) -> dict:
+    with uow:
+        learning_elements = get_learning_elements_for_topic_id(
+            uow,
+            topic_id
+        )
+        result = {}
+        result['learning_elements'] = learning_elements
+        return result
+
+
 def get_learning_elements_for_topic_id(
         uow: unit_of_work.AbstractUnitOfWork,
         topic_id
@@ -1246,6 +1278,22 @@ def get_learning_style_by_student_id(
         return result
 
 
+def get_sub_topic_by_topic_id(
+        uow: unit_of_work.AbstractUnitOfWork,
+        topic_id
+) -> dict:
+    with uow:
+        subtopics = uow.topic.get_sub_topics_for_topic_id(
+            topic_id
+        )
+        result_subtopics = []
+        for subtopic in subtopics:
+            result_subtopics.append(subtopic.serialize())
+        result = {}
+        result['topics'] = result_subtopics
+        return result
+    
+
 def get_topic_by_id(
         uow: unit_of_work.AbstractUnitOfWork,
         topic_id
@@ -1256,6 +1304,25 @@ def get_topic_by_id(
             result = {}
         else:
             result = topic[0].serialize()
+        return result
+
+
+def get_topics_by_student_and_course_id(
+        uow: unit_of_work.AbstractUnitOfWork,
+        student_id,
+        course_id
+) -> dict:
+    with uow:
+        topics = get_topics_for_course_id(
+            uow,
+            course_id
+        )
+        result_topics = []
+        for topic in topics:
+            topic_by_id = get_topic_by_id(uow, topic['topic_id'])
+            result_topics.append(topic_by_id)
+        result = {}
+        result['topics'] = result_topics
         return result
 
 

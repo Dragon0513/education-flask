@@ -152,6 +152,24 @@ def add_student_topic_visit(
         return result
 
 
+def add_teacher_to_course(
+        uow: unit_of_work.AbstractUnitOfWork,
+        teacher_id,
+        course_id
+) -> dict:
+    with uow:
+        teacher_course = DM.TeacherCourse(
+            teacher_id,
+            course_id
+        )
+        uow.teacher_course.add_teacher_to_course(
+            teacher_course
+        )
+        uow.commit()
+        result = teacher_course.serialize()
+        return result
+
+
 def create_admin(
         uow: unit_of_work.AbstractUnitOfWork,
         user

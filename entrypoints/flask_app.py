@@ -693,6 +693,23 @@ def post_student_course(course_id, student_id):
             )
             status_code = 201
             return jsonify(student_course), status_code
+        
+
+@app.route("/lms/course/<course_id>/teacher/<teacher_id>",
+           methods=['POST'])
+@cross_origin(supports_credentials=True)
+def post_teacher_course(course_id, teacher_id):
+    method = request.method
+    match method:
+        case 'POST':
+            teacher_course = services.add_teacher_to_course(
+                unit_of_work.SqlAlchemyUnitOfWork(),
+                teacher_id,
+                course_id
+            )
+            status_code = 201
+            return jsonify(teacher_course), status_code
+
 
 
 @app.route("/user/<user_id>/<lms_user_id>/student/<student_id>/" +

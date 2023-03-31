@@ -39,6 +39,11 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
+    def add_teacher_to_course(self, teacher_course)\
+            -> DM.TeacherCourse:
+        raise NotImplementedError
+
+    @abc.abstractmethod
     def create_admin(self,
                      admin: UA.Admin) -> UA.Admin:
         raise NotImplementedError
@@ -310,6 +315,10 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
+    def get_courses_for_teacher(self, teacher_id):
+        raise NotImplementedError
+
+    @abc.abstractmethod
     def get_ils_input_answers_by_id(self,
                                     questionnaire_id)\
             -> LM.IlsInputAnswers:
@@ -578,6 +587,21 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
     def add_student_topic_visit(self, student_topic_visit):
         try:
             self.session.add(student_topic_visit)
+        except IntegrityError:
+            raise err.ForeignKeyViolation()
+        except Exception:
+            raise err.CreationError()
+
+    def add_teacher_to_course(self, teacher_course)\
+            -> DM.TeacherCourse:
+        course_exist = self.get_courses_for_teacher(
+            teacher_course.teacher_id
+        )
+        for c in course_exist:
+            if c.course_id == teacher_course.course_id:
+                raise err.AlreadyExisting()
+        try:
+            self.session.add(teacher_course)
         except IntegrityError:
             raise err.ForeignKeyViolation()
         except Exception:
@@ -1050,6 +1074,13 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         try:
             return self.session.query(DM.StudentCourse).filter_by(
                 student_id=student_id).all()
+        except Exception:
+            raise err.DatabaseQueryError()
+
+    def get_courses_for_teacher(self, teacher_id):
+        try:
+            return self.session.query(DM.TeacherCourse).filter_by(
+                teacher_id=teacher_id).all()
         except Exception:
             raise err.DatabaseQueryError()
 

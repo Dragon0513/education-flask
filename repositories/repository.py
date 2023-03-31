@@ -111,6 +111,18 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
+    def create_learning_path(self,
+                             learning_path)\
+            -> TM.LearningPath:
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def create_learning_path_learning_element(self,
+                                              learning_path_learning_element)\
+            -> TM.LearningPathLearningElement:
+        raise NotImplementedError
+
+    @abc.abstractmethod
     def create_learning_strategy(self,
                                  learning_strategy)\
             -> LM.LearningStrategy:
@@ -367,6 +379,14 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
 
     @abc.abstractmethod
     def get_learning_elements_by_uni(self, university):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def get_learning_path(self,
+                          student_id,
+                          course_id,
+                          topic_id)\
+            -> TM.LearningPath:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -723,6 +743,26 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
                 raise err.AlreadyExisting()
         try:
             self.session.add(learning_element)
+        except Exception:
+            raise err.CreationError()
+
+    def create_learning_path(self,
+                             learning_path)\
+            -> TM.LearningPath:
+        try:
+            self.session.add(learning_path)
+        except IntegrityError:
+            raise err.ForeignKeyViolation()
+        except Exception:
+            raise err.CreationError()
+
+    def create_learning_path_learning_element(self,
+                                              learning_path_learning_element)\
+            -> TM.LearningPathLearningElement:
+        try:
+            self.session.add(learning_path_learning_element)
+        except IntegrityError:
+            raise err.ForeignKeyViolation()
         except Exception:
             raise err.CreationError()
 
@@ -1144,6 +1184,20 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
                 university=university).all()
         except Exception:
             raise err.DatabaseQueryError()
+
+    def get_learning_path(self,
+                          student_id,
+                          course_id,
+                          topic_id)\
+            -> TM.LearningPath:
+        result = self.session.query(TM.LearningPath)\
+            .filter_by(student_id=student_id)\
+            .filter_by(course_id=course_id)\
+            .filter_by(topic_id=topic_id).all()
+        if result == []:
+            raise err.NoValidIdError()
+        else:
+            return result
 
     def get_learning_strategy(self,
                               characteristic_id)\

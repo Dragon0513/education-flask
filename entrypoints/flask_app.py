@@ -693,7 +693,7 @@ def post_student_course(course_id, student_id):
             )
             status_code = 201
             return jsonify(student_course), status_code
-        
+
 
 @app.route("/lms/course/<course_id>/teacher/<teacher_id>",
            methods=['POST'])
@@ -709,7 +709,6 @@ def post_teacher_course(course_id, teacher_id):
             )
             status_code = 201
             return jsonify(teacher_course), status_code
-
 
 
 @app.route("/user/<user_id>/<lms_user_id>/student/<student_id>/" +
@@ -1065,6 +1064,52 @@ def post_student_learning_element_id_visit(student_id,
                         learning_element_id,
                         request.json['visit_start'],
                         request.json['previous_learning_element_id']
+                    )
+                    status_code = 201
+                    return jsonify(result), status_code
+                else:
+                    raise err.WrongParameterValueError()
+            else:
+                raise err.MissingParameterError()
+
+
+@app.route("/user/<user_id>/<lms_user_id>/student/<student_id>/course/" +
+           "<course_id>/topic/<topic_id>/learningPath",
+           methods=['GET', 'POST'])
+@cross_origin(supports_credentials=True)
+def learning_path_administration(
+    user_id,
+    lms_user_id,
+    student_id,
+    course_id,
+    topic_id
+):
+    method = request.method
+    match method:
+        case 'GET':
+            result = services.get_learning_path(
+                unit_of_work.SqlAlchemyUnitOfWork(),
+                student_id,
+                course_id,
+                topic_id
+            )
+            status_code = 200
+            return jsonify(result), status_code
+        case 'POST':
+            condition1 = request.json is not None
+            condition2 = 'algorithm' in request.json
+            if condition1 and condition2:
+                available_algorithms = ['graf', 'aco', 'ga']
+                condition3 = type(request.json['algorithm']) is str
+                condition4 = request.json['algorithm'].lower()\
+                    in available_algorithms
+                if condition3 and condition4:
+                    result = services.create_learning_path(
+                        unit_of_work.SqlAlchemyUnitOfWork(),
+                        student_id,
+                        course_id,
+                        topic_id,
+                        request.json['algorithm'].lower()
                     )
                     status_code = 201
                     return jsonify(result), status_code

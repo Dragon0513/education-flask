@@ -2,6 +2,7 @@ from service_layer import unit_of_work
 from domain.userAdministartion import model as UA
 from domain.learnersModel import model as LM
 from domain.domainModel import model as DM
+from domain.tutoringModel import model as TM
 
 
 def add_course_creator_to_course(
@@ -440,6 +441,29 @@ def create_learning_element(
         uow.commit()
         result = learning_element.serialize()
         create_topic_learning_element(uow, topic_id, result['id'])
+        return result
+
+
+def create_learning_path(
+        uow: unit_of_work.AbstractUnitOfWork,
+        student_id,
+        course_id,
+        topic_id,
+        algorithm
+) -> dict:
+    with uow:
+        learning_path = TM.LearningPath(
+            student_id,
+            course_id,
+            algorithm,
+            topic_id
+        )
+        uow.learning_path\
+            .create_learning_path(
+                learning_path
+            )
+        uow.commit()
+        result = learning_path.serialize()
         return result
 
 
@@ -1293,6 +1317,26 @@ def get_learning_elements_for_topic_id(
             return results
         except Exception:
             return []
+
+
+def get_learning_path(
+        uow: unit_of_work.AbstractUnitOfWork,
+        student_id,
+        course_id,
+        topic_id
+) -> dict:
+    with uow:
+        learning_path = uow.learning_path.get_learning_path(
+            student_id,
+            course_id,
+            topic_id
+        )
+        if learning_path == []:
+            result = {}
+        else:
+            learning_path[0].path = None
+            result = learning_path[0].serialize()
+        return result
 
 
 def get_learning_strategy(

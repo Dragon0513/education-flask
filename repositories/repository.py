@@ -30,6 +30,15 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
+    def add_student_learning_element_visit(self,
+                                           student_learning_element_visit):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def add_student_topic_visit(self, student_topic_visit):
+        raise NotImplementedError
+
+    @abc.abstractmethod
     def create_admin(self,
                      admin: UA.Admin) -> UA.Admin:
         raise NotImplementedError
@@ -468,10 +477,22 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
-    def update_learning_style(Self,
+    def update_learning_style(self,
                               characteristic_id,
                               learning_style)\
             -> LM.LearningStyle:
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def update_previous_learning_element_visit(self,
+                                               student_id,
+                                               visit_time):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def update_previous_topic_visit(self,
+                                    student_id,
+                                    visit_time):
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -533,6 +554,23 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
     def add_student_to_topic(self, student_topic):
         try:
             self.session.add(student_topic)
+        except IntegrityError:
+            raise err.ForeignKeyViolation()
+        except Exception:
+            raise err.CreationError()
+
+    def add_student_learning_element_visit(self,
+                                           student_learning_element_visit):
+        try:
+            self.session.add(student_learning_element_visit)
+        except IntegrityError:
+            raise err.ForeignKeyViolation()
+        except Exception:
+            raise err.CreationError()
+
+    def add_student_topic_visit(self, student_topic_visit):
+        try:
+            self.session.add(student_topic_visit)
         except IntegrityError:
             raise err.ForeignKeyViolation()
         except Exception:
@@ -1366,6 +1404,34 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
                 }
             )
         else:
+            raise err.NoValidIdError
+
+    def update_previous_learning_element_visit(self,
+                                               student_id,
+                                               visit_time):
+        try:
+            self.session.query(DM.StudentLearningElementVisit)\
+                .filter_by(student_id=student_id)\
+                .filter_by(visit_end=None).update(
+                {
+                    DM.StudentLearningElementVisit.visit_end: visit_time
+                }
+            )
+        except Exception:
+            raise err.NoValidIdError
+
+    def update_previous_topic_visit(self,
+                                    student_id,
+                                    visit_time):
+        try:
+            self.session.query(DM.StudentTopicVisit)\
+                .filter_by(student_id=student_id)\
+                .filter_by(visit_end=None).update(
+                {
+                    DM.StudentTopicVisit.visit_end: visit_time
+                }
+            )
+        except Exception:
             raise err.NoValidIdError
 
     def update_settings(self, user_id, settings) -> UA.Settings:

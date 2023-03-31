@@ -94,6 +94,58 @@ def add_student_to_topics(
             add_student_to_learning_element(uow, student_id, topic['topic_id'])
 
 
+def add_student_learning_element_visit(
+        uow: unit_of_work.AbstractUnitOfWork,
+        student_id,
+        learning_element_id,
+        visit_start,
+        previous_learning_element_id
+) -> dict:
+    with uow:
+        update_previous_learning_element_visit(
+            uow,
+            student_id,
+            visit_start
+        )
+        student_learning_element_visit = DM.StudentLearningElementVisit(
+            student_id,
+            learning_element_id,
+            visit_start
+        )
+        uow.student_learning_element_visit.add_student_learning_element_visit(
+            student_learning_element_visit
+        )
+        uow.commit()
+        result = student_learning_element_visit.serialize()
+        return result
+
+
+def add_student_topic_visit(
+        uow: unit_of_work.AbstractUnitOfWork,
+        student_id,
+        topic_id,
+        visit_start,
+        previous_topic_id
+) -> dict:
+    with uow:
+        update_previous_topic_visit(
+            uow,
+            student_id,
+            visit_start
+        )
+        student_topic_visit = DM.StudentTopicVisit(
+            student_id,
+            topic_id,
+            visit_start
+        )
+        uow.student_topic_visit.add_student_topic_visit(
+            student_topic_visit
+        )
+        uow.commit()
+        result = student_topic_visit.serialize()
+        return result
+
+
 def create_admin(
         uow: unit_of_work.AbstractUnitOfWork,
         user
@@ -1292,7 +1344,7 @@ def get_sub_topic_by_topic_id(
         result = {}
         result['topics'] = result_subtopics
         return result
-    
+
 
 def get_topic_by_id(
         uow: unit_of_work.AbstractUnitOfWork,
@@ -1623,6 +1675,33 @@ def update_learning_style_by_student_id(
         uow.commit()
         result = learning_style.serialize()
         return result
+
+
+def update_previous_learning_element_visit(
+        uow: unit_of_work.AbstractUnitOfWork,
+        student_id,
+        visit_time
+) -> dict:
+    with uow:
+        uow.student_learning_element_visit\
+            .update_previous_learning_element_visit(
+                student_id,
+                visit_time
+            )
+        uow.commit()
+
+
+def update_previous_topic_visit(
+        uow: unit_of_work.AbstractUnitOfWork,
+        student_id,
+        visit_time
+) -> dict:
+    with uow:
+        uow.student_topic_visit.update_previous_topic_visit(
+            student_id,
+            visit_time
+        )
+        uow.commit()
 
 
 def update_settings_for_user(

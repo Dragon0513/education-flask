@@ -873,7 +873,7 @@ def get_courses_by_student_id(user_id, lms_user_id, student_id):
             )
             status_code = 200
             return jsonify(result), status_code
-        
+
 
 @app.route("/user/<user_id>/<lms_user_id>/student/<student_id>/course" +
            "/<course_id>", methods=['GET'])
@@ -897,9 +897,9 @@ def get_course_by_course_id(user_id,
            "/<course_id>/topic", methods=['GET'])
 @cross_origin(supports_credentials=True)
 def get_topics_by_student_and_course_id(user_id,
-                            lms_user_id,
-                            student_id,
-                            course_id):
+                                        lms_user_id,
+                                        student_id,
+                                        course_id):
     method = request.method
     match method:
         case 'GET':
@@ -954,10 +954,10 @@ def get_sub_topics_by_topic_id(user_id,
            "/<course_id>/topic/<topic_id>/learningElement", methods=['GET'])
 @cross_origin(supports_credentials=True)
 def get_learning_element_by_student_course_and_topic_id(user_id,
-                                     lms_user_id,
-                                     student_id,
-                                     course_id,
-                                     topic_id):
+                                                        lms_user_id,
+                                                        student_id,
+                                                        course_id,
+                                                        topic_id):
     method = request.method
     match method:
         case 'GET':
@@ -971,15 +971,15 @@ def get_learning_element_by_student_course_and_topic_id(user_id,
 
 
 @app.route("/user/<user_id>/<lms_user_id>/student/<student_id>/course" +
-           "/<course_id>/topic/<topic_id>/learningElement/<learning_element_id>",
-           methods=['GET'])
+           "/<course_id>/topic/<topic_id>/learningElement/" +
+           "<learning_element_id>", methods=['GET'])
 @cross_origin(supports_credentials=True)
 def get_learning_element_by_le_id(user_id,
-                                     lms_user_id,
-                                     student_id,
-                                     course_id,
-                                     topic_id,
-                                     learning_element_id):
+                                  lms_user_id,
+                                  student_id,
+                                  course_id,
+                                  topic_id,
+                                  learning_element_id):
     method = request.method
     match method:
         case 'GET':
@@ -989,3 +989,69 @@ def get_learning_element_by_le_id(user_id,
             )
             status_code = 200
             return jsonify(result), status_code
+
+
+@app.route("/lms/student/<student_id>/<lms_user_id>/topic/<topic_id>",
+           methods=['POST'])
+@cross_origin(supports_credentials=True)
+def post_student_topic_visit(student_id, lms_user_id, topic_id):
+    method = request.method
+    match method:
+        case 'POST':
+            condition1 = request.json is not None
+            condition2 = 'visit_start' in request.json
+            condition3 = 'previous_topic_id' in request.json
+            if condition1 and condition2 and condition3:
+                condition4 = type(request.json['visit_start']) is str
+                condition5 = type(request.json['previous_topic_id']) is int
+                condition6 = request.json['previous_topic_id'] is None
+                condition7 = condition5 or condition6
+                if condition4 and condition7:
+                    result = services.add_student_topic_visit(
+                        unit_of_work.SqlAlchemyUnitOfWork(),
+                        student_id,
+                        topic_id,
+                        request.json['visit_start'],
+                        request.json['previous_topic_id']
+                    )
+                    status_code = 201
+                    return jsonify(result), status_code
+                else:
+                    raise err.WrongParameterValueError()
+            else:
+                raise err.MissingParameterError()
+
+
+@app.route("/lms/student/<student_id>/<lms_user_id>/learningElement/" +
+           "<learning_element_id>", methods=['POST'])
+@cross_origin(supports_credentials=True)
+def post_student_learning_element_id_visit(student_id,
+                                           lms_user_id,
+                                           learning_element_id):
+    method = request.method
+    match method:
+        case 'POST':
+            condition1 = request.json is not None
+            condition2 = 'visit_start' in request.json
+            condition3 = 'previous_learning_element_id' in request.json
+            if condition1 and condition2 and condition3:
+                condition4 = type(request.json['visit_start']) is str
+                condition5 = type(
+                    request.json['previous_learning_element_id']) is int
+                condition6 = \
+                    request.json['previous_learning_element_id'] is None
+                condition7 = condition5 or condition6
+                if condition4 and condition7:
+                    result = services.add_student_learning_element_visit(
+                        unit_of_work.SqlAlchemyUnitOfWork(),
+                        student_id,
+                        learning_element_id,
+                        request.json['visit_start'],
+                        request.json['previous_learning_element_id']
+                    )
+                    status_code = 201
+                    return jsonify(result), status_code
+                else:
+                    raise err.WrongParameterValueError()
+            else:
+                raise err.MissingParameterError()

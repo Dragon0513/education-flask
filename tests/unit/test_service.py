@@ -8,63 +8,86 @@ import time
 
 class FakeRepository(repository.AbstractRepository):
     def __init__(self,
-                 user=[],
-                 settings=[],
                  admin=[],
+                 course=[],
                  course_creator=[],
-                 teacher=[],
-                 student=[],
-                 learning_characteristics=[],
-                 learning_style=[],
-                 learning_strategy=[],
-                 knowledge=[],
-                 learning_analytics=[],
-                 questionnaire=[],
+                 course_creator_course=[],
+                 course_topic=[],
                  ils_input_answers=[],
                  ils_perception_answers=[],
                  ils_processing_answers=[],
                  ils_understanding_answers=[],
-                 list_k=[],
-                 course=[],
-                 topic=[],
+                 knowledge=[],
+                 learning_analytics=[],
+                 learning_characteristics=[],
                  learning_element=[],
-                 course_topic=[],
-                 topic_learning_element=[],
+                 learning_element_rating=[],
+                 learning_path=[],
+                 learning_path_learning_element=[],
+                 learning_path_topic=[],
+                 learning_strategy=[],
+                 learning_style=[],
+                 list_k=[],
+                 questionnaire=[],
+                 settings=[],
+                 student=[],
                  student_course=[],
-                 student_topic=[],
                  student_learning_element=[],
-                 course_creator_course=[]
+                 student_learning_element_visit=[],
+                 student_topic=[],
+                 student_topic_visit=[],
+                 teacher=[],
+                 teacher_course=[],
+                 topic=[],
+                 topic_learning_element=[],
+                 user=[],
                  ):
-        self.user = set(user)
-        self.settings = set(settings)
         self.admin = set(admin)
+        self.course = set(course)
         self.course_creator = set(course_creator)
-        self.teacher = set(teacher)
-        self.student = set(student)
-        self.learning_characteristics = set(learning_characteristics)
-        self.learning_style = set(learning_style)
-        self.learning_strategy = set(learning_strategy)
+        self.course_creator_course = set(course_creator_course)
+        self.course_topic = set(course_topic)
         self.knowledge = set(knowledge)
-        self.learning_analytics = set(learning_analytics)
-        self.questionnaire = set(questionnaire)
         self.ils_input_answers = set(ils_input_answers)
         self.ils_perception_answers = set(ils_perception_answers)
         self.ils_processing_answers = set(ils_processing_answers)
         self.ils_understanding_answers = set(ils_understanding_answers)
-        self.list_k = set(list_k)
-        self.course = set(course)
-        self.topic = set(topic)
+        self.learning_analytics = set(learning_analytics)
+        self.learning_characteristics = set(learning_characteristics)
         self.learning_element = set(learning_element)
-        self.course_topic = set(course_topic)
-        self.topic_learning_element = set(topic_learning_element)
+        self.learning_element_rating = set(learning_element_rating)
+        self.learning_path = set(learning_path)
+        self.learning_path_learning_element = set(
+            learning_path_learning_element)
+        self.learning_path_topic = set(learning_path_topic)
+        self.learning_strategy = set(learning_strategy)
+        self.learning_style = set(learning_style)
+        self.list_k = set(list_k)
+        self.questionnaire = set(questionnaire)
+        self.settings = set(settings)
+        self.student = set(student)
         self.student_course = set(student_course)
-        self.student_topic = set(student_topic)
         self.student_learning_element = set(student_learning_element)
-        self.course_creator_course = set(course_creator_course)
+        self.student_learning_element_visit = set(
+            student_learning_element_visit)
+        self.student_topic = set(student_topic)
+        self.student_topic_visit = set(student_topic_visit)
+        self.teacher = set(teacher)
+        self.teacher_course = set(teacher_course)
+        self.topic = set(topic)
+        self.topic_learning_element = set(topic_learning_element)
+        self.user = set(user)
 
     def add_course_creator_to_course(self, course_creator_course):
         course_creator_course.id = len(self.course_creator_course) + 1
         self.course_creator_course.add(course_creator_course)
+
+    def add_student_learning_element_visit(self,
+                                           student_learning_element_vist):
+        student_learning_element_vist.id = len(
+            self.student_learning_element_visit) + 1
+        self.student_learning_element_visit\
+            .add(student_learning_element_vist)
 
     def add_student_to_course(self, student_course):
         student_course.id = len(self.student_course) + 1
@@ -80,6 +103,14 @@ class FakeRepository(repository.AbstractRepository):
                              student_topic):
         student_topic.id = len(self.student_topic) + 1
         self.student_topic.add(student_topic)
+
+    def add_student_topic_visit(self, student_topic_visit):
+        student_topic_visit.id = len(self.student_topic_visit) + 1
+        self.student_topic_visit.add(student_topic_visit)
+
+    def add_teacher_to_course(self, teacher_course):
+        teacher_course.id = len(self.teacher_course) + 1
+        self.teacher_course.add(teacher_course)
 
     def create_admin(self, admin):
         admin.id = len(self.admin) + 1
@@ -128,6 +159,21 @@ class FakeRepository(repository.AbstractRepository):
     def create_learning_element(self, learning_element):
         learning_element.id = len(self.learning_element) + 1
         self.learning_element.add(learning_element)
+
+    def create_learning_path(self, learning_path):
+        learning_path.id = len(self.learning_path) + 1
+        self.learning_path.add(learning_path)
+
+    def create_learning_path_learning_element(self,
+                                              learning_path_learning_element):
+        learning_path_learning_element.id =\
+            len(self.learning_path_learning_element) + 1
+        self.learning_path_learning_element\
+            .add(learning_path_learning_element)
+
+    def create_learning_path_topic(self, learning_path_topic):
+        learning_path_topic.id = len(self.learning_path_topic) + 1
+        self.learning_path_topic.add(learning_path_topic)
 
     def create_learning_strategy(self, learning_strategy):
         learning_strategy.id = len(self.learning_strategy) + 1
@@ -323,6 +369,11 @@ class FakeRepository(repository.AbstractRepository):
                        p.id == course_id), None)
         return [result]
 
+    def get_courses_by_student_id(self, student_id):
+        result = next((p for p in self.student_course if
+                       p.student_id == student_id), None)
+        return [result]
+
     def get_course_creator_by_id(self,
                                  user_id):
         result = next((p for p in self.course_creator if
@@ -332,6 +383,11 @@ class FakeRepository(repository.AbstractRepository):
     def get_courses_for_student(self, student_id):
         result = next((p for p in self.student_course if
                        p.student_id == student_id), None)
+        return [result]
+
+    def get_courses_for_teacher(self, teacher_id):
+        result = next((p for p in self.teacher_course if
+                       p.teacher_id == teacher_id), None)
         return [result]
 
     def get_course_topic_by_course(self, course_id):
@@ -394,6 +450,13 @@ class FakeRepository(repository.AbstractRepository):
                        p.university == university), None)
         return [result]
 
+    def get_learning_path(self, student_id, course_id, topic_id):
+        result = next((p for p in self.learning_path if
+                       p.student_id == student_id and
+                       p.course_id == course_id and
+                       p.topic_id == topic_id), None)
+        return [result]
+
     def get_learning_strategy(self, characteristic_id):
         result = next((p for p in self.learning_strategy if
                        p.characteristic_id == characteristic_id), None)
@@ -427,6 +490,11 @@ class FakeRepository(repository.AbstractRepository):
     def get_students_by_uni(self, university):
         result = next((p for p in self.student if
                        p.university == university), None)
+        return [result]
+
+    def get_sub_topics_for_topic_id(self, topic_id):
+        result = next((p for p in self.topic if
+                       p.parent_id == topic_id), None)
         return [result]
 
     def get_teacher_by_id(self, user_id):
@@ -518,12 +586,51 @@ class FakeRepository(repository.AbstractRepository):
         learning_style.id = len(self.learning_style)
         self.learning_style.add(learning_style)
 
+    def update_previous_learning_element_visit(self,
+                                               student_id,
+                                               visit_time):
+        to_update = next(
+            (p for p in self.student_learning_element_visit
+             if p.student_id == student_id and
+                p.visit_start is None), None)
+        self.student_learning_element_visit.remove(to_update)
+        to_update.id = len(self.student_learning_element_visit)
+        to_update.visit_end = visit_time
+        self.student_learning_element_visit.add(to_update)
+
+    def update_previous_topic_visit(self,
+                                    student_id,
+                                    visit_time):
+        to_update = next(
+            (p for p in self.student_topic_visit
+             if p.student_id == student_id and
+                p.visit_start is None), None)
+        self.student_topic_visit.remove(to_update)
+        to_update.id = len(self.student_topic_visit)
+        to_update.visit_end = visit_time
+        self.student_topic_visit.add(to_update)
+
     def update_settings(self, user_id, settings):
         to_remove = next(
             (p for p in self.settings if p.user_id == user_id), None)
         self.settings.remove(to_remove)
         settings.id = len(self.settings)
         self.settings.add(settings)
+
+    def update_student_learning_element(self,
+                                        student_id,
+                                        learning_element_id,
+                                        visit_time):
+        to_update = next(
+            (p for p in self.student_learning_element
+             if p.student_id == student_id and
+                p.learning_element_id == learning_element_id and
+                p.visit_start is None), None)
+        self.student_learning_element.remove(to_update)
+        to_update.id = len(self.student_learning_element)
+        to_update.done_at = visit_time
+        to_update.done = True
+        self.student_learning_element.add(to_update)
 
     def update_topic(self, topic_id, topic):
         to_remove = next(
@@ -542,32 +649,39 @@ class FakeRepository(repository.AbstractRepository):
 
 class FakeUnitOfWork(unit_of_work.AbstractUnitOfWork):
     def __init__(self):
-        self.user = FakeRepository()
-        self.settings = FakeRepository()
         self.admin = FakeRepository()
+        self.course = FakeRepository()
         self.course_creator = FakeRepository()
-        self.teacher = FakeRepository()
-        self.student = FakeRepository()
-        self.learning_characteristics = FakeRepository()
-        self.learning_style = FakeRepository()
-        self.learning_strategy = FakeRepository()
-        self.knowledge = FakeRepository()
-        self.learning_analytics = FakeRepository()
-        self.questionnaire = FakeRepository()
+        self.course_creator_course = FakeRepository()
+        self.course_topic = FakeRepository()
         self.ils_input_answers = FakeRepository()
         self.ils_perception_answers = FakeRepository()
         self.ils_processing_answers = FakeRepository()
         self.ils_understanding_answers = FakeRepository()
-        self.list_k = FakeRepository()
-        self.course = FakeRepository()
-        self.topic = FakeRepository()
+        self.knowledge = FakeRepository()
+        self.learning_analytics = FakeRepository()
+        self.learning_characteristics = FakeRepository()
         self.learning_element = FakeRepository()
-        self.course_topic = FakeRepository()
-        self.topic_learning_element = FakeRepository()
+        self.learning_element_rating = FakeRepository()
+        self.learning_path = FakeRepository()
+        self.learning_path_learning_element = FakeRepository()
+        self.learning_path_topic = FakeRepository()
+        self.learning_strategy = FakeRepository()
+        self.learning_style = FakeRepository()
+        self.list_k = FakeRepository()
+        self.questionnaire = FakeRepository()
+        self.settings = FakeRepository()
+        self.student = FakeRepository()
         self.student_course = FakeRepository()
-        self.student_topic = FakeRepository()
         self.student_learning_element = FakeRepository()
-        self.course_creator_course = FakeRepository()
+        self.student_learning_element_visit = FakeRepository()
+        self.student_topic = FakeRepository()
+        self.student_topic_visit = FakeRepository()
+        self.teacher = FakeRepository()
+        self.teacher_course = FakeRepository()
+        self.topic = FakeRepository()
+        self.topic_learning_element = FakeRepository()
+        self.user = FakeRepository()
         self.committed = False
 
     def commit(self):
@@ -2464,16 +2578,27 @@ def test_delete_questionnaire(vv_2_f7, vv_5_f19, vv_7_f27, vv_10_f39,
     assert entries_beginning - 1 == entries_after
 
 
-@pytest.mark.parametrize("lms_id, name, university", [
+@pytest.mark.parametrize("lms_id, name, university, name_user,\
+                         lms_user_id, role", [
     # Working Example
     (
         1,
         "Test Course",
-        "TH-AB"
+        "TH-AB",
+        "Max Mustermann",
+        1,
+        "course_creator"
     )
 ])
-def test_create_course(lms_id, name, university):
+def test_create_course(lms_id, name, university, name_user, lms_user_id, role):
     uow = FakeUnitOfWork()
+    services.create_user(
+        uow=uow,
+        name=name_user,
+        university=university,
+        lms_user_id=lms_user_id,
+        role=role
+    )
     entries_beginning = len(uow.course.course)
     entries_beginning_course_creator_course =\
         len(uow.course_creator_course.course_creator_course)
@@ -2495,16 +2620,28 @@ def test_create_course(lms_id, name, university):
         entries_after_course_creator_course
 
 
-@pytest.mark.parametrize("lms_id, name, university", [
+@pytest.mark.parametrize("lms_id, name, university, name_user,\
+                         lms_user_id, role", [
     # Working Example
     (
         1,
         "Test Course",
-        "TH-AB"
+        "TH-AB",
+        "Max Mustermann",
+        1,
+        "course_creator"
     )
 ])
-def test_get_course_by_id(lms_id, name, university):
+def test_get_course_by_id(lms_id, name, university, name_user,
+                          lms_user_id, role):
     uow = FakeUnitOfWork()
+    services.create_user(
+        uow=uow,
+        name=name_user,
+        university=university,
+        lms_user_id=lms_user_id,
+        role=role
+    )
     services.create_course(
         uow=uow,
         lms_id=lms_id,
@@ -2521,16 +2658,27 @@ def test_get_course_by_id(lms_id, name, university):
     assert result != {}
 
 
-@pytest.mark.parametrize("lms_id, name, university", [
+@pytest.mark.parametrize("lms_id, name, university, name_user,\
+                         lms_user_id, role", [
     # Working Example
     (
         1,
         "Test Course",
-        "TH-AB"
+        "TH-AB",
+        "Max Mustermann",
+        1,
+        "course_creator"
     )
 ])
-def test_update_course(lms_id, name, university):
+def test_update_course(lms_id, name, university, name_user, lms_user_id, role):
     uow = FakeUnitOfWork()
+    services.create_user(
+        uow=uow,
+        name=name_user,
+        university=university,
+        lms_user_id=lms_user_id,
+        role=role
+    )
     services.create_course(
         uow=uow,
         lms_id=lms_id,
@@ -2552,16 +2700,27 @@ def test_update_course(lms_id, name, university):
     assert entries_beginning == entries_after
 
 
-@pytest.mark.parametrize("lms_id, name, university", [
+@pytest.mark.parametrize("lms_id, name, university, name_user,\
+                         lms_user_id, role", [
     # Working Example
     (
         1,
         "Test Course",
-        "TH-AB"
+        "TH-AB",
+        "Max Mustermann",
+        1,
+        "course_creator"
     )
 ])
-def test_delete_course(lms_id, name, university):
+def test_delete_course(lms_id, name, university, name_user, lms_user_id, role):
     uow = FakeUnitOfWork()
+    services.create_user(
+        uow=uow,
+        name=name_user,
+        university=university,
+        lms_user_id=lms_user_id,
+        role=role
+    )
     services.create_course(
         uow=uow,
         lms_id=lms_id,
@@ -2858,7 +3017,8 @@ def test_update_topic(lms_id, is_topic, parent_id, contains_le,
 
 @pytest.mark.parametrize("lms_id, is_topic, parent_id, contains_le,\
                          name, university, created_by,\
-                         created_at", [
+                         created_at, name_course, name_user,\
+                         lms_user_id, role", [
     # Working Example Topic
     (
         1,
@@ -2868,7 +3028,11 @@ def test_update_topic(lms_id, is_topic, parent_id, contains_le,
         "Test Topic",
         "TH-AB",
         "Maria Musterfrau",
-        time.time()
+        time.time(),
+        "Test Course",
+        "Maria Musterfrau",
+        1,
+        "course_creator"
     ),
     # Working Example Sub-Topic
     (
@@ -2879,12 +3043,32 @@ def test_update_topic(lms_id, is_topic, parent_id, contains_le,
         "Test Sub-Topic",
         "TH-AB",
         "Maria Musterfrau",
-        time.time()
+        time.time(),
+        "Test Course",
+        "Maria Musterfrau",
+        1,
+        "course_creator"
     ),
 ])
 def test_delete_topic(lms_id, is_topic, parent_id, contains_le,
-                      name, university, created_by, created_at):
+                      name, university, created_by, created_at,
+                      name_course, name_user, lms_user_id, role):
     uow = FakeUnitOfWork()
+    services.create_user(
+        uow=uow,
+        name=name_user,
+        university=university,
+        lms_user_id=lms_user_id,
+        role=role
+    )
+    services.create_course(
+        uow=uow,
+        lms_id=lms_id,
+        name=name_course,
+        university=university,
+        created_by=1,
+        created_at="2023-01-01"
+    )
     services.create_topic(
         uow=uow,
         course_id=1,
@@ -3200,12 +3384,19 @@ def test_add_student_to_course(name,
         lms_user_id=lms_user_id,
         role=role
     )
+    services.create_user(
+        uow=uow,
+        name=name,
+        university=university,
+        lms_user_id=lms_user_id,
+        role="course_creator"
+    )
     services.create_course(
         uow=uow,
         lms_id=lms_id_course,
         name=course_name,
         university=university,
-        created_by=1,
+        created_by=2,
         created_at="2023-01-01"
     )
     services.create_topic(
@@ -3251,12 +3442,28 @@ def test_add_student_to_course(name,
     assert entries_after_le > entries_beginning_le
 
 
-def test_create_course_creator_course():
+@pytest.mark.parametrize("name, university, lms_user_id, role", [
+    (
+        "Max Mustermann",
+        "TH-AB",
+        1,
+        "course_creator"
+    )
+])
+def test_create_course_creator_course(name, university, lms_user_id, role):
     uow = FakeUnitOfWork()
+    services.create_user(
+        uow=uow,
+        name=name,
+        university=university,
+        lms_user_id=lms_user_id,
+        role=role
+    )
+
     entries_beginning = len(uow.course_creator_course.course_creator_course)
     result = services.add_course_creator_to_course(
         uow=uow,
-        course_creator_id=1,
+        created_by=1,
         course_id=1,
         created_at="2023-01-01"
     )

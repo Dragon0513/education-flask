@@ -834,7 +834,7 @@ def create_user(
         match role.lower():
             case "admin":
                 create_admin(uow, user)
-            case "course creator":
+            case "course_creator":
                 create_course_creator(uow, user)
             case "student":
                 create_student(uow, user)
@@ -1090,7 +1090,7 @@ def delete_topic(
         topic_id
 ):
     with uow:
-        uow.topic.delete_course_topic_by_topic(topic_id)
+        uow.course_topic.delete_course_topic_by_topic(topic_id)
         uow.commit()
         uow.topic.delete_topic(topic_id)
         uow.commit()

@@ -1,18 +1,15 @@
-import datetime
 from functools import wraps
 import json
 import os
-import urllib.parse
 from errors import errors as err
 
-from flask import Flask, abort, jsonify, request, session
-from flask import redirect, make_response
+from flask import Flask, jsonify, request, session
+from flask import make_response
 from flask_cors import CORS, cross_origin
 from flask_caching import Cache
 
 from repositories import orm
 from service_layer import services, unit_of_work
-from service_layer.lti.OIDCLoginFlask import OIDCLoginFlask
 from service_layer.lti.config.ToolConfigJson import ToolConfigJson
 import service_layer.crypto.JWTKeyManagement as JWTKeyManagement
 

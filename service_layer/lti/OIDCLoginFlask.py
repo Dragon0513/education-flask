@@ -137,6 +137,9 @@ class OIDCLoginFlask(OIDCLogin):
 
         # Decode the id_token
         id_token_jwt = self._request.form.get('id_token', type=str) or ''
+        if not id_token_jwt:
+            self._response = "Invalid id_token, crypto key signature or lti config data of LMS may have changed", 400
+            return self
         id_token_header_unverified = JWTKeyManagement.get_unverified_header(id_token_jwt)
         id_token_unverified = JWTKeyManagement.load_jwt(id_token_jwt)
 

@@ -181,7 +181,9 @@ learning_path = Table(
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("student_id", Integer, nullable=False),
     Column("course_id", Integer, nullable=False),
-    Column("topic_id", Integer, nullable=True)
+    Column("based_on", String, nullable=False),
+    Column("topic_id", Integer, nullable=True),
+    Column("calculated_on", String, nullable=True)
 )
 
 learning_path_learning_element = Table(

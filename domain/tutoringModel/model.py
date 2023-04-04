@@ -6,10 +6,16 @@ class LearningPath:
     def __init__(self,
                  student_id,
                  course_id,
-                 topic_id=None) -> None:
+                 based_on,
+                 topic_id=None,
+                 path=None) -> None:
         self.student_id = student_id
         self.course_id = course_id
+        self.based_on = based_on
+        self.path = path
         self.topic_id = topic_id
+        self.calculated_on = time.strftime(
+            "%Y-%m-%d %H:%M:%S", time.localtime(time.time()))
 
     def serialize(self):
         return {
@@ -17,6 +23,9 @@ class LearningPath:
             'student_id': self.student_id,
             'course_id': self.course_id,
             'topic_id': self.topic_id,
+            'based_on': self.based_on,
+            'path': self.path,
+            'calculated_on': self.calculated_on
         }
 
     def get_learning_path(self, student_id, learning_style, algorithm):
@@ -29,15 +38,12 @@ class LearningPath:
             raise err.NoValidAlgorithmError()
 
 
-class LearningPathTopic(LearningPath):
+class LearningPathTopic():
     def __init__(self,
-                 student_id,
-                 course_id,
                  topic_id,
                  learning_path_id,
                  recommended,
                  position) -> None:
-        super().__init__(student_id, course_id, topic_id)
         self.topic_id = topic_id
         self.learning_path_id = learning_path_id
         self.recommended = recommended
@@ -53,16 +59,12 @@ class LearningPathTopic(LearningPath):
         }
 
 
-class LearningPathLearningElement(LearningPath):
+class LearningPathLearningElement():
     def __init__(self,
-                 student_id,
-                 course_id,
-                 topic_id,
                  learning_element_id,
                  learning_path_id,
                  recommended,
                  position) -> None:
-        super().__init__(student_id, course_id, topic_id=None)
         self.learning_element_id = learning_element_id
         self.learning_path_id = learning_path_id
         self.recommended = recommended

@@ -7,9 +7,9 @@ import json
                          keys_expected, status_code_expected", [
     # Working Example
     (
+        147,
         1,
-        1,
-        1,
+        103,
         {
             "perception_dimension": "SNS",
             "perception_value": 7,
@@ -45,18 +45,18 @@ import json
     ),
     # Empty Request body
     (
-        2,
+        147,
         1,
-        1,
+        103,
         {},
         ['error'],
-        404
+        400
     ),
     # Wrong numbers in request body
     (
+        147,
         1,
-        1,
-        1,
+        103,
         {
             "perception_dimension": "SNS",
             "perception_value": 12,
@@ -68,13 +68,13 @@ import json
             "understanding_value": 7
         },
         ['error'],
-        404
+        400
     ),
     # Wrong number of dimensions in request body
     (
+        147,
         1,
-        1,
-        1,
+        103,
         {
             "perception_dimension": "SNS",
             "perception_value": 7,
@@ -84,7 +84,7 @@ import json
             "processing_value": 7
         },
         ['error'],
-        404
+        400
     )
 ])
 def test_api_put_learning_style_by_student_id(
@@ -101,5 +101,5 @@ def test_api_put_learning_style_by_student_id(
     r = client.put(url, json=request_body)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
-    for key in response.keys():
-        assert key in keys_expected
+    for key in keys_expected:
+        assert key in response.keys()

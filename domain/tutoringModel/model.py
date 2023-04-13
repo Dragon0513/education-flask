@@ -1,4 +1,6 @@
 from domain.tutoringModel import graf
+#from domain.tutoringModel import ga
+from domain.domainModel import model as v
 import errors as err
 import time
 
@@ -29,9 +31,17 @@ class LearningPath:
             'calculated_on': self.calculated_on
         }
 
-    def get_learning_path(self, student_id, learning_style, algorithm):
+    def get_learning_path(self, student_id, learning_style, algorithm, list_Learning_element):
+        
+        list_Learning_element={}
+
         if algorithm == "Graf":
             path = graf.GrafAlgorithm(
+                student_id=student_id, learning_style=learning_style)
+            temp = path.get_learning_path(input_learning_style=learning_style, list_Learning_element=list_Learning_element)
+            self.path = ", ".join(temp)
+        elif algorithm == "GA":
+            path = ga.GA_Algorithm(
                 student_id=student_id, learning_style=learning_style)
             temp = path.get_learning_path(input_learning_style=learning_style)
             self.path = ", ".join(temp)

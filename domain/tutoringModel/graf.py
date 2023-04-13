@@ -1,9 +1,12 @@
+from domain.tutoringModel import model as tutoringModel
+from domain.domainModel import model as LE
 from datetime import datetime
 import errors as err
 
 
 class GrafAlgorithm:
 
+    
     # Learning Element Types: (+) = 1 and (-) = 0
     learning_style_rq = {"AKT": 0, "REF": 1, "INT": 1}
     learning_style_se = {"AKT": 1, "REF": 0, "SNS": 1}
@@ -21,6 +24,7 @@ class GrafAlgorithm:
                  student_id,
                  learning_path=None,
                  learning_style={"AKT": 0, "INT": 0, "VIS": 0, "GLO": 0},
+                 dict_Learning_element=None,
                  id=None):
         if id is None:
             self.id = datetime.timestamp(datetime.now())
@@ -31,6 +35,13 @@ class GrafAlgorithm:
             self.learning_path = self.get_learning_path(learning_style)
         else:
             self.learning_path = learning_path
+
+        if dict_Learning_element is None:
+            self.dict_Learning_element = self.get_dict_Learning_element()
+        else:
+            self.dict_Learning_element = dict_Learning_element    
+
+
 
     def check_learning_style(self, input_learning_style):
         is_correct = False
@@ -85,8 +96,49 @@ class GrafAlgorithm:
             del learning_path[highest_item]
         return sort_learning_path
 
+
+    def get_dict_Learning_element(self):
+        elements = ["KÜ", "LK", "ZF", "RQ", "SE", 
+                    "FO", "ZL", "AN", "ÜB", "BE", "AB", "LZ"]
+        id = 0
+        dict_Learning_element = {}
+        for ele in elements:
+            LearningElement = LE.LearningElement(lms_id=id,
+                                                 activity_type="",
+                                                 classification=ele,
+                                                 name=ele, 
+                                                 university=None,
+                                                 created_by=None,
+                                                 created_at=None,
+                                                 last_updated=None,
+                                                 )
+            dict_Learning_element[ele] = LearningElement
+            id = id+1
+        return dict_Learning_element
+
+
+    def get_list_LPLE(self, learning_path, dict_Learning_element):
+
+        if(dict_Learning_element is None):
+            dict_Learning_element = self.get_dict_Learning_element()
+
+        List_LPLE = []
+        for key in learning_path:
+            condition = dict_Learning_element.get(key) is not None
+            if (condition):
+                element = dict_Learning_element.get(key)
+                LPLE = tutoringModel.LearningPathLearningElement(learning_element_id=element.id,
+                                                                 learning_path_id=self.id,
+                                                                 recommended=True,
+                                                                 position=None)
+                List_LPLE.append(LPLE)
+        return List_LPLE
+
+
     def get_learning_path(self, input_learning_style={"AKT": 0, "INT": 0,
-                                                      "VIS": 0, "GLO": 0}):
+                                                      "VIS": 0, "GLO": 0},
+                                                      dict_Learning_element=None,
+                                                      ):
         if (len(input_learning_style) != 4):
             raise err.WrongLearningStyleNumberError()
 
@@ -112,5 +164,16 @@ class GrafAlgorithm:
         learning_path["AB"] = self.calculate_sequence(
             self.learning_style_ab, input_learning_style)
         learning_path["ZF"] = self.special_case_zf(input_learning_style)
+        
+       
 
-        return self.sort_learning_path(learning_path)
+        learning_path = self.sort_learning_path(learning_path) 
+
+        List_LPLE = self.get_list_LPLE(learning_path,dict_Learning_element)
+
+        #print(learning_path)
+        #print("List_LPLE: ",[i.position for i in List_LPLE])
+        return learning_path, List_LPLE
+
+
+

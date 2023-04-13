@@ -1,5 +1,6 @@
 from domain.tutoringModel import model as tutoringModel
-from domain.domainModel import model as LE
+#from domain.domainModel import model as LE
+from domain.tutoringModel import util
 from datetime import datetime
 import errors as err
 
@@ -37,11 +38,9 @@ class GrafAlgorithm:
             self.learning_path = learning_path
 
         if dict_Learning_element is None:
-            self.dict_Learning_element = self.get_dict_Learning_element()
+            self.dict_Learning_element = util.get_dict_Learning_element()
         else:
             self.dict_Learning_element = dict_Learning_element    
-
-
 
     def check_learning_style(self, input_learning_style):
         is_correct = False
@@ -96,49 +95,10 @@ class GrafAlgorithm:
             del learning_path[highest_item]
         return sort_learning_path
 
-
-    def get_dict_Learning_element(self):
-        elements = ["KÜ", "LK", "ZF", "RQ", "SE", 
-                    "FO", "ZL", "AN", "ÜB", "BE", "AB", "LZ"]
-        id = 0
-        dict_Learning_element = {}
-        for ele in elements:
-            LearningElement = LE.LearningElement(lms_id=id,
-                                                 activity_type="",
-                                                 classification=ele,
-                                                 name=ele, 
-                                                 university=None,
-                                                 created_by=None,
-                                                 created_at=None,
-                                                 last_updated=None,
-                                                 )
-            dict_Learning_element[ele] = LearningElement
-            id = id+1
-        return dict_Learning_element
-
-
-    def get_list_LPLE(self, learning_path, dict_Learning_element):
-
-        if(dict_Learning_element is None):
-            dict_Learning_element = self.get_dict_Learning_element()
-
-        List_LPLE = []
-        for key in learning_path:
-            condition = dict_Learning_element.get(key) is not None
-            if (condition):
-                element = dict_Learning_element.get(key)
-                LPLE = tutoringModel.LearningPathLearningElement(learning_element_id=element.id,
-                                                                 learning_path_id=self.id,
-                                                                 recommended=True,
-                                                                 position=None)
-                List_LPLE.append(LPLE)
-        return List_LPLE
-
-
     def get_learning_path(self, input_learning_style={"AKT": 0, "INT": 0,
                                                       "VIS": 0, "GLO": 0},
                                                       dict_Learning_element=None,
-                                                      ):
+                                                      unit_test=False):
         if (len(input_learning_style) != 4):
             raise err.WrongLearningStyleNumberError()
 
@@ -163,16 +123,16 @@ class GrafAlgorithm:
             self.learning_style_be, input_learning_style)
         learning_path["AB"] = self.calculate_sequence(
             self.learning_style_ab, input_learning_style)
-        learning_path["ZF"] = self.special_case_zf(input_learning_style)
-        
-       
+        learning_path["ZF"] = self.special_case_zf(input_learning_style)  
 
         learning_path = self.sort_learning_path(learning_path) 
 
-        List_LPLE = self.get_list_LPLE(learning_path,dict_Learning_element)
+        Learning_Path_id= self.id    
+        List_LPLE =  util.get_list_LPLE(learning_path, 
+                                        dict_Learning_element, 
+                                        Learning_Path_id)
 
-        #print(learning_path)
-        #print("List_LPLE: ",[i.position for i in List_LPLE])
+        #print(learning_path)        
         return learning_path, List_LPLE
 
 

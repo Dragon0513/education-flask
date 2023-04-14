@@ -1,5 +1,4 @@
 from domain.tutoringModel import model as tutoringModel
-#from domain.domainModel import model as LE
 from domain.tutoringModel import util
 from datetime import datetime
 import errors as err
@@ -7,7 +6,6 @@ import errors as err
 
 class GrafAlgorithm:
 
-    
     # Learning Element Types: (+) = 1 and (-) = 0
     learning_style_rq = {"AKT": 0, "REF": 1, "INT": 1}
     learning_style_se = {"AKT": 1, "REF": 0, "SNS": 1}
@@ -32,15 +30,16 @@ class GrafAlgorithm:
         else:
             self.id = id
         self.student_id = student_id
+
         if learning_path is None:
-            self.learning_path = self.get_learning_path(learning_style)
+            self.learning_path = None#self.get_learning_path(learning_style)
         else:
             self.learning_path = learning_path
 
         if dict_Learning_element is None:
             self.dict_Learning_element = util.get_dict_Learning_element()
         else:
-            self.dict_Learning_element = dict_Learning_element    
+            self.dict_Learning_element = dict_Learning_element
 
     def check_learning_style(self, input_learning_style):
         is_correct = False
@@ -97,8 +96,8 @@ class GrafAlgorithm:
 
     def get_learning_path(self, input_learning_style={"AKT": 0, "INT": 0,
                                                       "VIS": 0, "GLO": 0},
-                                                      dict_Learning_element=None,
-                                                      unit_test=False):
+                          dict_Learning_element=None,
+                          unit_test=False):
         if (len(input_learning_style) != 4):
             raise err.WrongLearningStyleNumberError()
 
@@ -123,17 +122,15 @@ class GrafAlgorithm:
             self.learning_style_be, input_learning_style)
         learning_path["AB"] = self.calculate_sequence(
             self.learning_style_ab, input_learning_style)
-        learning_path["ZF"] = self.special_case_zf(input_learning_style)  
+        learning_path["ZF"] = self.special_case_zf(input_learning_style)
 
-        learning_path = self.sort_learning_path(learning_path) 
+        learning_path = self.sort_learning_path(learning_path)
+        
 
-        Learning_Path_id= self.id    
-        List_LPLE =  util.get_list_LPLE(learning_path, 
-                                        dict_Learning_element, 
-                                        Learning_Path_id)
+        Learning_Path_id = self.id
+        List_LPLE = util.get_list_LPLE(learning_path,
+                                       dict_Learning_element,
+                                       Learning_Path_id)
 
-        #print(learning_path)        
+        #print(learning_path)
         return learning_path, List_LPLE
-
-
-

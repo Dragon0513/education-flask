@@ -16,7 +16,8 @@ graf = {
     "AB": (0, 0, 1, -1, 0, 0, 0, 1)  # AB
 }
 
-def get_coordinates(learning_style,learning_elements):
+
+def get_coordinates(learning_style, learning_elements):
     coordinates = {}
     for elememnt in learning_elements:
         if elememnt == "KÜ":
@@ -27,7 +28,7 @@ def get_coordinates(learning_style,learning_elements):
             coordinates['LZ'] = (-12, -12, -12, -12)
         elif elememnt == "ZF":
             if('REF' in learning_style.keys() and 'SEQ' in learning_style.keys()):
-                if learning_style['REF']>learning_style['SEQ']:
+                if learning_style['REF'] > learning_style['SEQ']:
                     coordinates['ZF'] = (11, 11, 11, 11)
                 else:
                     coordinates['ZF'] = (0, 0, 0, 0)
@@ -64,20 +65,21 @@ def get_coordinates(learning_style,learning_elements):
     return coordinates
 
 
-def get_coordinate(learning_style,learning_elements):
-     
-    dict_coordinates = get_coordinates(learning_style,learning_elements)
+def get_coordinate(learning_style, learning_elements):
+
+    dict_coordinates = get_coordinates(learning_style, learning_elements)
     ele = len(learning_elements)
-    GA_coordinates = np.zeros((ele,4))    
-    idx=0
+    GA_coordinates = np.zeros((ele, 4))
+    idx = 0
     for key in dict_coordinates.keys():
-        GA_coordinates[idx,:] = dict_coordinates[key]      
+        GA_coordinates[idx, :] = dict_coordinates[key]
         idx = idx+1
 
     return GA_coordinates
 
- 
+
 def check_learning_style(input_learning_style):
+
     is_correct = False
     for iterator in input_learning_style:
 
@@ -92,6 +94,7 @@ def check_learning_style(input_learning_style):
 
 
 def check_name_learning_style(input_learning_style):
+
     is_correct = False
     list_is_correct = []
 
@@ -118,20 +121,22 @@ def check_name_learning_style(input_learning_style):
 
 
 def get_dict_Learning_element():
-    elements = ["KÜ", "LK", "ZF", "RQ", "SE", 
+
+    elements = ["KÜ", "LK", "ZF", "RQ", "SE",
                 "FO", "ZL", "AN", "ÜB", "BE", "AB", "LZ"]
     id = 0
     dict_Learning_element = {}
     for ele in elements:
         LearningElement = LE.LearningElement(lms_id=None,
-                                                activity_type=None,
-                                                classification=ele,
-                                                name=ele, 
-                                                university=None,
-                                                created_by=None,
-                                                created_at=None,
-                                                last_updated=None,
-                                                )
+                                             activity_type=None,
+                                             classification=ele,
+                                             name=ele,
+                                             university=None,
+                                             created_by=None,
+                                             created_at=None,
+                                             last_updated=None,
+                                             )
+        LearningElement.id= id                                  
         dict_Learning_element[ele] = LearningElement
         id = id+1
     return dict_Learning_element
@@ -148,11 +153,9 @@ def get_list_LPLE(learning_path, dict_Learning_element, LP_id):
         if (condition):
             element = dict_Learning_element.get(key)
             LPLE = tutoringModel.LearningPathLearningElement(learning_element_id=element.id,
-                                                                learning_path_id=LP_id,
-                                                                recommended=True,
-                                                                position=None)
+                                                             learning_path_id=LP_id,
+                                                             recommended=True,
+                                                             position=None)
             List_LPLE.append(LPLE)
-    #print("List_LPLE: ",[i.position for i in List_LPLE])         
+    #print("List_LPLE: ",[i.learning_element_id for i in List_LPLE])
     return List_LPLE
-
-

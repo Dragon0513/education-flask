@@ -35,7 +35,6 @@ def add_student_to_course(
         course_id
 ) -> dict:
     with uow:
-        print('##########################')
         uow.student.get_student_by_student_id(student_id)
         get_course_by_id(uow, None, None, course_id)
         student_course = uow.student_course.get_student_course(
@@ -109,8 +108,7 @@ def add_student_learning_element_visit(
         uow: unit_of_work.AbstractUnitOfWork,
         student_id,
         learning_element_id,
-        visit_start,
-        previous_learning_element_id
+        visit_start
 ) -> dict:
     with uow:
         update_previous_learning_element_visit(
@@ -1022,9 +1020,7 @@ def delete_ils_understanding_answers(
 def delete_learning_element(
         uow: unit_of_work.AbstractUnitOfWork,
         course_id,
-        lms_course_id,
         topic_id,
-        lms_topic_id,
         learning_element_id
 ):
     with uow:
@@ -1987,8 +1983,7 @@ def get_topic_learning_element_by_learning_element(
 def get_users_by_admin(
         uow: unit_of_work.AbstractUnitOfWork,
         user_id,
-        lms_user_id,
-        admin_id
+        lms_user_id
 ) -> dict:
     with uow:
         admin_user = uow.user.get_user_by_id(

@@ -29,6 +29,9 @@ mocked_frontend_log = {"logs": [{
     "navigationType": "reload"
 }]}
 
+date_format = r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z'
+deletion_message = "Deletion was successful!"
+
 
 @app.errorhandler(Exception)
 def handle_exception(err):
@@ -105,7 +108,7 @@ def user_administration(user_id, lms_user_id):
                 user_id,
                 lms_user_id
             )
-            result = {'message': 'Deletion was successful'}
+            result = {'message': deletion_message}
             status_code = 200
             return jsonify(result), status_code
 
@@ -176,8 +179,7 @@ def course_management(course_id, lms_course_id):
             condition4 = 'last_updated' in request.json
             if condition1 and condition2 and condition3 and condition4:
                 condition5 =\
-                    re.search("[0-9]{4}[-][0-9]{2}[-][0-9]{2}[T]" +
-                              "[0-9]{2}[:][0-9]{2}[:][0-9]{2}[Z]",
+                    re.search(date_format,
                               request.json['last_updated'])
                 if condition5:
                     course = services.update_course(
@@ -198,7 +200,7 @@ def course_management(course_id, lms_course_id):
                 unit_of_work.SqlAlchemyUnitOfWork(),
                 course_id
             )
-            result = {'message': 'Deletion was successful'}
+            result = {'message': deletion_message}
             status_code = 200
             return jsonify(result), status_code
 
@@ -271,8 +273,7 @@ def topic_administration(course_id, lms_course_id, topic_id, lms_topic_id):
                     and condition4 and condition5 and condition6\
                     and condition7 and condition8:
                 condition9 =\
-                    re.search("[0-9]{4}[-][0-9]{2}[-][0-9]{2}[T]" +
-                              "[0-9]{2}[:][0-9]{2}[:][0-9]{2}[Z]",
+                    re.search(date_format,
                               request.json['last_updated'])
                 if condition9:
                     topic = services.update_topic(
@@ -299,7 +300,7 @@ def topic_administration(course_id, lms_course_id, topic_id, lms_topic_id):
                 unit_of_work.SqlAlchemyUnitOfWork(),
                 topic_id
             )
-            result = {'message': 'Deletion was successful'}
+            result = {'message': deletion_message}
             status_code = 200
             return jsonify(result), status_code
 
@@ -379,8 +380,7 @@ def learning_element_administration(course_id,
                     and condition4 and condition5 and condition6\
                     and condition7 and condition8:
                 condition9 =\
-                    re.search("[0-9]{4}[-][0-9]{2}[-][0-9]{2}[T]" +
-                              "[0-9]{2}[:][0-9]{2}[:][0-9]{2}[Z]",
+                    re.search(date_format,
                               request.json['last_updated'])
                 condition10 = type(request.json['activity_type']) == str
                 condition11 = type(request.json['classification']) == str
@@ -414,12 +414,10 @@ def learning_element_administration(course_id,
             services.delete_learning_element(
                 unit_of_work.SqlAlchemyUnitOfWork(),
                 course_id,
-                lms_course_id,
                 topic_id,
-                lms_topic_id,
                 learning_element_id
             )
-            result = {'message': 'Deletion was successful'}
+            result = {'message': deletion_message}
             status_code = 200
             return jsonify(result), status_code
 
@@ -467,8 +465,7 @@ def post_student_topic_visit(student_id, lms_user_id, topic_id):
             condition2 = 'visit_start' in request.json
             if condition1 and condition2:
                 condition3 =\
-                    re.search("[0-9]{4}[-][0-9]{2}[-][0-9]{2}[T]" +
-                              "[0-9]{2}[:][0-9]{2}[:][0-9]{2}[Z]",
+                    re.search(date_format,
                               request.json['visit_start'])
                 condition4 = type(request.json['visit_start']) is str
                 if condition3 and condition4:
@@ -502,18 +499,14 @@ def post_student_learning_element_id_visit(student_id,
             if condition1 and condition2:
                 condition3 = type(request.json['visit_start']) is str
                 condition4 =\
-                    re.search("[0-9]{4}[-][0-9]{2}[-][0-9]{2}[T]" +
-                              "[0-9]{2}[:][0-9]{2}[:][0-9]{2}[Z]",
+                    re.search(date_format,
                               request.json['visit_start'])
                 if condition3 and condition4:
                     result = services.add_student_learning_element_visit(
                         unit_of_work.SqlAlchemyUnitOfWork(),
                         student_id,
                         learning_element_id,
-                        request.json['visit_start'],
-                        request.json['previous_learning_element_id']
-                        if 'previous_learning_element_id'
-                        in request.json else None
+                        request.json['visit_start']
                     )
                     status_code = 201
                     return jsonify(result), status_code
@@ -599,9 +592,8 @@ def questionnaire(student_id, lms_user_id):
                 for answer in ils.values():
                     if type(answer) != str:
                         raise err.WrongParameterValueError()
-                    if answer != "a":
-                        if answer != "b":
-                            raise err.NoValidParameterValueError()
+                    if answer != "a" and answer != "b":
+                        raise err.NoValidParameterValueError()
                 list_k = {}
                 for key in request.json['list_k']:
                     list_k[key['question_id']] = key['answer']
@@ -1204,8 +1196,6 @@ def settings_by_user_id(user_id, lms_user_id):
 @cross_origin(supports_credentials=True)
 def logging_frontend():
     method = request.method
-    return_message = {}
-    status_code = 400
     required_log_attributes = ['name',
                                'value',
                                'rating',
@@ -1256,8 +1246,7 @@ def get_users_by_admin(user_id, lms_user_id, admin_id):
             users = services.get_users_by_admin(
                 unit_of_work.SqlAlchemyUnitOfWork(),
                 user_id,
-                lms_user_id,
-                admin_id
+                lms_user_id
             )
             status_code = 200
             return jsonify(users), status_code

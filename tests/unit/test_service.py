@@ -453,11 +453,6 @@ class FakeRepository(repository.AbstractRepository):
                        p.user_id == user_id), None)
         return [result]
 
-    def get_courses_for_student(self, student_id):
-        result = next((p for p in self.student_course if
-                       p.student_id == student_id), None)
-        return [result]
-
     def get_courses_for_teacher(self, teacher_id):
         result = next((p for p in self.teacher_course if
                        p.teacher_id == teacher_id), None)
@@ -531,7 +526,8 @@ class FakeRepository(repository.AbstractRepository):
 
     def get_learning_element_recommendation(self, learning_path_id):
         result = next((p for p in self.learning_path_learning_element if
-                       p.learning_path_id == learning_path_id), None)
+                       p.learning_path_id == learning_path_id and
+                       p.recommended), None)
         return [result]
 
     def get_learning_path(self, student_id, course_id, topic_id):
@@ -1439,12 +1435,11 @@ def test_update_user(name, name_new, university, lms_user_id, role):
     assert result != {}
 
 
-@pytest.mark.parametrize("name, name_new, university,\
+@pytest.mark.parametrize("name, university,\
                          lms_user_id, role, keys_expected", [
     # Working Example
     (
         "Max Mustermann",
-        "Maria Musterfrau",
         "TH-AB",
         1,
         "student",
@@ -1453,13 +1448,12 @@ def test_update_user(name, name_new, university, lms_user_id, role):
     )
 ])
 def test_get_learning_characteristics(name,
-                                      name_new,
                                       university,
                                       lms_user_id,
                                       role,
                                       keys_expected):
     uow = FakeUnitOfWork()
-    user = services.create_user(
+    services.create_user(
         uow=uow,
         name=name,
         university=university,
@@ -3580,9 +3574,7 @@ def test_delete_learning_element(lms_id, activity_type, classification, name,
     result = services.delete_learning_element(
         uow=uow,
         course_id=1,
-        lms_course_id=1,
         topic_id=1,
-        lms_topic_id=1,
         learning_element_id=1
     )
     assert type(result) is dict
@@ -3658,8 +3650,6 @@ def test_add_student_to_course(name,
     entries_beginning_topic = len(uow.student_topic.student_topic)
     entries_beginning_le = len(uow.student_learning_element
                                .student_learning_element)
-    print('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<')
-    print(uow.student_course.student_course)
     result = services.add_student_to_course(
         uow=uow,
         student_id=1,

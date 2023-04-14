@@ -75,11 +75,13 @@ class LearningPathLearningElement():
                  learning_element_id,
                  learning_path_id,
                  recommended,
-                 position) -> None:
+                 position,
+                 learning_element=None) -> None:
         self.learning_element_id = learning_element_id
         self.learning_path_id = learning_path_id
         self.recommended = recommended
         self.position = position
+        self.learning_element = learning_element
 
     def serialize(self):
         return {
@@ -87,5 +89,6 @@ class LearningPathLearningElement():
             'learning_element_id': self.learning_element_id,
             'learning_path_id': self.learning_path_id,
             'recommended': self.recommended,
-            'position': self.position
+            'position': self.position,
+            'learning_element': self.learning_element
         }

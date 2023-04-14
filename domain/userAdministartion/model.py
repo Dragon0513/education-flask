@@ -4,11 +4,13 @@ class User():
                  university,
                  lms_user_id,
                  role=None,
+                 role_id=None,
                  settings=None) -> None:
         self.name = name
         self.university = university
         self.lms_user_id = lms_user_id
         self.role = role
+        self.role_id = role_id
         self.settings = settings
 
     def serialize(self):
@@ -18,6 +20,7 @@ class User():
             'university': self.university,
             'lms_user_id': self.lms_user_id,
             'role': self.role,
+            'role_id': self.role_id,
             'settings': self.settings
         }
 

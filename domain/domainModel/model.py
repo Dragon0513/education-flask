@@ -7,7 +7,8 @@ class LearningElement:
                  university,
                  created_by,
                  created_at,
-                 last_updated=None) -> None:
+                 last_updated=None,
+                 student_learning_element=None) -> None:
         self.lms_id = lms_id
         self.activity_type = activity_type
         self.classification = classification
@@ -16,6 +17,8 @@ class LearningElement:
         self.created_by = created_by
         self.created_at = created_at
         self.last_updated = last_updated
+        self.student_learning_element =\
+            student_learning_element
 
     def serialize(self):
         return {
@@ -27,22 +30,36 @@ class LearningElement:
             'university': self.university,
             'created_by': self.created_by,
             'created_at': self.created_at,
-            'last_updated': self.last_updated
+            'last_updated': self.last_updated,
+            'student_learning_element':
+            self.student_learning_element
         }
 
 
 class Course:
-    def __init__(self, lms_id, name, university) -> None:
+    def __init__(self,
+                 lms_id,
+                 name,
+                 university,
+                 created_at=None,
+                 created_by=None,
+                 last_updated=None) -> None:
         self.lms_id = lms_id
         self.name = name
         self.university = university
+        self.created_at = created_at
+        self.created_by = created_by
+        self.last_updated = last_updated
 
     def serialize(self):
         return {
             'id': self.id,
             'lms_id': self.lms_id,
             'name': self.name,
-            'university': self.university
+            'university': self.university,
+            'created_at': self.created_at,
+            'created_by': self.created_by,
+            'last_updated': self.last_updated
         }
 
 
@@ -56,7 +73,8 @@ class Topic:
                  university,
                  created_by,
                  created_at,
-                 last_updated=None) -> None:
+                 last_updated=None,
+                 student_topic=None) -> None:
         self.lms_id = lms_id
         self.is_topic = is_topic
         self.parent_id = parent_id
@@ -66,6 +84,7 @@ class Topic:
         self.created_by = created_by
         self.created_at = created_at
         self.last_updated = last_updated
+        self.student_topic = student_topic
 
     def serialize(self):
         return {
@@ -78,7 +97,8 @@ class Topic:
             'university': self.university,
             'created_by': self.created_by,
             'created_at': self.created_at,
-            'last_updated': self.last_updated
+            'last_updated': self.last_updated,
+            'student_topic': self.student_topic
         }
 
 
@@ -192,11 +212,13 @@ class StudentTopic:
                  student_id,
                  topic_id,
                  done=False,
-                 done_at=None) -> None:
+                 done_at=None,
+                 visits=None) -> None:
         self.student_id = student_id
         self.topic_id = topic_id
         self.done = done
         self.done_at = done_at
+        self.visits = visits
 
     def serialize(self):
         return {
@@ -204,7 +226,8 @@ class StudentTopic:
             'student_id': self.student_id,
             'topic_id': self.topic_id,
             'done': self.done,
-            'done_at': self.done_at
+            'done_at': self.done_at,
+            'visits': self.visits
         }
 
 

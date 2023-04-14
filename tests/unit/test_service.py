@@ -1,8 +1,10 @@
 import pytest
-from repositories import repository
+import repositories.repository as repository
 from service_layer import services, unit_of_work
 from domain.userAdministartion import model as UA
 from domain.learnersModel import model as LM
+from domain.tutoringModel import model as TM
+from domain.domainModel import model as DM
 import time
 
 
@@ -228,10 +230,17 @@ class FakeRepository(repository.AbstractRepository):
             (p for p in self.course_creator if p.user_id == user_id), None)
         self.course_creator.remove(to_remove)
 
+    def delete_course_creator_course(self, course_id):
+        to_remove = next(
+            (p for p in self.course_creator_course
+             if p.course_id == course_id), None)
+        self.course_creator_course.remove(to_remove)
+
     def delete_course_topic_by_course(self, course_id):
         to_remove = next(
             (p for p in self.course_topic if p.course_id == course_id), None)
-        self.course_topic.remove(to_remove)
+        if to_remove is not None:
+            self.course_topic.remove(to_remove)
 
     def delete_course_topic_by_topic(self, topic_id):
         to_remove = next(
@@ -286,6 +295,24 @@ class FakeRepository(repository.AbstractRepository):
              if p.id == learning_element_id), None)
         self.learning_element.remove(to_remove)
 
+    def delete_learning_path(self, learning_path_id):
+        to_remove = next(
+            (p for p in self.learning_path
+             if p.id == learning_path_id), None)
+        self.learning_path.remove(to_remove)
+
+    def delete_learning_path_learning_element(self, learning_path_id):
+        to_remove = next(
+            (p for p in self.learning_path_learning_element
+             if p.learning_path_id == learning_path_id), None)
+        self.learning_path_learning_element.remove(to_remove)
+
+    def delete_learning_path_topic(self, learning_path_id):
+        to_remove = next(
+            (p for p in self.learning_path_topic
+             if p.learning_path_id == learning_path_id), None)
+        self.learning_path_topic.remove(to_remove)
+
     def delete_learning_strategy(self, characteristic_id):
         to_remove = next(
             (p for p in self.learning_strategy
@@ -308,7 +335,8 @@ class FakeRepository(repository.AbstractRepository):
         to_remove = next(
             (p for p in self.questionnaire
              if p.id == id), None)
-        self.questionnaire.remove(to_remove)
+        if to_remove is not None:
+            self.questionnaire.remove(to_remove)
 
     def delete_settings(self, user_id):
         to_remove = next(
@@ -320,10 +348,52 @@ class FakeRepository(repository.AbstractRepository):
             (p for p in self.student if p.user_id == user_id), None)
         self.student.remove(to_remove)
 
+    def delete_student_course(self, student_id):
+        to_remove = next(
+            (p for p in self.student_course
+             if p.student_id == student_id), None)
+        if to_remove is not None:
+            self.student_course.remove(to_remove)
+
+    def delete_student_learning_element(self, student_id):
+        to_remove = next(
+            (p for p in self.student_learning_element
+             if p.student_id == student_id), None)
+        if to_remove is not None:
+            self.student_learning_element.remove(to_remove)
+
+    def delete_student_learning_element_visit(self, student_id):
+        to_remove = next(
+            (p for p in self.student_learning_element_visit
+             if p.student_id == student_id), None)
+        if to_remove is not None:
+            self.student_learning_element_visit.remove(to_remove)
+
+    def delete_student_topic(self, student_id):
+        to_remove = next(
+            (p for p in self.student_topic
+             if p.student_id == student_id), None)
+        if to_remove is not None:
+            self.student_topic.remove(to_remove)
+
+    def delete_student_topic_visit(self, student_id):
+        to_remove = next(
+            (p for p in self.student_topic_visit
+             if p.student_id == student_id), None)
+        if to_remove is not None:
+            self.student_topic_visit.remove(to_remove)
+
     def delete_teacher(self, user_id):
         to_remove = next(
             (p for p in self.teacher if p.user_id == user_id), None)
         self.teacher.remove(to_remove)
+
+    def delete_teacher_course(self, teacher_id):
+        to_remove = next(
+            (p for p in self.teacher_course
+             if p.teacher_id == teacher_id), None)
+        if to_remove is not None:
+            self.teacher_course.remove(to_remove)
 
     def delete_topic(self, topic_id):
         to_remove = next(
@@ -367,7 +437,10 @@ class FakeRepository(repository.AbstractRepository):
     def get_course_by_id(self, course_id):
         result = next((p for p in self.course if
                        p.id == course_id), None)
-        return [result]
+        if result is None:
+            return []
+        else:
+            return [result]
 
     def get_courses_by_student_id(self, student_id):
         result = next((p for p in self.student_course if
@@ -438,16 +511,27 @@ class FakeRepository(repository.AbstractRepository):
     def get_learning_characteristics(self, student_id):
         result = next((p for p in self.learning_characteristics if
                        p.student_id == student_id), None)
-        return [result]
+        if result is None:
+            return []
+        else:
+            return [result]
 
     def get_learning_element_by_id(self, learning_element_id):
         result = next((p for p in self.learning_element if
                        p.id == learning_element_id), None)
-        return [result]
+        if result is None:
+            return []
+        else:
+            return [result]
 
     def get_learning_elements_by_uni(self, university):
         result = next((p for p in self.learning_element if
                        p.university == university), None)
+        return [result]
+
+    def get_learning_element_recommendation(self, learning_path_id):
+        result = next((p for p in self.learning_path_learning_element if
+                       p.learning_path_id == learning_path_id), None)
         return [result]
 
     def get_learning_path(self, student_id, course_id, topic_id):
@@ -455,6 +539,20 @@ class FakeRepository(repository.AbstractRepository):
                        p.student_id == student_id and
                        p.course_id == course_id and
                        p.topic_id == topic_id), None)
+        return [result]
+
+    def get_learning_paths(self, student_id):
+        result = next((p for p in self.learning_path if
+                       p.student_id == student_id), None)
+        if result is not None:
+            return [result]
+        else:
+            return []
+
+    def get_learning_path_learning_element(self, learning_path_id)\
+            -> TM.LearningPathLearningElement:
+        result = next((p for p in self.learning_path_learning_element if
+                       p.learning_path_id == learning_path_id), None)
         return [result]
 
     def get_learning_strategy(self, characteristic_id):
@@ -477,6 +575,14 @@ class FakeRepository(repository.AbstractRepository):
                        p.id == id), None)
         return [result]
 
+    def get_questionnaire_by_student_id(self, student_id):
+        result = next((p for p in self.questionnaire if
+                       p.student_id == student_id), None)
+        if result is None:
+            return []
+        else:
+            return [result]
+
     def get_settings(self, user_id):
         result = next((p for p in self.settings if
                        p.user_id == user_id), None)
@@ -487,19 +593,70 @@ class FakeRepository(repository.AbstractRepository):
                        p.user_id == user_id), None)
         return [result]
 
+    def get_student_by_student_id(self, student_id):
+        result = next((p for p in self.student if
+                       p.id == student_id), None)
+        return [result]
+
     def get_students_by_uni(self, university):
         result = next((p for p in self.student if
                        p.university == university), None)
         return [result]
+
+    def get_student_learning_element(self,
+                                     student_id,
+                                     learning_element_id):
+        result = next((p for p in self.student_learning_element if
+                       p.student_id == student_id and
+                       p.learning_element_id == learning_element_id),
+                      None)
+        if result is None:
+            return []
+        else:
+            return [result]
+
+    def get_student_course(self, student_id, course_id):
+        result = next((p for p in self.student_course if
+                       p.student_id == student_id and
+                       p.course_id == course_id),
+                      None)
+        if result is None:
+            return []
+        else:
+            return [result]
+
+    def get_student_topic(self, student_id, topic_id):
+        result = next((p for p in self.student_topic if
+                       p.student_id == student_id and
+                       p.topic_id == topic_id),
+                      None)
+        if result is None:
+            return []
+        else:
+            return [result]
 
     def get_sub_topics_for_topic_id(self, topic_id):
         result = next((p for p in self.topic if
                        p.parent_id == topic_id), None)
         return [result]
 
+    def get_student_topic_visit(self, student_id, topic_id):
+        result = next((p for p in self.student_topic_visit if
+                       p.student_id == student_id and
+                       p.topic_id == topic_id), None)
+        if result is None:
+            return []
+        else:
+            return [result]
+
     def get_teacher_by_id(self, user_id):
         result = next((p for p in self.teacher if
                        p.user_id == user_id), None)
+        return [result]
+
+    def get_teacher_by_teacher_id(self, teacher_id):
+        result = next((p for p in self.teacher if
+                       p.id == teacher_id), None)
         return [result]
 
     def get_teacher_by_uni(self, university):
@@ -515,7 +672,10 @@ class FakeRepository(repository.AbstractRepository):
     def get_topic_by_id(self, topic_id):
         result = next((p for p in self.topic if
                        p.id == topic_id), None)
-        return [result]
+        if result is None:
+            return []
+        else:
+            return [result]
 
     def get_topic_learning_element_by_topic(self, topic_id):
         result = next((p for p in self.topic_learning_element if
@@ -532,7 +692,10 @@ class FakeRepository(repository.AbstractRepository):
         result = next((p for p in self.user if
                        p.id == user_id and
                        p.lms_user_id == lms_user_id), None)
-        return [result]
+        if result is None:
+            return []
+        else:
+            return [result]
 
     def get_users_by_uni(self, university):
         result = next((p for p in self.user if
@@ -725,7 +888,7 @@ def test_create_admin(name, university, lms_user_id, role):
         "Max Mustermann",
         "TH-AB",
         1,
-        "course_creator"
+        "course creator"
     )
 ])
 def test_create_course_creator(name, university, lms_user_id, role):
@@ -843,7 +1006,7 @@ def test_create_teacher(name, university, lms_user_id, role):
         "Max Mustermann",
         "TH-AB",
         1,
-        "course_creator"
+        "course creator"
     ),
     # Working Example Student
     (
@@ -1025,7 +1188,7 @@ def test_delete_admin(name, university, lms_user_id, role):
         "Max Mustermann",
         "TH-AB",
         1,
-        "course_creator"
+        "course creator"
     )
 ])
 def test_delete_course_creator(name, university, lms_user_id, role):
@@ -1119,7 +1282,7 @@ def test_delete_teacher(name, university, lms_user_id, role):
         "Max Mustermann",
         "TH-AB",
         1,
-        "course_creator"
+        "course creator"
     ),
     # Working Example Student
     (
@@ -1314,8 +1477,29 @@ def test_get_learning_characteristics(name,
         assert result[key] is not None
 
 
-def test_reset_learning_characteristics():
+@pytest.mark.parametrize("name, university, lms_user_id, role", [
+    # Working Example
+    (
+        "Max Mustermann",
+        "TH-AB",
+        1,
+        "student"
+    )
+])
+def test_reset_learning_characteristics(
+    name,
+    university,
+    lms_user_id,
+    role
+):
     uow = FakeUnitOfWork()
+    services.create_user(
+        uow=uow,
+        name=name,
+        university=university,
+        lms_user_id=lms_user_id,
+        role=role
+    )
     services.create_learning_characteristics(
         uow=uow,
         student_id=1
@@ -1324,6 +1508,8 @@ def test_reset_learning_characteristics():
         uow.learning_characteristics.learning_characteristics)
     result = services.reset_learning_characteristics(
         uow=uow,
+        user_id=1,
+        lms_user_id=1,
         student_id=1
     )
     entries_after = len(
@@ -1949,6 +2135,10 @@ def test_create_questionnaire(vv_2_f7, vv_5_f19, vv_7_f27, vv_10_f39,
                               lms1_f31, lms2_f32, lms3_f33, lit1_f34, lit2_f35,
                               lit3_f36, lu1_f37, lu2_f38, lu3_f39):
     uow = FakeUnitOfWork()
+    services.create_learning_characteristics(
+        uow=uow,
+        student_id=1
+    )
     entries_beginning = len(uow.questionnaire.questionnaire)
     result = services.create_questionnaire(
         uow=uow,
@@ -2480,6 +2670,10 @@ def test_delete_questionnaire(vv_2_f7, vv_5_f19, vv_7_f27, vv_10_f39,
                               lms1_f31, lms2_f32, lms3_f33, lit1_f34, lit2_f35,
                               lit3_f36, lu1_f37, lu2_f38, lu3_f39):
     uow = FakeUnitOfWork()
+    services.create_learning_characteristics(
+        uow=uow,
+        student_id=1
+    )
     services.create_questionnaire(
         uow=uow,
         student_id=1,
@@ -2587,7 +2781,7 @@ def test_delete_questionnaire(vv_2_f7, vv_5_f19, vv_7_f27, vv_10_f39,
         "TH-AB",
         "Max Mustermann",
         1,
-        "course_creator"
+        "course creator"
     )
 ])
 def test_create_course(lms_id, name, university, name_user, lms_user_id, role):
@@ -2629,7 +2823,7 @@ def test_create_course(lms_id, name, university, name_user, lms_user_id, role):
         "TH-AB",
         "Max Mustermann",
         1,
-        "course_creator"
+        "course creator"
     )
 ])
 def test_get_course_by_id(lms_id, name, university, name_user,
@@ -2652,6 +2846,8 @@ def test_get_course_by_id(lms_id, name, university, name_user,
     )
     result = services.get_course_by_id(
         uow=uow,
+        user_id=1,
+        lms_user_id=1,
         course_id=1
     )
     assert type(result) is dict
@@ -2667,7 +2863,7 @@ def test_get_course_by_id(lms_id, name, university, name_user,
         "TH-AB",
         "Max Mustermann",
         1,
-        "course_creator"
+        "course creator"
     )
 ])
 def test_update_course(lms_id, name, university, name_user, lms_user_id, role):
@@ -2709,7 +2905,7 @@ def test_update_course(lms_id, name, university, name_user, lms_user_id, role):
         "TH-AB",
         "Max Mustermann",
         1,
-        "course_creator"
+        "course creator"
     )
 ])
 def test_delete_course(lms_id, name, university, name_user, lms_user_id, role):
@@ -2900,11 +3096,15 @@ def test_create_topic(lms_id, is_topic, parent_id, contains_le,
     assert len(uow.course_topic.course_topic) == 1
 
 
-@pytest.mark.parametrize("lms_id, is_topic, parent_id, contains_le,\
+@pytest.mark.parametrize("name_user, lms_user_id, role,\
+                         lms_id, is_topic, parent_id, contains_le,\
                          name, university, created_by,\
                          created_at", [
     # Working Example Topic
     (
+        "Maria Musterfrau",
+        1,
+        "course creator",
         1,
         True,
         None,
@@ -2916,6 +3116,9 @@ def test_create_topic(lms_id, is_topic, parent_id, contains_le,
     ),
     # Working Example Sub-Topic
     (
+        "Maria Musterfrau",
+        1,
+        "course creator",
         2,
         False,
         1,
@@ -2926,10 +3129,26 @@ def test_create_topic(lms_id, is_topic, parent_id, contains_le,
         time.time()
     ),
 ])
-def test_get_topic_by_id(lms_id, is_topic, parent_id, contains_le,
+def test_get_topic_by_id(name_user, lms_user_id, role,
+                         lms_id, is_topic, parent_id, contains_le,
                          name, university, created_by,
                          created_at):
     uow = FakeUnitOfWork()
+    services.create_user(
+        uow=uow,
+        name=name_user,
+        university=university,
+        lms_user_id=lms_user_id,
+        role=role
+    )
+    services.create_course(
+        uow=uow,
+        lms_id=lms_id,
+        name=name,
+        university=university,
+        created_by=1,
+        created_at="2023-01-01"
+    )
     services.create_topic(
         uow=uow,
         course_id=1,
@@ -2944,6 +3163,10 @@ def test_get_topic_by_id(lms_id, is_topic, parent_id, contains_le,
     )
     result = services.get_topic_by_id(
         uow=uow,
+        user_id=1,
+        lms_user_id=1,
+        course_id=1,
+        student_id=1,
         topic_id=1
     )
     assert type(result) is dict
@@ -3032,7 +3255,7 @@ def test_update_topic(lms_id, is_topic, parent_id, contains_le,
         "Test Course",
         "Maria Musterfrau",
         1,
-        "course_creator"
+        "course creator"
     ),
     # Working Example Sub-Topic
     (
@@ -3047,7 +3270,7 @@ def test_update_topic(lms_id, is_topic, parent_id, contains_le,
         "Test Course",
         "Maria Musterfrau",
         1,
-        "course_creator"
+        "course creator"
     ),
 ])
 def test_delete_topic(lms_id, is_topic, parent_id, contains_le,
@@ -3266,6 +3489,11 @@ def test_get_learning_element_by_id(lms_id, activity_type, classification,
     )
     result = services.get_learning_element_by_id(
         uow=uow,
+        user_id=1,
+        lms_user_id=1,
+        student_id=1,
+        course_id=1,
+        topic_id=1,
         learning_element_id=1
     )
     assert type(result) is dict
@@ -3351,6 +3579,10 @@ def test_delete_learning_element(lms_id, activity_type, classification, name,
     entries_beginning = len(uow.learning_element.learning_element)
     result = services.delete_learning_element(
         uow=uow,
+        course_id=1,
+        lms_course_id=1,
+        topic_id=1,
+        lms_topic_id=1,
         learning_element_id=1
     )
     assert type(result) is dict
@@ -3389,7 +3621,7 @@ def test_add_student_to_course(name,
         name=name,
         university=university,
         lms_user_id=lms_user_id,
-        role="course_creator"
+        role="course creator"
     )
     services.create_course(
         uow=uow,
@@ -3426,6 +3658,8 @@ def test_add_student_to_course(name,
     entries_beginning_topic = len(uow.student_topic.student_topic)
     entries_beginning_le = len(uow.student_learning_element
                                .student_learning_element)
+    print('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<')
+    print(uow.student_course.student_course)
     result = services.add_student_to_course(
         uow=uow,
         student_id=1,
@@ -3447,7 +3681,7 @@ def test_add_student_to_course(name,
         "Max Mustermann",
         "TH-AB",
         1,
-        "course_creator"
+        "course creator"
     )
 ])
 def test_create_course_creator_course(name, university, lms_user_id, role):

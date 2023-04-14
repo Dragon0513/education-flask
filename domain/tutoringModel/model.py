@@ -43,7 +43,7 @@ class LearningPath:
         elif algorithm == "GA":
             path = ga.GA_Algorithm(
                 student_id=student_id, learning_style=learning_style)
-            temp = path.get_learning_path(input_learning_style=learning_style)
+            temp = path.get_learning_path(input_learning_style=learning_style, list_Learning_element=list_Learning_element)
             self.path = ", ".join(temp)
         else:
             raise err.NoValidAlgorithmError()

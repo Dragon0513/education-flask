@@ -28,8 +28,7 @@ class GA_Algorithmus(object):
             self.id = datetime.timestamp(datetime.now())
         else:
             self.id = id
-
-        print("self.id", self.id)
+        
         if(learning_elements is not None):
 
             self.learning_elements = learning_elements

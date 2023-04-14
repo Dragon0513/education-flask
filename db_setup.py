@@ -648,7 +648,9 @@ sql = '''
         ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
         student_id integer NOT NULL,
         course_id integer NOT NULL,
+        based_on text COLLATE pg_catalog."default" NOT NULL,
         topic_id integer,
+        calculated_on timestamp with time zone,
         CONSTRAINT learning_path_pkey PRIMARY KEY (id),
         CONSTRAINT course_id FOREIGN KEY (course_id)
             REFERENCES public.course (id) MATCH SIMPLE
@@ -814,17 +816,17 @@ sql = '''
         id integer NOT NULL GENERATED ALWAYS AS IDENTITY
         ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
         questionnaire_id integer NOT NULL,
-            si_1_f2 text COLLATE pg_catalog."default" NOT NULL,
-        si_2_f6 text COLLATE pg_catalog."default",
-        si_3_f10 text COLLATE pg_catalog."default",
-        si_4_f14 text COLLATE pg_catalog."default" NOT NULL,
-        si_5_f18 text COLLATE pg_catalog."default",
-        si_6_f22 text COLLATE pg_catalog."default",
-        si_7_f26 text COLLATE pg_catalog."default" NOT NULL,
-        si_8_f30 text COLLATE pg_catalog."default",
-        si_9_f34 text COLLATE pg_catalog."default",
-        si_10_f38 text COLLATE pg_catalog."default" NOT NULL,
-        si_11_f42 text COLLATE pg_catalog."default" NOT NULL,
+        ar_1_f1 text COLLATE pg_catalog."default",
+        ar_2_f5 text COLLATE pg_catalog."default",
+        ar_3_f9 text COLLATE pg_catalog."default" NOT NULL,
+        ar_4_f13 text COLLATE pg_catalog."default" NOT NULL,
+        ar_5_f17 text COLLATE pg_catalog."default",
+        ar_6_f21 text COLLATE pg_catalog."default" NOT NULL,
+        ar_7_f25 text COLLATE pg_catalog."default" NOT NULL,
+        ar_8_f29 text COLLATE pg_catalog."default" NOT NULL,
+        ar_9_f33 text COLLATE pg_catalog."default",
+        ar_10_f37 text COLLATE pg_catalog."default",
+        ar_11_f41 text COLLATE pg_catalog."default",
         CONSTRAINT ils_processing_answers_pkey PRIMARY KEY (id),
         CONSTRAINT questionnaire_id FOREIGN KEY (questionnaire_id)
             REFERENCES public.questionnaire (id) MATCH SIMPLE

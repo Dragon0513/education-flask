@@ -3308,15 +3308,12 @@ def test_add_student_to_course():
     assert entries_beginning_course + 1 == entries_after_course
     assert entries_after_topic > entries_beginning_topic
     assert entries_after_le > entries_beginning_le
-    try:
+    with pytest.raises(err.AlreadyExisting):
         services.add_student_to_course(
             uow=uow,
             student_id=1,
             course_id=1
         )
-        assert False
-    except err.AlreadyExisting:
-        assert True
 
 
 def test_add_teacher_to_course():

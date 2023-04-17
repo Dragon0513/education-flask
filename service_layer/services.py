@@ -1470,10 +1470,7 @@ def get_knowledge_by_student_id(
             uow,
             student_id
         )
-        learning_style = uow.learning_style.get_knowledge(
-            characteristic['id']
-        )
-        result = learning_style[0].serialize()
+        result = characteristic['knowledge']
         return result
 
 
@@ -1502,10 +1499,7 @@ def get_learning_analytics_by_student_id(
             uow,
             student_id
         )
-        learning_style = uow.learning_style.get_learning_analytics(
-            characteristic['id']
-        )
-        result = learning_style[0].serialize()
+        result = characteristic['learning_analytics']
         return result
 
 
@@ -1789,10 +1783,7 @@ def get_learning_strategy_by_student_id(
             uow,
             student_id
         )
-        learning_style = uow.learning_style.get_learning_strategy(
-            characteristic['id']
-        )
-        result = learning_style[0].serialize()
+        result = characteristic['learning_strategy']
         return result
 
 
@@ -1819,10 +1810,7 @@ def get_learning_style_by_student_id(
             uow,
             student_id
         )
-        learning_style = uow.learning_style.get_learning_style(
-            characteristic['id']
-        )
-        result = learning_style[0].serialize()
+        result = characteristic['learning_style']
         return result
 
 
@@ -1843,8 +1831,11 @@ def get_sub_topic_by_topic_id(
         for st in subtopics:
             student_topic = uow.student_topic\
                 .get_student_topic(student_id, topic_id)
-            student_topic[0].visits = None
-            st.student_topic = student_topic[0].serialize()
+            if student_topic != []:
+                student_topic[0].visits = None
+                st.student_topic = student_topic[0].serialize()
+            else:
+                st.student_topic = None
         result_subtopics = []
         for subtopic in subtopics:
             result_subtopics.append(subtopic.serialize())

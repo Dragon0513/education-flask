@@ -6,6 +6,7 @@ from domain.learnersModel import model as LM
 from domain.tutoringModel import model as TM
 from domain.domainModel import model as DM
 import time
+import errors as err
 
 
 class FakeRepository(repository.AbstractRepository):
@@ -299,19 +300,22 @@ class FakeRepository(repository.AbstractRepository):
         to_remove = next(
             (p for p in self.learning_path
              if p.id == learning_path_id), None)
-        self.learning_path.remove(to_remove)
+        if to_remove is not None:
+            self.learning_path.remove(to_remove)
 
     def delete_learning_path_learning_element(self, learning_path_id):
         to_remove = next(
             (p for p in self.learning_path_learning_element
              if p.learning_path_id == learning_path_id), None)
-        self.learning_path_learning_element.remove(to_remove)
+        if to_remove is not None:
+            self.learning_path_learning_element.remove(to_remove)
 
     def delete_learning_path_topic(self, learning_path_id):
         to_remove = next(
             (p for p in self.learning_path_topic
              if p.learning_path_id == learning_path_id), None)
-        self.learning_path_topic.remove(to_remove)
+        if to_remove is not None:
+            self.learning_path_topic.remove(to_remove)
 
     def delete_learning_strategy(self, characteristic_id):
         to_remove = next(
@@ -422,17 +426,26 @@ class FakeRepository(repository.AbstractRepository):
     def get_admin_by_id(self, user_id):
         result = next((p for p in self.admin if
                        p.user_id == user_id), None)
-        return [result]
+        if result is None:
+            return []
+        else:
+            return [result]
 
     def get_admins_by_uni(self, university):
         result = next((p for p in self.admin if
                        p.university == university), None)
-        return [result]
+        if result is None:
+            return []
+        else:
+            return [result]
 
     def get_courses_by_uni(self, university):
         result = next((p for p in self.course if
                        p.university == university), None)
-        return [result]
+        if result is None:
+            return []
+        else:
+            return [result]
 
     def get_course_by_id(self, course_id):
         result = next((p for p in self.course if
@@ -445,63 +458,99 @@ class FakeRepository(repository.AbstractRepository):
     def get_courses_by_student_id(self, student_id):
         result = next((p for p in self.student_course if
                        p.student_id == student_id), None)
-        return [result]
+        if result is None:
+            return []
+        else:
+            return [result]
 
     def get_course_creator_by_id(self,
                                  user_id):
         result = next((p for p in self.course_creator if
                        p.user_id == user_id), None)
-        return [result]
+        if result is None:
+            return []
+        else:
+            return [result]
 
     def get_courses_for_teacher(self, teacher_id):
         result = next((p for p in self.teacher_course if
                        p.teacher_id == teacher_id), None)
-        return [result]
+        if result is None:
+            return []
+        else:
+            return [result]
 
     def get_course_topic_by_course(self, course_id):
         result = next((p for p in self.course_topic if
                        p.course_id == course_id), None)
-        return [result]
+        if result is None:
+            return []
+        else:
+            return [result]
 
     def get_course_topic_by_topic(self, topic_id):
         result = next((p for p in self.course_topic if
                        p.topic_id == topic_id), None)
-        return [result]
+        if result is None:
+            return []
+        else:
+            return [result]
 
     def get_course_creators_by_uni(self, university):
         result = next((p for p in self.course_creator if
                        p.university == university), None)
-        return [result]
+        if result is None:
+            return []
+        else:
+            return [result]
 
     def get_ils_input_answers_by_id(self, questionnaire_id):
         result = next((p for p in self.ils_input_answers if
                        p.questionnaire_id == questionnaire_id), None)
-        return [result]
+        if result is None:
+            return []
+        else:
+            return [result]
 
     def get_ils_perception_answers_by_id(self, questionnaire_id):
         result = next((p for p in self.ils_perception_answers if
                        p.questionnaire_id == questionnaire_id), None)
-        return [result]
+        if result is None:
+            return []
+        else:
+            return [result]
 
     def get_ils_processing_answers_by_id(self, questionnaire_id):
         result = next((p for p in self.ils_processing_answers if
                        p.questionnaire_id == questionnaire_id), None)
-        return [result]
+        if result is None:
+            return []
+        else:
+            return [result]
 
     def get_ils_understanding_answers_by_id(self, questionnaire_id):
         result = next((p for p in self.ils_understanding_answers if
                        p.questionnaire_id == questionnaire_id), None)
-        return [result]
+        if result is None:
+            return []
+        else:
+            return [result]
 
     def get_knowledge(self, characteristic_id):
         result = next((p for p in self.knowledge if
                        p.characteristic_id == characteristic_id), None)
-        return [result]
+        if result is None:
+            return []
+        else:
+            return [result]
 
     def get_learning_analytics(self, characteristic_id):
         result = next((p for p in self.learning_analytics if
                        p.characteristic_id == characteristic_id), None)
-        return [result]
+        if result is None:
+            return []
+        else:
+            return [result]
 
     def get_learning_characteristics(self, student_id):
         result = next((p for p in self.learning_characteristics if
@@ -522,20 +571,29 @@ class FakeRepository(repository.AbstractRepository):
     def get_learning_elements_by_uni(self, university):
         result = next((p for p in self.learning_element if
                        p.university == university), None)
-        return [result]
+        if result is None:
+            return []
+        else:
+            return [result]
 
     def get_learning_element_recommendation(self, learning_path_id):
         result = next((p for p in self.learning_path_learning_element if
                        p.learning_path_id == learning_path_id and
                        p.recommended), None)
-        return [result]
+        if result is None:
+            return []
+        else:
+            return [result]
 
     def get_learning_path(self, student_id, course_id, topic_id):
         result = next((p for p in self.learning_path if
                        p.student_id == student_id and
                        p.course_id == course_id and
                        p.topic_id == topic_id), None)
-        return [result]
+        if result is None:
+            return []
+        else:
+            return [result]
 
     def get_learning_paths(self, student_id):
         result = next((p for p in self.learning_path if
@@ -549,27 +607,42 @@ class FakeRepository(repository.AbstractRepository):
             -> TM.LearningPathLearningElement:
         result = next((p for p in self.learning_path_learning_element if
                        p.learning_path_id == learning_path_id), None)
-        return [result]
+        if result is None:
+            return []
+        else:
+            return [result]
 
     def get_learning_strategy(self, characteristic_id):
         result = next((p for p in self.learning_strategy if
                        p.characteristic_id == characteristic_id), None)
-        return [result]
+        if result is None:
+            return []
+        else:
+            return [result]
 
     def get_learning_style(self, characteristic_id):
         result = next((p for p in self.learning_style if
                        p.characteristic_id == characteristic_id), None)
-        return [result]
+        if result is None:
+            return []
+        else:
+            return [result]
 
     def get_list_k_by_id(self, questionnaire_id):
         result = next((p for p in self.list_k if
                        p.questionnaire_id == questionnaire_id), None)
-        return [result]
+        if result is None:
+            return []
+        else:
+            return [result]
 
     def get_questionnaire_by_id(self, id):
         result = next((p for p in self.questionnaire if
                        p.id == id), None)
-        return [result]
+        if result is None:
+            return []
+        else:
+            return [result]
 
     def get_questionnaire_by_student_id(self, student_id):
         result = next((p for p in self.questionnaire if
@@ -582,22 +655,34 @@ class FakeRepository(repository.AbstractRepository):
     def get_settings(self, user_id):
         result = next((p for p in self.settings if
                        p.user_id == user_id), None)
-        return [result]
+        if result is None:
+            return []
+        else:
+            return [result]
 
     def get_student_by_id(self, user_id):
         result = next((p for p in self.student if
                        p.user_id == user_id), None)
-        return [result]
+        if result is None:
+            return []
+        else:
+            return [result]
 
     def get_student_by_student_id(self, student_id):
         result = next((p for p in self.student if
                        p.id == student_id), None)
-        return [result]
+        if result is None:
+            return []
+        else:
+            return [result]
 
     def get_students_by_uni(self, university):
         result = next((p for p in self.student if
                        p.university == university), None)
-        return [result]
+        if result is None:
+            return []
+        else:
+            return [result]
 
     def get_student_learning_element(self,
                                      student_id,
@@ -634,7 +719,10 @@ class FakeRepository(repository.AbstractRepository):
     def get_sub_topics_for_topic_id(self, topic_id):
         result = next((p for p in self.topic if
                        p.parent_id == topic_id), None)
-        return [result]
+        if result is None:
+            return []
+        else:
+            return [result]
 
     def get_student_topic_visit(self, student_id, topic_id):
         result = next((p for p in self.student_topic_visit if
@@ -648,22 +736,34 @@ class FakeRepository(repository.AbstractRepository):
     def get_teacher_by_id(self, user_id):
         result = next((p for p in self.teacher if
                        p.user_id == user_id), None)
-        return [result]
+        if result is None:
+            return []
+        else:
+            return [result]
 
     def get_teacher_by_teacher_id(self, teacher_id):
         result = next((p for p in self.teacher if
                        p.id == teacher_id), None)
-        return [result]
+        if result is None:
+            return []
+        else:
+            return [result]
 
     def get_teacher_by_uni(self, university):
         result = next((p for p in self.teacher if
                        p.university == university), None)
-        return [result]
+        if result is None:
+            return []
+        else:
+            return [result]
 
     def get_topics_by_uni(self, university):
         result = next((p for p in self.topic if
                        p.university == university), None)
-        return [result]
+        if result is None:
+            return []
+        else:
+            return [result]
 
     def get_topic_by_id(self, topic_id):
         result = next((p for p in self.topic if
@@ -676,13 +776,19 @@ class FakeRepository(repository.AbstractRepository):
     def get_topic_learning_element_by_topic(self, topic_id):
         result = next((p for p in self.topic_learning_element if
                        p.topic_id == topic_id), None)
-        return [result]
+        if result is None:
+            return []
+        else:
+            return [result]
 
     def get_topic_learning_element_by_learning_element(self,
                                                        learning_element_id):
         result = next((p for p in self.topic_learning_element if
                        p.learning_element_id == learning_element_id), None)
-        return [result]
+        if result is None:
+            return []
+        else:
+            return [result]
 
     def get_user_by_id(self, user_id, lms_user_id):
         result = next((p for p in self.user if
@@ -696,12 +802,16 @@ class FakeRepository(repository.AbstractRepository):
     def get_users_by_uni(self, university):
         result = next((p for p in self.user if
                        p.university == university), None)
-        return [result]
+        if result is None:
+            return []
+        else:
+            return [result]
 
     def update_course(self, course_id, course):
         to_remove = next(
             (p for p in self.course if p.id == course_id), None)
-        self.course.remove(to_remove)
+        if to_remove is not None:
+            self.course.remove(to_remove)
         course.id = len(self.course)
         self.course.add(course)
 
@@ -709,7 +819,8 @@ class FakeRepository(repository.AbstractRepository):
         to_remove = next(
             (p for p in self.knowledge
              if p.characteristic_id == characteristic_id), None)
-        self.knowledge.remove(to_remove)
+        if to_remove is not None:
+            self.knowledge.remove(to_remove)
         knowledge.id = len(self.knowledge)
         self.knowledge.add(knowledge)
 
@@ -717,7 +828,8 @@ class FakeRepository(repository.AbstractRepository):
         to_remove = next(
             (p for p in self.learning_analytics
              if p.characteristic_id == characteristic_id), None)
-        self.learning_analytics.remove(to_remove)
+        if to_remove is not None:
+            self.learning_analytics.remove(to_remove)
         learning_analytics.id = len(self.learning_analytics)
         self.learning_analytics.add(learning_analytics)
 
@@ -725,7 +837,8 @@ class FakeRepository(repository.AbstractRepository):
         to_remove = next(
             (p for p in self.learning_element
              if p.id == learning_element_id), None)
-        self.learning_element.remove(to_remove)
+        if to_remove is not None:
+            self.learning_element.remove(to_remove)
         learning_element.id = len(self.learning_element)
         self.learning_element.add(learning_element)
 
@@ -733,7 +846,8 @@ class FakeRepository(repository.AbstractRepository):
         to_remove = next(
             (p for p in self.learning_strategy
              if p.characteristic_id == characteristic_id), None)
-        self.learning_strategy.remove(to_remove)
+        if to_remove is not None:
+            self.learning_strategy.remove(to_remove)
         learning_strategy.id = len(self.learning_strategy)
         self.learning_strategy.add(learning_strategy)
 
@@ -741,7 +855,8 @@ class FakeRepository(repository.AbstractRepository):
         to_remove = next(
             (p for p in self.learning_style
              if p.characteristic_id == characteristic_id), None)
-        self.learning_style.remove(to_remove)
+        if to_remove is not None:
+            self.learning_style.remove(to_remove)
         learning_style.id = len(self.learning_style)
         self.learning_style.add(learning_style)
 
@@ -752,10 +867,11 @@ class FakeRepository(repository.AbstractRepository):
             (p for p in self.student_learning_element_visit
              if p.student_id == student_id and
                 p.visit_start is None), None)
-        self.student_learning_element_visit.remove(to_update)
-        to_update.id = len(self.student_learning_element_visit)
-        to_update.visit_end = visit_time
-        self.student_learning_element_visit.add(to_update)
+        if to_update is not None:
+            self.student_learning_element_visit.remove(to_update)
+            to_update.id = len(self.student_learning_element_visit)
+            to_update.visit_end = visit_time
+            self.student_learning_element_visit.add(to_update)
 
     def update_previous_topic_visit(self,
                                     student_id,
@@ -764,15 +880,17 @@ class FakeRepository(repository.AbstractRepository):
             (p for p in self.student_topic_visit
              if p.student_id == student_id and
                 p.visit_start is None), None)
-        self.student_topic_visit.remove(to_update)
-        to_update.id = len(self.student_topic_visit)
-        to_update.visit_end = visit_time
-        self.student_topic_visit.add(to_update)
+        if to_update is not None:
+            self.student_topic_visit.remove(to_update)
+            to_update.id = len(self.student_topic_visit)
+            to_update.visit_end = visit_time
+            self.student_topic_visit.add(to_update)
 
     def update_settings(self, user_id, settings):
         to_remove = next(
             (p for p in self.settings if p.user_id == user_id), None)
-        self.settings.remove(to_remove)
+        if to_remove is not None:
+            self.settings.remove(to_remove)
         settings.id = len(self.settings)
         self.settings.add(settings)
 
@@ -785,23 +903,26 @@ class FakeRepository(repository.AbstractRepository):
              if p.student_id == student_id and
                 p.learning_element_id == learning_element_id and
                 p.visit_start is None), None)
-        self.student_learning_element.remove(to_update)
-        to_update.id = len(self.student_learning_element)
-        to_update.done_at = visit_time
-        to_update.done = True
-        self.student_learning_element.add(to_update)
+        if to_update is not None:
+            self.student_learning_element.remove(to_update)
+            to_update.id = len(self.student_learning_element)
+            to_update.done_at = visit_time
+            to_update.done = True
+            self.student_learning_element.add(to_update)
 
     def update_topic(self, topic_id, topic):
         to_remove = next(
             (p for p in self.topic if p.id == topic_id), None)
-        self.topic.remove(to_remove)
+        if to_remove is not None:
+            self.topic.remove(to_remove)
         topic.id = len(self.topic)
         self.topic.add(topic)
 
     def update_user(self, user_id, lms_user_id, user):
         to_remove = next((p for p in self.user if p.id == user_id
                           and p.lms_user_id == lms_user_id), None)
-        self.user.remove(to_remove)
+        if to_remove is not None:
+            self.user.remove(to_remove)
         user.id = len(self.user)
         self.user.add(user)
 
@@ -2225,6 +2346,97 @@ def test_create_questionnaire(vv_2_f7, vv_5_f19, vv_7_f27, vv_10_f39,
     assert type(result) == dict
     assert result != {}
     assert entries_beginning + 1 == entries_after
+    services.create_questionnaire(
+        uow=uow,
+        student_id=1,
+        vv_2_f7=vv_2_f7,
+        vv_5_f19=vv_5_f19,
+        vv_7_f27=vv_7_f27,
+        vv_10_f39=vv_10_f39,
+        vv_11_f43=vv_11_f43,
+        vv_1_f3=vv_1_f3,
+        vv_3_f11=vv_3_f11,
+        vv_4_f15=vv_4_f15,
+        vv_6_f23=vv_6_f23,
+        vv_8_f31=vv_8_f31,
+        vv_9_f35=vv_9_f35,
+        si_1_f2=si_1_f2,
+        si_4_f14=si_4_f14,
+        si_7_f26=si_7_f26,
+        si_10_f38=si_10_f38,
+        si_11_f42=si_11_f42,
+        si_2_f6=si_2_f6,
+        si_3_f10=si_3_f10,
+        si_5_f18=si_5_f18,
+        si_6_f22=si_6_f22,
+        si_8_f30=si_8_f30,
+        si_9_f34=si_9_f34,
+        ar_3_f9=ar_3_f9,
+        ar_4_f13=ar_4_f13,
+        ar_6_f21=ar_6_f21,
+        ar_7_f25=ar_7_f25,
+        ar_8_f29=ar_8_f29,
+        ar_1_f1=ar_1_f1,
+        ar_2_f5=ar_2_f5,
+        ar_5_f17=ar_5_f17,
+        ar_9_f33=ar_9_f33,
+        ar_10_f37=ar_10_f37,
+        ar_11_f41=ar_11_f41,
+        sg_1_f4=sg_1_f4,
+        sg_2_f8=sg_2_f8,
+        sg_4_f16=sg_4_f16,
+        sg_10_f40=sg_10_f40,
+        sg_11_f44=sg_11_f44,
+        sg_3_f12=sg_3_f12,
+        sg_5_f20=sg_5_f20,
+        sg_6_f24=sg_6_f24,
+        sg_7_f28=sg_7_f28,
+        sg_8_f32=sg_8_f32,
+        sg_9_f36=sg_9_f36,
+        org1_f1=org1_f1,
+        org2_f2=org2_f2,
+        org3_f3=org3_f3,
+        ela1_f4=ela1_f4,
+        ela2_f5=ela2_f5,
+        ela3_f6=ela3_f6,
+        krp1_f7=krp1_f7,
+        krp2_f8=krp2_f8,
+        krp3_f9=krp3_f9,
+        wie1_f10=wie1_f10,
+        wie2_f11=wie2_f11,
+        wie3_f12=wie3_f12,
+        zp1_f13=zp1_f13,
+        zp2_f14=zp2_f14,
+        zp3_f15=zp3_f15,
+        kon1_f16=kon1_f16,
+        kon2_f17=kon2_f17,
+        kon3_f18=kon3_f18,
+        reg1_f19=reg1_f19,
+        reg2_f20=reg2_f20,
+        reg3_f21=reg3_f21,
+        auf1_f22=auf1_f22,
+        auf2_f23=auf2_f23,
+        auf3_f24=auf3_f24,
+        ans1_f25=ans1_f25,
+        ans2_f26=ans2_f26,
+        ans3_f27=ans3_f27,
+        zei1_f28=zei1_f28,
+        zei2_f29=zei2_f29,
+        zei3_f30=zei3_f30,
+        lms1_f31=lms1_f31,
+        lms2_f32=lms2_f32,
+        lms3_f33=lms3_f33,
+        lit1_f34=lit1_f34,
+        lit2_f35=lit2_f35,
+        lit3_f36=lit3_f36,
+        lu1_f37=lu1_f37,
+        lu2_f38=lu2_f38,
+        lu3_f39=lu3_f39
+    )
+    entries_after2 = len(uow.questionnaire.questionnaire)
+    assert type(result) == dict
+    assert result != {}
+    assert entries_after == entries_after2
 
 
 @pytest.mark.parametrize("vv_2_f7, vv_5_f19, vv_7_f27, vv_10_f39,\
@@ -3664,6 +3876,76 @@ def test_add_student_to_course(name,
     assert entries_beginning_course + 1 == entries_after_course
     assert entries_after_topic > entries_beginning_topic
     assert entries_after_le > entries_beginning_le
+    try:
+        services.add_student_to_course(
+            uow=uow,
+            student_id=1,
+            course_id=1
+        )
+        assert False
+    except err.AlreadyExisting:
+        assert True
+
+
+@pytest.mark.parametrize("name, university, lms_user_id, role,\
+                         lms_id_course, course_name", [
+    (
+        "Max Mustermann",
+        "TH-AB",
+        1,
+        "teacher",
+        "lms_id_course",
+        "Test Course"
+    )
+])
+def test_add_teacher_to_course(name,
+                               university,
+                               lms_user_id,
+                               role,
+                               lms_id_course,
+                               course_name):
+    uow = FakeUnitOfWork()
+    services.create_user(
+        uow=uow,
+        name=name,
+        university=university,
+        lms_user_id=lms_user_id,
+        role=role
+    )
+    services.create_user(
+        uow=uow,
+        name=name,
+        university=university,
+        lms_user_id=lms_user_id,
+        role="course creator"
+    )
+    services.create_course(
+        uow=uow,
+        lms_id=lms_id_course,
+        name=course_name,
+        university=university,
+        created_by=2,
+        created_at="2023-01-01"
+    )
+    entries_beginning_course = len(uow.teacher_course.teacher_course)
+    result = services.add_teacher_to_course(
+        uow=uow,
+        teacher_id=1,
+        course_id=1
+    )
+    entries_after_course = len(uow.teacher_course.teacher_course)
+    assert type(result) is dict
+    assert result != {}
+    assert entries_beginning_course + 1 == entries_after_course
+    try:
+        services.add_teacher_to_course(
+            uow=uow,
+            teacher_id=1,
+            course_id=1
+        )
+        assert False
+    except err.AlreadyExisting:
+        assert True
 
 
 @pytest.mark.parametrize("name, university, lms_user_id, role", [
@@ -3683,7 +3965,6 @@ def test_create_course_creator_course(name, university, lms_user_id, role):
         lms_user_id=lms_user_id,
         role=role
     )
-
     entries_beginning = len(uow.course_creator_course.course_creator_course)
     result = services.add_course_creator_to_course(
         uow=uow,
@@ -3695,3 +3976,1204 @@ def test_create_course_creator_course(name, university, lms_user_id, role):
     assert type(result) == dict
     assert result != {}
     assert entries_beginning + 1 == entries_after
+
+
+@pytest.mark.parametrize("lms_id, activity_type, classification, name,\
+                         created_at, created_by, university, lms_user_id,\
+                         role", [
+    # Working Example
+    (
+        1,
+        "quiz",
+        "RQ",
+        "Test Quiz",
+        "Max Mustermann",
+        time.time(),
+        "TH-AB",
+        1,
+        "student"
+    )
+])
+def test_student_learning_element_visit(lms_id, activity_type, classification,
+                                        name, created_at, created_by,
+                                        university, lms_user_id, role):
+    uow = FakeUnitOfWork()
+    services.create_learning_element(
+        uow=uow,
+        topic_id=1,
+        lms_id=lms_id,
+        activity_type=activity_type,
+        classification=classification,
+        name=name,
+        created_at=created_at,
+        created_by=created_by,
+        university=university
+    )
+    user = UA.User(
+        name,
+        university,
+        lms_user_id,
+        role
+    )
+    services.create_student(
+        uow=uow,
+        user=user
+    )
+    entries_beginning = len(uow.student_learning_element_visit
+                            .student_learning_element_visit)
+    result = services.add_student_learning_element_visit(
+        uow=uow,
+        student_id=1,
+        learning_element_id=1,
+        visit_start="2023-01-01"
+    )
+    entries_after = len(uow.student_learning_element_visit
+                        .student_learning_element_visit)
+    assert type(result) == dict
+    assert result != {}
+    assert entries_beginning + 1 == entries_after
+
+
+@pytest.mark.parametrize("name, university, lms_user_id, role", [
+    # Working Example
+    (
+        "Max Mustermann",
+        "TH-AB",
+        1,
+        "student"
+    )
+])
+def test_student_topic_visit(name, university, lms_user_id, role):
+    uow = FakeUnitOfWork()
+    services.create_topic(
+        uow=uow,
+        course_id=1,
+        lms_id=1,
+        is_topic=True,
+        contains_le=False,
+        parent_id=None,
+        name="Test Topic",
+        university=university,
+        created_at="2023-01-01",
+        created_by=name
+    )
+    user = UA.User(
+        name,
+        university,
+        lms_user_id,
+        role
+    )
+    services.create_student(
+        uow=uow,
+        user=user
+    )
+    entries_beginning = len(uow.student_topic_visit
+                            .student_topic_visit)
+    result = services.add_student_topic_visit(
+        uow=uow,
+        student_id=1,
+        topic_id=1,
+        visit_start="2023-01-01",
+        previous_topic_id=None
+    )
+    entries_after = len(uow.student_topic_visit
+                        .student_topic_visit)
+    assert type(result) == dict
+    assert result != {}
+    assert entries_beginning + 1 == entries_after
+    result = services.add_student_topic_visit(
+        uow=uow,
+        student_id=1,
+        topic_id=1,
+        visit_start="2023-01-02",
+        previous_topic_id=1
+    )
+    entries_after2 = len(uow.student_topic_visit
+                            .student_topic_visit)
+    assert type(result) == dict
+    assert result != {}
+    assert entries_beginning + 2 == entries_after2
+
+
+@pytest.mark.parametrize("name, university, lms_user_id, role,\
+                         lms_id_course, course_name", [
+    (
+        "Max Mustermann",
+        "TH-AB",
+        1,
+        "student",
+        "lms_id_course",
+        "Test Course"
+    )
+])
+def test_create_learning_path(name,
+                              university,
+                              lms_user_id,
+                              role,
+                              lms_id_course,
+                              course_name):
+    uow = FakeUnitOfWork()
+    services.create_user(
+        uow=uow,
+        name=name,
+        university=university,
+        lms_user_id=lms_user_id,
+        role=role
+    )
+    services.create_user(
+        uow=uow,
+        name=name,
+        university=university,
+        lms_user_id=lms_user_id,
+        role="course creator"
+    )
+    services.create_course(
+        uow=uow,
+        lms_id=lms_id_course,
+        name=course_name,
+        university=university,
+        created_by=2,
+        created_at="2023-01-01"
+    )
+    services.create_topic(
+        uow=uow,
+        course_id=1,
+        lms_id=1,
+        is_topic=True,
+        contains_le=False,
+        parent_id=None,
+        name="Test Topic",
+        university=university,
+        created_at="2023-01-01",
+        created_by=name
+    )
+    services.create_learning_element(
+        uow=uow,
+        topic_id=1,
+        lms_id=1,
+        activity_type="quiz",
+        classification="RQ",
+        name="Test LE",
+        created_at="2017-01-01",
+        created_by="Max Mustermann",
+        university=university
+    )
+    entries_beginning_path = len(uow.learning_path
+                                 .learning_path)
+    entries_beginning_path_le = len(uow.learning_path_learning_element
+                                    .learning_path_learning_element)
+    result = services.create_learning_path(
+        uow=uow,
+        user_id=1,
+        lms_user_id=1,
+        student_id=1,
+        course_id=1,
+        topic_id=1,
+        algorithm="Graf"
+    )
+    assert type(result) == dict
+    assert result != {}
+    entries_after_path = len(uow.learning_path
+                             .learning_path)
+    entries_after_path_le = len(uow.learning_path_learning_element
+                                .learning_path_learning_element)
+    assert entries_beginning_path + 1 == entries_after_path
+    assert entries_beginning_path_le + 1 == entries_after_path_le
+
+
+@pytest.mark.parametrize("name, university, lms_user_id, role,\
+                         lms_id_course, course_name", [
+    (
+        "Max Mustermann",
+        "TH-AB",
+        1,
+        "student",
+        "lms_id_course",
+        "Test Course"
+    )
+])
+def test_delete_learning_path(name,
+                              university,
+                              lms_user_id,
+                              role,
+                              lms_id_course,
+                              course_name):
+    uow = FakeUnitOfWork()
+    services.create_user(
+        uow=uow,
+        name=name,
+        university=university,
+        lms_user_id=lms_user_id,
+        role=role
+    )
+    services.create_user(
+        uow=uow,
+        name=name,
+        university=university,
+        lms_user_id=lms_user_id,
+        role="course creator"
+    )
+    services.create_course(
+        uow=uow,
+        lms_id=lms_id_course,
+        name=course_name,
+        university=university,
+        created_by=2,
+        created_at="2023-01-01"
+    )
+    services.create_topic(
+        uow=uow,
+        course_id=1,
+        lms_id=1,
+        is_topic=True,
+        contains_le=False,
+        parent_id=None,
+        name="Test Topic",
+        university=university,
+        created_at="2023-01-01",
+        created_by=name
+    )
+    services.create_learning_element(
+        uow=uow,
+        topic_id=1,
+        lms_id=1,
+        activity_type="quiz",
+        classification="RQ",
+        name="Test LE",
+        created_at="2017-01-01",
+        created_by="Max Mustermann",
+        university=university
+    )
+    services.create_learning_path(
+        uow=uow,
+        user_id=1,
+        lms_user_id=1,
+        student_id=1,
+        course_id=1,
+        topic_id=1,
+        algorithm="Graf"
+    )
+    entries_beginning_path = len(uow.learning_path
+                                 .learning_path)
+    entries_beginning_path_le = len(uow.learning_path_learning_element
+                                    .learning_path_learning_element)
+    result = services.delete_learning_path(
+        uow=uow,
+        student_id=1
+    )
+    assert result is None
+    entries_after_path = len(uow.learning_path
+                             .learning_path)
+    entries_after_path_le = len(uow.learning_path_learning_element
+                                .learning_path_learning_element)
+    assert entries_beginning_path - 1 == entries_after_path
+    assert entries_beginning_path_le - 1 == entries_after_path_le
+
+
+@pytest.mark.parametrize("name, university, lms_user_id, role,\
+                         lms_id_course, course_name", [
+    (
+        "Max Mustermann",
+        "TH-AB",
+        1,
+        "student",
+        "lms_id_course",
+        "Test Course"
+    )
+])
+def test_get_courses_by_student_id(name,
+                                   university,
+                                   lms_user_id,
+                                   role,
+                                   lms_id_course,
+                                   course_name):
+    uow = FakeUnitOfWork()
+    services.create_user(
+        uow=uow,
+        name=name,
+        university=university,
+        lms_user_id=lms_user_id,
+        role=role
+    )
+    services.create_user(
+        uow=uow,
+        name=name,
+        university=university,
+        lms_user_id=lms_user_id,
+        role="course creator"
+    )
+    services.create_course(
+        uow=uow,
+        lms_id=lms_id_course,
+        name=course_name,
+        university=university,
+        created_by=2,
+        created_at="2023-01-01"
+    )
+    services.add_student_to_course(
+        uow=uow,
+        student_id=1,
+        course_id=1
+    )
+    result = services.get_courses_by_student_id(
+        uow=uow,
+        user_id=1,
+        lms_user_id=1,
+        student_id=1
+    )
+    assert type(result) is dict
+    assert result != {}
+
+
+@pytest.mark.parametrize("name, university, lms_user_id, role", [
+    (
+        "Max Mustermann",
+        "TH-AB",
+        1,
+        "student"
+    )
+])
+def test_get_knowledge_by_student_id(name,
+                                     university,
+                                     lms_user_id,
+                                     role):
+    uow = FakeUnitOfWork()
+    services.create_user(
+        uow=uow,
+        name=name,
+        university=university,
+        lms_user_id=lms_user_id,
+        role=role
+    )
+    result = services.get_knowledge_by_student_id(
+        uow=uow,
+        student_id=1
+    )
+    assert type(result) is dict
+    assert result != {}
+
+
+@pytest.mark.parametrize("name, university, lms_user_id, role", [
+    (
+        "Max Mustermann",
+        "TH-AB",
+        1,
+        "student"
+    )
+])
+def test_get_learning_analytics_by_student_id(name,
+                                              university,
+                                              lms_user_id,
+                                              role):
+    uow = FakeUnitOfWork()
+    services.create_user(
+        uow=uow,
+        name=name,
+        university=university,
+        lms_user_id=lms_user_id,
+        role=role
+    )
+    result = services.get_learning_analytics_by_student_id(
+        uow=uow,
+        student_id=1
+    )
+    assert type(result) is dict
+    assert result != {}
+
+
+@pytest.mark.parametrize("name, university, lms_user_id, role", [
+    (
+        "Max Mustermann",
+        "TH-AB",
+        1,
+        "student"
+    )
+])
+def test_get_learning_style_by_student_id(name,
+                                          university,
+                                          lms_user_id,
+                                          role):
+    uow = FakeUnitOfWork()
+    services.create_user(
+        uow=uow,
+        name=name,
+        university=university,
+        lms_user_id=lms_user_id,
+        role=role
+    )
+    result = services.get_learning_style_by_student_id(
+        uow=uow,
+        student_id=1
+    )
+    assert type(result) is dict
+    assert result != {}
+
+
+@pytest.mark.parametrize("name, university, lms_user_id, role", [
+    (
+        "Max Mustermann",
+        "TH-AB",
+        1,
+        "student"
+    )
+])
+def test_get_learning_strategy_by_student_id(name,
+                                             university,
+                                             lms_user_id,
+                                             role):
+    uow = FakeUnitOfWork()
+    services.create_user(
+        uow=uow,
+        name=name,
+        university=university,
+        lms_user_id=lms_user_id,
+        role=role
+    )
+    result = services.get_learning_strategy_by_student_id(
+        uow=uow,
+        student_id=1
+    )
+    assert type(result) is dict
+    assert result != {}
+
+
+@pytest.mark.parametrize("name, university, lms_user_id, role,\
+                         lms_id_course, course_name", [
+    (
+        "Max Mustermann",
+        "TH-AB",
+        1,
+        "student",
+        "lms_id_course",
+        "Test Course"
+    )
+])
+def test_get_les_for_course_id(name,
+                               university,
+                               lms_user_id,
+                               role,
+                               lms_id_course,
+                               course_name):
+    uow = FakeUnitOfWork()
+    services.create_user(
+        uow=uow,
+        name=name,
+        university=university,
+        lms_user_id=lms_user_id,
+        role=role
+    )
+    services.create_user(
+        uow=uow,
+        name=name,
+        university=university,
+        lms_user_id=lms_user_id,
+        role="course creator"
+    )
+    services.create_course(
+        uow=uow,
+        lms_id=lms_id_course,
+        name=course_name,
+        university=university,
+        created_by=2,
+        created_at="2023-01-01"
+    )
+    services.create_topic(
+        uow=uow,
+        course_id=1,
+        lms_id=1,
+        is_topic=True,
+        contains_le=False,
+        parent_id=None,
+        name="Test Topic",
+        university=university,
+        created_at="2023-01-01",
+        created_by=name
+    )
+    services.create_learning_element(
+        uow=uow,
+        topic_id=1,
+        lms_id=1,
+        activity_type="quiz",
+        classification="RQ",
+        name="Test LE",
+        created_at="2017-01-01",
+        created_by="Max Mustermann",
+        university=university
+    )
+    services.add_student_to_course(
+        uow=uow,
+        student_id=1,
+        course_id=1
+    )
+    result = services.get_learning_elements_for_course_id(
+        uow=uow,
+        user_id=1,
+        lms_user_id=1,
+        student_id=1,
+        course_id=1
+    )
+    assert type(result) is dict
+    assert result != {}
+
+
+@pytest.mark.parametrize("name, university, lms_user_id, role,\
+                         lms_id_course, course_name", [
+    (
+        "Max Mustermann",
+        "TH-AB",
+        1,
+        "student",
+        "lms_id_course",
+        "Test Course"
+    )
+])
+def test_get_les_for_course_and_topic_id(name,
+                                         university,
+                                         lms_user_id,
+                                         role,
+                                         lms_id_course,
+                                         course_name):
+    uow = FakeUnitOfWork()
+    services.create_user(
+        uow=uow,
+        name=name,
+        university=university,
+        lms_user_id=lms_user_id,
+        role=role
+    )
+    services.create_user(
+        uow=uow,
+        name=name,
+        university=university,
+        lms_user_id=lms_user_id,
+        role="course creator"
+    )
+    services.create_course(
+        uow=uow,
+        lms_id=lms_id_course,
+        name=course_name,
+        university=university,
+        created_by=2,
+        created_at="2023-01-01"
+    )
+    services.create_topic(
+        uow=uow,
+        course_id=1,
+        lms_id=1,
+        is_topic=True,
+        contains_le=False,
+        parent_id=None,
+        name="Test Topic",
+        university=university,
+        created_at="2023-01-01",
+        created_by=name
+    )
+    services.create_learning_element(
+        uow=uow,
+        topic_id=1,
+        lms_id=1,
+        activity_type="quiz",
+        classification="RQ",
+        name="Test LE",
+        created_at="2017-01-01",
+        created_by="Max Mustermann",
+        university=university
+    )
+    services.add_student_to_course(
+        uow=uow,
+        student_id=1,
+        course_id=1
+    )
+    result = services.get_learning_elements_for_course_and_topic_id(
+        uow=uow,
+        user_id=1,
+        lms_user_id=1,
+        student_id=1,
+        course_id=1,
+        topic_id=1
+    )
+    assert type(result) is dict
+    assert result != {}
+
+
+@pytest.mark.parametrize("name, university, lms_user_id, role,\
+                         lms_id_course, course_name", [
+    (
+        "Max Mustermann",
+        "TH-AB",
+        1,
+        "student",
+        "lms_id_course",
+        "Test Course"
+    )
+])
+def test_get_learning_element_recommendation(name,
+                                             university,
+                                             lms_user_id,
+                                             role,
+                                             lms_id_course,
+                                             course_name):
+    uow = FakeUnitOfWork()
+    services.create_user(
+        uow=uow,
+        name=name,
+        university=university,
+        lms_user_id=lms_user_id,
+        role=role
+    )
+    services.create_user(
+        uow=uow,
+        name=name,
+        university=university,
+        lms_user_id=lms_user_id,
+        role="course creator"
+    )
+    services.create_course(
+        uow=uow,
+        lms_id=lms_id_course,
+        name=course_name,
+        university=university,
+        created_by=2,
+        created_at="2023-01-01"
+    )
+    services.create_topic(
+        uow=uow,
+        course_id=1,
+        lms_id=1,
+        is_topic=True,
+        contains_le=False,
+        parent_id=None,
+        name="Test Topic",
+        university=university,
+        created_at="2023-01-01",
+        created_by=name
+    )
+    services.create_learning_element(
+        uow=uow,
+        topic_id=1,
+        lms_id=1,
+        activity_type="quiz",
+        classification="RQ",
+        name="Test LE",
+        created_at="2017-01-01",
+        created_by="Max Mustermann",
+        university=university
+    )
+    services.create_learning_path(
+        uow=uow,
+        user_id=1,
+        lms_user_id=1,
+        student_id=1,
+        course_id=1,
+        topic_id=1,
+        algorithm="Graf"
+    )
+    result = services.get_learning_element_recommendation(
+        uow=uow,
+        user_id=1,
+        lms_user_id=1,
+        student_id=1,
+        course_id=1,
+        topic_id=1
+    )
+    assert type(result) == dict
+    assert result != {}
+
+
+@pytest.mark.parametrize("name, university, lms_user_id, role,\
+                         lms_id_course, course_name", [
+    (
+        "Max Mustermann",
+        "TH-AB",
+        1,
+        "student",
+        "lms_id_course",
+        "Test Course"
+    )
+])
+def test_get_learning_path(name,
+                           university,
+                           lms_user_id,
+                           role,
+                           lms_id_course,
+                           course_name):
+    uow = FakeUnitOfWork()
+    services.create_user(
+        uow=uow,
+        name=name,
+        university=university,
+        lms_user_id=lms_user_id,
+        role=role
+    )
+    services.create_user(
+        uow=uow,
+        name=name,
+        university=university,
+        lms_user_id=lms_user_id,
+        role="course creator"
+    )
+    services.create_course(
+        uow=uow,
+        lms_id=lms_id_course,
+        name=course_name,
+        university=university,
+        created_by=2,
+        created_at="2023-01-01"
+    )
+    services.create_topic(
+        uow=uow,
+        course_id=1,
+        lms_id=1,
+        is_topic=True,
+        contains_le=False,
+        parent_id=None,
+        name="Test Topic",
+        university=university,
+        created_at="2023-01-01",
+        created_by=name
+    )
+    services.create_learning_element(
+        uow=uow,
+        topic_id=1,
+        lms_id=1,
+        activity_type="quiz",
+        classification="RQ",
+        name="Test LE",
+        created_at="2017-01-01",
+        created_by="Max Mustermann",
+        university=university
+    )
+    result = services.create_learning_path(
+        uow=uow,
+        user_id=1,
+        lms_user_id=1,
+        student_id=1,
+        course_id=1,
+        topic_id=1,
+        algorithm="Graf"
+    )
+    assert type(result) == dict
+    assert result != {}
+
+
+@pytest.mark.parametrize("name, university, lms_user_id, role,\
+                         lms_id_course, course_name", [
+    (
+        "Max Mustermann",
+        "TH-AB",
+        1,
+        "student",
+        "lms_id_course",
+        "Test Course"
+    )
+])
+def test_get_sub_topics(name,
+                        university,
+                        lms_user_id,
+                        role,
+                        lms_id_course,
+                        course_name):
+    uow = FakeUnitOfWork()
+    services.create_user(
+        uow=uow,
+        name=name,
+        university=university,
+        lms_user_id=lms_user_id,
+        role=role
+    )
+    services.create_user(
+        uow=uow,
+        name=name,
+        university=university,
+        lms_user_id=lms_user_id,
+        role="course creator"
+    )
+    services.create_course(
+        uow=uow,
+        lms_id=lms_id_course,
+        name=course_name,
+        university=university,
+        created_by=2,
+        created_at="2023-01-01"
+    )
+    services.create_topic(
+        uow=uow,
+        course_id=1,
+        lms_id=1,
+        is_topic=True,
+        contains_le=False,
+        parent_id=None,
+        name="Test Topic",
+        university=university,
+        created_at="2023-01-01",
+        created_by=name
+    )
+    services.create_topic(
+        uow=uow,
+        course_id=1,
+        lms_id=2,
+        is_topic=False,
+        contains_le=True,
+        parent_id=1,
+        name="Test Topic",
+        university=university,
+        created_at="2023-01-01",
+        created_by=name
+    )
+    services.create_learning_element(
+        uow=uow,
+        topic_id=1,
+        lms_id=1,
+        activity_type="quiz",
+        classification="RQ",
+        name="Test LE",
+        created_at="2017-01-01",
+        created_by="Max Mustermann",
+        university=university
+    )
+    services.add_student_to_course(
+        uow=uow,
+        student_id=1,
+        course_id=1
+    )
+    services.add_student_topic_visit(
+        uow=uow,
+        student_id=1,
+        topic_id=1,
+        visit_start="2023-01-01",
+        previous_topic_id=None
+    )
+    services.add_student_topic_visit(
+        uow=uow,
+        student_id=1,
+        topic_id=2,
+        visit_start="2023-01-02",
+        previous_topic_id=1
+    )
+    result = services.get_sub_topic_by_topic_id(
+        uow=uow,
+        user_id=1,
+        lms_user_id=1,
+        student_id=1,
+        course_id=1,
+        topic_id=1
+    )
+    assert type(result) == dict
+    assert result != {}
+
+
+@pytest.mark.parametrize("name, university, lms_user_id, role,\
+                         lms_id_course, course_name", [
+    (
+        "Max Mustermann",
+        "TH-AB",
+        1,
+        "student",
+        "lms_id_course",
+        "Test Course"
+    )
+])
+def test_get_topics_by_student_and_course_id(name,
+                                             university,
+                                             lms_user_id,
+                                             role,
+                                             lms_id_course,
+                                             course_name):
+    uow = FakeUnitOfWork()
+    services.create_user(
+        uow=uow,
+        name=name,
+        university=university,
+        lms_user_id=lms_user_id,
+        role=role
+    )
+    services.create_user(
+        uow=uow,
+        name=name,
+        university=university,
+        lms_user_id=lms_user_id,
+        role="course creator"
+    )
+    services.create_course(
+        uow=uow,
+        lms_id=lms_id_course,
+        name=course_name,
+        university=university,
+        created_by=2,
+        created_at="2023-01-01"
+    )
+    services.create_topic(
+        uow=uow,
+        course_id=1,
+        lms_id=1,
+        is_topic=True,
+        contains_le=False,
+        parent_id=None,
+        name="Test Topic",
+        university=university,
+        created_at="2023-01-01",
+        created_by=name
+    )
+    services.create_topic(
+        uow=uow,
+        course_id=1,
+        lms_id=2,
+        is_topic=False,
+        contains_le=True,
+        parent_id=1,
+        name="Test Topic",
+        university=university,
+        created_at="2023-01-01",
+        created_by=name
+    )
+    services.create_learning_element(
+        uow=uow,
+        topic_id=1,
+        lms_id=1,
+        activity_type="quiz",
+        classification="RQ",
+        name="Test LE",
+        created_at="2017-01-01",
+        created_by="Max Mustermann",
+        university=university
+    )
+    services.add_student_to_course(
+        uow=uow,
+        student_id=1,
+        course_id=1
+    )
+    services.add_student_topic_visit(
+        uow=uow,
+        student_id=1,
+        topic_id=1,
+        visit_start="2023-01-01",
+        previous_topic_id=None
+    )
+    services.add_student_topic_visit(
+        uow=uow,
+        student_id=1,
+        topic_id=2,
+        visit_start="2023-01-02",
+        previous_topic_id=1
+    )
+    result = services.get_topics_by_student_and_course_id(
+        uow=uow,
+        user_id=1,
+        lms_user_id=1,
+        student_id=1,
+        course_id=1
+    )
+    assert type(result) == dict
+    assert result != {}
+
+
+@pytest.mark.parametrize("name, university, lms_user_id, role", [
+    # Working Example
+    (
+        "Max Mustermann",
+        "TH-AB",
+        1,
+        "teacher"
+    )
+])
+def test_get_user_by_admin(name, university, lms_user_id, role):
+    uow = FakeUnitOfWork()
+    services.create_user(
+        uow=uow,
+        name=name,
+        university=university,
+        lms_user_id=lms_user_id,
+        role=role
+    )
+    services.create_user(
+        uow=uow,
+        name=name,
+        university=university,
+        lms_user_id=lms_user_id,
+        role="admin"
+    )
+    result = services.get_users_by_admin(
+        uow=uow,
+        user_id=2,
+        lms_user_id=1
+    )
+    assert type(result) == dict
+    assert result != {}
+
+
+@pytest.mark.parametrize("name, university, lms_user_id, role", [
+    (
+        "Max Mustermann",
+        "TH-AB",
+        1,
+        "student"
+    )
+])
+def test_reset_knowledge_by_student_id(name,
+                                       university,
+                                       lms_user_id,
+                                       role):
+    uow = FakeUnitOfWork()
+    services.create_user(
+        uow=uow,
+        name=name,
+        university=university,
+        lms_user_id=lms_user_id,
+        role=role
+    )
+    result = services.reset_knowledge_by_student_id(
+        uow=uow,
+        user_id=1,
+        lms_user_id=1,
+        student_id=1
+    )
+    assert type(result) is dict
+    assert result != {}
+
+
+@pytest.mark.parametrize("name, university, lms_user_id, role", [
+    (
+        "Max Mustermann",
+        "TH-AB",
+        1,
+        "student"
+    )
+])
+def test_reset_learning_analytics_by_student_id(name,
+                                                university,
+                                                lms_user_id,
+                                                role):
+    uow = FakeUnitOfWork()
+    services.create_user(
+        uow=uow,
+        name=name,
+        university=university,
+        lms_user_id=lms_user_id,
+        role=role
+    )
+    result = services.reset_learning_analytics_by_student_id(
+        uow=uow,
+        user_id=1,
+        lms_user_id=1,
+        student_id=1
+    )
+    assert type(result) is dict
+    assert result != {}
+
+
+@pytest.mark.parametrize("name, university, lms_user_id, role", [
+    (
+        "Max Mustermann",
+        "TH-AB",
+        1,
+        "student"
+    )
+])
+def test_reset_learning_style_by_student_id(name,
+                                            university,
+                                            lms_user_id,
+                                            role):
+    uow = FakeUnitOfWork()
+    services.create_user(
+        uow=uow,
+        name=name,
+        university=university,
+        lms_user_id=lms_user_id,
+        role=role
+    )
+    result = services.reset_learning_style_by_student_id(
+        uow=uow,
+        user_id=1,
+        lms_user_id=1,
+        student_id=1
+    )
+    assert type(result) is dict
+    assert result != {}
+
+
+@pytest.mark.parametrize("name, university, lms_user_id, role", [
+    (
+        "Max Mustermann",
+        "TH-AB",
+        1,
+        "student"
+    )
+])
+def test_reset_learning_strategy_by_student_id(name,
+                                               university,
+                                               lms_user_id,
+                                               role):
+    uow = FakeUnitOfWork()
+    services.create_user(
+        uow=uow,
+        name=name,
+        university=university,
+        lms_user_id=lms_user_id,
+        role=role
+    )
+    result = services.reset_learning_strategy_by_student_id(
+        uow=uow,
+        user_id=1,
+        lms_user_id=1,
+        student_id=1
+    )
+    assert type(result) is dict
+    assert result != {}
+
+
+@pytest.mark.parametrize("name, university, lms_user_id, role,\
+                         perception_dimension,  perception_value,\
+                         input_dimension, input_value,\
+                         processing_dimension, processing_value,\
+                         understanding_dimension, understanding_value", [
+    (
+        "Max Mustermann",
+        "TH-AB",
+        1,
+        "student",
+        "ACT",
+        11,
+        "VIS",
+        11,
+        "SNS",
+        11,
+        "GLO",
+        11
+    )
+])
+def test_update_learning_style_by_student_id(name,
+                                             university,
+                                             lms_user_id,
+                                             role,
+                                             perception_dimension,
+                                             perception_value,
+                                             input_dimension,
+                                             input_value,
+                                             processing_dimension,
+                                             processing_value,
+                                             understanding_dimension,
+                                             understanding_value):
+    uow = FakeUnitOfWork()
+    services.create_user(
+        uow=uow,
+        name=name,
+        university=university,
+        lms_user_id=lms_user_id,
+        role=role
+    )
+    result = services.update_learning_style_by_student_id(
+        uow=uow,
+        user_id=1,
+        lms_user_id=1,
+        student_id=1,
+        perception_dimension=perception_dimension,
+        perception_value=perception_value,
+        input_dimension=input_dimension,
+        input_value=input_value,
+        processing_dimension=processing_dimension,
+        processing_value=processing_value,
+        understanding_dimension=understanding_dimension,
+        understanding_value=understanding_value
+    )
+    assert type(result) is dict
+    assert result != {}

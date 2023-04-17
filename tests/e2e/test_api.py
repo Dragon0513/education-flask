@@ -17,6 +17,30 @@ learning_element_id = 0
 questionnaire_id = 0
 
 
+path_admin = "/admin"
+path_course = "/course"
+path_knowledge = "/knowledge"
+path_logs = "/logs"
+path_frontend_logs = "/logs/frontend"
+path_learning_analytics = "/learningAnalytics"
+path_learning_characteristics = "/learningCharacteristics"
+path_learning_element = "/learningElement"
+path_learning_path = "/learningPath"
+path_learning_strategy = "/learningStrategy"
+path_learning_style = "/learningStyle"
+path_lms_course = "/lms/course"
+path_lms_student = "/lms/student"
+path_lms_user = "/lms/user"
+path_questionnaire = "/questionnaire"
+path_recommendation = "/recommendation"
+path_settings = "/settings"
+path_student = "/student"
+path_subtopic = "/subtopic"
+path_teacher = "/teacher"
+path_topic = "/topic"
+path_user = "/user"
+
+
 # POST METHODS
 # Create User
 @pytest.mark.parametrize("input, keys_expected, status_code_expected,\
@@ -151,7 +175,8 @@ def test_api_create_user_from_moodle(
     status_code_expected,
     save_id
 ):
-    r = client.post("/lms/user", json=input)
+    url = path_lms_user
+    r = client.post(url, json=input)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
     for key in keys_expected:
@@ -237,7 +262,8 @@ def test_api_create_course_from_moodle(
 ):
     global user_id_course_creator
     input['created_by'] = user_id_course_creator
-    r = client.post("/lms/course", json=input)
+    url = path_lms_course
+    r = client.post(url, json=input)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
     for key in keys_expected:
@@ -343,8 +369,8 @@ def test_api_create_topic_from_moodle(
     save_id
 ):
     global course_id, topic_id, sub_topic_id
-    url = "/lms/course/" + str(course_id) + \
-        "/" + str(moodle_course_id) + "/topic"
+    url = path_lms_course + "/" + str(course_id) + \
+        "/" + str(moodle_course_id) + path_topic
     if topic_id != 0:
         input['parent_id'] = topic_id
     r = client.post(url, json=input)
@@ -443,9 +469,9 @@ def test_api_create_le_from_moodle(
 ):
     global course_id
     global sub_topic_id
-    url = "/lms/course/" + str(course_id) + "/" + str(moodle_course_id) +\
-        "/topic/" + str(sub_topic_id) + "/" + \
-        str(moodle_topic_id) + "/learningElement"
+    url = path_lms_course + "/" + str(course_id) + "/" +\
+        str(moodle_course_id) + path_topic + "/" + str(sub_topic_id) +\
+        "/" + str(moodle_topic_id) + path_learning_element
     r = client.post(url, json=input)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -504,8 +530,8 @@ def test_add_teacher_to_course(
         course_id_use = 99999
     else:
         course_id_use = course_id
-    url = "/lms/course/" + str(course_id_use) + \
-        "/teacher/" + str(teacher_id_use)
+    url = path_lms_course + "/" + str(course_id_use) + \
+        path_teacher + "/" + str(teacher_id_use)
     r = client.post(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -564,8 +590,8 @@ def test_add_student_to_course(
         course_id_use = 99999
     else:
         course_id_use = course_id
-    url = "/lms/course/" + str(course_id_use) + \
-        "/student/" + str(student_id_use)
+    url = path_lms_course + "/" + str(course_id_use) + \
+        path_student + "/" + str(student_id_use)
     r = client.post(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -2495,8 +2521,8 @@ def test_post_questionnaire(
     save_id
 ):
     global student_id
-    url = "/lms/student/" + str(student_id) + \
-        "/" + str(moodle_user_id) + "/questionnaire"
+    url = path_lms_student + "/" + str(student_id) + \
+        "/" + str(moodle_user_id) + path_questionnaire
     r = client.post(url, json=input)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -2546,8 +2572,8 @@ def test_post_topic_visit(
     status_code_expected
 ):
     global student_id, topic_id
-    url = "/lms/student/" + str(student_id) + \
-        "/" + str(moodle_user_id) + "/topic/" + str(topic_id)
+    url = path_lms_student + "/" + str(student_id) + \
+        "/" + str(moodle_user_id) + path_topic + "/" + str(topic_id)
     r = client.post(url, json=input)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -2595,8 +2621,8 @@ def test_post_learning_element_visit(
     status_code_expected
 ):
     global student_id, learning_element_id
-    url = "/lms/student/" + str(student_id) + \
-        "/" + str(moodle_user_id) + "/learningElement/" + \
+    url = path_lms_student + "/" + str(student_id) + \
+        "/" + str(moodle_user_id) + path_learning_element + "/" + \
         str(learning_element_id)
     r = client.post(url, json=input)
     assert r.status_code == status_code_expected
@@ -2634,9 +2660,10 @@ def test_post_learning_path(
     status_code_expected
 ):
     global user_id_student, student_id, course_id, sub_topic_id
-    url = "/user/" + str(user_id_student) + "/" + str(moodle_user_id) +\
-        "/student/" + str(student_id) + "/course/" + str(course_id) +\
-        "/topic/" + str(sub_topic_id) + "/learningPath"
+    url = path_user + "/" + str(user_id_student) + "/" + str(moodle_user_id) +\
+        path_student + "/" + str(student_id) + path_course + "/" +\
+        str(course_id) + path_topic + "/" + str(sub_topic_id) +\
+        path_learning_path
     r = client.post(url, json=input)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -2729,7 +2756,7 @@ def test_api_post_frontend_logs(
     keys_expected,
     status_code_expected
 ):
-    url = "/logs/frontend"
+    url = path_frontend_logs
     r = client.post(url, json=input)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -2769,8 +2796,9 @@ def test_get_students_learning_characteristics(
         student_id_use = 99999
     else:
         student_id_use = student_id
-    url = "/user/" + str(user_id_student) + "/" + str(lms_user_id) + \
-        "/student/" + str(student_id_use) + "/learningCharacteristics"
+    url = path_user + "/" + str(user_id_student) + "/" + str(lms_user_id) + \
+        path_student + "/" + str(student_id_use) + \
+        path_learning_characteristics
     r = client.get(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -2808,8 +2836,8 @@ def test_get_students_learning_analytics(
         student_id_use = 99999
     else:
         student_id_use = student_id
-    url = "/user/" + str(user_id_student) + "/" + str(lms_user_id) + \
-        "/student/" + str(student_id_use) + "/learningAnalytics"
+    url = path_user + "/" + str(user_id_student) + "/" + str(lms_user_id) + \
+        path_student + "/" + str(student_id_use) + path_learning_analytics
     r = client.get(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -2850,8 +2878,8 @@ def test_get_students_learning_style(
         student_id_use = 99999
     else:
         student_id_use = student_id
-    url = "/user/" + str(user_id_student) + "/" + str(lms_user_id) + \
-        "/student/" + str(student_id_use) + "/learningStyle"
+    url = path_user + "/" + str(user_id_student) + "/" + str(lms_user_id) + \
+        path_student + "/" + str(student_id_use) + path_learning_style
     r = client.get(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -2889,8 +2917,8 @@ def test_get_students_learning_strategy(
         student_id_use = 99999
     else:
         student_id_use = student_id
-    url = "/user/" + str(user_id_student) + "/" + str(lms_user_id) + \
-        "/student/" + str(student_id_use) + "/learningStrategy"
+    url = path_user + "/" + str(user_id_student) + "/" + str(lms_user_id) + \
+        path_student + "/" + str(student_id_use) + path_learning_strategy
     r = client.get(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -2928,8 +2956,8 @@ def test_get_students_knowledge(
         student_id_use = 99999
     else:
         student_id_use = student_id
-    url = "/user/" + str(user_id_student) + "/" + str(lms_user_id) + \
-        "/student/" + str(student_id_use) + "/knowledge"
+    url = path_user + "/" + str(user_id_student) + "/" + str(lms_user_id) + \
+        path_student + "/" + str(student_id_use) + path_knowledge
     r = client.get(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -2970,8 +2998,8 @@ def test_get_student_courses(
         student_id_use = 99999
     else:
         student_id_use = student_id
-    url = "/user/" + str(user_id_student) + "/" + str(lms_user_id) + \
-        "/student/" + str(student_id_use) + "/course"
+    url = path_user + "/" + str(user_id_student) + "/" + str(lms_user_id) + \
+        path_student + "/" + str(student_id_use) + path_course
     r = client.get(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -3031,8 +3059,9 @@ def test_get_student_course(
         course_id_use = 99999
     else:
         course_id_use = course_id
-    url = "/user/" + str(user_id_student) + "/" + str(lms_user_id) + \
-        "/student/" + str(student_id_use) + "/course/" + str(course_id_use)
+    url = path_user + "/" + str(user_id_student) + "/" + str(lms_user_id) + \
+        path_student + "/" + str(student_id_use) + \
+        path_course + "/" + str(course_id_use)
     r = client.get(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -3091,9 +3120,9 @@ def test_get_student_course_topics(
         course_id_use = 99999
     else:
         course_id_use = course_id
-    url = "/user/" + str(user_id_student) + "/" + str(lms_user_id) + \
-        "/student/" + str(student_id_use) + "/course/" + str(course_id_use) +\
-        "/topic"
+    url = path_user + "/" + str(user_id_student) + "/" + str(lms_user_id) + \
+        path_student + "/" + str(student_id_use) + path_course + "/" +\
+        str(course_id_use) + path_topic
     r = client.get(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -3158,9 +3187,9 @@ def test_get_les_in_course_for_student(
         course_id_use = 99999
     else:
         course_id_use = course_id
-    url = "/user/" + str(user_id_student) + "/" + str(lms_user_id) + \
-        "/student/" + str(student_id_use) + "/course/" + str(course_id_use) +\
-        "/learningElement"
+    url = path_user + "/" + str(user_id_student) + "/" + str(lms_user_id) + \
+        path_student + "/" + str(student_id_use) + path_course + "/" +\
+        str(course_id_use) + path_learning_element
     r = client.get(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -3238,9 +3267,9 @@ def test_get_topic_by_id_for_student(
         topic_id_use = 99999
     else:
         topic_id_use = topic_id
-    url = "/user/" + str(user_id_student) + "/" + str(lms_user_id) + \
-        "/student/" + str(student_id_use) + "/course/" + str(course_id_use) +\
-        "/topic/" + str(topic_id_use)
+    url = path_user + "/" + str(user_id_student) + "/" + str(lms_user_id) + \
+        path_student + "/" + str(student_id_use) + path_course + "/" +\
+        str(course_id_use) + path_topic + "/" + str(topic_id_use)
     r = client.get(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -3312,9 +3341,10 @@ def test_get_topic_recommendation_for_student(
         topic_id_use = 99999
     else:
         topic_id_use = sub_topic_id
-    url = "/user/" + str(user_id_student) + "/" + str(lms_user_id) + \
-        "/student/" + str(student_id_use) + "/course/" + str(course_id_use) +\
-        "/topic/" + str(topic_id_use) + "/recommendation"
+    url = path_user + "/" + str(user_id_student) + "/" + str(lms_user_id) + \
+        path_student + "/" + str(student_id_use) + path_course + "/" +\
+        str(course_id_use) + path_topic + "/" + str(topic_id_use) +\
+        path_recommendation
     r = client.get(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -3386,9 +3416,10 @@ def test_get_learning_path_for_student(
         topic_id_use = 99999
     else:
         topic_id_use = sub_topic_id
-    url = "/user/" + str(user_id_student) + "/" + str(lms_user_id) + \
-        "/student/" + str(student_id_use) + "/course/" + str(course_id_use) +\
-        "/topic/" + str(topic_id_use) + "/learningPath"
+    url = path_user + "/" + str(user_id_student) + "/" + str(lms_user_id) + \
+        path_student + "/" + str(student_id_use) + path_course + "/" +\
+        str(course_id_use) + path_topic + "/" + str(topic_id_use) +\
+        path_learning_path
     r = client.get(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -3465,9 +3496,10 @@ def test_get_sub_topics_for_topic(
         topic_id_use = 99999
     else:
         topic_id_use = topic_id
-    url = "/user/" + str(user_id_student) + "/" + str(lms_user_id) + \
-        "/student/" + str(student_id_use) + "/course/" + str(course_id_use) +\
-        "/topic/" + str(topic_id_use) + "/subtopic"
+    url = path_user + "/" + str(user_id_student) + "/" + str(lms_user_id) + \
+        path_student + "/" + str(student_id_use) + path_course + "/" +\
+        str(course_id_use) + path_topic + "/" + str(topic_id_use) +\
+        path_subtopic
     r = client.get(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -3551,9 +3583,10 @@ def test_get_les_for_topic_for_student(
         topic_id_use = 99999
     else:
         topic_id_use = sub_topic_id
-    url = "/user/" + str(user_id_student) + "/" + str(lms_user_id) + \
-        "/student/" + str(student_id_use) + "/course/" + str(course_id_use) +\
-        "/topic/" + str(topic_id_use) + "/learningElement"
+    url = path_user + "/" + str(user_id_student) + "/" + str(lms_user_id) + \
+        path_student + "/" + str(student_id_use) + path_course + "/" +\
+        str(course_id_use) + path_topic + "/" + str(topic_id_use) +\
+        path_learning_element
     r = client.get(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -3652,10 +3685,10 @@ def test_get_le_by_id_for_student(
         learning_element_id_use = 99999
     else:
         learning_element_id_use = learning_element_id
-    url = "/user/" + str(user_id_student) + "/" + str(lms_user_id) + \
-        "/student/" + str(student_id_use) + "/course/" + str(course_id_use) +\
-        "/topic/" + str(topic_id_use) + "/learningElement/" +\
-        str(learning_element_id_use)
+    url = path_user + "/" + str(user_id_student) + "/" + str(lms_user_id) + \
+        path_student + "/" + str(student_id_use) + path_course + "/" +\
+        str(course_id_use) + path_topic + "/" + str(topic_id_use) +\
+        path_learning_element + "/" + str(learning_element_id_use)
     r = client.get(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -3697,8 +3730,8 @@ def test_get_users_by_admin_id(
         user_id_use = 99999
     else:
         user_id_use = user_id_admin
-    url = "/user/" + str(user_id_use) + "/" + str(lms_user_id) + \
-        "/admin/" + str(admin_id) + "/user"
+    url = path_user + "/" + str(user_id_use) + "/" + str(lms_user_id) + \
+        path_admin + "/" + str(admin_id) + path_user
     r = client.get(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -3740,8 +3773,8 @@ def test_get_logs_by_admin_id(
         user_id_use = 99999
     else:
         user_id_use = user_id_admin
-    url = "/user/" + str(user_id_use) + "/" + str(lms_user_id) + \
-        "/admin/" + str(admin_id) + "/logs"
+    url = path_user + "/" + str(user_id_use) + "/" + str(lms_user_id) + \
+        path_admin + "/" + str(admin_id) + path_logs
     r = client.get(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -3783,8 +3816,8 @@ def test_get_courses_by_teacher_id(
         user_id_use = 99999
     else:
         user_id_use = user_id_teacher
-    url = "/user/" + str(user_id_use) + "/" + str(lms_user_id) + \
-        "/teacher/" + str(teacher_id) + "/course"
+    url = path_user + "/" + str(user_id_use) + "/" + str(lms_user_id) + \
+        path_teacher + "/" + str(teacher_id) + path_course
     r = client.get(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -3826,7 +3859,7 @@ def test_get_user_by_id(
         user_id_use = 99999
     else:
         user_id_use = user_id_student
-    url = "/user/" + str(user_id_use) + "/" + str(lms_user_id)
+    url = path_user + "/" + str(user_id_use) + "/" + str(lms_user_id)
     r = client.get(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -3864,7 +3897,8 @@ def test_get_user_settings_by_id(
         user_id_use = 99999
     else:
         user_id_use = user_id_student
-    url = "/user/" + str(user_id_use) + "/" + str(lms_user_id) + "/settings"
+    url = path_user + "/" + str(user_id_use) + "/" + \
+        str(lms_user_id) + path_settings
     r = client.get(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -3920,7 +3954,8 @@ def test_update_user_settings_by_id(
         user_id_use = 99999
     else:
         user_id_use = user_id_student
-    url = "/user/" + str(user_id_use) + "/" + str(lms_user_id) + "/settings"
+    url = path_user + "/" + str(user_id_use) + "/" + \
+        str(lms_user_id) + path_settings
     r = client.put(url, json=request_body)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -4021,8 +4056,8 @@ def test_update_learning_style_by_student_id(
         user_id_use = 99999
     else:
         user_id_use = user_id_student
-    url = "/user/" + str(user_id_use) + "/" + str(lms_user_id) + \
-        "/student/" + str(student_id) + "/learningStyle"
+    url = path_user + "/" + str(user_id_use) + "/" + str(lms_user_id) + \
+        path_student + "/" + str(student_id) + path_learning_style
     r = client.put(url, json=request_body)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -4089,7 +4124,7 @@ def test_update_user_from_moodle(
     status_code_expected
 ):
     global user_id_student
-    url = "/lms/user/" + str(user_id_student) + "/" + \
+    url = path_lms_user + "/" + str(user_id_student) + "/" + \
         str(moodle_user_id)
     r = client.put(url, json=input)
     assert r.status_code == status_code_expected
@@ -4148,7 +4183,7 @@ def test_update_course_from_moodle(
     status_code_expected
 ):
     global course_id
-    url = "/lms/course/" + str(course_id) + "/" + str(moodle_course_id)
+    url = path_lms_course + "/" + str(course_id) + "/" + str(moodle_course_id)
     r = client.put(url, json=input)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -4248,8 +4283,8 @@ def test_update_topic_from_moodle(
         input['parent_id'] = topic_id
     else:
         topic_id_use = topic_id
-    url = "/lms/course/" + str(course_id) + \
-        "/" + str(moodle_course_id) + "/topic/" + \
+    url = path_lms_course + "/" + str(course_id) + \
+        "/" + str(moodle_course_id) + path_topic + "/" + \
         str(topic_id_use) + "/" + str(moodle_topic_id)
     r = client.put(url, json=input)
     assert r.status_code == status_code_expected
@@ -4324,10 +4359,10 @@ def test_update_le_from_moodle(
     status_code_expected
 ):
     global course_id, sub_topic_id, learning_element_id
-    url = "/lms/course/" + str(course_id) + "/" + str(moodle_course_id) + \
-        "/topic/" + str(sub_topic_id) + "/" + str(moodle_topic_id) + \
-        "/learningElement/" + str(learning_element_id) + "/" + \
-        str(moodle_learning_element_id)
+    url = path_lms_course + "/" + str(course_id) + "/" + \
+        str(moodle_course_id) + path_topic + "/" + str(sub_topic_id) + \
+        "/" + str(moodle_topic_id) + path_learning_element + "/" + \
+        str(learning_element_id) + "/" + str(moodle_learning_element_id)
     r = client.put(url, json=input)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -4366,7 +4401,8 @@ def test_reset_user_settings(
         user_id_use = 99999
     else:
         user_id_use = user_id_student
-    url = "/user/" + str(user_id_use) + "/" + str(lms_user_id) + "/settings"
+    url = path_user + "/" + str(user_id_use) + "/" + \
+        str(lms_user_id) + path_settings
     r = client.delete(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -4405,8 +4441,8 @@ def test_reset_learning_characteristics(
         user_id_use = 99999
     else:
         user_id_use = user_id_student
-    url = "/user/" + str(user_id_use) + "/" + str(lms_user_id) + \
-        "/student/" + str(student_id) + "/learningCharacteristics"
+    url = path_user + "/" + str(user_id_use) + "/" + str(lms_user_id) + \
+        path_student + "/" + str(student_id) + path_learning_characteristics
     r = client.delete(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -4444,8 +4480,8 @@ def test_reset_learning_analytics(
         user_id_use = 99999
     else:
         user_id_use = user_id_student
-    url = "/user/" + str(user_id_use) + "/" + str(lms_user_id) + \
-        "/student/" + str(student_id) + "/learningAnalytics"
+    url = path_user + "/" + str(user_id_use) + "/" + str(lms_user_id) + \
+        path_student + "/" + str(student_id) + path_learning_analytics
     r = client.delete(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -4486,8 +4522,8 @@ def test_reset_learning_style(
         user_id_use = 99999
     else:
         user_id_use = user_id_student
-    url = "/user/" + str(user_id_use) + "/" + str(lms_user_id) + \
-        "/student/" + str(student_id) + "/learningStyle"
+    url = path_user + "/" + str(user_id_use) + "/" + str(lms_user_id) + \
+        path_student + "/" + str(student_id) + path_learning_style
     r = client.delete(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -4525,8 +4561,8 @@ def test_reset_learning_strategy(
         user_id_use = 99999
     else:
         user_id_use = user_id_student
-    url = "/user/" + str(user_id_use) + "/" + str(lms_user_id) + \
-        "/student/" + str(student_id) + "/learningStrategy"
+    url = path_user + "/" + str(user_id_use) + "/" + str(lms_user_id) + \
+        path_student + "/" + str(student_id) + path_learning_strategy
     r = client.delete(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -4564,8 +4600,8 @@ def test_reset_knowledge(
         user_id_use = 99999
     else:
         user_id_use = user_id_student
-    url = "/user/" + str(user_id_use) + "/" + str(lms_user_id) + \
-        "/student/" + str(student_id) + "/knowledge"
+    url = path_user + "/" + str(user_id_use) + "/" + str(lms_user_id) + \
+        path_student + "/" + str(student_id) + path_knowledge
     r = client.delete(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -4610,7 +4646,7 @@ def test_delete_user(
         user_id_use = user_id_student
     else:
         user_id_use = user_id_teacher
-    url = "/lms/user/" + str(user_id_use) + "/" + str(moodle_user_id)
+    url = path_lms_user + "/" + str(user_id_use) + "/" + str(moodle_user_id)
     r = client.delete(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -4692,10 +4728,10 @@ def test_api_delete_le_from_moodle(
         learning_element_id_use = 99999
     else:
         learning_element_id_use = learning_element_id
-    url = "/lms/course/" + str(course_id_use) + "/" + str(moodle_course_id) + \
-        "/topic/" + str(topic_id_use) + "/" + str(moodle_topic_id) + \
-        "/learningElement/" + str(learning_element_id_use) + "/" + \
-        str(moodle_learning_element_id)
+    url = path_lms_course + "/" + str(course_id_use) + "/" +\
+        str(moodle_course_id) + path_topic + "/" + str(topic_id_use) +\
+        "/" + str(moodle_topic_id) + path_learning_element + "/" +\
+        str(learning_element_id_use) + "/" + str(moodle_learning_element_id)
     r = client.delete(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -4753,8 +4789,8 @@ def test_api_delete_topic_from_moodle(
         topic_id_use = 99999
     else:
         topic_id_use = sub_topic_id
-    url = "/lms/course/" + str(course_id_use) + \
-        "/" + str(moodle_course_id) + "/topic/" + \
+    url = path_lms_course + "/" + str(course_id_use) + \
+        "/" + str(moodle_course_id) + path_topic + "/" + \
         str(topic_id_use) + "/" + str(moodle_topic_id)
     r = client.delete(url)
     assert r.status_code == status_code_expected
@@ -4793,7 +4829,8 @@ def test_api_delete_course_from_moodle(
         course_id_use = 99999
     else:
         course_id_use = course_id
-    url = "/lms/course/" + str(course_id_use) + "/" + str(moodle_course_id)
+    url = path_lms_course + "/" + \
+        str(course_id_use) + "/" + str(moodle_course_id)
     r = client.delete(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))

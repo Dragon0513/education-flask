@@ -41,6 +41,118 @@ path_topic = "/topic"
 path_user = "/user"
 
 
+ils_complete = [
+    "ar_1_f1",
+    "ar_2_f5",
+    "ar_3_f9",
+    "ar_4_f13",
+    "ar_5_f17",
+    "ar_6_f21",
+    "ar_7_f25",
+    "ar_8_f29",
+    "ar_9_f33",
+    "ar_10_f37",
+    "ar_11_f41",
+    "si_1_f2",
+    "si_2_f6",
+    "si_3_f10",
+    "si_4_f14",
+    "si_5_f18",
+    "si_6_f22",
+    "si_7_f26",
+    "si_8_f30",
+    "si_9_f34",
+    "si_10_f38",
+    "si_11_f42",
+    "vv_1_f3",
+    "vv_2_f7",
+    "vv_3_f11",
+    "vv_4_f15",
+    "vv_5_f19",
+    "vv_6_f23",
+    "vv_7_f27",
+    "vv_8_f31",
+    "vv_9_f35",
+    "vv_10_f39",
+    "vv_11_f43",
+    "sg_1_f4",
+    "sg_2_f8",
+    "sg_3_f12",
+    "sg_4_f16",
+    "sg_5_f20",
+    "sg_6_f24",
+    "sg_7_f28",
+    "sg_8_f32",
+    "sg_9_f36",
+    "sg_10_f40",
+    "sg_11_f44"
+]
+ils_short = [
+    "ar_3_f9",
+    "ar_4_f13",
+    "ar_6_f21",
+    "ar_7_f25",
+    "ar_8_f29",
+    "si_1_f2",
+    "si_4_f14",
+    "si_7_f26",
+    "si_10_f38",
+    "si_11_f42",
+    "vv_2_f7",
+    "vv_5_f19",
+    "vv_7_f27",
+    "vv_10_f39",
+    "vv_11_f43",
+    "sg_1_f4",
+    "sg_2_f8",
+    "sg_4_f16",
+    "sg_10_f40",
+    "sg_11_f44"
+]
+list_k_ids = [
+    'org1_f1',
+    'org2_f2',
+    'org3_f3',
+    'ela1_f4',
+    'ela2_f5',
+    'ela3_f6',
+    'krp1_f7',
+    'krp2_f8',
+    'krp3_f9',
+    'wie1_f10',
+    'wie2_f11',
+    'wie3_f12',
+    'zp1_f13',
+    'zp2_f14',
+    'zp3_f15',
+    'kon1_f16',
+    'kon2_f17',
+    'kon3_f18',
+    'reg1_f19',
+    'reg2_f20',
+    'reg3_f21',
+    'auf1_f22',
+    'auf2_f23',
+    'auf3_f24',
+    'ans1_f25',
+    'ans2_f26',
+    'ans3_f27',
+    'zei1_f28',
+    'zei2_f29',
+    'zei3_f30',
+    'lms1_f31',
+    'lms2_f32',
+    'lms3_f33',
+    'lit1_f34',
+    'lit2_f35',
+    'lit3_f36',
+    'lu1_f37',
+    'lu2_f38',
+    'lu3_f39'
+]
+wrong_test_id = "Test ID"
+
+
 # POST METHODS
 # Create User
 @pytest.mark.parametrize("input, keys_expected, status_code_expected,\
@@ -600,1930 +712,164 @@ def test_add_student_to_course(
 
 
 # Post Questionnaire for Student
-@pytest.mark.parametrize("input, moodle_user_id, \
+@pytest.mark.parametrize("ils_long, moodle_user_id, \
                          keys_expected, status_code_expected, \
-                         save_id", [
+                         save_id, error_id_missing, error_key_wrong, \
+                         error_answer_ils, error_answer_list_k, \
+                         error_list_k_id", [
     # Working example
     (
-        {
-            "ils":
-            [
-                {
-                    "question_id": "ar_1_f1",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_2_f5",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_3_f9",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_4_f13",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_5_f17",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_6_f21",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_7_f25",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_8_f29",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_9_f33",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_10_f37",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_11_f41",
-                    "answer": "a"
-                },
-
-                {
-                    "question_id": "vv_1_f3",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_2_f7",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_3_f11",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_4_f15",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_5_f19",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_6_f23",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_7_f27",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_8_f31",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_9_f35",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_10_f39",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_11_f43",
-                    "answer": "a"
-                },
-
-                {
-                    "question_id": "si_1_f2",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_2_f6",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_3_f10",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_4_f14",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_5_f18",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_6_f22",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_7_f26",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_8_f30",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_9_f34",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_10_f38",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_11_f42",
-                    "answer": "a"
-                },
-
-                {
-                    "question_id": "sg_1_f4",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_2_f8",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_3_f12",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_4_f16",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_5_f20",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_6_f24",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_7_f28",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_8_f32",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_9_f36",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_10_f40",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_11_f44",
-                    "answer": "a"
-                }
-            ],
-            "list_k":
-            [
-                {
-                    "question_id": 'org1_f1',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'org2_f2',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'org3_f3',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ela1_f4',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ela2_f5',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ela3_f6',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'krp1_f7',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'krp2_f8',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'krp3_f9',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'wie1_f10',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'wie2_f11',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'wie3_f12',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zp1_f13',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zp2_f14',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zp3_f15',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'kon1_f16',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'kon2_f17',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'kon3_f18',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'reg1_f19',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'reg2_f20',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'reg3_f21',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'auf1_f22',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'auf2_f23',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'auf3_f24',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ans1_f25',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ans2_f26',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ans3_f27',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zei1_f28',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zei2_f29',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zei3_f30',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lms1_f31',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lms2_f32',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lms3_f33',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lit1_f34',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lit2_f35',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lit3_f36',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lu1_f37',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lu2_f38',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lu3_f39',
-                    "answer": 1
-                }
-            ]
-        },
+        True,
         4,
         ['id', 'student_id', 'learning_style', 'learning_strategy'],
         201,
-        True
+        True,
+        False,
+        False,
+        False,
+        False,
+        False
     ),
     # Working example short questionnaire
     (
-        {
-            "ils":
-            [
-                {
-                    "question_id": "ar_3_f9",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_4_f13",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_6_f21",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_7_f25",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_8_f29",
-                    "answer": "a"
-                },
-
-                {
-                    "question_id": "vv_2_f7",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_5_f19",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_7_f27",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_10_f39",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_11_f43",
-                    "answer": "a"
-                },
-
-
-                {
-                    "question_id": "si_1_f2",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_4_f14",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_7_f26",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_10_f38",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_11_f42",
-                    "answer": "a"
-                },
-
-                {
-                    "question_id": "sg_1_f4",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_2_f8",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_4_f16",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_10_f40",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_11_f44",
-                    "answer": "a"
-                }
-            ],
-            "list_k":
-            [
-                {
-                    "question_id": 'org1_f1',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'org2_f2',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'org3_f3',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ela1_f4',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ela2_f5',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ela3_f6',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'krp1_f7',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'krp2_f8',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'krp3_f9',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'wie1_f10',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'wie2_f11',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'wie3_f12',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zp1_f13',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zp2_f14',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zp3_f15',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'kon1_f16',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'kon2_f17',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'kon3_f18',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'reg1_f19',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'reg2_f20',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'reg3_f21',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'auf1_f22',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'auf2_f23',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'auf3_f24',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ans1_f25',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ans2_f26',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ans3_f27',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zei1_f28',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zei2_f29',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zei3_f30',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lms1_f31',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lms2_f32',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lms3_f33',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lit1_f34',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lit2_f35',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lit3_f36',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lu1_f37',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lu2_f38',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lu3_f39',
-                    "answer": 1
-                }
-            ]
-        },
+        False,
         4,
         ['id', 'student_id', 'learning_style', 'learning_strategy'],
         201,
-        True
+        True,
+        False,
+        False,
+        False,
+        False,
+        False
     ),
     # Missing mandatory answer
     (
-        {
-            "ils":
-            [
-                {
-                    "question_id": "ar_3_f9",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_4_f13",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_6_f21",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_7_f25",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_8_f29",
-                    "answer": "a"
-                },
-
-                {
-                    "question_id": "vv_2_f7",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_5_f19",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_7_f27",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_10_f39",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_11_f43",
-                    "answer": "a"
-                },
-
-
-                {
-                    "question_id": "si_1_f2",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_4_f14",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_7_f26",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_10_f38",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_11_f42",
-                    "answer": "a"
-                },
-
-                {
-                    "question_id": "sg_1_f4",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_2_f8",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_4_f16",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_10_f40",
-                    "answer": "a"
-                }
-            ],
-            "list_k":
-            [
-                {
-                    "question_id": 'org1_f1',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'org2_f2',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'org3_f3',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ela1_f4',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ela2_f5',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ela3_f6',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'krp1_f7',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'krp2_f8',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'krp3_f9',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'wie1_f10',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'wie2_f11',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'wie3_f12',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zp1_f13',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zp2_f14',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zp3_f15',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'kon1_f16',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'kon2_f17',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'kon3_f18',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'reg1_f19',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'reg2_f20',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'reg3_f21',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'auf1_f22',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'auf2_f23',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'auf3_f24',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ans1_f25',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ans2_f26',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ans3_f27',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zei1_f28',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zei2_f29',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zei3_f30',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lms1_f31',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lms2_f32',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lms3_f33',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lit1_f34',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lit2_f35',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lit3_f36',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lu1_f37',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lu2_f38',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lu3_f39',
-                    "answer": 1
-                }
-            ]
-        },
+        False,
         4,
         ['error'],
         400,
+        False,
+        True,
+        False,
+        False,
+        False,
         False
     ),
     # Wrong ID for question
     (
-        {
-            "ils":
-            [
-                {
-                    "question_id": "ARF1",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ARF2",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ARF3",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ARF4",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ARF5",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ARF6",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ARF7",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ARF8",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ARF9",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ARF10",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ARF11",
-                    "answer": "a"
-                },
-
-                {
-                    "question_id": "VV1",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "VV2",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "VV3",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "VV4",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "VV5",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "VV6",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "VV7",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "VV8",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "VV9",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "VV10",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "VV11",
-                    "answer": "a"
-                },
-
-                {
-                    "question_id": "SI1",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "SI2",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "SI3",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "SI4",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "SI5",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "SI6",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "SI7",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "SI8",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "SI9",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "SI10",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "SI11",
-                    "answer": "a"
-                },
-
-                {
-                    "question_id": "GS1",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "GS2",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "GS3",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "GS4",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "GS5",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "GS6",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "GS7",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "GS8",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "GS9",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "GS10",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "GS11",
-                    "answer": "a"
-                }
-            ],
-            "list_k":
-            [
-                {
-                    "question_id": 'org1_f1',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'org2_f2',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'org3_f3',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ela1_f4',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ela2_f5',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ela3_f6',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'krp1_f7',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'krp2_f8',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'krp3_f9',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'wie1_f10',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'wie2_f11',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'wie3_f12',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zp1_f13',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zp2_f14',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zp3_f15',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'kon1_f16',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'kon2_f17',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'kon3_f18',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'reg1_f19',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'reg2_f20',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'reg3_f21',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'auf1_f22',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'auf2_f23',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'auf3_f24',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ans1_f25',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ans2_f26',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ans3_f27',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zei1_f28',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zei2_f29',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zei3_f30',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lms1_f31',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lms2_f32',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lms3_f33',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lit1_f34',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lit2_f35',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lit3_f36',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lu1_f37',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lu2_f38',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lu3_f39',
-                    "answer": 1
-                }
-            ]
-        },
+        True,
         4,
         ['error'],
         400,
+        False,
+        False,
+        True,
+        False,
+        False,
         False
     ),
-    # Wrong number as parameter
+    # Wrong answer type for ILS
     (
-        {
-            "ils":
-            [
-                {
-                    "question_id": "ar_1_f1",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_2_f5",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_3_f9",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_4_f13",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_5_f17",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_6_f21",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_7_f25",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_8_f29",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_9_f33",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_10_f37",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_11_f41",
-                    "answer": "a"
-                },
-
-                {
-                    "question_id": "vv_1_f3",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_2_f7",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_3_f11",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_4_f15",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_5_f19",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_6_f23",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_7_f27",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_8_f31",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_9_f35",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_10_f39",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_11_f43",
-                    "answer": "a"
-                },
-
-                {
-                    "question_id": "si_1_f2",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_2_f6",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_3_f10",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_4_f14",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_5_f18",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_6_f22",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_7_f26",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_8_f30",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_9_f34",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_10_f38",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_11_f42",
-                    "answer": "a"
-                },
-
-                {
-                    "question_id": "sg_1_f4",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_2_f8",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_3_f12",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_4_f16",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_5_f20",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_6_f24",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_7_f28",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_8_f32",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_9_f36",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_10_f40",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_11_f44",
-                    "answer": "a"
-                }
-            ],
-            "list_k":
-            [
-                {
-                    "question_id": 'org1_f1',
-                    "answer": 7
-                },
-                {
-                    "question_id": 'org2_f2',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'org3_f3',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ela1_f4',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ela2_f5',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ela3_f6',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'krp1_f7',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'krp2_f8',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'krp3_f9',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'wie1_f10',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'wie2_f11',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'wie3_f12',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zp1_f13',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zp2_f14',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zp3_f15',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'kon1_f16',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'kon2_f17',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'kon3_f18',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'reg1_f19',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'reg2_f20',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'reg3_f21',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'auf1_f22',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'auf2_f23',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'auf3_f24',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ans1_f25',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ans2_f26',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ans3_f27',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zei1_f28',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zei2_f29',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zei3_f30',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lms1_f31',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lms2_f32',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lms3_f33',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lit1_f34',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lit2_f35',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lit3_f36',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lu1_f37',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lu2_f38',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lu3_f39',
-                    "answer": 1
-                }
-            ]
-        },
+        True,
         4,
         ['error'],
         400,
+        False,
+        False,
+        False,
+        True,
+        False,
         False
     ),
-    # Wrong answer type
+    # Wrong answer type LIST-K
     (
-        {
-            "ils":
-            [
-                {
-                    "question_id": "ar_1_f1",
-                    "answer": "c"
-                },
-                {
-                    "question_id": "ar_2_f5",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_3_f9",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_4_f13",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_5_f17",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_6_f21",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_7_f25",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_8_f29",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_9_f33",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_10_f37",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_11_f41",
-                    "answer": "a"
-                },
-
-                {
-                    "question_id": "vv_1_f3",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_2_f7",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_3_f11",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_4_f15",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_5_f19",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_6_f23",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_7_f27",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_8_f31",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_9_f35",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_10_f39",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_11_f43",
-                    "answer": "a"
-                },
-
-                {
-                    "question_id": "si_1_f2",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_2_f6",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_3_f10",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_4_f14",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_5_f18",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_6_f22",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_7_f26",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_8_f30",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_9_f34",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_10_f38",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_11_f42",
-                    "answer": "a"
-                },
-
-                {
-                    "question_id": "sg_1_f4",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_2_f8",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_3_f12",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_4_f16",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_5_f20",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_6_f24",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_7_f28",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_8_f32",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_9_f36",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_10_f40",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_11_f44",
-                    "answer": "a"
-                }
-            ],
-            "list_k":
-            [
-                {
-                    "question_id": 'org1_f1',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'org2_f2',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'org3_f3',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ela1_f4',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ela2_f5',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ela3_f6',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'krp1_f7',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'krp2_f8',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'krp3_f9',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'wie1_f10',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'wie2_f11',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'wie3_f12',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zp1_f13',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zp2_f14',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zp3_f15',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'kon1_f16',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'kon2_f17',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'kon3_f18',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'reg1_f19',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'reg2_f20',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'reg3_f21',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'auf1_f22',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'auf2_f23',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'auf3_f24',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ans1_f25',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ans2_f26',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ans3_f27',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zei1_f28',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zei2_f29',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zei3_f30',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lms1_f31',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lms2_f32',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lms3_f33',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lit1_f34',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lit2_f35',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lit3_f36',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lu1_f37',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lu2_f38',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lu3_f39',
-                    "answer": 1
-                }
-            ]
-        },
+        True,
         4,
         ['error'],
         400,
+        False,
+        False,
+        False,
+        False,
+        True,
         False
     ),
-
-
+    # Wrong question ID for LIST-K
+    (
+        True,
+        4,
+        ['error'],
+        400,
+        False,
+        False,
+        False,
+        False,
+        False,
+        True
+    )
 ])
 def test_post_questionnaire(
     client,
-    input,
+    ils_long,
     moodle_user_id,
     keys_expected,
     status_code_expected,
-    save_id
+    save_id,
+    error_id_missing,
+    error_key_wrong,
+    error_answer_ils,
+    error_answer_list_k,
+    error_list_k_id
 ):
     global student_id
+    json_input = {}
+    ils = []
+    if ils_long:
+        for id in ils_complete:
+            temp = {}
+            if error_key_wrong:
+                temp['question_id'] = wrong_test_id
+            else:
+                temp['question_id'] = id
+            if error_answer_ils:
+                temp['answer'] = "c"
+            else:
+                temp['answer'] = "a"
+            ils.append(temp)
+        json_input['ils'] = ils
+    elif error_id_missing:
+        json_input['ils'] = ils
+    else:
+        for id in ils_short:
+            temp = {}
+            if error_key_wrong:
+                temp['question_id'] = wrong_test_id
+            else:
+                temp['question_id'] = id
+            if error_answer_ils:
+                temp['answer'] = "c"
+            else:
+                temp['answer'] = "a"
+            ils.append(temp)
+        json_input['ils'] = ils
+    list_k = []
+    for id in list_k_ids:
+        temp = {}
+        if error_list_k_id:
+            temp['question_id'] = wrong_test_id
+        else:
+            temp['question_id'] = id
+        if error_answer_list_k:
+            temp['answer'] = 7
+        else:
+            temp['answer'] = 1
+        list_k.append(temp)
+    json_input['list_k'] = list_k
+
     url = path_lms_student + "/" + str(student_id) + \
         "/" + str(moodle_user_id) + path_questionnaire
-    r = client.post(url, json=input)
+    r = client.post(url, json=json_input)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
     for key in keys_expected:

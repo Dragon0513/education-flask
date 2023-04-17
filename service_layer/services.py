@@ -1602,7 +1602,7 @@ def get_learning_elements_for_course_id(
                 topic['topic_id']
             )
             for le in les:
-                test = get_learning_element_by_id(
+                le_by_id = get_learning_element_by_id(
                     uow,
                     user_id,
                     lms_user_id,
@@ -1611,14 +1611,14 @@ def get_learning_elements_for_course_id(
                     le['topic_id'],
                     le['learning_element_id']
                 )
-                test2 = uow.student_learning_element\
+                student_le = uow.student_learning_element\
                     .get_student_learning_element(
                         student_id,
                         le['learning_element_id']
                     )
-                test['student_learning_element'] =\
-                    test2[0].serialize()
-                learning_elements.append(test)
+                le_by_id['student_learning_element'] =\
+                    student_le[0].serialize()
+                learning_elements.append(le_by_id)
         result['learning_elements'] = learning_elements
         return result
 
@@ -1644,7 +1644,7 @@ def get_learning_elements_for_course_and_topic_id(
             uow,
             topic_id
         )
-        test = []
+        les = []
         for le in learning_elements:
             learning_element = get_learning_element_by_id(
                 uow,
@@ -1661,9 +1661,9 @@ def get_learning_elements_for_course_and_topic_id(
             learning_element['student_learning_element'] =\
                 student_learning_element[0].serialize(
             )
-            test.append(learning_element)
+            les.append(learning_element)
         result = {}
-        result['learning_elements'] = test
+        result['learning_elements'] = les
         return result
 
 
@@ -1869,22 +1869,24 @@ def get_topic_by_id(
         if topic == []:
             result = {}
         else:
-            test = uow.student_topic.get_student_topic(
+            student_topic = uow.student_topic.get_student_topic(
                 student_id,
                 topic_id
             )
-            if test == []:
+            if student_topic == []:
                 topic[0].student_topic = None
             else:
-                test2 = uow.student_topic_visit.get_student_topic_visit(
-                    student_id,
-                    topic_id
-                )
-                if test2 == []:
-                    test[0].visits = None
+                student_topic_visit = uow.student_topic_visit\
+                    .get_student_topic_visit(
+                        student_id,
+                        topic_id
+                    )
+                if student_topic_visit == []:
+                    student_topic[0].visits = None
                 else:
-                    test[0].visits = test2[0].serialize()
-                topic[0].student_topic = test[0].serialize()
+                    student_topic[0].visits = \
+                        student_topic_visit[0].serialize()
+                topic[0].student_topic = student_topic[0].serialize()
             result = topic[0].serialize()
         return result
 

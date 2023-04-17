@@ -971,23 +971,167 @@ class FakeUnitOfWork(unit_of_work.AbstractUnitOfWork):
         pass  # Just needed for working, has no function in test
 
 
-@pytest.mark.parametrize("name, university, lms_user_id, role", [
-    # Working Example
-    (
+# Helper Functions
+def create_student_for_tests(uow):
+    services.create_user(
+        uow=uow,
+        name="Sonja Studentin",
+        university="TH-AB",
+        lms_user_id=1,
+        role="student"
+    )
+
+
+def create_teacher_for_tests(uow):
+    services.create_user(
+        uow=uow,
+        name="Tim Teacher",
+        university="TH-AB",
+        lms_user_id=2,
+        role="teacher"
+    )
+
+
+def create_course_creator_for_tests(uow):
+    services.create_user(
+        uow=uow,
+        name="Claus Creator",
+        university="TH-AB",
+        lms_user_id=3,
+        role="course creator"
+    )
+
+
+def create_admin_for_tests(uow):
+    services.create_user(
+        uow=uow,
+        name="Achim Admin",
+        university="TH-AB",
+        lms_user_id=4,
+        role="admin"
+    )
+
+
+def create_course_for_tests(uow):
+    services.create_course(
+        uow=uow,
+        lms_id=1,
+        name="Test",
+        university="TH-AB",
+        created_by=1,
+        created_at="2023-01-01"
+    )
+
+
+def create_topic_for_tests(uow):
+    services.create_topic(
+        uow=uow,
+        course_id=1,
+        lms_id=1,
+        is_topic=True,
+        contains_le=False,
+        parent_id=None,
+        name="Test Topic",
+        university="TH-AB",
+        created_at="2023-01-01",
+        created_by="Test"
+    )
+
+
+def create_sub_topic_for_tests(uow):
+    services.create_topic(
+        uow=uow,
+        course_id=1,
+        lms_id=2,
+        is_topic=False,
+        contains_le=True,
+        parent_id=1,
+        name="Test Sub-Topic",
+        university="TH-AB",
+        created_at="2023-01-01",
+        created_by="Test"
+    )
+
+
+def create_learning_element_for_tests(uow):
+    services.create_learning_element(
+        uow=uow,
+        topic_id=1,
+        lms_id=1,
+        activity_type="quiz",
+        classification="RQ",
+        name="Test LE",
+        created_at="2017-01-01",
+        created_by="Max Mustermann",
+        university="TH-AB"
+    )
+
+
+def create_course_topic_for_tests(uow):
+    services.create_course_topic(
+        uow=uow,
+        course_id=1,
+        topic_id=1
+    )
+
+
+def create_topic_learning_element_for_tests(uow):
+    services.create_topic_learning_element(
+        uow=uow,
+        topic_id=1,
+        learning_element_id=1
+    )
+
+
+def create_learning_path_for_tests(uow):
+    services.create_learning_path(
+        uow=uow,
+        user_id=1,
+        lms_user_id=1,
+        student_id=1,
+        course_id=1,
+        topic_id=1,
+        algorithm="Graf"
+    )
+
+
+def add_student_to_course_for_tests(uow):
+    services.add_student_to_course(
+        uow=uow,
+        student_id=1,
+        course_id=1
+    )
+
+
+def add_student_topic_visit_for_tests(uow):
+    services.add_student_topic_visit(
+        uow=uow,
+        student_id=1,
+        topic_id=1,
+        visit_start="2023-01-01",
+        previous_topic_id=None
+    )
+
+
+def add_student_sub_topic_visit_for_tests(uow):
+    services.add_student_topic_visit(
+        uow=uow,
+        student_id=1,
+        topic_id=2,
+        visit_start="2023-01-01",
+        previous_topic_id=1
+    )
+
+
+# Starting with Tests
+def test_create_admin():
+    uow = FakeUnitOfWork()
+    entries_beginning = len(uow.admin.admin)
+    user = UA.User(
         "Max Mustermann",
         "TH-AB",
         1,
         "admin"
-    )
-])
-def test_create_admin(name, university, lms_user_id, role):
-    uow = FakeUnitOfWork()
-    entries_beginning = len(uow.admin.admin)
-    user = UA.User(
-        name,
-        university,
-        lms_user_id,
-        role
     )
     result = services.create_admin(
         uow=uow,
@@ -999,23 +1143,14 @@ def test_create_admin(name, university, lms_user_id, role):
     assert entries_beginning + 1 == entries_after
 
 
-@pytest.mark.parametrize("name, university, lms_user_id, role", [
-    # Working Example
-    (
+def test_create_course_creator():
+    uow = FakeUnitOfWork()
+    entries_beginning = len(uow.course_creator.course_creator)
+    user = UA.User(
         "Max Mustermann",
         "TH-AB",
         1,
         "course creator"
-    )
-])
-def test_create_course_creator(name, university, lms_user_id, role):
-    uow = FakeUnitOfWork()
-    entries_beginning = len(uow.course_creator.course_creator)
-    user = UA.User(
-        name,
-        university,
-        lms_user_id,
-        role
     )
     result = services.create_course_creator(
         uow=uow,
@@ -1027,18 +1162,12 @@ def test_create_course_creator(name, university, lms_user_id, role):
     assert entries_beginning + 1 == entries_after
 
 
-@pytest.mark.parametrize("user_id", [
-    # Working Example
-    (
-        1
-    )
-])
-def test_create_settings(user_id):
+def test_create_settings():
     uow = FakeUnitOfWork()
     entries_beginning = len(uow.settings.settings)
     result = services.create_settings(
         uow=uow,
-        user_id=user_id
+        user_id=1
     )
     assert type(result) is dict
     assert result != {}
@@ -1046,26 +1175,17 @@ def test_create_settings(user_id):
     assert entries_beginning + 1 == entries_after
 
 
-@pytest.mark.parametrize("name, university, lms_user_id, role", [
-    # Working Example
-    (
-        "Max Mustermann",
-        "TH-AB",
-        1,
-        "student"
-    )
-])
-def test_create_student(name, university, lms_user_id, role):
+def test_create_student():
     uow = FakeUnitOfWork()
     student_entries_beginning = len(uow.student.student)
     characteristic_entries_beginning = len(
         uow.learning_characteristics.learning_characteristics)
     style_entries_beginning = len(uow.learning_style.learning_style)
     user = UA.User(
-        name,
-        university,
-        lms_user_id,
-        role
+        "Max Mustermann",
+        "TH-AB",
+        1,
+        "student"
     )
     result = services.create_student(
         uow=uow,
@@ -1082,23 +1202,14 @@ def test_create_student(name, university, lms_user_id, role):
     assert style_entries_beginning + 1 == style_entries_after
 
 
-@pytest.mark.parametrize("name, university, lms_user_id, role", [
-    # Working Example
-    (
+def test_create_teacher():
+    uow = FakeUnitOfWork()
+    entries_beginning = len(uow.teacher.teacher)
+    user = UA.User(
         "Max Mustermann",
         "TH-AB",
         1,
         "teacher"
-    )
-])
-def test_create_teacher(name, university, lms_user_id, role):
-    uow = FakeUnitOfWork()
-    entries_beginning = len(uow.teacher.teacher)
-    user = UA.User(
-        name,
-        university,
-        lms_user_id,
-        role
     )
     result = services.create_teacher(
         uow=uow,
@@ -1159,16 +1270,7 @@ def test_create_user(name, university, lms_user_id, role):
     assert settings_entries_beginning + 1 == settings_entries_after
 
 
-@pytest.mark.parametrize("name, university, lms_user_id, role", [
-    # Working Example
-    (
-        "Max Mustermann",
-        "TH-AB",
-        1,
-        "student"
-    )
-])
-def test_create_learning_characteristics(name, university, lms_user_id, role):
+def test_create_learning_characteristics():
     uow = FakeUnitOfWork()
     entries_beginning = len(
         uow.learning_characteristics.learning_characteristics)
@@ -1182,16 +1284,7 @@ def test_create_learning_characteristics(name, university, lms_user_id, role):
     assert entries_beginning + 1 == entries_after
 
 
-@pytest.mark.parametrize("name, university, lms_user_id, role", [
-    # Working Example
-    (
-        "Max Mustermann",
-        "TH-AB",
-        1,
-        "student"
-    )
-])
-def test_create_learning_style(name, university, lms_user_id, role):
+def test_create_learning_style():
     uow = FakeUnitOfWork()
     entries_beginning = len(uow.learning_style.learning_style)
     result = services.create_learning_style(
@@ -1204,16 +1297,7 @@ def test_create_learning_style(name, university, lms_user_id, role):
     assert entries_beginning + 1 == entries_after
 
 
-@pytest.mark.parametrize("name, university, lms_user_id, role", [
-    # Working Example
-    (
-        "Max Mustermann",
-        "TH-AB",
-        1,
-        "student"
-    )
-])
-def test_create_learning_strategy(name, university, lms_user_id, role):
+def test_create_learning_strategy():
     uow = FakeUnitOfWork()
     entries_beginning = len(uow.learning_strategy.learning_strategy)
     result = services.create_learning_strategy(
@@ -1226,16 +1310,7 @@ def test_create_learning_strategy(name, university, lms_user_id, role):
     assert entries_beginning + 1 == entries_after
 
 
-@pytest.mark.parametrize("name, university, lms_user_id, role", [
-    # Working Example
-    (
-        "Max Mustermann",
-        "TH-AB",
-        1,
-        "student"
-    )
-])
-def test_create_knowledge(name, university, lms_user_id, role):
+def test_create_knowledge():
     uow = FakeUnitOfWork()
     entries_beginning = len(uow.knowledge.knowledge)
     result = services.create_knowledge(
@@ -1248,16 +1323,7 @@ def test_create_knowledge(name, university, lms_user_id, role):
     assert entries_beginning + 1 == entries_after
 
 
-@pytest.mark.parametrize("name, university, lms_user_id, role", [
-    # Working Example
-    (
-        "Max Mustermann",
-        "TH-AB",
-        1,
-        "student"
-    )
-])
-def test_create_learning_analytics(name, university, lms_user_id, role):
+def test_create_learning_analytics():
     uow = FakeUnitOfWork()
     entries_beginning = len(uow.learning_analytics.learning_analytics)
     result = services.create_learning_analytics(
@@ -1270,169 +1336,91 @@ def test_create_learning_analytics(name, university, lms_user_id, role):
     assert entries_beginning + 1 == entries_after
 
 
-@pytest.mark.parametrize("name, university, lms_user_id, role", [
-    # Working Example
-    (
-        "Max Mustermann",
-        "TH-AB",
-        1,
-        "admin"
-    )
-])
-def test_delete_admin(name, university, lms_user_id, role):
+def test_delete_admin():
     uow = FakeUnitOfWork()
-    user = UA.User(
-        name,
-        university,
-        lms_user_id,
-        role
-    )
-    admin = services.create_admin(
-        uow=uow,
-        user=user
-    )
+    create_admin_for_tests(uow)
     entries_beginning = len(uow.admin.admin)
-    result = services.delete_admin(uow, admin['user_id'])
+    result = services.delete_admin(uow, 1)
     assert type(result) is dict
     assert result == {}
     entries_after = len(uow.admin.admin)
     assert entries_beginning - 1 == entries_after
 
 
-@pytest.mark.parametrize("name, university, lms_user_id, role", [
-    # Working Example
-    (
-        "Max Mustermann",
-        "TH-AB",
-        1,
-        "course creator"
-    )
-])
-def test_delete_course_creator(name, university, lms_user_id, role):
+def test_delete_course_creator():
     uow = FakeUnitOfWork()
-    user = UA.User(
-        name,
-        university,
-        lms_user_id,
-        role
-    )
-    course_creator = services.create_course_creator(
-        uow=uow,
-        user=user
-    )
+    create_course_creator_for_tests(uow)
     entries_beginning = len(uow.course_creator.course_creator)
-    result = services.delete_course_creator(uow, course_creator['user_id'])
+    result = services.delete_course_creator(uow, 1)
     assert type(result) is dict
     assert result == {}
     entries_after = len(uow.course_creator.course_creator)
     assert entries_beginning - 1 == entries_after
 
 
-@pytest.mark.parametrize("name, university, lms_user_id, role", [
-    # Working Example
-    (
-        "Max Mustermann",
-        "TH-AB",
-        1,
-        "student"
-    )
-])
-def test_delete_student(name, university, lms_user_id, role):
+def test_delete_student():
     uow = FakeUnitOfWork()
-    user = UA.User(
-        name,
-        university,
-        lms_user_id,
-        role
-    )
-    student = services.create_student(
-        uow=uow,
-        user=user
-    )
+    create_student_for_tests(uow)
     entries_beginning = len(uow.student.student)
-    result = services.delete_student(uow, student['user_id'])
+    result = services.delete_student(uow, 1)
     assert type(result) is dict
     assert result == {}
     entries_after = len(uow.student.student)
     assert entries_beginning - 1 == entries_after
 
 
-@pytest.mark.parametrize("name, university, lms_user_id, role", [
-    # Working Example
-    (
-        "Max Mustermann",
-        "TH-AB",
-        1,
-        "teacher"
-    )
-])
-def test_delete_teacher(name, university, lms_user_id, role):
+def test_delete_teacher():
     uow = FakeUnitOfWork()
-    user = UA.User(
-        name,
-        university,
-        lms_user_id,
-        role
-    )
-    teacher = services.create_teacher(
-        uow=uow,
-        user=user
-    )
+    create_teacher_for_tests(uow)
     entries_beginning = len(uow.teacher.teacher)
-    result = services.delete_teacher(uow, teacher['user_id'])
+    result = services.delete_teacher(uow, 1)
     assert type(result) is dict
     assert result == {}
     entries_after = len(uow.teacher.teacher)
     assert entries_beginning - 1 == entries_after
 
 
-@pytest.mark.parametrize("name, university, lms_user_id, role", [
+@pytest.mark.parametrize("role, lms_id", [
     # Working Example Admin
     (
-        "Max Mustermann",
-        "TH-AB",
-        1,
-        "admin"
+        "admin",
+        4
     ),
     # Working Example Course Creator
     (
-        "Max Mustermann",
-        "TH-AB",
-        1,
-        "course creator"
+        "course creator",
+        3
     ),
     # Working Example Student
     (
-        "Max Mustermann",
-        "TH-AB",
-        1,
-        "student"
+        "student",
+        1
     ),
     # Working Example Teacher
     (
-        "Max Mustermann",
-        "TH-AB",
-        1,
-        "teacher"
+        "teacher",
+        2
     )
 ])
-def test_delete_user(name, university, lms_user_id, role):
+def test_delete_user(role, lms_id):
     uow = FakeUnitOfWork()
-    user = services.create_user(
-        uow=uow,
-        name=name,
-        university=university,
-        lms_user_id=lms_user_id,
-        role=role
-    )
+    match role:
+        case "admin":
+            create_admin_for_tests(uow)
+        case "course creator":
+            create_course_creator_for_tests(uow)
+        case "student":
+            create_student_for_tests(uow)
+        case "teacher":
+            create_teacher_for_tests(uow)
     entries_beginning = len(uow.user.user)
     settings_entries_beginning = len(uow.settings.settings)
     characteristics_entries_beginning = len(
         uow.learning_characteristics.learning_characteristics)
     result = services.delete_user(
         uow=uow,
-        user_id=user['id'],
-        lms_user_id=lms_user_id
+        user_id=1,
+        lms_user_id=lms_id
     )
     assert type(result) is dict
     assert result == {}
@@ -1447,178 +1435,72 @@ def test_delete_user(name, university, lms_user_id, role):
             == characteristics_entries_after
 
 
-@pytest.mark.parametrize("name, university, lms_user_id, role, theme", [
-    # Working Example
-    (
-        "Max Mustermann",
-        "TH-AB",
-        1,
-        "admin",
-        "dark"
-    )
-])
-def test_update_settings(name, university, lms_user_id, role, theme):
+def test_update_settings():
     uow = FakeUnitOfWork()
-    user = services.create_user(
-        uow=uow,
-        name=name,
-        university=university,
-        lms_user_id=lms_user_id,
-        role=role
-    )
+    create_student_for_tests(uow)
     result = services.update_settings_for_user(
         uow=uow,
-        user_id=user['id'],
-        theme=theme
+        user_id=1,
+        theme="dark"
     )
     assert type(result) is dict
     assert result != {}
-    assert result['theme'] == theme
+    assert result['theme'] == "dark"
 
 
-@pytest.mark.parametrize("name, university, lms_user_id, role", [
-    # Working Example
-    (
-        "Max Mustermann",
-        "TH-AB",
-        1,
-        "admin"
-    )
-])
-def test_reset_settings(name, university, lms_user_id, role):
+def test_reset_settings():
     uow = FakeUnitOfWork()
-    user = services.create_user(
-        uow=uow,
-        name=name,
-        university=university,
-        lms_user_id=lms_user_id,
-        role=role
-    )
+    create_student_for_tests(uow)
     services.update_settings_for_user(
         uow=uow,
-        user_id=user['id'],
+        user_id=1,
         theme="dark"
     )
     result = services.reset_settings(
         uow=uow,
-        user_id=user['id']
+        user_id=1
     )
     assert type(result) is dict
     assert result != {}
     assert result['theme'] == "Standard"
 
 
-@pytest.mark.parametrize("name, university, lms_user_id, role", [
-    # Working Example
-    (
-        "Max Mustermann",
-        "TH-AB",
-        1,
-        "admin"
-    )
-])
-def test_get_settings_for_user(name, university, lms_user_id, role):
+def test_get_settings_for_user():
     uow = FakeUnitOfWork()
-    user = services.create_user(
-        uow=uow,
-        name=name,
-        university=university,
-        lms_user_id=lms_user_id,
-        role=role
-    )
-    result = services.get_settings_for_user(uow, user['id'])
+    create_student_for_tests(uow)
+    result = services.get_settings_for_user(uow, 1)
     assert type(result) == dict
     assert result != {}
 
 
-@pytest.mark.parametrize("name, name_new, university, lms_user_id, role", [
-    # Working Example
-    (
-        "Max Mustermann",
-        "Maria Musterfrau",
-        "TH-AB",
-        1,
-        "admin"
-    )
-])
-def test_update_user(name, name_new, university, lms_user_id, role):
+def test_update_user():
     uow = FakeUnitOfWork()
-    user = services.create_user(
-        uow=uow,
-        name=name,
-        university=university,
-        lms_user_id=lms_user_id,
-        role=role
-    )
+    create_student_for_tests(uow)
     result = services.update_user(
-        uow, user['id'], lms_user_id, name_new, university)
+        uow, 1, 1, "Maria Musterfraun", "TH-AB")
     assert type(result) == dict
     assert result != {}
 
 
-@pytest.mark.parametrize("name, university,\
-                         lms_user_id, role, keys_expected", [
-    # Working Example
-    (
-        "Max Mustermann",
-        "TH-AB",
-        1,
-        "student",
-        ['knowledge', 'learning_analytics',\
-         'learning_strategy', 'learning_style']
-    )
-])
-def test_get_learning_characteristics(name,
-                                      university,
-                                      lms_user_id,
-                                      role,
-                                      keys_expected):
+def test_get_learning_characteristics():
     uow = FakeUnitOfWork()
-    services.create_user(
-        uow=uow,
-        name=name,
-        university=university,
-        lms_user_id=lms_user_id,
-        role=role
-    )
+    create_student_for_tests(uow)
     result = services.get_learning_characteristics(
         uow,
         1
     )
     assert type(result) == dict
     assert result != {}
+    keys_expected = ['knowledge', 'learning_analytics',
+                     'learning_strategy', 'learning_style']
     for key in keys_expected:
         assert key in result.keys()
         assert result[key] is not None
 
 
-@pytest.mark.parametrize("name, university, lms_user_id, role", [
-    # Working Example
-    (
-        "Max Mustermann",
-        "TH-AB",
-        1,
-        "student"
-    )
-])
-def test_reset_learning_characteristics(
-    name,
-    university,
-    lms_user_id,
-    role
-):
+def test_reset_learning_characteristics():
     uow = FakeUnitOfWork()
-    services.create_user(
-        uow=uow,
-        name=name,
-        university=university,
-        lms_user_id=lms_user_id,
-        role=role
-    )
-    services.create_learning_characteristics(
-        uow=uow,
-        student_id=1
-    )
+    create_student_for_tests(uow)
     entries_beginning = len(
         uow.learning_characteristics.learning_characteristics)
     result = services.reset_learning_characteristics(
@@ -2978,35 +2860,17 @@ def test_delete_questionnaire(vv_2_f7, vv_5_f19, vv_7_f27, vv_10_f39,
     assert entries_beginning - 1 == entries_after
 
 
-@pytest.mark.parametrize("lms_id, name, university, name_user,\
-                         lms_user_id, role", [
-    # Working Example
-    (
-        1,
-        "Test Course",
-        "TH-AB",
-        "Max Mustermann",
-        1,
-        "course creator"
-    )
-])
-def test_create_course(lms_id, name, university, name_user, lms_user_id, role):
+def test_create_course():
     uow = FakeUnitOfWork()
-    services.create_user(
-        uow=uow,
-        name=name_user,
-        university=university,
-        lms_user_id=lms_user_id,
-        role=role
-    )
+    create_course_creator_for_tests(uow)
     entries_beginning = len(uow.course.course)
     entries_beginning_course_creator_course =\
         len(uow.course_creator_course.course_creator_course)
     result = services.create_course(
         uow=uow,
-        lms_id=lms_id,
-        name=name,
-        university=university,
+        lms_id=1,
+        name="Test Course",
+        university="TH-AB",
         created_by=1,
         created_at="2023-01-01"
     )
@@ -3020,117 +2884,41 @@ def test_create_course(lms_id, name, university, name_user, lms_user_id, role):
         entries_after_course_creator_course
 
 
-@pytest.mark.parametrize("lms_id, name, university, name_user,\
-                         lms_user_id, role", [
-    # Working Example
-    (
-        1,
-        "Test Course",
-        "TH-AB",
-        "Max Mustermann",
-        1,
-        "course creator"
-    )
-])
-def test_get_course_by_id(lms_id, name, university, name_user,
-                          lms_user_id, role):
+def test_get_course_by_id():
     uow = FakeUnitOfWork()
-    services.create_user(
-        uow=uow,
-        name=name_user,
-        university=university,
-        lms_user_id=lms_user_id,
-        role=role
-    )
-    services.create_course(
-        uow=uow,
-        lms_id=lms_id,
-        name=name,
-        university=university,
-        created_by=1,
-        created_at="2023-01-01"
-    )
+    create_course_creator_for_tests(uow)
+    create_course_for_tests(uow)
     result = services.get_course_by_id(
         uow=uow,
         user_id=1,
-        lms_user_id=1,
+        lms_user_id=3,
         course_id=1
     )
     assert type(result) is dict
     assert result != {}
 
 
-@pytest.mark.parametrize("lms_id, name, university, name_user,\
-                         lms_user_id, role", [
-    # Working Example
-    (
-        1,
-        "Test Course",
-        "TH-AB",
-        "Max Mustermann",
-        1,
-        "course creator"
-    )
-])
-def test_update_course(lms_id, name, university, name_user, lms_user_id, role):
+def test_update_course():
     uow = FakeUnitOfWork()
-    services.create_user(
-        uow=uow,
-        name=name_user,
-        university=university,
-        lms_user_id=lms_user_id,
-        role=role
-    )
-    services.create_course(
-        uow=uow,
-        lms_id=lms_id,
-        name=name,
-        university=university,
-        created_by=1,
-        created_at="2023-01-01"
-    )
+    create_course_creator_for_tests(uow)
+    create_course_for_tests(uow)
     entries_beginning = len(uow.course.course)
     result = services.update_course(
         uow=uow,
         course_id=1,
-        lms_id=lms_id,
+        lms_id=1,
         name="Test Course 2",
-        university=university
+        university="TH-AB"
     )
     assert type(result) is dict
     entries_after = len(uow.course.course)
     assert entries_beginning == entries_after
 
 
-@pytest.mark.parametrize("lms_id, name, university, name_user,\
-                         lms_user_id, role", [
-    # Working Example
-    (
-        1,
-        "Test Course",
-        "TH-AB",
-        "Max Mustermann",
-        1,
-        "course creator"
-    )
-])
-def test_delete_course(lms_id, name, university, name_user, lms_user_id, role):
+def test_delete_course():
     uow = FakeUnitOfWork()
-    services.create_user(
-        uow=uow,
-        name=name_user,
-        university=university,
-        lms_user_id=lms_user_id,
-        role=role
-    )
-    services.create_course(
-        uow=uow,
-        lms_id=lms_id,
-        name=name,
-        university=university,
-        created_by=1,
-        created_at="2023-01-01"
-    )
+    create_course_creator_for_tests(uow)
+    create_course_for_tests(uow)
     entries_beginning = len(uow.course.course)
     result = services.delete_course(
         uow=uow,
@@ -3142,19 +2930,13 @@ def test_delete_course(lms_id, name, university, name_user, lms_user_id, role):
     assert entries_beginning - 1 == entries_after
 
 
-@pytest.mark.parametrize("course_id, topic_id", [
-    (
-        1,
-        1
-    )
-])
-def test_create_course_topic(course_id, topic_id):
+def test_create_course_topic():
     uow = FakeUnitOfWork()
     entries_beginning = len(uow.course_topic.course_topic)
     result = services.create_course_topic(
         uow=uow,
-        course_id=course_id,
-        topic_id=topic_id
+        course_id=1,
+        topic_id=1
     )
     assert type(result) is dict
     assert result != {}
@@ -3162,65 +2944,35 @@ def test_create_course_topic(course_id, topic_id):
     assert entries_beginning + 1 == entries_after
 
 
-@pytest.mark.parametrize("course_id, topic_id", [
-    (
-        1,
-        1
-    )
-])
-def test_get_course_topic_by_course(course_id, topic_id):
+def test_get_course_topic_by_course():
     uow = FakeUnitOfWork()
-    services.create_course_topic(
-        uow=uow,
-        course_id=course_id,
-        topic_id=topic_id
-    )
+    create_course_topic_for_tests(uow)
     result = services.get_course_topic_by_course(
         uow=uow,
-        course_id=course_id
+        course_id=1
     )
     assert type(result) is dict
     assert result != {}
 
 
-@pytest.mark.parametrize("course_id, topic_id", [
-    (
-        1,
-        1
-    )
-])
-def test_get_course_topic_by_topic(course_id, topic_id):
+def test_get_course_topic_by_topic():
     uow = FakeUnitOfWork()
-    services.create_course_topic(
-        uow=uow,
-        course_id=course_id,
-        topic_id=topic_id
-    )
+    create_course_topic_for_tests(uow)
     result = services.get_course_topic_by_topic(
         uow=uow,
-        topic_id=topic_id
+        topic_id=1
     )
     assert type(result) is dict
     assert result != {}
 
 
-@pytest.mark.parametrize("course_id, topic_id", [
-    (
-        1,
-        1
-    )
-])
-def test_delete_course_topic_by_course(course_id, topic_id):
+def test_delete_course_topic_by_course():
     uow = FakeUnitOfWork()
-    services.create_course_topic(
-        uow=uow,
-        course_id=course_id,
-        topic_id=topic_id
-    )
+    create_course_topic_for_tests(uow)
     entries_beginning = len(uow.course_topic.course_topic)
     result = services.delete_course_topic_by_course(
         uow=uow,
-        course_id=course_id
+        course_id=1
     )
     assert type(result) is dict
     assert result == {}
@@ -3228,23 +2980,13 @@ def test_delete_course_topic_by_course(course_id, topic_id):
     assert entries_beginning - 1 == entries_after
 
 
-@pytest.mark.parametrize("course_id, topic_id", [
-    (
-        1,
-        1
-    )
-])
-def test_delete_course_topic_by_topic(course_id, topic_id):
+def test_delete_course_topic_by_topic():
     uow = FakeUnitOfWork()
-    services.create_course_topic(
-        uow=uow,
-        course_id=course_id,
-        topic_id=topic_id
-    )
+    create_course_topic_for_tests(uow)
     entries_beginning = len(uow.course_topic.course_topic)
     result = services.delete_course_topic_by_topic(
         uow=uow,
-        topic_id=topic_id
+        topic_id=1
     )
     assert type(result) is dict
     assert result == {}
@@ -3302,71 +3044,12 @@ def test_create_topic(lms_id, is_topic, parent_id, contains_le,
     assert len(uow.course_topic.course_topic) == 1
 
 
-@pytest.mark.parametrize("name_user, lms_user_id, role,\
-                         lms_id, is_topic, parent_id, contains_le,\
-                         name, university, created_by,\
-                         created_at", [
-    # Working Example Topic
-    (
-        "Maria Musterfrau",
-        1,
-        "course creator",
-        1,
-        True,
-        None,
-        False,
-        "Test Topic",
-        "TH-AB",
-        "Maria Musterfrau",
-        time.time()
-    ),
-    # Working Example Sub-Topic
-    (
-        "Maria Musterfrau",
-        1,
-        "course creator",
-        2,
-        False,
-        1,
-        True,
-        "Test Sub-Topic",
-        "TH-AB",
-        "Maria Musterfrau",
-        time.time()
-    ),
-])
-def test_get_topic_by_id(name_user, lms_user_id, role,
-                         lms_id, is_topic, parent_id, contains_le,
-                         name, university, created_by,
-                         created_at):
+def test_get_topic_by_id():
     uow = FakeUnitOfWork()
-    services.create_user(
-        uow=uow,
-        name=name_user,
-        university=university,
-        lms_user_id=lms_user_id,
-        role=role
-    )
-    services.create_course(
-        uow=uow,
-        lms_id=lms_id,
-        name=name,
-        university=university,
-        created_by=1,
-        created_at="2023-01-01"
-    )
-    services.create_topic(
-        uow=uow,
-        course_id=1,
-        lms_id=lms_id,
-        is_topic=is_topic,
-        parent_id=parent_id,
-        contains_le=contains_le,
-        name=name,
-        university=university,
-        created_at=created_at,
-        created_by=created_by
-    )
+    create_course_creator_for_tests(uow)
+    create_course_for_tests(uow)
+    create_topic_for_tests(uow)
+    create_sub_topic_for_tests(uow)
     result = services.get_topic_by_id(
         uow=uow,
         user_id=1,
@@ -3377,64 +3060,35 @@ def test_get_topic_by_id(name_user, lms_user_id, role,
     )
     assert type(result) is dict
     assert result != {}
-
-
-@pytest.mark.parametrize("lms_id, is_topic, parent_id, contains_le,\
-                         name, university, created_by,\
-                         created_at, last_updated", [
-    # Working Example Topic
-    (
-        1,
-        True,
-        None,
-        False,
-        "Test Topic",
-        "TH-AB",
-        "Maria Musterfrau",
-        time.time(),
-        time.time()
-    ),
-    # Working Example Sub-Topic
-    (
-        2,
-        False,
-        1,
-        True,
-        "Test Sub-Topic",
-        "TH-AB",
-        "Maria Musterfrau",
-        time.time(),
-        time.time()
-    ),
-])
-def test_update_topic(lms_id, is_topic, parent_id, contains_le,
-                      name, university, created_by, created_at,
-                      last_updated):
-    uow = FakeUnitOfWork()
-    services.create_topic(
+    result2 = services.get_topic_by_id(
         uow=uow,
+        user_id=1,
+        lms_user_id=1,
         course_id=1,
-        lms_id=lms_id,
-        is_topic=is_topic,
-        parent_id=parent_id,
-        contains_le=contains_le,
-        name=name,
-        university=university,
-        created_at=created_at,
-        created_by=created_by
+        student_id=1,
+        topic_id=2
     )
+    assert type(result2) is dict
+    assert result2 != {}
+
+
+def test_update_topic():
+    uow = FakeUnitOfWork()
+    create_topic_for_tests(uow)
+    create_sub_topic_for_tests(uow)
     entries_beginning = len(uow.topic.topic)
+    last_updated = time.time()
     result = services.update_topic(
         uow=uow,
         topic_id=1,
-        lms_id=lms_id,
-        is_topic=is_topic,
-        parent_id=parent_id,
-        contains_le=contains_le,
-        name=name,
-        university=university,
-        created_at=created_at,
-        created_by=created_by,
+        lms_id=1,
+        is_topic=True,
+        parent_id=None,
+        contains_le=False,
+        name="Test Topic Updated",
+        university="TH-AB",
+        created_at=last_updated,
+        created_by=1,
         last_updated=last_updated
     )
     assert type(result) is dict
@@ -3442,98 +3096,59 @@ def test_update_topic(lms_id, is_topic, parent_id, contains_le,
     entries_after = len(uow.topic.topic)
     assert entries_beginning == entries_after
     assert result['last_updated'] == last_updated
-
-
-@pytest.mark.parametrize("lms_id, is_topic, parent_id, contains_le,\
-                         name, university, created_by,\
-                         created_at, name_course, name_user,\
-                         lms_user_id, role", [
-    # Working Example Topic
-    (
-        1,
-        True,
-        None,
-        False,
-        "Test Topic",
-        "TH-AB",
-        "Maria Musterfrau",
-        time.time(),
-        "Test Course",
-        "Maria Musterfrau",
-        1,
-        "course creator"
-    ),
-    # Working Example Sub-Topic
-    (
-        2,
-        False,
-        1,
-        True,
-        "Test Sub-Topic",
-        "TH-AB",
-        "Maria Musterfrau",
-        time.time(),
-        "Test Course",
-        "Maria Musterfrau",
-        1,
-        "course creator"
-    ),
-])
-def test_delete_topic(lms_id, is_topic, parent_id, contains_le,
-                      name, university, created_by, created_at,
-                      name_course, name_user, lms_user_id, role):
-    uow = FakeUnitOfWork()
-    services.create_user(
+    last_updated2 = time.time()
+    result2 = services.update_topic(
         uow=uow,
-        name=name_user,
-        university=university,
-        lms_user_id=lms_user_id,
-        role=role
-    )
-    services.create_course(
-        uow=uow,
-        lms_id=lms_id,
-        name=name_course,
-        university=university,
+        topic_id=2,
+        lms_id=1,
+        is_topic=False,
+        parent_id=1,
+        contains_le=True,
+        name="Test Sub-Topic Updated",
+        university="TH-AB",
+        created_at=last_updated2,
         created_by=1,
-        created_at="2023-01-01"
+        last_updated=last_updated2
     )
-    services.create_topic(
-        uow=uow,
-        course_id=1,
-        lms_id=lms_id,
-        is_topic=is_topic,
-        parent_id=parent_id,
-        contains_le=contains_le,
-        name=name,
-        university=university,
-        created_at=created_at,
-        created_by=created_by
-    )
+    assert type(result2) is dict
+    assert result2 != {}
+    entries_after = len(uow.topic.topic)
+    assert entries_beginning == entries_after
+    assert result2['last_updated'] == last_updated2
+
+
+def test_delete_topic():
+    uow = FakeUnitOfWork()
+    create_course_creator_for_tests(uow)
+    create_course_for_tests(uow)
+    create_topic_for_tests(uow)
+    create_sub_topic_for_tests(uow)
     entries_beginning = len(uow.topic.topic)
     result = services.delete_topic(
         uow=uow,
-        topic_id=1
+        topic_id=2
     )
     entries_after = len(uow.topic.topic)
     assert type(result) == dict
     assert result == {}
     assert entries_beginning - 1 == entries_after
-
-
-@pytest.mark.parametrize("topic_id, learning_element_id", [
-    (
-        1,
-        1
+    result2 = services.delete_topic(
+        uow=uow,
+        topic_id=1
     )
-])
-def test_create_topic_learning_element(topic_id, learning_element_id):
+    entries_after2 = len(uow.topic.topic)
+    assert type(result2) == dict
+    assert result2 == {}
+    assert entries_beginning - 2 == entries_after2
+
+
+def test_create_topic_learning_element():
     uow = FakeUnitOfWork()
     entries_beginning = len(uow.topic_learning_element.topic_learning_element)
     result = services.create_topic_learning_element(
         uow=uow,
-        topic_id=topic_id,
-        learning_element_id=learning_element_id
+        topic_id=1,
+        learning_element_id=1
     )
     assert type(result) is dict
     assert result != {}
@@ -3541,65 +3156,35 @@ def test_create_topic_learning_element(topic_id, learning_element_id):
     assert entries_beginning + 1 == entries_after
 
 
-@pytest.mark.parametrize("topic_id, learning_element_id", [
-    (
-        1,
-        1
-    )
-])
-def test_get_topic_learning_element_by_topic(topic_id, learning_element_id):
+def test_get_topic_learning_element_by_topic():
     uow = FakeUnitOfWork()
-    services.create_topic_learning_element(
-        uow=uow,
-        topic_id=topic_id,
-        learning_element_id=learning_element_id
-    )
+    create_topic_learning_element_for_tests(uow)
     result = services.get_topic_learning_element_by_topic(
         uow=uow,
-        topic_id=topic_id
+        topic_id=1
     )
     assert type(result) is dict
     assert result != {}
 
 
-@pytest.mark.parametrize("topic_id, learning_element_id", [
-    (
-        1,
-        1
-    )
-])
-def test_get_topic_learning_element_by_le(topic_id, learning_element_id):
+def test_get_topic_learning_element_by_le():
     uow = FakeUnitOfWork()
-    services.create_topic_learning_element(
-        uow=uow,
-        topic_id=topic_id,
-        learning_element_id=learning_element_id
-    )
+    create_topic_learning_element_for_tests(uow)
     result = services.get_topic_learning_element_by_learning_element(
         uow=uow,
-        learning_element_id=learning_element_id
+        learning_element_id=1
     )
     assert type(result) is dict
     assert result != {}
 
 
-@pytest.mark.parametrize("topic_id, learning_element_id", [
-    (
-        1,
-        1
-    )
-])
-def test_delete_topic_learning_element_by_topic(topic_id, learning_element_id):
+def test_delete_topic_learning_element_by_topic():
     uow = FakeUnitOfWork()
-    services.create_topic_learning_element(
-        uow=uow,
-        topic_id=topic_id,
-        learning_element_id=learning_element_id
-    )
+    create_topic_learning_element_for_tests(uow)
     entries_beginning = len(uow.topic_learning_element.topic_learning_element)
     result = services.delete_topic_learning_element_by_topic(
         uow=uow,
-        topic_id=topic_id
+        topic_id=1
     )
     assert type(result) is dict
     assert result == {}
@@ -3607,23 +3192,13 @@ def test_delete_topic_learning_element_by_topic(topic_id, learning_element_id):
     assert entries_beginning - 1 == entries_after
 
 
-@pytest.mark.parametrize("topic_id, learning_element_id", [
-    (
-        1,
-        1
-    )
-])
-def test_delete_topic_learning_element_by_le(topic_id, learning_element_id):
+def test_delete_topic_learning_element_by_le():
     uow = FakeUnitOfWork()
-    services.create_topic_learning_element(
-        uow=uow,
-        topic_id=topic_id,
-        learning_element_id=learning_element_id
-    )
+    create_topic_learning_element_for_tests(uow)
     entries_beginning = len(uow.topic_learning_element.topic_learning_element)
     result = services.delete_topic_learning_element_by_learning_element(
         uow=uow,
-        learning_element_id=learning_element_id
+        learning_element_id=1
     )
     assert type(result) is dict
     assert result == {}
@@ -3631,33 +3206,19 @@ def test_delete_topic_learning_element_by_le(topic_id, learning_element_id):
     assert entries_beginning - 1 == entries_after
 
 
-@pytest.mark.parametrize("lms_id, activity_type, classification, name,\
-                         created_at, created_by, university", [
-    # Working Example
-    (
-        1,
-        "quiz",
-        "RQ",
-        "Test Quiz",
-        "Max Mustermann",
-        time.time(),
-        "TH-AB"
-    )
-])
-def test_create_learning_element(lms_id, activity_type, classification, name,
-                                 created_at, created_by, university):
+def test_create_learning_element():
     uow = FakeUnitOfWork()
     entries_beginning = len(uow.learning_element.learning_element)
     result = services.create_learning_element(
         uow=uow,
         topic_id=1,
-        lms_id=lms_id,
-        activity_type=activity_type,
-        classification=classification,
-        name=name,
-        created_at=created_at,
-        created_by=created_by,
-        university=university
+        lms_id=1,
+        activity_type="quiz",
+        classification="RQ",
+        name="Test Quiz",
+        created_at=time.time(),
+        created_by="Max Mustermann",
+        university="TH-AB"
     )
     assert type(result) is dict
     assert result != {}
@@ -3666,33 +3227,9 @@ def test_create_learning_element(lms_id, activity_type, classification, name,
     assert len(uow.topic_learning_element.topic_learning_element) == 1
 
 
-@pytest.mark.parametrize("lms_id, activity_type, classification, name,\
-                         created_at, created_by, university", [
-    # Working Example
-    (
-        1,
-        "quiz",
-        "RQ",
-        "Test Quiz",
-        "Max Mustermann",
-        time.time(),
-        "TH-AB"
-    )
-])
-def test_get_learning_element_by_id(lms_id, activity_type, classification,
-                                    name, created_at, created_by, university):
+def test_get_learning_element_by_id():
     uow = FakeUnitOfWork()
-    services.create_learning_element(
-        uow=uow,
-        topic_id=1,
-        lms_id=lms_id,
-        activity_type=activity_type,
-        classification=classification,
-        name=name,
-        created_at=created_at,
-        created_by=created_by,
-        university=university
-    )
+    create_learning_element_for_tests(uow)
     result = services.get_learning_element_by_id(
         uow=uow,
         user_id=1,
@@ -3706,47 +3243,22 @@ def test_get_learning_element_by_id(lms_id, activity_type, classification,
     assert result != {}
 
 
-@pytest.mark.parametrize("lms_id, activity_type, classification, name,\
-                         created_at, created_by, last_updated, university", [
-    # Working Example
-    (
-        1,
-        "quiz",
-        "RQ",
-        "Test Quiz",
-        "Max Mustermann",
-        time.time(),
-        time.time(),
-        "TH-AB"
-    )
-])
-def test_update_learning_element(lms_id, activity_type, classification,
-                                 name, created_at, created_by, last_updated,
-                                 university):
+def test_update_learning_element():
     uow = FakeUnitOfWork()
-    services.create_learning_element(
-        uow=uow,
-        topic_id=1,
-        lms_id=lms_id,
-        activity_type=activity_type,
-        classification=classification,
-        name=name,
-        created_at=created_at,
-        created_by=created_by,
-        university=university
-    )
+    create_learning_element_for_tests(uow)
     entries_beginning = len(uow.learning_element.learning_element)
+    last_updated = time.time()
     result = services.update_learning_element(
         uow=uow,
         learning_element_id=1,
-        lms_id=lms_id,
-        activity_type=activity_type,
-        classification=classification,
-        name=name,
-        created_at=created_at,
-        created_by=created_by,
-        last_updated=last_updated,
-        university=university
+        lms_id=1,
+        activity_type="quiz",
+        classification="RQ",
+        name="Test Quiz",
+        created_at=last_updated,
+        created_by="Max Mustermann",
+        university="TH-AB",
+        last_updated=last_updated
     )
     assert type(result) is dict
     assert result != {}
@@ -3755,33 +3267,9 @@ def test_update_learning_element(lms_id, activity_type, classification,
     assert result['last_updated'] == last_updated
 
 
-@pytest.mark.parametrize("lms_id, activity_type, classification, name,\
-                         created_at, created_by, university", [
-    # Working Example
-    (
-        1,
-        "quiz",
-        "RQ",
-        "Test Quiz",
-        "Max Mustermann",
-        time.time(),
-        "TH-AB"
-    )
-])
-def test_delete_learning_element(lms_id, activity_type, classification, name,
-                                 created_at, created_by, university):
+def test_delete_learning_element():
     uow = FakeUnitOfWork()
-    services.create_learning_element(
-        uow=uow,
-        topic_id=1,
-        lms_id=lms_id,
-        activity_type=activity_type,
-        classification=classification,
-        name=name,
-        created_at=created_at,
-        created_by=created_by,
-        university=university
-    )
+    create_learning_element_for_tests(uow)
     entries_beginning = len(uow.learning_element.learning_element)
     result = services.delete_learning_element(
         uow=uow,
@@ -3795,69 +3283,13 @@ def test_delete_learning_element(lms_id, activity_type, classification, name,
     assert entries_beginning - 1 == entries_after
 
 
-@pytest.mark.parametrize("name, university, lms_user_id, role,\
-                         lms_id_course, course_name", [
-    (
-        "Max Mustermann",
-        "TH-AB",
-        1,
-        "student",
-        "lms_id_course",
-        "Test Course"
-    )
-])
-def test_add_student_to_course(name,
-                               university,
-                               lms_user_id,
-                               role,
-                               lms_id_course,
-                               course_name):
+def test_add_student_to_course():
     uow = FakeUnitOfWork()
-    services.create_user(
-        uow=uow,
-        name=name,
-        university=university,
-        lms_user_id=lms_user_id,
-        role=role
-    )
-    services.create_user(
-        uow=uow,
-        name=name,
-        university=university,
-        lms_user_id=lms_user_id,
-        role="course creator"
-    )
-    services.create_course(
-        uow=uow,
-        lms_id=lms_id_course,
-        name=course_name,
-        university=university,
-        created_by=2,
-        created_at="2023-01-01"
-    )
-    services.create_topic(
-        uow=uow,
-        course_id=1,
-        lms_id=1,
-        is_topic=True,
-        contains_le=False,
-        parent_id=None,
-        name="Test Topic",
-        university=university,
-        created_at="2023-01-01",
-        created_by=name
-    )
-    services.create_learning_element(
-        uow=uow,
-        topic_id=1,
-        lms_id=1,
-        activity_type="quiz",
-        classification="RQ",
-        name="Test LE",
-        created_at="2017-01-01",
-        created_by="Max Mustermann",
-        university=university
-    )
+    create_course_creator_for_tests(uow)
+    create_student_for_tests(uow)
+    create_course_for_tests(uow)
+    create_topic_for_tests(uow)
+    create_learning_element_for_tests(uow)
     entries_beginning_course = len(uow.student_course.student_course)
     entries_beginning_topic = len(uow.student_topic.student_topic)
     entries_beginning_le = len(uow.student_learning_element
@@ -3887,46 +3319,11 @@ def test_add_student_to_course(name,
         assert True
 
 
-@pytest.mark.parametrize("name, university, lms_user_id, role,\
-                         lms_id_course, course_name", [
-    (
-        "Max Mustermann",
-        "TH-AB",
-        1,
-        "teacher",
-        "lms_id_course",
-        "Test Course"
-    )
-])
-def test_add_teacher_to_course(name,
-                               university,
-                               lms_user_id,
-                               role,
-                               lms_id_course,
-                               course_name):
+def test_add_teacher_to_course():
     uow = FakeUnitOfWork()
-    services.create_user(
-        uow=uow,
-        name=name,
-        university=university,
-        lms_user_id=lms_user_id,
-        role=role
-    )
-    services.create_user(
-        uow=uow,
-        name=name,
-        university=university,
-        lms_user_id=lms_user_id,
-        role="course creator"
-    )
-    services.create_course(
-        uow=uow,
-        lms_id=lms_id_course,
-        name=course_name,
-        university=university,
-        created_by=2,
-        created_at="2023-01-01"
-    )
+    create_course_creator_for_tests(uow)
+    create_teacher_for_tests(uow)
+    create_course_for_tests(uow)
     entries_beginning_course = len(uow.teacher_course.teacher_course)
     result = services.add_teacher_to_course(
         uow=uow,
@@ -3948,23 +3345,9 @@ def test_add_teacher_to_course(name,
         assert True
 
 
-@pytest.mark.parametrize("name, university, lms_user_id, role", [
-    (
-        "Max Mustermann",
-        "TH-AB",
-        1,
-        "course creator"
-    )
-])
-def test_create_course_creator_course(name, university, lms_user_id, role):
+def test_create_course_creator_course():
     uow = FakeUnitOfWork()
-    services.create_user(
-        uow=uow,
-        name=name,
-        university=university,
-        lms_user_id=lms_user_id,
-        role=role
-    )
+    create_course_creator_for_tests(uow)
     entries_beginning = len(uow.course_creator_course.course_creator_course)
     result = services.add_course_creator_to_course(
         uow=uow,
@@ -3978,47 +3361,10 @@ def test_create_course_creator_course(name, university, lms_user_id, role):
     assert entries_beginning + 1 == entries_after
 
 
-@pytest.mark.parametrize("lms_id, activity_type, classification, name,\
-                         created_at, created_by, university, lms_user_id,\
-                         role", [
-    # Working Example
-    (
-        1,
-        "quiz",
-        "RQ",
-        "Test Quiz",
-        "Max Mustermann",
-        time.time(),
-        "TH-AB",
-        1,
-        "student"
-    )
-])
-def test_student_learning_element_visit(lms_id, activity_type, classification,
-                                        name, created_at, created_by,
-                                        university, lms_user_id, role):
+def test_student_learning_element_visit():
     uow = FakeUnitOfWork()
-    services.create_learning_element(
-        uow=uow,
-        topic_id=1,
-        lms_id=lms_id,
-        activity_type=activity_type,
-        classification=classification,
-        name=name,
-        created_at=created_at,
-        created_by=created_by,
-        university=university
-    )
-    user = UA.User(
-        name,
-        university,
-        lms_user_id,
-        role
-    )
-    services.create_student(
-        uow=uow,
-        user=user
-    )
+    create_learning_element_for_tests(uow)
+    create_student_for_tests(uow)
     entries_beginning = len(uow.student_learning_element_visit
                             .student_learning_element_visit)
     result = services.add_student_learning_element_visit(
@@ -4034,39 +3380,10 @@ def test_student_learning_element_visit(lms_id, activity_type, classification,
     assert entries_beginning + 1 == entries_after
 
 
-@pytest.mark.parametrize("name, university, lms_user_id, role", [
-    # Working Example
-    (
-        "Max Mustermann",
-        "TH-AB",
-        1,
-        "student"
-    )
-])
-def test_student_topic_visit(name, university, lms_user_id, role):
+def test_student_topic_visit():
     uow = FakeUnitOfWork()
-    services.create_topic(
-        uow=uow,
-        course_id=1,
-        lms_id=1,
-        is_topic=True,
-        contains_le=False,
-        parent_id=None,
-        name="Test Topic",
-        university=university,
-        created_at="2023-01-01",
-        created_by=name
-    )
-    user = UA.User(
-        name,
-        university,
-        lms_user_id,
-        role
-    )
-    services.create_student(
-        uow=uow,
-        user=user
-    )
+    create_topic_for_tests(uow)
+    create_student_for_tests(uow)
     entries_beginning = len(uow.student_topic_visit
                             .student_topic_visit)
     result = services.add_student_topic_visit(
@@ -4095,69 +3412,13 @@ def test_student_topic_visit(name, university, lms_user_id, role):
     assert entries_beginning + 2 == entries_after2
 
 
-@pytest.mark.parametrize("name, university, lms_user_id, role,\
-                         lms_id_course, course_name", [
-    (
-        "Max Mustermann",
-        "TH-AB",
-        1,
-        "student",
-        "lms_id_course",
-        "Test Course"
-    )
-])
-def test_create_learning_path(name,
-                              university,
-                              lms_user_id,
-                              role,
-                              lms_id_course,
-                              course_name):
+def test_create_learning_path():
     uow = FakeUnitOfWork()
-    services.create_user(
-        uow=uow,
-        name=name,
-        university=university,
-        lms_user_id=lms_user_id,
-        role=role
-    )
-    services.create_user(
-        uow=uow,
-        name=name,
-        university=university,
-        lms_user_id=lms_user_id,
-        role="course creator"
-    )
-    services.create_course(
-        uow=uow,
-        lms_id=lms_id_course,
-        name=course_name,
-        university=university,
-        created_by=2,
-        created_at="2023-01-01"
-    )
-    services.create_topic(
-        uow=uow,
-        course_id=1,
-        lms_id=1,
-        is_topic=True,
-        contains_le=False,
-        parent_id=None,
-        name="Test Topic",
-        university=university,
-        created_at="2023-01-01",
-        created_by=name
-    )
-    services.create_learning_element(
-        uow=uow,
-        topic_id=1,
-        lms_id=1,
-        activity_type="quiz",
-        classification="RQ",
-        name="Test LE",
-        created_at="2017-01-01",
-        created_by="Max Mustermann",
-        university=university
-    )
+    create_course_creator_for_tests(uow)
+    create_student_for_tests(uow)
+    create_course_for_tests(uow)
+    create_topic_for_tests(uow)
+    create_learning_element_for_tests(uow)
     entries_beginning_path = len(uow.learning_path
                                  .learning_path)
     entries_beginning_path_le = len(uow.learning_path_learning_element
@@ -4181,78 +3442,14 @@ def test_create_learning_path(name,
     assert entries_beginning_path_le + 1 == entries_after_path_le
 
 
-@pytest.mark.parametrize("name, university, lms_user_id, role,\
-                         lms_id_course, course_name", [
-    (
-        "Max Mustermann",
-        "TH-AB",
-        1,
-        "student",
-        "lms_id_course",
-        "Test Course"
-    )
-])
-def test_delete_learning_path(name,
-                              university,
-                              lms_user_id,
-                              role,
-                              lms_id_course,
-                              course_name):
+def test_delete_learning_path():
     uow = FakeUnitOfWork()
-    services.create_user(
-        uow=uow,
-        name=name,
-        university=university,
-        lms_user_id=lms_user_id,
-        role=role
-    )
-    services.create_user(
-        uow=uow,
-        name=name,
-        university=university,
-        lms_user_id=lms_user_id,
-        role="course creator"
-    )
-    services.create_course(
-        uow=uow,
-        lms_id=lms_id_course,
-        name=course_name,
-        university=university,
-        created_by=2,
-        created_at="2023-01-01"
-    )
-    services.create_topic(
-        uow=uow,
-        course_id=1,
-        lms_id=1,
-        is_topic=True,
-        contains_le=False,
-        parent_id=None,
-        name="Test Topic",
-        university=university,
-        created_at="2023-01-01",
-        created_by=name
-    )
-    services.create_learning_element(
-        uow=uow,
-        topic_id=1,
-        lms_id=1,
-        activity_type="quiz",
-        classification="RQ",
-        name="Test LE",
-        created_at="2017-01-01",
-        created_by="Max Mustermann",
-        university=university
-    )
-    services.create_learning_path(
-        uow=uow,
-        user_id=1,
-        lms_user_id=1,
-        student_id=1,
-        course_id=1,
-        topic_id=1,
-        algorithm="Graf"
-    )
+    create_course_creator_for_tests(uow)
+    create_student_for_tests(uow)
+    create_course_for_tests(uow)
+    create_topic_for_tests(uow)
+    create_learning_element_for_tests(uow)
+    create_learning_path_for_tests(uow)
     entries_beginning_path = len(uow.learning_path
                                  .learning_path)
     entries_beginning_path_le = len(uow.learning_path_learning_element
@@ -4270,51 +3467,12 @@ def test_delete_learning_path(name,
     assert entries_beginning_path_le - 1 == entries_after_path_le
 
 
-@pytest.mark.parametrize("name, university, lms_user_id, role,\
-                         lms_id_course, course_name", [
-    (
-        "Max Mustermann",
-        "TH-AB",
-        1,
-        "student",
-        "lms_id_course",
-        "Test Course"
-    )
-])
-def test_get_courses_by_student_id(name,
-                                   university,
-                                   lms_user_id,
-                                   role,
-                                   lms_id_course,
-                                   course_name):
+def test_get_courses_by_student_id():
     uow = FakeUnitOfWork()
-    services.create_user(
-        uow=uow,
-        name=name,
-        university=university,
-        lms_user_id=lms_user_id,
-        role=role
-    )
-    services.create_user(
-        uow=uow,
-        name=name,
-        university=university,
-        lms_user_id=lms_user_id,
-        role="course creator"
-    )
-    services.create_course(
-        uow=uow,
-        lms_id=lms_id_course,
-        name=course_name,
-        university=university,
-        created_by=2,
-        created_at="2023-01-01"
-    )
-    services.add_student_to_course(
-        uow=uow,
-        student_id=1,
-        course_id=1
-    )
+    create_course_creator_for_tests(uow)
+    create_student_for_tests(uow)
+    create_course_for_tests(uow)
+    add_student_to_course_for_tests(uow)
     result = services.get_courses_by_student_id(
         uow=uow,
         user_id=1,
@@ -4325,26 +3483,9 @@ def test_get_courses_by_student_id(name,
     assert result != {}
 
 
-@pytest.mark.parametrize("name, university, lms_user_id, role", [
-    (
-        "Max Mustermann",
-        "TH-AB",
-        1,
-        "student"
-    )
-])
-def test_get_knowledge_by_student_id(name,
-                                     university,
-                                     lms_user_id,
-                                     role):
+def test_get_knowledge_by_student_id():
     uow = FakeUnitOfWork()
-    services.create_user(
-        uow=uow,
-        name=name,
-        university=university,
-        lms_user_id=lms_user_id,
-        role=role
-    )
+    create_student_for_tests(uow)
     result = services.get_knowledge_by_student_id(
         uow=uow,
         student_id=1
@@ -4353,26 +3494,9 @@ def test_get_knowledge_by_student_id(name,
     assert result != {}
 
 
-@pytest.mark.parametrize("name, university, lms_user_id, role", [
-    (
-        "Max Mustermann",
-        "TH-AB",
-        1,
-        "student"
-    )
-])
-def test_get_learning_analytics_by_student_id(name,
-                                              university,
-                                              lms_user_id,
-                                              role):
+def test_get_learning_analytics_by_student_id():
     uow = FakeUnitOfWork()
-    services.create_user(
-        uow=uow,
-        name=name,
-        university=university,
-        lms_user_id=lms_user_id,
-        role=role
-    )
+    create_student_for_tests(uow)
     result = services.get_learning_analytics_by_student_id(
         uow=uow,
         student_id=1
@@ -4381,26 +3505,9 @@ def test_get_learning_analytics_by_student_id(name,
     assert result != {}
 
 
-@pytest.mark.parametrize("name, university, lms_user_id, role", [
-    (
-        "Max Mustermann",
-        "TH-AB",
-        1,
-        "student"
-    )
-])
-def test_get_learning_style_by_student_id(name,
-                                          university,
-                                          lms_user_id,
-                                          role):
+def test_get_learning_style_by_student_id():
     uow = FakeUnitOfWork()
-    services.create_user(
-        uow=uow,
-        name=name,
-        university=university,
-        lms_user_id=lms_user_id,
-        role=role
-    )
+    create_student_for_tests(uow)
     result = services.get_learning_style_by_student_id(
         uow=uow,
         student_id=1
@@ -4409,26 +3516,9 @@ def test_get_learning_style_by_student_id(name,
     assert result != {}
 
 
-@pytest.mark.parametrize("name, university, lms_user_id, role", [
-    (
-        "Max Mustermann",
-        "TH-AB",
-        1,
-        "student"
-    )
-])
-def test_get_learning_strategy_by_student_id(name,
-                                             university,
-                                             lms_user_id,
-                                             role):
+def test_get_learning_strategy_by_student_id():
     uow = FakeUnitOfWork()
-    services.create_user(
-        uow=uow,
-        name=name,
-        university=university,
-        lms_user_id=lms_user_id,
-        role=role
-    )
+    create_student_for_tests(uow)
     result = services.get_learning_strategy_by_student_id(
         uow=uow,
         student_id=1
@@ -4437,74 +3527,14 @@ def test_get_learning_strategy_by_student_id(name,
     assert result != {}
 
 
-@pytest.mark.parametrize("name, university, lms_user_id, role,\
-                         lms_id_course, course_name", [
-    (
-        "Max Mustermann",
-        "TH-AB",
-        1,
-        "student",
-        "lms_id_course",
-        "Test Course"
-    )
-])
-def test_get_les_for_course_id(name,
-                               university,
-                               lms_user_id,
-                               role,
-                               lms_id_course,
-                               course_name):
+def test_get_les_for_course_id():
     uow = FakeUnitOfWork()
-    services.create_user(
-        uow=uow,
-        name=name,
-        university=university,
-        lms_user_id=lms_user_id,
-        role=role
-    )
-    services.create_user(
-        uow=uow,
-        name=name,
-        university=university,
-        lms_user_id=lms_user_id,
-        role="course creator"
-    )
-    services.create_course(
-        uow=uow,
-        lms_id=lms_id_course,
-        name=course_name,
-        university=university,
-        created_by=2,
-        created_at="2023-01-01"
-    )
-    services.create_topic(
-        uow=uow,
-        course_id=1,
-        lms_id=1,
-        is_topic=True,
-        contains_le=False,
-        parent_id=None,
-        name="Test Topic",
-        university=university,
-        created_at="2023-01-01",
-        created_by=name
-    )
-    services.create_learning_element(
-        uow=uow,
-        topic_id=1,
-        lms_id=1,
-        activity_type="quiz",
-        classification="RQ",
-        name="Test LE",
-        created_at="2017-01-01",
-        created_by="Max Mustermann",
-        university=university
-    )
-    services.add_student_to_course(
-        uow=uow,
-        student_id=1,
-        course_id=1
-    )
+    create_course_creator_for_tests(uow)
+    create_student_for_tests(uow)
+    create_course_for_tests(uow)
+    create_topic_for_tests(uow)
+    create_learning_element_for_tests(uow)
+    add_student_to_course_for_tests(uow)
     result = services.get_learning_elements_for_course_id(
         uow=uow,
         user_id=1,
@@ -4516,74 +3546,14 @@ def test_get_les_for_course_id(name,
     assert result != {}
 
 
-@pytest.mark.parametrize("name, university, lms_user_id, role,\
-                         lms_id_course, course_name", [
-    (
-        "Max Mustermann",
-        "TH-AB",
-        1,
-        "student",
-        "lms_id_course",
-        "Test Course"
-    )
-])
-def test_get_les_for_course_and_topic_id(name,
-                                         university,
-                                         lms_user_id,
-                                         role,
-                                         lms_id_course,
-                                         course_name):
+def test_get_les_for_course_and_topic_id():
     uow = FakeUnitOfWork()
-    services.create_user(
-        uow=uow,
-        name=name,
-        university=university,
-        lms_user_id=lms_user_id,
-        role=role
-    )
-    services.create_user(
-        uow=uow,
-        name=name,
-        university=university,
-        lms_user_id=lms_user_id,
-        role="course creator"
-    )
-    services.create_course(
-        uow=uow,
-        lms_id=lms_id_course,
-        name=course_name,
-        university=university,
-        created_by=2,
-        created_at="2023-01-01"
-    )
-    services.create_topic(
-        uow=uow,
-        course_id=1,
-        lms_id=1,
-        is_topic=True,
-        contains_le=False,
-        parent_id=None,
-        name="Test Topic",
-        university=university,
-        created_at="2023-01-01",
-        created_by=name
-    )
-    services.create_learning_element(
-        uow=uow,
-        topic_id=1,
-        lms_id=1,
-        activity_type="quiz",
-        classification="RQ",
-        name="Test LE",
-        created_at="2017-01-01",
-        created_by="Max Mustermann",
-        university=university
-    )
-    services.add_student_to_course(
-        uow=uow,
-        student_id=1,
-        course_id=1
-    )
+    create_course_creator_for_tests(uow)
+    create_student_for_tests(uow)
+    create_course_for_tests(uow)
+    create_topic_for_tests(uow)
+    create_learning_element_for_tests(uow)
+    add_student_to_course_for_tests(uow)
     result = services.get_learning_elements_for_course_and_topic_id(
         uow=uow,
         user_id=1,
@@ -4596,78 +3566,15 @@ def test_get_les_for_course_and_topic_id(name,
     assert result != {}
 
 
-@pytest.mark.parametrize("name, university, lms_user_id, role,\
-                         lms_id_course, course_name", [
-    (
-        "Max Mustermann",
-        "TH-AB",
-        1,
-        "student",
-        "lms_id_course",
-        "Test Course"
-    )
-])
-def test_get_learning_element_recommendation(name,
-                                             university,
-                                             lms_user_id,
-                                             role,
-                                             lms_id_course,
-                                             course_name):
+def test_get_learning_element_recommendation():
     uow = FakeUnitOfWork()
-    services.create_user(
-        uow=uow,
-        name=name,
-        university=university,
-        lms_user_id=lms_user_id,
-        role=role
-    )
-    services.create_user(
-        uow=uow,
-        name=name,
-        university=university,
-        lms_user_id=lms_user_id,
-        role="course creator"
-    )
-    services.create_course(
-        uow=uow,
-        lms_id=lms_id_course,
-        name=course_name,
-        university=university,
-        created_by=2,
-        created_at="2023-01-01"
-    )
-    services.create_topic(
-        uow=uow,
-        course_id=1,
-        lms_id=1,
-        is_topic=True,
-        contains_le=False,
-        parent_id=None,
-        name="Test Topic",
-        university=university,
-        created_at="2023-01-01",
-        created_by=name
-    )
-    services.create_learning_element(
-        uow=uow,
-        topic_id=1,
-        lms_id=1,
-        activity_type="quiz",
-        classification="RQ",
-        name="Test LE",
-        created_at="2017-01-01",
-        created_by="Max Mustermann",
-        university=university
-    )
-    services.create_learning_path(
-        uow=uow,
-        user_id=1,
-        lms_user_id=1,
-        student_id=1,
-        course_id=1,
-        topic_id=1,
-        algorithm="Graf"
-    )
+    create_course_creator_for_tests(uow)
+    create_student_for_tests(uow)
+    create_course_for_tests(uow)
+    create_topic_for_tests(uow)
+    create_learning_element_for_tests(uow)
+    add_student_to_course_for_tests(uow)
+    create_learning_path_for_tests(uow)
     result = services.get_learning_element_recommendation(
         uow=uow,
         user_id=1,
@@ -4680,176 +3587,38 @@ def test_get_learning_element_recommendation(name,
     assert result != {}
 
 
-@pytest.mark.parametrize("name, university, lms_user_id, role,\
-                         lms_id_course, course_name", [
-    (
-        "Max Mustermann",
-        "TH-AB",
-        1,
-        "student",
-        "lms_id_course",
-        "Test Course"
-    )
-])
-def test_get_learning_path(name,
-                           university,
-                           lms_user_id,
-                           role,
-                           lms_id_course,
-                           course_name):
+def test_get_learning_path():
     uow = FakeUnitOfWork()
-    services.create_user(
-        uow=uow,
-        name=name,
-        university=university,
-        lms_user_id=lms_user_id,
-        role=role
-    )
-    services.create_user(
-        uow=uow,
-        name=name,
-        university=university,
-        lms_user_id=lms_user_id,
-        role="course creator"
-    )
-    services.create_course(
-        uow=uow,
-        lms_id=lms_id_course,
-        name=course_name,
-        university=university,
-        created_by=2,
-        created_at="2023-01-01"
-    )
-    services.create_topic(
-        uow=uow,
-        course_id=1,
-        lms_id=1,
-        is_topic=True,
-        contains_le=False,
-        parent_id=None,
-        name="Test Topic",
-        university=university,
-        created_at="2023-01-01",
-        created_by=name
-    )
-    services.create_learning_element(
-        uow=uow,
-        topic_id=1,
-        lms_id=1,
-        activity_type="quiz",
-        classification="RQ",
-        name="Test LE",
-        created_at="2017-01-01",
-        created_by="Max Mustermann",
-        university=university
-    )
-    result = services.create_learning_path(
+    create_course_creator_for_tests(uow)
+    create_student_for_tests(uow)
+    create_course_for_tests(uow)
+    create_topic_for_tests(uow)
+    create_learning_element_for_tests(uow)
+    add_student_to_course_for_tests(uow)
+    create_learning_path_for_tests(uow)
+    result = services.get_learning_path(
         uow=uow,
         user_id=1,
         lms_user_id=1,
         student_id=1,
         course_id=1,
-        topic_id=1,
-        algorithm="Graf"
+        topic_id=1
     )
     assert type(result) == dict
     assert result != {}
 
 
-@pytest.mark.parametrize("name, university, lms_user_id, role,\
-                         lms_id_course, course_name", [
-    (
-        "Max Mustermann",
-        "TH-AB",
-        1,
-        "student",
-        "lms_id_course",
-        "Test Course"
-    )
-])
-def test_get_sub_topics(name,
-                        university,
-                        lms_user_id,
-                        role,
-                        lms_id_course,
-                        course_name):
+def test_get_sub_topics():
     uow = FakeUnitOfWork()
-    services.create_user(
-        uow=uow,
-        name=name,
-        university=university,
-        lms_user_id=lms_user_id,
-        role=role
-    )
-    services.create_user(
-        uow=uow,
-        name=name,
-        university=university,
-        lms_user_id=lms_user_id,
-        role="course creator"
-    )
-    services.create_course(
-        uow=uow,
-        lms_id=lms_id_course,
-        name=course_name,
-        university=university,
-        created_by=2,
-        created_at="2023-01-01"
-    )
-    services.create_topic(
-        uow=uow,
-        course_id=1,
-        lms_id=1,
-        is_topic=True,
-        contains_le=False,
-        parent_id=None,
-        name="Test Topic",
-        university=university,
-        created_at="2023-01-01",
-        created_by=name
-    )
-    services.create_topic(
-        uow=uow,
-        course_id=1,
-        lms_id=2,
-        is_topic=False,
-        contains_le=True,
-        parent_id=1,
-        name="Test Topic",
-        university=university,
-        created_at="2023-01-01",
-        created_by=name
-    )
-    services.create_learning_element(
-        uow=uow,
-        topic_id=1,
-        lms_id=1,
-        activity_type="quiz",
-        classification="RQ",
-        name="Test LE",
-        created_at="2017-01-01",
-        created_by="Max Mustermann",
-        university=university
-    )
-    services.add_student_to_course(
-        uow=uow,
-        student_id=1,
-        course_id=1
-    )
-    services.add_student_topic_visit(
-        uow=uow,
-        student_id=1,
-        topic_id=1,
-        visit_start="2023-01-01",
-        previous_topic_id=None
-    )
-    services.add_student_topic_visit(
-        uow=uow,
-        student_id=1,
-        topic_id=2,
-        visit_start="2023-01-02",
-        previous_topic_id=1
-    )
+    create_course_creator_for_tests(uow)
+    create_student_for_tests(uow)
+    create_course_for_tests(uow)
+    create_topic_for_tests(uow)
+    create_sub_topic_for_tests(uow)
+    create_learning_element_for_tests(uow)
+    add_student_to_course_for_tests(uow)
+    add_student_topic_visit_for_tests(uow)
+    add_student_sub_topic_visit_for_tests(uow)
     result = services.get_sub_topic_by_topic_id(
         uow=uow,
         user_id=1,
@@ -4862,100 +3631,17 @@ def test_get_sub_topics(name,
     assert result != {}
 
 
-@pytest.mark.parametrize("name, university, lms_user_id, role,\
-                         lms_id_course, course_name", [
-    (
-        "Max Mustermann",
-        "TH-AB",
-        1,
-        "student",
-        "lms_id_course",
-        "Test Course"
-    )
-])
-def test_get_topics_by_student_and_course_id(name,
-                                             university,
-                                             lms_user_id,
-                                             role,
-                                             lms_id_course,
-                                             course_name):
+def test_get_topics_by_student_and_course_id():
     uow = FakeUnitOfWork()
-    services.create_user(
-        uow=uow,
-        name=name,
-        university=university,
-        lms_user_id=lms_user_id,
-        role=role
-    )
-    services.create_user(
-        uow=uow,
-        name=name,
-        university=university,
-        lms_user_id=lms_user_id,
-        role="course creator"
-    )
-    services.create_course(
-        uow=uow,
-        lms_id=lms_id_course,
-        name=course_name,
-        university=university,
-        created_by=2,
-        created_at="2023-01-01"
-    )
-    services.create_topic(
-        uow=uow,
-        course_id=1,
-        lms_id=1,
-        is_topic=True,
-        contains_le=False,
-        parent_id=None,
-        name="Test Topic",
-        university=university,
-        created_at="2023-01-01",
-        created_by=name
-    )
-    services.create_topic(
-        uow=uow,
-        course_id=1,
-        lms_id=2,
-        is_topic=False,
-        contains_le=True,
-        parent_id=1,
-        name="Test Topic",
-        university=university,
-        created_at="2023-01-01",
-        created_by=name
-    )
-    services.create_learning_element(
-        uow=uow,
-        topic_id=1,
-        lms_id=1,
-        activity_type="quiz",
-        classification="RQ",
-        name="Test LE",
-        created_at="2017-01-01",
-        created_by="Max Mustermann",
-        university=university
-    )
-    services.add_student_to_course(
-        uow=uow,
-        student_id=1,
-        course_id=1
-    )
-    services.add_student_topic_visit(
-        uow=uow,
-        student_id=1,
-        topic_id=1,
-        visit_start="2023-01-01",
-        previous_topic_id=None
-    )
-    services.add_student_topic_visit(
-        uow=uow,
-        student_id=1,
-        topic_id=2,
-        visit_start="2023-01-02",
-        previous_topic_id=1
-    )
+    create_course_creator_for_tests(uow)
+    create_student_for_tests(uow)
+    create_course_for_tests(uow)
+    create_topic_for_tests(uow)
+    create_sub_topic_for_tests(uow)
+    create_learning_element_for_tests(uow)
+    add_student_to_course_for_tests(uow)
+    add_student_topic_visit_for_tests(uow)
+    add_student_sub_topic_visit_for_tests(uow)
     result = services.get_topics_by_student_and_course_id(
         uow=uow,
         user_id=1,
@@ -4967,60 +3653,22 @@ def test_get_topics_by_student_and_course_id(name,
     assert result != {}
 
 
-@pytest.mark.parametrize("name, university, lms_user_id, role", [
-    # Working Example
-    (
-        "Max Mustermann",
-        "TH-AB",
-        1,
-        "teacher"
-    )
-])
-def test_get_user_by_admin(name, university, lms_user_id, role):
+def test_get_user_by_admin():
     uow = FakeUnitOfWork()
-    services.create_user(
-        uow=uow,
-        name=name,
-        university=university,
-        lms_user_id=lms_user_id,
-        role=role
-    )
-    services.create_user(
-        uow=uow,
-        name=name,
-        university=university,
-        lms_user_id=lms_user_id,
-        role="admin"
-    )
+    create_student_for_tests(uow)
+    create_admin_for_tests(uow)
     result = services.get_users_by_admin(
         uow=uow,
-        user_id=2,
+        user_id=1,
         lms_user_id=1
     )
     assert type(result) == dict
     assert result != {}
 
 
-@pytest.mark.parametrize("name, university, lms_user_id, role", [
-    (
-        "Max Mustermann",
-        "TH-AB",
-        1,
-        "student"
-    )
-])
-def test_reset_knowledge_by_student_id(name,
-                                       university,
-                                       lms_user_id,
-                                       role):
+def test_reset_knowledge_by_student_id():
     uow = FakeUnitOfWork()
-    services.create_user(
-        uow=uow,
-        name=name,
-        university=university,
-        lms_user_id=lms_user_id,
-        role=role
-    )
+    create_student_for_tests(uow)
     result = services.reset_knowledge_by_student_id(
         uow=uow,
         user_id=1,
@@ -5031,26 +3679,9 @@ def test_reset_knowledge_by_student_id(name,
     assert result != {}
 
 
-@pytest.mark.parametrize("name, university, lms_user_id, role", [
-    (
-        "Max Mustermann",
-        "TH-AB",
-        1,
-        "student"
-    )
-])
-def test_reset_learning_analytics_by_student_id(name,
-                                                university,
-                                                lms_user_id,
-                                                role):
+def test_reset_learning_analytics_by_student_id():
     uow = FakeUnitOfWork()
-    services.create_user(
-        uow=uow,
-        name=name,
-        university=university,
-        lms_user_id=lms_user_id,
-        role=role
-    )
+    create_student_for_tests(uow)
     result = services.reset_learning_analytics_by_student_id(
         uow=uow,
         user_id=1,
@@ -5061,26 +3692,9 @@ def test_reset_learning_analytics_by_student_id(name,
     assert result != {}
 
 
-@pytest.mark.parametrize("name, university, lms_user_id, role", [
-    (
-        "Max Mustermann",
-        "TH-AB",
-        1,
-        "student"
-    )
-])
-def test_reset_learning_style_by_student_id(name,
-                                            university,
-                                            lms_user_id,
-                                            role):
+def test_reset_learning_style_by_student_id():
     uow = FakeUnitOfWork()
-    services.create_user(
-        uow=uow,
-        name=name,
-        university=university,
-        lms_user_id=lms_user_id,
-        role=role
-    )
+    create_student_for_tests(uow)
     result = services.reset_learning_style_by_student_id(
         uow=uow,
         user_id=1,
@@ -5091,26 +3705,9 @@ def test_reset_learning_style_by_student_id(name,
     assert result != {}
 
 
-@pytest.mark.parametrize("name, university, lms_user_id, role", [
-    (
-        "Max Mustermann",
-        "TH-AB",
-        1,
-        "student"
-    )
-])
-def test_reset_learning_strategy_by_student_id(name,
-                                               university,
-                                               lms_user_id,
-                                               role):
+def test_reset_learning_strategy_by_student_id():
     uow = FakeUnitOfWork()
-    services.create_user(
-        uow=uow,
-        name=name,
-        university=university,
-        lms_user_id=lms_user_id,
-        role=role
-    )
+    create_student_for_tests(uow)
     result = services.reset_learning_strategy_by_student_id(
         uow=uow,
         user_id=1,
@@ -5121,59 +3718,22 @@ def test_reset_learning_strategy_by_student_id(name,
     assert result != {}
 
 
-@pytest.mark.parametrize("name, university, lms_user_id, role,\
-                         perception_dimension,  perception_value,\
-                         input_dimension, input_value,\
-                         processing_dimension, processing_value,\
-                         understanding_dimension, understanding_value", [
-    (
-        "Max Mustermann",
-        "TH-AB",
-        1,
-        "student",
-        "ACT",
-        11,
-        "VIS",
-        11,
-        "SNS",
-        11,
-        "GLO",
-        11
-    )
-])
-def test_update_learning_style_by_student_id(name,
-                                             university,
-                                             lms_user_id,
-                                             role,
-                                             perception_dimension,
-                                             perception_value,
-                                             input_dimension,
-                                             input_value,
-                                             processing_dimension,
-                                             processing_value,
-                                             understanding_dimension,
-                                             understanding_value):
+def test_update_learning_style_by_student_id():
     uow = FakeUnitOfWork()
-    services.create_user(
-        uow=uow,
-        name=name,
-        university=university,
-        lms_user_id=lms_user_id,
-        role=role
-    )
+    create_student_for_tests(uow)
     result = services.update_learning_style_by_student_id(
         uow=uow,
         user_id=1,
         lms_user_id=1,
         student_id=1,
-        perception_dimension=perception_dimension,
-        perception_value=perception_value,
-        input_dimension=input_dimension,
-        input_value=input_value,
-        processing_dimension=processing_dimension,
-        processing_value=processing_value,
-        understanding_dimension=understanding_dimension,
-        understanding_value=understanding_value
+        perception_dimension="act",
+        perception_value=11,
+        input_dimension="vis",
+        input_value=11,
+        processing_dimension="sns",
+        processing_value=11,
+        understanding_dimension="glo",
+        understanding_value=11
     )
     assert type(result) is dict
     assert result != {}

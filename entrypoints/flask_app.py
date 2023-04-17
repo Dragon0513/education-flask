@@ -539,11 +539,28 @@ def get_learning_elements_for_course(user_id,
 
 
 # Student Endpoints
+@app.route("/user/<user_id>/<lms_user_id>/student/<student_id>/" +
+           "learningCharacteristics", methods=['DELETE'])
+@cross_origin(supports_credentials=True)
+def delete_learning_characteristics(user_id, lms_user_id, student_id):
+    method = request.method
+    match method:
+        case 'DELETE':
+            characteristic = services.reset_learning_characteristics(
+                unit_of_work.SqlAlchemyUnitOfWork(),
+                user_id,
+                lms_user_id,
+                student_id
+            )
+            status_code = 200
+            return jsonify(characteristic), status_code
+
+
 @app.route("/user/<user_id>/<lms_user_id>/student/<student_id>" +
            "/learningCharacteristics",
-           methods=['GET', 'DELETE'])
+           methods=['GET'])
 @cross_origin(supports_credentials=True)
-def learning_characteristics(user_id, lms_user_id, student_id):
+def get_learning_characteristics(user_id, lms_user_id, student_id):
     method = request.method
     match method:
         case 'GET':
@@ -552,15 +569,6 @@ def learning_characteristics(user_id, lms_user_id, student_id):
                 student_id,
                 user_id,
                 lms_user_id
-            )
-            status_code = 200
-            return jsonify(characteristic), status_code
-        case 'DELETE':
-            characteristic = services.reset_learning_characteristics(
-                unit_of_work.SqlAlchemyUnitOfWork(),
-                user_id,
-                lms_user_id,
-                student_id
             )
             status_code = 200
             return jsonify(characteristic), status_code
@@ -735,46 +743,11 @@ def questionnaire(student_id, lms_user_id):
 
 
 @app.route("/user/<user_id>/<lms_user_id>/student/<student_id>/" +
-           "learningCharacteristics", methods=['GET', 'DELETE'])
-@cross_origin(supports_credentials=True)
-def learning_characteristics_administration(user_id,
-                                            lms_user_id,
-                                            student_id):
-    method = request.method
-    match method:
-        case 'GET':
-            result = services.get_learning_characteristics(
-                unit_of_work.SqlAlchemyUnitOfWork(),
-                student_id
-            )
-            status_code = 200
-            return jsonify(result), status_code
-        case 'DELETE':
-            services.reset_learning_characteristics(
-                unit_of_work.SqlAlchemyUnitOfWork(),
-                user_id,
-                lms_user_id,
-                student_id
-            )
-            result = {'message': 'All data about the learning ' +
-                      'characteristics have been deleted/reset.'}
-            status_code = 200
-            return jsonify(result), status_code
-
-
-@app.route("/user/<user_id>/<lms_user_id>/student/<student_id>/" +
-           "learningStyle", methods=['GET', 'PUT', 'DELETE'])
+           "learningStyle", methods=['PUT', 'DELETE'])
 @cross_origin(supports_credentials=True)
 def learning_style_administration(user_id, lms_user_id, student_id):
     method = request.method
     match method:
-        case 'GET':
-            result = services.get_learning_style_by_student_id(
-                unit_of_work.SqlAlchemyUnitOfWork(),
-                student_id
-            )
-            status_code = 200
-            return jsonify(result), status_code
         case 'PUT':
             condition1 = request.json is not None
             condition2 = 'perception_dimension' in request.json
@@ -840,18 +813,26 @@ def learning_style_administration(user_id, lms_user_id, student_id):
 
 
 @app.route("/user/<user_id>/<lms_user_id>/student/<student_id>/" +
-           "learningStrategy", methods=['GET', 'DELETE'])
+           "learningStyle", methods=['GET'])
 @cross_origin(supports_credentials=True)
-def learning_strategy_administration(user_id, lms_user_id, student_id):
+def get_learning_style(user_id, lms_user_id, student_id):
     method = request.method
     match method:
         case 'GET':
-            result = services.get_learning_strategy_by_student_id(
+            result = services.get_learning_style_by_student_id(
                 unit_of_work.SqlAlchemyUnitOfWork(),
                 student_id
             )
             status_code = 200
             return jsonify(result), status_code
+
+
+@app.route("/user/<user_id>/<lms_user_id>/student/<student_id>/" +
+           "learningStrategy", methods=['DELETE'])
+@cross_origin(supports_credentials=True)
+def delete_learning_strategy(user_id, lms_user_id, student_id):
+    method = request.method
+    match method:
         case 'DELETE':
             result = services.reset_learning_strategy_by_student_id(
                 unit_of_work.SqlAlchemyUnitOfWork(),
@@ -864,18 +845,26 @@ def learning_strategy_administration(user_id, lms_user_id, student_id):
 
 
 @app.route("/user/<user_id>/<lms_user_id>/student/<student_id>/" +
-           "learningAnalytics", methods=['GET', 'DELETE'])
+           "learningStrategy", methods=['GET'])
 @cross_origin(supports_credentials=True)
-def learning_analytics_administration(user_id, lms_user_id, student_id):
+def get_learning_strategy(user_id, lms_user_id, student_id):
     method = request.method
     match method:
         case 'GET':
-            result = services.get_learning_analytics_by_student_id(
+            result = services.get_learning_strategy_by_student_id(
                 unit_of_work.SqlAlchemyUnitOfWork(),
                 student_id
             )
             status_code = 200
             return jsonify(result), status_code
+
+
+@app.route("/user/<user_id>/<lms_user_id>/student/<student_id>/" +
+           "learningAnalytics", methods=['DELETE'])
+@cross_origin(supports_credentials=True)
+def delete_learning_analytics(user_id, lms_user_id, student_id):
+    method = request.method
+    match method:
         case 'DELETE':
             result = services.reset_learning_analytics_by_student_id(
                 unit_of_work.SqlAlchemyUnitOfWork(),
@@ -888,23 +877,46 @@ def learning_analytics_administration(user_id, lms_user_id, student_id):
 
 
 @app.route("/user/<user_id>/<lms_user_id>/student/<student_id>/" +
-           "knowledge", methods=['GET', 'DELETE'])
+           "learningAnalytics", methods=['GET'])
 @cross_origin(supports_credentials=True)
-def knowledge_administration(user_id, lms_user_id, student_id):
+def get_learning_analytics(user_id, lms_user_id, student_id):
     method = request.method
     match method:
         case 'GET':
-            result = services.get_knowledge_by_student_id(
+            result = services.get_learning_analytics_by_student_id(
                 unit_of_work.SqlAlchemyUnitOfWork(),
                 student_id
             )
             status_code = 200
             return jsonify(result), status_code
+
+
+@app.route("/user/<user_id>/<lms_user_id>/student/<student_id>/" +
+           "knowledge", methods=['DELETE'])
+@cross_origin(supports_credentials=True)
+def delete_knowledge(user_id, lms_user_id, student_id):
+    method = request.method
+    match method:
         case 'DELETE':
             result = services.reset_knowledge_by_student_id(
                 unit_of_work.SqlAlchemyUnitOfWork(),
                 user_id,
                 lms_user_id,
+                student_id
+            )
+            status_code = 200
+            return jsonify(result), status_code
+
+
+@app.route("/user/<user_id>/<lms_user_id>/student/<student_id>/" +
+           "knowledge", methods=['GET'])
+@cross_origin(supports_credentials=True)
+def get_knowledge(user_id, lms_user_id, student_id):
+    method = request.method
+    match method:
+        case 'GET':
+            result = services.get_knowledge_by_student_id(
+                unit_of_work.SqlAlchemyUnitOfWork(),
                 student_id
             )
             status_code = 200
@@ -1090,7 +1102,7 @@ def get_learning_element_recommendation(user_id,
 # Learning Path Endpoints
 @app.route("/user/<user_id>/<lms_user_id>/student/<student_id>/course/" +
            "<course_id>/topic/<topic_id>/learningPath",
-           methods=['GET', 'POST'])
+           methods=['POST'])
 @cross_origin(supports_credentials=True)
 def learning_path_administration(
     user_id,
@@ -1101,17 +1113,6 @@ def learning_path_administration(
 ):
     method = request.method
     match method:
-        case 'GET':
-            result = services.get_learning_path(
-                unit_of_work.SqlAlchemyUnitOfWork(),
-                user_id,
-                lms_user_id,
-                student_id,
-                course_id,
-                topic_id
-            )
-            status_code = 200
-            return jsonify(result), status_code
         case 'POST':
             condition1 = request.json is not None
             condition2 = 'algorithm' in request.json
@@ -1138,6 +1139,32 @@ def learning_path_administration(
                 raise err.MissingParameterError()
 
 
+@app.route("/user/<user_id>/<lms_user_id>/student/<student_id>/course/" +
+           "<course_id>/topic/<topic_id>/learningPath",
+           methods=['GET'])
+@cross_origin(supports_credentials=True)
+def get_learning_path(
+    user_id,
+    lms_user_id,
+    student_id,
+    course_id,
+    topic_id
+):
+    method = request.method
+    match method:
+        case 'GET':
+            result = services.get_learning_path(
+                unit_of_work.SqlAlchemyUnitOfWork(),
+                user_id,
+                lms_user_id,
+                student_id,
+                course_id,
+                topic_id
+            )
+            status_code = 200
+            return jsonify(result), status_code
+
+
 # User Endpoints
 @app.route("/user/<user_id>/<lms_user_id>", methods=['GET'])
 @cross_origin(supports_credentials=True)
@@ -1155,18 +1182,11 @@ def user_by_user_id(user_id, lms_user_id):
 
 
 @app.route("/user/<user_id>/<lms_user_id>/settings",
-           methods=['GET', 'PUT', 'DELETE'])
+           methods=['PUT', 'DELETE'])
 @cross_origin(supports_credentials=True)
-def settings_by_user_id(user_id, lms_user_id):
+def settings_by_user_id_administration(user_id, lms_user_id):
     method = request.method
     match method:
-        case 'GET':
-            settings = services.get_settings_for_user(
-                unit_of_work.SqlAlchemyUnitOfWork(),
-                user_id
-            )
-            status_code = 200
-            return jsonify(settings), status_code
         case 'PUT':
             condition1 = 'theme' in request.json
             condition2 = 'pswd' in request.json
@@ -1189,6 +1209,21 @@ def settings_by_user_id(user_id, lms_user_id):
             result = settings
             status_code = 200
             return jsonify(result), status_code
+
+
+@app.route("/user/<user_id>/<lms_user_id>/settings",
+           methods=['GET'])
+@cross_origin(supports_credentials=True)
+def get_settings_by_user_id(user_id, lms_user_id):
+    method = request.method
+    match method:
+        case 'GET':
+            settings = services.get_settings_for_user(
+                unit_of_work.SqlAlchemyUnitOfWork(),
+                user_id
+            )
+            status_code = 200
+            return jsonify(settings), status_code
 
 
 # Log Endpoints

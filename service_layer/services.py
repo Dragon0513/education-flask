@@ -250,32 +250,22 @@ def create_course_topic(
 def create_ils_input_answers(
         uow: unit_of_work.AbstractUnitOfWork,
         questionnaire_id,
-        vv_2_f7,
-        vv_5_f19,
-        vv_7_f27,
-        vv_10_f39,
-        vv_11_f43,
-        vv_1_f3=None,
-        vv_3_f11=None,
-        vv_4_f15=None,
-        vv_6_f23=None,
-        vv_8_f31=None,
-        vv_9_f35=None
+        answers
 ) -> dict:
     with uow:
         ils_input_answers = LM.IlsInputAnswers(
             questionnaire_id,
-            vv_2_f7,
-            vv_5_f19,
-            vv_7_f27,
-            vv_10_f39,
-            vv_11_f43,
-            vv_1_f3,
-            vv_3_f11,
-            vv_4_f15,
-            vv_6_f23,
-            vv_8_f31,
-            vv_9_f35
+            answers['vv_2_f7'],
+            answers['vv_5_f19'],
+            answers['vv_7_f27'],
+            answers['vv_10_f39'],
+            answers['vv_11_f43'],
+            answers['vv_1_f3'] if 'vv_1_f3' in answers.keys() else None,
+            answers['vv_3_f11'] if 'vv_3_f11' in answers.keys() else None,
+            answers['vv_4_f15'] if 'vv_4_f15' in answers.keys() else None,
+            answers['vv_6_f23'] if 'vv_6_f23' in answers.keys() else None,
+            answers['vv_8_f31'] if 'vv_8_f31' in answers.keys() else None,
+            answers['vv_9_f35'] if 'vv_9_f35' in answers.keys() else None
         )
         uow.ils_input_answers.create_ils_input_answers(ils_input_answers)
         uow.commit()
@@ -286,32 +276,22 @@ def create_ils_input_answers(
 def create_ils_perception_answers(
         uow: unit_of_work.AbstractUnitOfWork,
         questionnaire_id,
-        si_1_f2,
-        si_4_f14,
-        si_7_f26,
-        si_10_f38,
-        si_11_f42,
-        si_2_f6=None,
-        si_3_f10=None,
-        si_5_f18=None,
-        si_6_f22=None,
-        si_8_f30=None,
-        si_9_f34=None
+        answers
 ) -> dict:
     with uow:
         ils_perception_answers = LM.IlsPerceptionAnswers(
             questionnaire_id,
-            si_1_f2,
-            si_4_f14,
-            si_7_f26,
-            si_10_f38,
-            si_11_f42,
-            si_2_f6,
-            si_3_f10,
-            si_5_f18,
-            si_6_f22,
-            si_8_f30,
-            si_9_f34
+            answers['si_1_f2'],
+            answers['si_4_f14'],
+            answers['si_7_f26'],
+            answers['si_10_f38'],
+            answers['si_11_f42'],
+            answers['si_2_f6'] if 'si_2_f6' in answers.keys() else None,
+            answers['si_3_f10'] if 'si_3_f10' in answers.keys() else None,
+            answers['si_5_f18'] if 'si_5_f18' in answers.keys() else None,
+            answers['si_6_f22'] if 'si_6_f22' in answers.keys() else None,
+            answers['si_8_f30'] if 'si_8_f30' in answers.keys() else None,
+            answers['si_9_f34'] if 'si_9_f34' in answers.keys() else None
         )
         uow.ils_perception_answers\
             .create_ils_perception_answers(ils_perception_answers)
@@ -323,32 +303,22 @@ def create_ils_perception_answers(
 def create_ils_processing_answers(
         uow: unit_of_work.AbstractUnitOfWork,
         questionnaire_id,
-        ar_3_f9,
-        ar_4_f13,
-        ar_6_f21,
-        ar_7_f25,
-        ar_8_f29,
-        ar_1_f1=None,
-        ar_2_f5=None,
-        ar_5_f17=None,
-        ar_9_f33=None,
-        ar_10_f37=None,
-        ar_11_f41=None
+        answers
 ) -> dict:
     with uow:
         ils_processing_answers = LM.IlsProcessingAnswers(
             questionnaire_id,
-            ar_3_f9,
-            ar_4_f13,
-            ar_6_f21,
-            ar_7_f25,
-            ar_8_f29,
-            ar_1_f1,
-            ar_2_f5,
-            ar_5_f17,
-            ar_9_f33,
-            ar_10_f37,
-            ar_11_f41
+            answers['ar_3_f9'],
+            answers['ar_4_f13'],
+            answers['ar_6_f21'],
+            answers['ar_7_f25'],
+            answers['ar_8_f29'],
+            answers['ar_1_f1'] if 'ar_1_f1' in answers.keys() else None,
+            answers['ar_2_f5'] if 'ar_2_f5' in answers.keys() else None,
+            answers['ar_5_f17'] if 'ar_5_f17' in answers.keys() else None,
+            answers['ar_9_f33'] if 'ar_9_f33' in answers.keys() else None,
+            answers['ar_10_f37'] if 'ar_10_f37' in answers.keys() else None,
+            answers['ar_11_f41'] if 'ar_11_f41' in answers.keys() else None
         )
         uow.ils_processing_answers\
             .create_ils_processing_answers(ils_processing_answers)
@@ -360,32 +330,22 @@ def create_ils_processing_answers(
 def create_ils_understanding_answers(
         uow: unit_of_work.AbstractUnitOfWork,
         questionnaire_id,
-        sg_1_f4,
-        sg_2_f8,
-        sg_4_f16,
-        sg_10_f40,
-        sg_11_f44,
-        sg_3_f12=None,
-        sg_5_f20=None,
-        sg_6_f24=None,
-        sg_7_f28=None,
-        sg_8_f32=None,
-        sg_9_f36=None
+        answers
 ) -> dict:
     with uow:
         ils_understanding_answers = LM.IlsUnderstandingAnswers(
             questionnaire_id,
-            sg_1_f4,
-            sg_2_f8,
-            sg_4_f16,
-            sg_10_f40,
-            sg_11_f44,
-            sg_3_f12,
-            sg_5_f20,
-            sg_6_f24,
-            sg_7_f28,
-            sg_8_f32,
-            sg_9_f36
+            answers['sg_1_f4'],
+            answers['sg_2_f8'],
+            answers['sg_4_f16'],
+            answers['sg_10_f40'],
+            answers['sg_11_f44'],
+            answers['sg_3_f12'] if '' in answers.keys() else None,
+            answers['sg_5_f20'] if '' in answers.keys() else None,
+            answers['sg_6_f24'] if '' in answers.keys() else None,
+            answers['sg_7_f28'] if '' in answers.keys() else None,
+            answers['sg_8_f32'] if '' in answers.keys() else None,
+            answers['sg_9_f36'] if '' in answers.keys() else None
         )
         uow.ils_understanding_answers\
             .create_ils_understanding_answers(ils_understanding_answers)
@@ -533,88 +493,50 @@ def create_learning_style(
 def create_list_k(
         uow: unit_of_work.AbstractUnitOfWork,
         questionnaire_id,
-        org1_f1,
-        org2_f2,
-        org3_f3,
-        ela1_f4,
-        ela2_f5,
-        ela3_f6,
-        krp1_f7,
-        krp2_f8,
-        krp3_f9,
-        wie1_f10,
-        wie2_f11,
-        wie3_f12,
-        zp1_f13,
-        zp2_f14,
-        zp3_f15,
-        kon1_f16,
-        kon2_f17,
-        kon3_f18,
-        reg1_f19,
-        reg2_f20,
-        reg3_f21,
-        auf1_f22,
-        auf2_f23,
-        auf3_f24,
-        ans1_f25,
-        ans2_f26,
-        ans3_f27,
-        zei1_f28,
-        zei2_f29,
-        zei3_f30,
-        lms1_f31,
-        lms2_f32,
-        lms3_f33,
-        lit1_f34,
-        lit2_f35,
-        lit3_f36,
-        lu1_f37,
-        lu2_f38,
-        lu3_f39
+        answers
 ) -> dict:
     with uow:
         list_k = LM.ListK(
             questionnaire_id,
-            org1_f1,
-            org2_f2,
-            org3_f3,
-            ela1_f4,
-            ela2_f5,
-            ela3_f6,
-            krp1_f7,
-            krp2_f8,
-            krp3_f9,
-            wie1_f10,
-            wie2_f11,
-            wie3_f12,
-            zp1_f13,
-            zp2_f14,
-            zp3_f15,
-            kon1_f16,
-            kon2_f17,
-            kon3_f18,
-            reg1_f19,
-            reg2_f20,
-            reg3_f21,
-            auf1_f22,
-            auf2_f23,
-            auf3_f24,
-            ans1_f25,
-            ans2_f26,
-            ans3_f27,
-            zei1_f28,
-            zei2_f29,
-            zei3_f30,
-            lms1_f31,
-            lms2_f32,
-            lms3_f33,
-            lit1_f34,
-            lit2_f35,
-            lit3_f36,
-            lu1_f37,
-            lu2_f38,
-            lu3_f39
+            answers['org1_f1'],
+            answers['org2_f2'],
+            answers['org3_f3'],
+            answers['ela1_f4'],
+            answers['ela2_f5'],
+            answers['ela3_f6'],
+            answers['krp1_f7'],
+            answers['krp2_f8'],
+            answers['krp3_f9'],
+            answers['wie1_f10'],
+            answers['wie2_f11'],
+            answers['wie3_f12'],
+            answers['zp1_f13'],
+            answers['zp2_f14'],
+            answers['zp3_f15'],
+            answers['kon1_f16'],
+            answers['kon2_f17'],
+            answers['kon3_f18'],
+            answers['reg1_f19'],
+            answers['reg2_f20'],
+            answers['reg3_f21'],
+            answers['auf1_f22'],
+            answers['auf2_f23'],
+            answers['auf3_f24'],
+            answers['ans1_f25'],
+            answers['ans2_f26'],
+            answers['ans3_f27'],
+            answers['zei1_f28'],
+            answers['zei2_f29'],
+            answers['zei3_f30'],
+            answers['lms1_f31'],
+            answers['lms2_f32'],
+            answers['lms3_f33'],
+            answers['lit1_f34'],
+            answers['lit2_f35'],
+            answers['lit3_f36'],
+            answers['lu1_f37'],
+            answers['lu2_f38'],
+            answers['lu3_f39']
         )
         uow.list_k.create_list_k(list_k)
         uow.commit()
@@ -625,66 +547,8 @@ def create_list_k(
 def create_questionnaire(
         uow: unit_of_work.AbstractUnitOfWork,
         student_id,
-        vv_2_f7,
-        vv_5_f19,
-        vv_7_f27,
-        vv_10_f39,
-        vv_11_f43,
-        si_1_f2,
-        si_4_f14,
-        si_7_f26,
-        si_10_f38,
-        si_11_f42,
-        ar_3_f9,
-        ar_4_f13,
-        ar_6_f21,
-        ar_7_f25,
-        ar_8_f29,
-        sg_1_f4,
-        sg_2_f8,
-        sg_4_f16,
-        sg_10_f40,
-        sg_11_f44,
-        org1_f1,
-        org2_f2,
-        org3_f3,
-        ela1_f4,
-        ela2_f5,
-        ela3_f6,
-        krp1_f7,
-        krp2_f8,
-        krp3_f9,
-        wie1_f10,
-        wie2_f11,
-        wie3_f12,
-        zp1_f13,
-        zp2_f14,
-        zp3_f15,
-        kon1_f16,
-        kon2_f17,
-        kon3_f18,
-        reg1_f19,
-        reg2_f20,
-        reg3_f21,
-        auf1_f22,
-        auf2_f23,
-        auf3_f24,
-        ans1_f25,
-        ans2_f26,
-        ans3_f27,
-        zei1_f28,
-        zei2_f29,
-        zei3_f30,
-        lms1_f31,
-        lms2_f32,
-        lms3_f33,
-        lit1_f34,
-        lit2_f35,
-        lit3_f36,
-        lu1_f37,
-        lu2_f38,
-        lu3_f39,
-        **kwargs
+        ils_answers,
+        list_k_answers
 ) -> dict:
     with uow:
         exist = uow.questionnaire.get_questionnaire_by_student_id(
@@ -698,91 +562,38 @@ def create_questionnaire(
         questionnaire = LM.Questionnaire(student_id)
         uow.questionnaire.create_questionnaire(questionnaire)
         uow.commit()
+        ils_input_answers = {}
+        ils_perception_answers = {}
+        ils_processing_answers = {}
+        ils_understanding_answers = {}
+        for id, answer in ils_answers.items():
+            if id.startswith("vv"):
+                ils_input_answers[id] = answer
+            if id.startswith("si"):
+                ils_perception_answers[id] = answer
+            if id.startswith("ar"):
+                ils_processing_answers[id] = answer
+            if id.startswith("sg"):
+                ils_understanding_answers[id] = answer
         create_ils_input_answers(uow,
                                  questionnaire.id,
-                                 vv_2_f7,
-                                 vv_5_f19,
-                                 vv_7_f27,
-                                 vv_10_f39,
-                                 vv_11_f43,
-                                 kwargs['vv_1_f3']
-                                 if 'vv_1_f3' in kwargs else None,
-                                 kwargs['vv_3_f11']
-                                 if 'vv_3_f11' in kwargs else None,
-                                 kwargs['vv_4_f15']
-                                 if 'vv_4_f15' in kwargs else None,
-                                 kwargs['vv_6_f23']
-                                 if 'vv_6_f23' in kwargs else None,
-                                 kwargs['vv_8_f31']
-                                 if 'vv_8_f31' in kwargs else None,
-                                 kwargs['vv_9_f35']
-                                 if 'vv_9_f35' in kwargs else None
+                                 ils_input_answers
                                  )
         create_ils_perception_answers(uow,
                                       questionnaire.id,
-                                      si_1_f2,
-                                      si_4_f14,
-                                      si_7_f26,
-                                      si_10_f38,
-                                      si_11_f42
+                                      ils_perception_answers
                                       )
         create_ils_processing_answers(uow,
                                       questionnaire.id,
-                                      ar_3_f9,
-                                      ar_4_f13,
-                                      ar_6_f21,
-                                      ar_7_f25,
-                                      ar_8_f29
+                                      ils_processing_answers
                                       )
         create_ils_understanding_answers(uow,
                                          questionnaire.id,
-                                         sg_1_f4,
-                                         sg_2_f8,
-                                         sg_4_f16,
-                                         sg_10_f40,
-                                         sg_11_f44
+                                         ils_understanding_answers
                                          )
         create_list_k(uow,
                       questionnaire.id,
-                      org1_f1,
-                      org2_f2,
-                      org3_f3,
-                      ela1_f4,
-                      ela2_f5,
-                      ela3_f6,
-                      krp1_f7,
-                      krp2_f8,
-                      krp3_f9,
-                      wie1_f10,
-                      wie2_f11,
-                      wie3_f12,
-                      zp1_f13,
-                      zp2_f14,
-                      zp3_f15,
-                      kon1_f16,
-                      kon2_f17,
-                      kon3_f18,
-                      reg1_f19,
-                      reg2_f20,
-                      reg3_f21,
-                      auf1_f22,
-                      auf2_f23,
-                      auf3_f24,
-                      ans1_f25,
-                      ans2_f26,
-                      ans3_f27,
-                      zei1_f28,
-                      zei2_f29,
-                      zei3_f30,
-                      lms1_f31,
-                      lms2_f32,
-                      lms3_f33,
-                      lit1_f34,
-                      lit2_f35,
-                      lit3_f36,
-                      lu1_f37,
-                      lu2_f38,
-                      lu3_f39)
+                      list_k_answers)
         characteristics = get_learning_characteristics(
             uow,
             student_id

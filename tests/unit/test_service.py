@@ -971,12 +971,129 @@ class FakeUnitOfWork(unit_of_work.AbstractUnitOfWork):
         pass  # Just needed for working, has no function in test
 
 
+user_name_example = "Max Mustermann"
+university_example = "TH-AB"
+creation_date_example = "2023-03-31T09:00:00Z"
+
+
+ils_complete = [
+    "ar_1_f1",
+    "ar_2_f5",
+    "ar_3_f9",
+    "ar_4_f13",
+    "ar_5_f17",
+    "ar_6_f21",
+    "ar_7_f25",
+    "ar_8_f29",
+    "ar_9_f33",
+    "ar_10_f37",
+    "ar_11_f41",
+    "si_1_f2",
+    "si_2_f6",
+    "si_3_f10",
+    "si_4_f14",
+    "si_5_f18",
+    "si_6_f22",
+    "si_7_f26",
+    "si_8_f30",
+    "si_9_f34",
+    "si_10_f38",
+    "si_11_f42",
+    "vv_1_f3",
+    "vv_2_f7",
+    "vv_3_f11",
+    "vv_4_f15",
+    "vv_5_f19",
+    "vv_6_f23",
+    "vv_7_f27",
+    "vv_8_f31",
+    "vv_9_f35",
+    "vv_10_f39",
+    "vv_11_f43",
+    "sg_1_f4",
+    "sg_2_f8",
+    "sg_3_f12",
+    "sg_4_f16",
+    "sg_5_f20",
+    "sg_6_f24",
+    "sg_7_f28",
+    "sg_8_f32",
+    "sg_9_f36",
+    "sg_10_f40",
+    "sg_11_f44"
+]
+ils_short = [
+    "ar_3_f9",
+    "ar_4_f13",
+    "ar_6_f21",
+    "ar_7_f25",
+    "ar_8_f29",
+    "si_1_f2",
+    "si_4_f14",
+    "si_7_f26",
+    "si_10_f38",
+    "si_11_f42",
+    "vv_2_f7",
+    "vv_5_f19",
+    "vv_7_f27",
+    "vv_10_f39",
+    "vv_11_f43",
+    "sg_1_f4",
+    "sg_2_f8",
+    "sg_4_f16",
+    "sg_10_f40",
+    "sg_11_f44"
+]
+list_k_ids = [
+    'org1_f1',
+    'org2_f2',
+    'org3_f3',
+    'ela1_f4',
+    'ela2_f5',
+    'ela3_f6',
+    'krp1_f7',
+    'krp2_f8',
+    'krp3_f9',
+    'wie1_f10',
+    'wie2_f11',
+    'wie3_f12',
+    'zp1_f13',
+    'zp2_f14',
+    'zp3_f15',
+    'kon1_f16',
+    'kon2_f17',
+    'kon3_f18',
+    'reg1_f19',
+    'reg2_f20',
+    'reg3_f21',
+    'auf1_f22',
+    'auf2_f23',
+    'auf3_f24',
+    'ans1_f25',
+    'ans2_f26',
+    'ans3_f27',
+    'zei1_f28',
+    'zei2_f29',
+    'zei3_f30',
+    'lms1_f31',
+    'lms2_f32',
+    'lms3_f33',
+    'lit1_f34',
+    'lit2_f35',
+    'lit3_f36',
+    'lu1_f37',
+    'lu2_f38',
+    'lu3_f39'
+]
+wrong_test_id = "Test ID"
+
+
 # Helper Functions
 def create_student_for_tests(uow):
     services.create_user(
         uow=uow,
         name="Sonja Studentin",
-        university="TH-AB",
+        university=university_example,
         lms_user_id=1,
         role="student"
     )
@@ -986,7 +1103,7 @@ def create_teacher_for_tests(uow):
     services.create_user(
         uow=uow,
         name="Tim Teacher",
-        university="TH-AB",
+        university=university_example,
         lms_user_id=2,
         role="teacher"
     )
@@ -996,7 +1113,7 @@ def create_course_creator_for_tests(uow):
     services.create_user(
         uow=uow,
         name="Claus Creator",
-        university="TH-AB",
+        university=university_example,
         lms_user_id=3,
         role="course creator"
     )
@@ -1006,7 +1123,7 @@ def create_admin_for_tests(uow):
     services.create_user(
         uow=uow,
         name="Achim Admin",
-        university="TH-AB",
+        university=university_example,
         lms_user_id=4,
         role="admin"
     )
@@ -1017,7 +1134,7 @@ def create_course_for_tests(uow):
         uow=uow,
         lms_id=1,
         name="Test",
-        university="TH-AB",
+        university=university_example,
         created_by=1,
         created_at="2023-01-01"
     )
@@ -1032,7 +1149,7 @@ def create_topic_for_tests(uow):
         contains_le=False,
         parent_id=None,
         name="Test Topic",
-        university="TH-AB",
+        university=university_example,
         created_at="2023-01-01",
         created_by="Test"
     )
@@ -1047,7 +1164,7 @@ def create_sub_topic_for_tests(uow):
         contains_le=True,
         parent_id=1,
         name="Test Sub-Topic",
-        university="TH-AB",
+        university=university_example,
         created_at="2023-01-01",
         created_by="Test"
     )
@@ -1062,8 +1179,8 @@ def create_learning_element_for_tests(uow):
         classification="RQ",
         name="Test LE",
         created_at="2017-01-01",
-        created_by="Max Mustermann",
-        university="TH-AB"
+        created_by=user_name_example,
+        university=university_example
     )
 
 
@@ -1128,8 +1245,8 @@ def test_create_admin():
     uow = FakeUnitOfWork()
     entries_beginning = len(uow.admin.admin)
     user = UA.User(
-        "Max Mustermann",
-        "TH-AB",
+        user_name_example,
+        university_example,
         1,
         "admin"
     )
@@ -1147,8 +1264,8 @@ def test_create_course_creator():
     uow = FakeUnitOfWork()
     entries_beginning = len(uow.course_creator.course_creator)
     user = UA.User(
-        "Max Mustermann",
-        "TH-AB",
+        user_name_example,
+        university_example,
         1,
         "course creator"
     )
@@ -1182,8 +1299,8 @@ def test_create_student():
         uow.learning_characteristics.learning_characteristics)
     style_entries_beginning = len(uow.learning_style.learning_style)
     user = UA.User(
-        "Max Mustermann",
-        "TH-AB",
+        user_name_example,
+        university_example,
         1,
         "student"
     )
@@ -1206,8 +1323,8 @@ def test_create_teacher():
     uow = FakeUnitOfWork()
     entries_beginning = len(uow.teacher.teacher)
     user = UA.User(
-        "Max Mustermann",
-        "TH-AB",
+        user_name_example,
+        university_example,
         1,
         "teacher"
     )
@@ -1224,29 +1341,29 @@ def test_create_teacher():
 @pytest.mark.parametrize("name, university, lms_user_id, role", [
     # Working Example Admin
     (
-        "Max Mustermann",
-        "TH-AB",
+        user_name_example,
+        university_example,
         1,
         "admin"
     ),
     # Working Example Course Creator
     (
-        "Max Mustermann",
-        "TH-AB",
+        user_name_example,
+        university_example,
         1,
         "course creator"
     ),
     # Working Example Student
     (
-        "Max Mustermann",
-        "TH-AB",
+        user_name_example,
+        university_example,
         1,
         "student"
     ),
     # Working Example Teacher
     (
-        "Max Mustermann",
-        "TH-AB",
+        user_name_example,
+        university_example,
         1,
         "teacher"
     )
@@ -1477,7 +1594,7 @@ def test_update_user():
     uow = FakeUnitOfWork()
     create_student_for_tests(uow)
     result = services.update_user(
-        uow, 1, 1, "Maria Musterfraun", "TH-AB")
+        uow, 1, 1, "Maria Musterfraun", university_example)
     assert type(result) == dict
     assert result != {}
 
@@ -1517,71 +1634,17 @@ def test_reset_learning_characteristics():
     assert result['learning_style']['perception_value'] == 0
 
 
-@pytest.mark.parametrize("vv_2_f7, vv_5_f19, vv_7_f27, vv_10_f39,\
-                         vv_11_f43, vv_1_f3, vv_3_f11, vv_4_f15,\
-                         vv_6_f23, vv_8_f31, vv_9_f35", [
-    # Working Example Short Form
-    (
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        None,
-        None,
-        None,
-        None,
-        None,
-        None
-    ),
-    # Working Example long Form
-    (
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a'
-    ),
-    # Working Example with mixture
-    (
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        None,
-        None,
-        None
-    )
-])
-def test_create_ils_input_answers(vv_2_f7, vv_5_f19, vv_7_f27, vv_10_f39,
-                                  vv_11_f43, vv_1_f3, vv_3_f11, vv_4_f15,
-                                  vv_6_f23, vv_8_f31, vv_9_f35):
+def test_create_ils_input_answers():
     uow = FakeUnitOfWork()
+    ils_input_answers = {}
+    for key in ils_complete:
+        if key.startswith("vv"):
+            ils_input_answers[key] = "a"
     entries_beginning = len(uow.ils_input_answers.ils_input_answers)
     result = services.create_ils_input_answers(
         uow=uow,
         questionnaire_id=1,
-        vv_2_f7=vv_2_f7,
-        vv_5_f19=vv_5_f19,
-        vv_7_f27=vv_7_f27,
-        vv_10_f39=vv_10_f39,
-        vv_11_f43=vv_11_f43,
-        vv_1_f3=vv_1_f3,
-        vv_3_f11=vv_3_f11,
-        vv_4_f15=vv_4_f15,
-        vv_6_f23=vv_6_f23,
-        vv_8_f31=vv_8_f31,
-        vv_9_f35=vv_9_f35
+        answers=ils_input_answers
     )
     entries_after = len(uow.ils_input_answers.ils_input_answers)
     assert type(result) == dict
@@ -1589,71 +1652,17 @@ def test_create_ils_input_answers(vv_2_f7, vv_5_f19, vv_7_f27, vv_10_f39,
     assert entries_beginning + 1 == entries_after
 
 
-@pytest.mark.parametrize("si_1_f2, si_4_f14, si_7_f26, si_10_f38,\
-                         si_11_f42, si_2_f6, si_3_f10, si_5_f18,\
-                         si_6_f22,si_8_f30, si_9_f34", [
-    # Working Example Short Form
-    (
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        None,
-        None,
-        None,
-        None,
-        None,
-        None
-    ),
-    # Working Example long Form
-    (
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a'
-    ),
-    # Working Example with mixture
-    (
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        None,
-        None,
-        None
-    )
-])
-def test_create_ils_perception_answers(si_1_f2, si_4_f14, si_7_f26, si_10_f38,
-                                       si_11_f42, si_2_f6, si_3_f10, si_5_f18,
-                                       si_6_f22, si_8_f30, si_9_f34):
+def test_create_ils_perception_answers():
     uow = FakeUnitOfWork()
+    ils_perception_answers = {}
+    for key in ils_complete:
+        if key.startswith("si"):
+            ils_perception_answers[key] = "a"
     entries_beginning = len(uow.ils_perception_answers.ils_perception_answers)
     result = services.create_ils_perception_answers(
         uow=uow,
         questionnaire_id=1,
-        si_1_f2=si_1_f2,
-        si_4_f14=si_4_f14,
-        si_7_f26=si_7_f26,
-        si_10_f38=si_10_f38,
-        si_11_f42=si_11_f42,
-        si_2_f6=si_2_f6,
-        si_3_f10=si_3_f10,
-        si_5_f18=si_5_f18,
-        si_6_f22=si_6_f22,
-        si_8_f30=si_8_f30,
-        si_9_f34=si_9_f34
+        answers=ils_perception_answers
     )
     entries_after = len(uow.ils_perception_answers.ils_perception_answers)
     assert type(result) == dict
@@ -1661,71 +1670,17 @@ def test_create_ils_perception_answers(si_1_f2, si_4_f14, si_7_f26, si_10_f38,
     assert entries_beginning + 1 == entries_after
 
 
-@pytest.mark.parametrize("ar_3_f9, ar_4_f13, ar_6_f21, ar_7_f25,\
-                         ar_8_f29, ar_1_f1, ar_2_f5, ar_5_f17,\
-                         ar_9_f33, ar_10_f37, ar_11_f41", [
-    # Working Example Short Form
-    (
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        None,
-        None,
-        None,
-        None,
-        None,
-        None
-    ),
-    # Working Example long Form
-    (
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a'
-    ),
-    # Working Example with mixture
-    (
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        None,
-        None,
-        None
-    )
-])
-def test_create_ils_processing_answers(ar_3_f9, ar_4_f13, ar_6_f21, ar_7_f25,
-                                       ar_8_f29, ar_1_f1, ar_2_f5, ar_5_f17,
-                                       ar_9_f33, ar_10_f37, ar_11_f41):
+def test_create_ils_processing_answers():
     uow = FakeUnitOfWork()
+    ils_processing_answers = {}
+    for key in ils_complete:
+        if key.startswith("ar"):
+            ils_processing_answers[key] = "a"
     entries_beginning = len(uow.ils_processing_answers.ils_processing_answers)
     result = services.create_ils_processing_answers(
         uow=uow,
         questionnaire_id=1,
-        ar_3_f9=ar_3_f9,
-        ar_4_f13=ar_4_f13,
-        ar_6_f21=ar_6_f21,
-        ar_7_f25=ar_7_f25,
-        ar_8_f29=ar_8_f29,
-        ar_1_f1=ar_1_f1,
-        ar_2_f5=ar_2_f5,
-        ar_5_f17=ar_5_f17,
-        ar_9_f33=ar_9_f33,
-        ar_10_f37=ar_10_f37,
-        ar_11_f41=ar_11_f41
+        answers=ils_processing_answers
     )
     entries_after = len(uow.ils_processing_answers.ils_processing_answers)
     assert type(result) == dict
@@ -1733,73 +1688,18 @@ def test_create_ils_processing_answers(ar_3_f9, ar_4_f13, ar_6_f21, ar_7_f25,
     assert entries_beginning + 1 == entries_after
 
 
-@pytest.mark.parametrize("sg_1_f4, sg_2_f8, sg_4_f16, sg_10_f40,\
-                         sg_11_f44, sg_3_f12, sg_5_f20, sg_6_f24,\
-                         sg_7_f28, sg_8_f32, sg_9_f36", [
-    # Working Example Short Form
-    (
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        None,
-        None,
-        None,
-        None,
-        None,
-        None
-    ),
-    # Working Example long Form
-    (
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a'
-    ),
-    # Working Example with mixture
-    (
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        None,
-        None,
-        None
-    )
-])
-def test_create_ils_understanding_answers(sg_1_f4, sg_2_f8, sg_4_f16,
-                                          sg_10_f40, sg_11_f44, sg_3_f12,
-                                          sg_5_f20, sg_6_f24, sg_7_f28,
-                                          sg_8_f32, sg_9_f36):
+def test_create_ils_understanding_answers():
     uow = FakeUnitOfWork()
+    ils_understanding_answers = {}
+    for key in ils_complete:
+        if key.startswith("sg"):
+            ils_understanding_answers[key] = "a"
     entries_beginning = len(
         uow.ils_understanding_answers.ils_understanding_answers)
     result = services.create_ils_understanding_answers(
         uow=uow,
         questionnaire_id=1,
-        sg_1_f4=sg_1_f4,
-        sg_2_f8=sg_2_f8,
-        sg_4_f16=sg_4_f16,
-        sg_10_f40=sg_10_f40,
-        sg_11_f44=sg_11_f44,
-        sg_3_f12=sg_3_f12,
-        sg_5_f20=sg_5_f20,
-        sg_6_f24=sg_6_f24,
-        sg_7_f28=sg_7_f28,
-        sg_8_f32=sg_8_f32,
-        sg_9_f36=sg_9_f36
+        answers=ils_understanding_answers
     )
     entries_after = len(
         uow.ils_understanding_answers.ils_understanding_answers)
@@ -1808,109 +1708,16 @@ def test_create_ils_understanding_answers(sg_1_f4, sg_2_f8, sg_4_f16,
     assert entries_beginning + 1 == entries_after
 
 
-@pytest.mark.parametrize("org1_f1, org2_f2, org3_f3, ela1_f4, ela2_f5,\
-                         ela3_f6, krp1_f7, krp2_f8, krp3_f9, wie1_f10,\
-                         wie2_f11, wie3_f12, zp1_f13, zp2_f14, zp3_f15,\
-                         kon1_f16, kon2_f17, kon3_f18, reg1_f19, reg2_f20,\
-                         reg3_f21, auf1_f22, auf2_f23, auf3_f24, ans1_f25,\
-                         ans2_f26, ans3_f27, zei1_f28, zei2_f29, zei3_f30,\
-                         lms1_f31, lms2_f32, lms3_f33, lit1_f34, lit2_f35,\
-                         lit3_f36, lu1_f37, lu2_f38, lu3_f39", [
-    # Working Example
-    (
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1
-    )
-])
-def test_create_list_k(org1_f1, org2_f2, org3_f3, ela1_f4, ela2_f5,
-                       ela3_f6, krp1_f7, krp2_f8, krp3_f9, wie1_f10,
-                       wie2_f11, wie3_f12, zp1_f13, zp2_f14, zp3_f15,
-                       kon1_f16, kon2_f17, kon3_f18, reg1_f19, reg2_f20,
-                       reg3_f21, auf1_f22, auf2_f23, auf3_f24, ans1_f25,
-                       ans2_f26, ans3_f27, zei1_f28, zei2_f29, zei3_f30,
-                       lms1_f31, lms2_f32, lms3_f33, lit1_f34, lit2_f35,
-                       lit3_f36, lu1_f37, lu2_f38, lu3_f39):
+def test_create_list_k():
     uow = FakeUnitOfWork()
+    list_k_answers = {}
+    for key in list_k_ids:
+        list_k_answers[key] = 1
     entries_beginning = len(uow.list_k.list_k)
     result = services.create_list_k(
         uow=uow,
         questionnaire_id=1,
-        org1_f1=org1_f1,
-        org2_f2=org2_f2,
-        org3_f3=org3_f3,
-        ela1_f4=ela1_f4,
-        ela2_f5=ela2_f5,
-        ela3_f6=ela3_f6,
-        krp1_f7=krp1_f7,
-        krp2_f8=krp2_f8,
-        krp3_f9=krp3_f9,
-        wie1_f10=wie1_f10,
-        wie2_f11=wie2_f11,
-        wie3_f12=wie3_f12,
-        zp1_f13=zp1_f13,
-        zp2_f14=zp2_f14,
-        zp3_f15=zp3_f15,
-        kon1_f16=kon1_f16,
-        kon2_f17=kon2_f17,
-        kon3_f18=kon3_f18,
-        reg1_f19=reg1_f19,
-        reg2_f20=reg2_f20,
-        reg3_f21=reg3_f21,
-        auf1_f22=auf1_f22,
-        auf2_f23=auf2_f23,
-        auf3_f24=auf3_f24,
-        ans1_f25=ans1_f25,
-        ans2_f26=ans2_f26,
-        ans3_f27=ans3_f27,
-        zei1_f28=zei1_f28,
-        zei2_f29=zei2_f29,
-        zei3_f30=zei3_f30,
-        lms1_f31=lms1_f31,
-        lms2_f32=lms2_f32,
-        lms3_f33=lms3_f33,
-        lit1_f34=lit1_f34,
-        lit2_f35=lit2_f35,
-        lit3_f36=lit3_f36,
-        lu1_f37=lu1_f37,
-        lu2_f38=lu2_f38,
-        lu3_f39=lu3_f39
+        answers=list_k_answers
     )
     entries_after = len(uow.list_k.list_k)
     assert type(result) == dict
@@ -1918,311 +1725,38 @@ def test_create_list_k(org1_f1, org2_f2, org3_f3, ela1_f4, ela2_f5,
     assert entries_beginning + 1 == entries_after
 
 
-@pytest.mark.parametrize("vv_2_f7, vv_5_f19, vv_7_f27, vv_10_f39,\
-                         vv_11_f43, vv_1_f3, vv_3_f11, vv_4_f15,\
-                         vv_6_f23, vv_8_f31, vv_9_f35,\
-                         si_1_f2, si_4_f14, si_7_f26, si_10_f38,\
-                         si_11_f42, si_2_f6, si_3_f10, si_5_f18,\
-                         si_6_f22,si_8_f30, si_9_f34,\
-                         ar_3_f9, ar_4_f13, ar_6_f21, ar_7_f25,\
-                         ar_8_f29, ar_1_f1, ar_2_f5, ar_5_f17,\
-                         ar_9_f33, ar_10_f37, ar_11_f41,\
-                         sg_1_f4, sg_2_f8, sg_4_f16, sg_10_f40,\
-                         sg_11_f44, sg_3_f12, sg_5_f20, sg_6_f24,\
-                         sg_7_f28, sg_8_f32, sg_9_f36,\
-                         org1_f1, org2_f2, org3_f3, ela1_f4, ela2_f5,\
-                         ela3_f6, krp1_f7, krp2_f8, krp3_f9, wie1_f10,\
-                         wie2_f11, wie3_f12, zp1_f13, zp2_f14, zp3_f15,\
-                         kon1_f16, kon2_f17, kon3_f18, reg1_f19, reg2_f20,\
-                         reg3_f21, auf1_f22, auf2_f23, auf3_f24, ans1_f25,\
-                         ans2_f26, ans3_f27, zei1_f28, zei2_f29, zei3_f30,\
-                         lms1_f31, lms2_f32, lms3_f33, lit1_f34, lit2_f35,\
-                         lit3_f36, lu1_f37, lu2_f38, lu3_f39", [
+@pytest.mark.parametrize("full_version", [
     # Working Example short form
     (
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1
+        True
     ),
     # Working Example full form
     (
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1
+        False
     )
 ])
-def test_create_questionnaire(vv_2_f7, vv_5_f19, vv_7_f27, vv_10_f39,
-                              vv_11_f43, vv_1_f3, vv_3_f11, vv_4_f15,
-                              vv_6_f23, vv_8_f31, vv_9_f35,
-                              si_1_f2, si_4_f14, si_7_f26, si_10_f38,
-                              si_11_f42, si_2_f6, si_3_f10, si_5_f18,
-                              si_6_f22, si_8_f30, si_9_f34,
-                              ar_3_f9, ar_4_f13, ar_6_f21, ar_7_f25,
-                              ar_8_f29, ar_1_f1, ar_2_f5, ar_5_f17,
-                              ar_9_f33, ar_10_f37, ar_11_f41,
-                              sg_1_f4, sg_2_f8, sg_4_f16, sg_10_f40,
-                              sg_11_f44, sg_3_f12, sg_5_f20, sg_6_f24,
-                              sg_7_f28, sg_8_f32, sg_9_f36,
-                              org1_f1, org2_f2, org3_f3, ela1_f4, ela2_f5,
-                              ela3_f6, krp1_f7, krp2_f8, krp3_f9, wie1_f10,
-                              wie2_f11, wie3_f12, zp1_f13, zp2_f14, zp3_f15,
-                              kon1_f16, kon2_f17, kon3_f18, reg1_f19, reg2_f20,
-                              reg3_f21, auf1_f22, auf2_f23, auf3_f24, ans1_f25,
-                              ans2_f26, ans3_f27, zei1_f28, zei2_f29, zei3_f30,
-                              lms1_f31, lms2_f32, lms3_f33, lit1_f34, lit2_f35,
-                              lit3_f36, lu1_f37, lu2_f38, lu3_f39):
+def test_create_questionnaire(full_version):
     uow = FakeUnitOfWork()
     services.create_learning_characteristics(
         uow=uow,
         student_id=1
     )
     entries_beginning = len(uow.questionnaire.questionnaire)
+    ils_answers = {}
+    list_k_answers = {}
+    if full_version:
+        for key in ils_complete:
+            ils_answers[key] = "a"
+    else:
+        for key in ils_short:
+            ils_answers[key] = "a"
+    for key in list_k_ids:
+        list_k_answers[key] = 1
     result = services.create_questionnaire(
         uow=uow,
         student_id=1,
-        vv_2_f7=vv_2_f7,
-        vv_5_f19=vv_5_f19,
-        vv_7_f27=vv_7_f27,
-        vv_10_f39=vv_10_f39,
-        vv_11_f43=vv_11_f43,
-        vv_1_f3=vv_1_f3,
-        vv_3_f11=vv_3_f11,
-        vv_4_f15=vv_4_f15,
-        vv_6_f23=vv_6_f23,
-        vv_8_f31=vv_8_f31,
-        vv_9_f35=vv_9_f35,
-        si_1_f2=si_1_f2,
-        si_4_f14=si_4_f14,
-        si_7_f26=si_7_f26,
-        si_10_f38=si_10_f38,
-        si_11_f42=si_11_f42,
-        si_2_f6=si_2_f6,
-        si_3_f10=si_3_f10,
-        si_5_f18=si_5_f18,
-        si_6_f22=si_6_f22,
-        si_8_f30=si_8_f30,
-        si_9_f34=si_9_f34,
-        ar_3_f9=ar_3_f9,
-        ar_4_f13=ar_4_f13,
-        ar_6_f21=ar_6_f21,
-        ar_7_f25=ar_7_f25,
-        ar_8_f29=ar_8_f29,
-        ar_1_f1=ar_1_f1,
-        ar_2_f5=ar_2_f5,
-        ar_5_f17=ar_5_f17,
-        ar_9_f33=ar_9_f33,
-        ar_10_f37=ar_10_f37,
-        ar_11_f41=ar_11_f41,
-        sg_1_f4=sg_1_f4,
-        sg_2_f8=sg_2_f8,
-        sg_4_f16=sg_4_f16,
-        sg_10_f40=sg_10_f40,
-        sg_11_f44=sg_11_f44,
-        sg_3_f12=sg_3_f12,
-        sg_5_f20=sg_5_f20,
-        sg_6_f24=sg_6_f24,
-        sg_7_f28=sg_7_f28,
-        sg_8_f32=sg_8_f32,
-        sg_9_f36=sg_9_f36,
-        org1_f1=org1_f1,
-        org2_f2=org2_f2,
-        org3_f3=org3_f3,
-        ela1_f4=ela1_f4,
-        ela2_f5=ela2_f5,
-        ela3_f6=ela3_f6,
-        krp1_f7=krp1_f7,
-        krp2_f8=krp2_f8,
-        krp3_f9=krp3_f9,
-        wie1_f10=wie1_f10,
-        wie2_f11=wie2_f11,
-        wie3_f12=wie3_f12,
-        zp1_f13=zp1_f13,
-        zp2_f14=zp2_f14,
-        zp3_f15=zp3_f15,
-        kon1_f16=kon1_f16,
-        kon2_f17=kon2_f17,
-        kon3_f18=kon3_f18,
-        reg1_f19=reg1_f19,
-        reg2_f20=reg2_f20,
-        reg3_f21=reg3_f21,
-        auf1_f22=auf1_f22,
-        auf2_f23=auf2_f23,
-        auf3_f24=auf3_f24,
-        ans1_f25=ans1_f25,
-        ans2_f26=ans2_f26,
-        ans3_f27=ans3_f27,
-        zei1_f28=zei1_f28,
-        zei2_f29=zei2_f29,
-        zei3_f30=zei3_f30,
-        lms1_f31=lms1_f31,
-        lms2_f32=lms2_f32,
-        lms3_f33=lms3_f33,
-        lit1_f34=lit1_f34,
-        lit2_f35=lit2_f35,
-        lit3_f36=lit3_f36,
-        lu1_f37=lu1_f37,
-        lu2_f38=lu2_f38,
-        lu3_f39=lu3_f39
+        ils_answers=ils_answers,
+        list_k_answers=list_k_answers
     )
     entries_after = len(uow.questionnaire.questionnaire)
     assert type(result) == dict
@@ -2231,89 +1765,8 @@ def test_create_questionnaire(vv_2_f7, vv_5_f19, vv_7_f27, vv_10_f39,
     services.create_questionnaire(
         uow=uow,
         student_id=1,
-        vv_2_f7=vv_2_f7,
-        vv_5_f19=vv_5_f19,
-        vv_7_f27=vv_7_f27,
-        vv_10_f39=vv_10_f39,
-        vv_11_f43=vv_11_f43,
-        vv_1_f3=vv_1_f3,
-        vv_3_f11=vv_3_f11,
-        vv_4_f15=vv_4_f15,
-        vv_6_f23=vv_6_f23,
-        vv_8_f31=vv_8_f31,
-        vv_9_f35=vv_9_f35,
-        si_1_f2=si_1_f2,
-        si_4_f14=si_4_f14,
-        si_7_f26=si_7_f26,
-        si_10_f38=si_10_f38,
-        si_11_f42=si_11_f42,
-        si_2_f6=si_2_f6,
-        si_3_f10=si_3_f10,
-        si_5_f18=si_5_f18,
-        si_6_f22=si_6_f22,
-        si_8_f30=si_8_f30,
-        si_9_f34=si_9_f34,
-        ar_3_f9=ar_3_f9,
-        ar_4_f13=ar_4_f13,
-        ar_6_f21=ar_6_f21,
-        ar_7_f25=ar_7_f25,
-        ar_8_f29=ar_8_f29,
-        ar_1_f1=ar_1_f1,
-        ar_2_f5=ar_2_f5,
-        ar_5_f17=ar_5_f17,
-        ar_9_f33=ar_9_f33,
-        ar_10_f37=ar_10_f37,
-        ar_11_f41=ar_11_f41,
-        sg_1_f4=sg_1_f4,
-        sg_2_f8=sg_2_f8,
-        sg_4_f16=sg_4_f16,
-        sg_10_f40=sg_10_f40,
-        sg_11_f44=sg_11_f44,
-        sg_3_f12=sg_3_f12,
-        sg_5_f20=sg_5_f20,
-        sg_6_f24=sg_6_f24,
-        sg_7_f28=sg_7_f28,
-        sg_8_f32=sg_8_f32,
-        sg_9_f36=sg_9_f36,
-        org1_f1=org1_f1,
-        org2_f2=org2_f2,
-        org3_f3=org3_f3,
-        ela1_f4=ela1_f4,
-        ela2_f5=ela2_f5,
-        ela3_f6=ela3_f6,
-        krp1_f7=krp1_f7,
-        krp2_f8=krp2_f8,
-        krp3_f9=krp3_f9,
-        wie1_f10=wie1_f10,
-        wie2_f11=wie2_f11,
-        wie3_f12=wie3_f12,
-        zp1_f13=zp1_f13,
-        zp2_f14=zp2_f14,
-        zp3_f15=zp3_f15,
-        kon1_f16=kon1_f16,
-        kon2_f17=kon2_f17,
-        kon3_f18=kon3_f18,
-        reg1_f19=reg1_f19,
-        reg2_f20=reg2_f20,
-        reg3_f21=reg3_f21,
-        auf1_f22=auf1_f22,
-        auf2_f23=auf2_f23,
-        auf3_f24=auf3_f24,
-        ans1_f25=ans1_f25,
-        ans2_f26=ans2_f26,
-        ans3_f27=ans3_f27,
-        zei1_f28=zei1_f28,
-        zei2_f29=zei2_f29,
-        zei3_f30=zei3_f30,
-        lms1_f31=lms1_f31,
-        lms2_f32=lms2_f32,
-        lms3_f33=lms3_f33,
-        lit1_f34=lit1_f34,
-        lit2_f35=lit2_f35,
-        lit3_f36=lit3_f36,
-        lu1_f37=lu1_f37,
-        lu2_f38=lu2_f38,
-        lu3_f39=lu3_f39
+        ils_answers=ils_answers,
+        list_k_answers=list_k_answers
     )
     entries_after2 = len(uow.questionnaire.questionnaire)
     assert type(result) == dict
@@ -2321,42 +1774,16 @@ def test_create_questionnaire(vv_2_f7, vv_5_f19, vv_7_f27, vv_10_f39,
     assert entries_after == entries_after2
 
 
-@pytest.mark.parametrize("vv_2_f7, vv_5_f19, vv_7_f27, vv_10_f39,\
-                         vv_11_f43, vv_1_f3, vv_3_f11, vv_4_f15,\
-                         vv_6_f23, vv_8_f31, vv_9_f35", [
-    # Working Example
-    (
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        None,
-        None,
-        None,
-        None,
-        None,
-        None
-    )
-])
-def test_delete_ils_input_answers(vv_2_f7, vv_5_f19, vv_7_f27, vv_10_f39,
-                                  vv_11_f43, vv_1_f3, vv_3_f11, vv_4_f15,
-                                  vv_6_f23, vv_8_f31, vv_9_f35):
+def test_delete_ils_input_answers():
     uow = FakeUnitOfWork()
+    ils_input_answers = {}
+    for key in ils_complete:
+        if key.startswith("vv"):
+            ils_input_answers[key] = "a"
     services.create_ils_input_answers(
         uow=uow,
         questionnaire_id=1,
-        vv_2_f7=vv_2_f7,
-        vv_5_f19=vv_5_f19,
-        vv_7_f27=vv_7_f27,
-        vv_10_f39=vv_10_f39,
-        vv_11_f43=vv_11_f43,
-        vv_1_f3=vv_1_f3,
-        vv_3_f11=vv_3_f11,
-        vv_4_f15=vv_4_f15,
-        vv_6_f23=vv_6_f23,
-        vv_8_f31=vv_8_f31,
-        vv_9_f35=vv_9_f35
+        answers=ils_input_answers
     )
     entries_beginning = len(uow.ils_input_answers.ils_input_answers)
     result = services.delete_ils_input_answers(
@@ -2369,42 +1796,16 @@ def test_delete_ils_input_answers(vv_2_f7, vv_5_f19, vv_7_f27, vv_10_f39,
     assert entries_beginning - 1 == entries_after
 
 
-@pytest.mark.parametrize("si_1_f2, si_4_f14, si_7_f26, si_10_f38,\
-                         si_11_f42, si_2_f6, si_3_f10, si_5_f18,\
-                         si_6_f22,si_8_f30, si_9_f34", [
-    # Working Example
-    (
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        None,
-        None,
-        None,
-        None,
-        None,
-        None
-    )
-])
-def test_delete_ils_perception_answers(si_1_f2, si_4_f14, si_7_f26, si_10_f38,
-                                       si_11_f42, si_2_f6, si_3_f10, si_5_f18,
-                                       si_6_f22, si_8_f30, si_9_f34):
+def test_delete_ils_perception_answers():
     uow = FakeUnitOfWork()
+    ils_perception_answers = {}
+    for key in ils_complete:
+        if key.startswith("si"):
+            ils_perception_answers[key] = "a"
     services.create_ils_perception_answers(
         uow=uow,
         questionnaire_id=1,
-        si_1_f2=si_1_f2,
-        si_4_f14=si_4_f14,
-        si_7_f26=si_7_f26,
-        si_10_f38=si_10_f38,
-        si_11_f42=si_11_f42,
-        si_2_f6=si_2_f6,
-        si_3_f10=si_3_f10,
-        si_5_f18=si_5_f18,
-        si_6_f22=si_6_f22,
-        si_8_f30=si_8_f30,
-        si_9_f34=si_9_f34
+        answers=ils_perception_answers
     )
     entries_beginning = len(uow.ils_perception_answers.ils_perception_answers)
     result = services.delete_ils_perception_answers(
@@ -2417,42 +1818,16 @@ def test_delete_ils_perception_answers(si_1_f2, si_4_f14, si_7_f26, si_10_f38,
     assert entries_beginning - 1 == entries_after
 
 
-@pytest.mark.parametrize("ar_3_f9, ar_4_f13, ar_6_f21, ar_7_f25,\
-                         ar_8_f29, ar_1_f1, ar_2_f5, ar_5_f17,\
-                         ar_9_f33, ar_10_f37, ar_11_f41", [
-    # Working Example
-    (
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        None,
-        None,
-        None,
-        None,
-        None,
-        None
-    )
-])
-def test_delete_ils_processing_answers(ar_3_f9, ar_4_f13, ar_6_f21, ar_7_f25,
-                                       ar_8_f29, ar_1_f1, ar_2_f5, ar_5_f17,
-                                       ar_9_f33, ar_10_f37, ar_11_f41):
+def test_delete_ils_processing_answers():
     uow = FakeUnitOfWork()
+    ils_processing_answers = {}
+    for key in ils_complete:
+        if key.startswith("ar"):
+            ils_processing_answers[key] = "a"
     services.create_ils_processing_answers(
         uow=uow,
         questionnaire_id=1,
-        ar_3_f9=ar_3_f9,
-        ar_4_f13=ar_4_f13,
-        ar_6_f21=ar_6_f21,
-        ar_7_f25=ar_7_f25,
-        ar_8_f29=ar_8_f29,
-        ar_1_f1=ar_1_f1,
-        ar_2_f5=ar_2_f5,
-        ar_5_f17=ar_5_f17,
-        ar_9_f33=ar_9_f33,
-        ar_10_f37=ar_10_f37,
-        ar_11_f41=ar_11_f41
+        answers=ils_processing_answers
     )
     entries_beginning = len(uow.ils_processing_answers.ils_processing_answers)
     result = services.delete_ils_processing_answers(
@@ -2465,43 +1840,16 @@ def test_delete_ils_processing_answers(ar_3_f9, ar_4_f13, ar_6_f21, ar_7_f25,
     assert entries_beginning - 1 == entries_after
 
 
-@pytest.mark.parametrize("sg_1_f4, sg_2_f8, sg_4_f16, sg_10_f40,\
-                         sg_11_f44, sg_3_f12, sg_5_f20, sg_6_f24,\
-                         sg_7_f28, sg_8_f32, sg_9_f36", [
-    # Working Example
-    (
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        None,
-        None,
-        None,
-        None,
-        None,
-        None
-    )
-])
-def test_delete_ils_understanding_answers(sg_1_f4, sg_2_f8, sg_4_f16,
-                                          sg_10_f40, sg_11_f44, sg_3_f12,
-                                          sg_5_f20, sg_6_f24, sg_7_f28,
-                                          sg_8_f32, sg_9_f36):
+def test_delete_ils_understanding_answers():
     uow = FakeUnitOfWork()
+    ils_understanding_answers = {}
+    for key in ils_complete:
+        if key.startswith("sg"):
+            ils_understanding_answers[key] = "a"
     services.create_ils_understanding_answers(
         uow=uow,
         questionnaire_id=1,
-        sg_1_f4=sg_1_f4,
-        sg_2_f8=sg_2_f8,
-        sg_4_f16=sg_4_f16,
-        sg_10_f40=sg_10_f40,
-        sg_11_f44=sg_11_f44,
-        sg_3_f12=sg_3_f12,
-        sg_5_f20=sg_5_f20,
-        sg_6_f24=sg_6_f24,
-        sg_7_f28=sg_7_f28,
-        sg_8_f32=sg_8_f32,
-        sg_9_f36=sg_9_f36
+        answers=ils_understanding_answers
     )
     entries_beginning = len(
         uow.ils_understanding_answers.ils_understanding_answers)
@@ -2516,108 +1864,15 @@ def test_delete_ils_understanding_answers(sg_1_f4, sg_2_f8, sg_4_f16,
     assert entries_beginning - 1 == entries_after
 
 
-@pytest.mark.parametrize("org1_f1, org2_f2, org3_f3, ela1_f4, ela2_f5,\
-                         ela3_f6, krp1_f7, krp2_f8, krp3_f9, wie1_f10,\
-                         wie2_f11, wie3_f12, zp1_f13, zp2_f14, zp3_f15,\
-                         kon1_f16, kon2_f17, kon3_f18, reg1_f19, reg2_f20,\
-                         reg3_f21, auf1_f22, auf2_f23, auf3_f24, ans1_f25,\
-                         ans2_f26, ans3_f27, zei1_f28, zei2_f29, zei3_f30,\
-                         lms1_f31, lms2_f32, lms3_f33, lit1_f34, lit2_f35,\
-                         lit3_f36, lu1_f37, lu2_f38, lu3_f39", [
-    # Working Example
-    (
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1
-    )
-])
-def test_delete_list_k(org1_f1, org2_f2, org3_f3, ela1_f4, ela2_f5,
-                       ela3_f6, krp1_f7, krp2_f8, krp3_f9, wie1_f10,
-                       wie2_f11, wie3_f12, zp1_f13, zp2_f14, zp3_f15,
-                       kon1_f16, kon2_f17, kon3_f18, reg1_f19, reg2_f20,
-                       reg3_f21, auf1_f22, auf2_f23, auf3_f24, ans1_f25,
-                       ans2_f26, ans3_f27, zei1_f28, zei2_f29, zei3_f30,
-                       lms1_f31, lms2_f32, lms3_f33, lit1_f34, lit2_f35,
-                       lit3_f36, lu1_f37, lu2_f38, lu3_f39):
+def test_delete_list_k():
     uow = FakeUnitOfWork()
+    list_k_answers = {}
+    for key in list_k_ids:
+        list_k_answers[key] = 1
     services.create_list_k(
         uow=uow,
         questionnaire_id=1,
-        org1_f1=org1_f1,
-        org2_f2=org2_f2,
-        org3_f3=org3_f3,
-        ela1_f4=ela1_f4,
-        ela2_f5=ela2_f5,
-        ela3_f6=ela3_f6,
-        krp1_f7=krp1_f7,
-        krp2_f8=krp2_f8,
-        krp3_f9=krp3_f9,
-        wie1_f10=wie1_f10,
-        wie2_f11=wie2_f11,
-        wie3_f12=wie3_f12,
-        zp1_f13=zp1_f13,
-        zp2_f14=zp2_f14,
-        zp3_f15=zp3_f15,
-        kon1_f16=kon1_f16,
-        kon2_f17=kon2_f17,
-        kon3_f18=kon3_f18,
-        reg1_f19=reg1_f19,
-        reg2_f20=reg2_f20,
-        reg3_f21=reg3_f21,
-        auf1_f22=auf1_f22,
-        auf2_f23=auf2_f23,
-        auf3_f24=auf3_f24,
-        ans1_f25=ans1_f25,
-        ans2_f26=ans2_f26,
-        ans3_f27=ans3_f27,
-        zei1_f28=zei1_f28,
-        zei2_f29=zei2_f29,
-        zei3_f30=zei3_f30,
-        lms1_f31=lms1_f31,
-        lms2_f32=lms2_f32,
-        lms3_f33=lms3_f33,
-        lit1_f34=lit1_f34,
-        lit2_f35=lit2_f35,
-        lit3_f36=lit3_f36,
-        lu1_f37=lu1_f37,
-        lu2_f38=lu2_f38,
-        lu3_f39=lu3_f39
+        answers=list_k_answers
     )
     entries_beginning = len(uow.list_k.list_k)
     result = services.delete_list_k(
@@ -2630,224 +1885,37 @@ def test_delete_list_k(org1_f1, org2_f2, org3_f3, ela1_f4, ela2_f5,
     assert entries_beginning - 1 == entries_after
 
 
-@pytest.mark.parametrize("vv_2_f7, vv_5_f19, vv_7_f27, vv_10_f39,\
-                         vv_11_f43, vv_1_f3, vv_3_f11, vv_4_f15,\
-                         vv_6_f23, vv_8_f31, vv_9_f35,\
-                         si_1_f2, si_4_f14, si_7_f26, si_10_f38,\
-                         si_11_f42, si_2_f6, si_3_f10, si_5_f18,\
-                         si_6_f22,si_8_f30, si_9_f34,\
-                         ar_3_f9, ar_4_f13, ar_6_f21, ar_7_f25,\
-                         ar_8_f29, ar_1_f1, ar_2_f5, ar_5_f17,\
-                         ar_9_f33, ar_10_f37, ar_11_f41,\
-                         sg_1_f4, sg_2_f8, sg_4_f16, sg_10_f40,\
-                         sg_11_f44, sg_3_f12, sg_5_f20, sg_6_f24,\
-                         sg_7_f28, sg_8_f32, sg_9_f36,\
-                         org1_f1, org2_f2, org3_f3, ela1_f4, ela2_f5,\
-                         ela3_f6, krp1_f7, krp2_f8, krp3_f9, wie1_f10,\
-                         wie2_f11, wie3_f12, zp1_f13, zp2_f14, zp3_f15,\
-                         kon1_f16, kon2_f17, kon3_f18, reg1_f19, reg2_f20,\
-                         reg3_f21, auf1_f22, auf2_f23, auf3_f24, ans1_f25,\
-                         ans2_f26, ans3_f27, zei1_f28, zei2_f29, zei3_f30,\
-                         lms1_f31, lms2_f32, lms3_f33, lit1_f34, lit2_f35,\
-                         lit3_f36, lu1_f37, lu2_f38, lu3_f39", [
-    # Working Example
+@pytest.mark.parametrize("full_version", [
+    # Working Example complete ILS
     (
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        'a',
-        'a',
-        'a',
-        'a',
-        'a',
-        None,
-        None,
-        None,
-        None,
-        None,
-        None,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1
+        True
+    ),
+    # Working Example Short Form
+    (
+        False
     )
 ])
-def test_delete_questionnaire(vv_2_f7, vv_5_f19, vv_7_f27, vv_10_f39,
-                              vv_11_f43, vv_1_f3, vv_3_f11, vv_4_f15,
-                              vv_6_f23, vv_8_f31, vv_9_f35,
-                              si_1_f2, si_4_f14, si_7_f26, si_10_f38,
-                              si_11_f42, si_2_f6, si_3_f10, si_5_f18,
-                              si_6_f22, si_8_f30, si_9_f34,
-                              ar_3_f9, ar_4_f13, ar_6_f21, ar_7_f25,
-                              ar_8_f29, ar_1_f1, ar_2_f5, ar_5_f17,
-                              ar_9_f33, ar_10_f37, ar_11_f41,
-                              sg_1_f4, sg_2_f8, sg_4_f16, sg_10_f40,
-                              sg_11_f44, sg_3_f12, sg_5_f20, sg_6_f24,
-                              sg_7_f28, sg_8_f32, sg_9_f36,
-                              org1_f1, org2_f2, org3_f3, ela1_f4, ela2_f5,
-                              ela3_f6, krp1_f7, krp2_f8, krp3_f9, wie1_f10,
-                              wie2_f11, wie3_f12, zp1_f13, zp2_f14, zp3_f15,
-                              kon1_f16, kon2_f17, kon3_f18, reg1_f19, reg2_f20,
-                              reg3_f21, auf1_f22, auf2_f23, auf3_f24, ans1_f25,
-                              ans2_f26, ans3_f27, zei1_f28, zei2_f29, zei3_f30,
-                              lms1_f31, lms2_f32, lms3_f33, lit1_f34, lit2_f35,
-                              lit3_f36, lu1_f37, lu2_f38, lu3_f39):
+def test_delete_questionnaire(full_version):
     uow = FakeUnitOfWork()
     services.create_learning_characteristics(
         uow=uow,
         student_id=1
     )
+    ils_answers = {}
+    list_k_answers = {}
+    if full_version:
+        for key in ils_complete:
+            ils_answers[key] = "a"
+    else:
+        for key in ils_short:
+            ils_answers[key] = "a"
+    for key in list_k_ids:
+        list_k_answers[key] = 1
     services.create_questionnaire(
         uow=uow,
         student_id=1,
-        vv_2_f7=vv_2_f7,
-        vv_5_f19=vv_5_f19,
-        vv_7_f27=vv_7_f27,
-        vv_10_f39=vv_10_f39,
-        vv_11_f43=vv_11_f43,
-        vv_1_f3=vv_1_f3,
-        vv_3_f11=vv_3_f11,
-        vv_4_f15=vv_4_f15,
-        vv_6_f23=vv_6_f23,
-        vv_8_f31=vv_8_f31,
-        vv_9_f35=vv_9_f35,
-        si_1_f2=si_1_f2,
-        si_4_f14=si_4_f14,
-        si_7_f26=si_7_f26,
-        si_10_f38=si_10_f38,
-        si_11_f42=si_11_f42,
-        si_2_f6=si_2_f6,
-        si_3_f10=si_3_f10,
-        si_5_f18=si_5_f18,
-        si_6_f22=si_6_f22,
-        si_8_f30=si_8_f30,
-        si_9_f34=si_9_f34,
-        ar_3_f9=ar_3_f9,
-        ar_4_f13=ar_4_f13,
-        ar_6_f21=ar_6_f21,
-        ar_7_f25=ar_7_f25,
-        ar_8_f29=ar_8_f29,
-        ar_1_f1=ar_1_f1,
-        ar_2_f5=ar_2_f5,
-        ar_5_f17=ar_5_f17,
-        ar_9_f33=ar_9_f33,
-        ar_10_f37=ar_10_f37,
-        ar_11_f41=ar_11_f41,
-        sg_1_f4=sg_1_f4,
-        sg_2_f8=sg_2_f8,
-        sg_4_f16=sg_4_f16,
-        sg_10_f40=sg_10_f40,
-        sg_11_f44=sg_11_f44,
-        sg_3_f12=sg_3_f12,
-        sg_5_f20=sg_5_f20,
-        sg_6_f24=sg_6_f24,
-        sg_7_f28=sg_7_f28,
-        sg_8_f32=sg_8_f32,
-        sg_9_f36=sg_9_f36,
-        org1_f1=org1_f1,
-        org2_f2=org2_f2,
-        org3_f3=org3_f3,
-        ela1_f4=ela1_f4,
-        ela2_f5=ela2_f5,
-        ela3_f6=ela3_f6,
-        krp1_f7=krp1_f7,
-        krp2_f8=krp2_f8,
-        krp3_f9=krp3_f9,
-        wie1_f10=wie1_f10,
-        wie2_f11=wie2_f11,
-        wie3_f12=wie3_f12,
-        zp1_f13=zp1_f13,
-        zp2_f14=zp2_f14,
-        zp3_f15=zp3_f15,
-        kon1_f16=kon1_f16,
-        kon2_f17=kon2_f17,
-        kon3_f18=kon3_f18,
-        reg1_f19=reg1_f19,
-        reg2_f20=reg2_f20,
-        reg3_f21=reg3_f21,
-        auf1_f22=auf1_f22,
-        auf2_f23=auf2_f23,
-        auf3_f24=auf3_f24,
-        ans1_f25=ans1_f25,
-        ans2_f26=ans2_f26,
-        ans3_f27=ans3_f27,
-        zei1_f28=zei1_f28,
-        zei2_f29=zei2_f29,
-        zei3_f30=zei3_f30,
-        lms1_f31=lms1_f31,
-        lms2_f32=lms2_f32,
-        lms3_f33=lms3_f33,
-        lit1_f34=lit1_f34,
-        lit2_f35=lit2_f35,
-        lit3_f36=lit3_f36,
-        lu1_f37=lu1_f37,
-        lu2_f38=lu2_f38,
-        lu3_f39=lu3_f39
+        ils_answers=ils_answers,
+        list_k_answers=list_k_answers
     )
     entries_beginning = len(uow.questionnaire.questionnaire)
     result = services.delete_questionnaire(
@@ -2870,7 +1938,7 @@ def test_create_course():
         uow=uow,
         lms_id=1,
         name="Test Course",
-        university="TH-AB",
+        university=university_example,
         created_by=1,
         created_at="2023-01-01"
     )
@@ -2908,7 +1976,7 @@ def test_update_course():
         course_id=1,
         lms_id=1,
         name="Test Course 2",
-        university="TH-AB"
+        university=university_example
     )
     assert type(result) is dict
     entries_after = len(uow.course.course)
@@ -3004,8 +2072,8 @@ def test_delete_course_topic_by_topic():
         None,
         False,
         "Test Topic",
-        "TH-AB",
-        "Maria Musterfrau",
+        university_example,
+        user_name_example,
         time.time()
     ),
     # Working Example Sub-Topic
@@ -3015,8 +2083,8 @@ def test_delete_course_topic_by_topic():
         1,
         True,
         "Test Sub-Topic",
-        "TH-AB",
-        "Maria Musterfrau",
+        university_example,
+        user_name_example,
         time.time()
     ),
 ])
@@ -3086,7 +2154,7 @@ def test_update_topic():
         parent_id=None,
         contains_le=False,
         name="Test Topic Updated",
-        university="TH-AB",
+        university=university_example,
         created_at=last_updated,
         created_by=1,
         last_updated=last_updated
@@ -3105,7 +2173,7 @@ def test_update_topic():
         parent_id=1,
         contains_le=True,
         name="Test Sub-Topic Updated",
-        university="TH-AB",
+        university=university_example,
         created_at=last_updated2,
         created_by=1,
         last_updated=last_updated2
@@ -3217,8 +2285,8 @@ def test_create_learning_element():
         classification="RQ",
         name="Test Quiz",
         created_at=time.time(),
-        created_by="Max Mustermann",
-        university="TH-AB"
+        created_by=user_name_example,
+        university=university_example
     )
     assert type(result) is dict
     assert result != {}
@@ -3256,8 +2324,8 @@ def test_update_learning_element():
         classification="RQ",
         name="Test Quiz",
         created_at=last_updated,
-        created_by="Max Mustermann",
-        university="TH-AB",
+        created_by=user_name_example,
+        university=university_example,
         last_updated=last_updated
     )
     assert type(result) is dict
@@ -3331,15 +2399,12 @@ def test_add_teacher_to_course():
     assert type(result) is dict
     assert result != {}
     assert entries_beginning_course + 1 == entries_after_course
-    try:
+    with pytest.raises(err.AlreadyExisting):
         services.add_teacher_to_course(
             uow=uow,
             teacher_id=1,
             course_id=1
         )
-        assert False
-    except err.AlreadyExisting:
-        assert True
 
 
 def test_create_course_creator_course():

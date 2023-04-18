@@ -4,6 +4,7 @@ from repositories import orm
 import errors as err
 from flask_cors import CORS, cross_origin
 import re
+from utils import constants as cons
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
@@ -28,9 +29,6 @@ mocked_frontend_log = {"logs": [{
     "id": "v3-1665130071366-6352791670096",
     "navigationType": "reload"
 }]}
-
-date_format = r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z'
-deletion_message = "Deletion was successful!"
 
 
 @app.errorhandler(Exception)
@@ -108,7 +106,7 @@ def user_administration(user_id, lms_user_id):
                 user_id,
                 lms_user_id
             )
-            result = {'message': deletion_message}
+            result = {'message': cons.deletion_message}
             status_code = 200
             return jsonify(result), status_code
 
@@ -179,7 +177,7 @@ def course_management(course_id, lms_course_id):
             condition4 = 'last_updated' in request.json
             if condition1 and condition2 and condition3 and condition4:
                 condition5 =\
-                    re.search(date_format,
+                    re.search(cons.date_format,
                               request.json['last_updated'])
                 if condition5:
                     course = services.update_course(
@@ -200,7 +198,7 @@ def course_management(course_id, lms_course_id):
                 unit_of_work.SqlAlchemyUnitOfWork(),
                 course_id
             )
-            result = {'message': deletion_message}
+            result = {'message': cons.deletion_message}
             status_code = 200
             return jsonify(result), status_code
 
@@ -273,7 +271,7 @@ def topic_administration(course_id, lms_course_id, topic_id, lms_topic_id):
                     and condition4 and condition5 and condition6\
                     and condition7 and condition8:
                 condition9 =\
-                    re.search(date_format,
+                    re.search(cons.date_format,
                               request.json['last_updated'])
                 if condition9:
                     topic = services.update_topic(
@@ -300,7 +298,7 @@ def topic_administration(course_id, lms_course_id, topic_id, lms_topic_id):
                 unit_of_work.SqlAlchemyUnitOfWork(),
                 topic_id
             )
-            result = {'message': deletion_message}
+            result = {'message': cons.deletion_message}
             status_code = 200
             return jsonify(result), status_code
 
@@ -380,7 +378,7 @@ def learning_element_administration(course_id,
                     and condition4 and condition5 and condition6\
                     and condition7 and condition8:
                 condition9 =\
-                    re.search(date_format,
+                    re.search(cons.date_format,
                               request.json['last_updated'])
                 condition10 = type(request.json['activity_type']) == str
                 condition11 = type(request.json['classification']) == str
@@ -417,7 +415,7 @@ def learning_element_administration(course_id,
                 topic_id,
                 learning_element_id
             )
-            result = {'message': deletion_message}
+            result = {'message': cons.deletion_message}
             status_code = 200
             return jsonify(result), status_code
 
@@ -465,7 +463,7 @@ def post_student_topic_visit(student_id, lms_user_id, topic_id):
             condition2 = 'visit_start' in request.json
             if condition1 and condition2:
                 condition3 =\
-                    re.search(date_format,
+                    re.search(cons.date_format,
                               request.json['visit_start'])
                 condition4 = type(request.json['visit_start']) is str
                 if condition3 and condition4:
@@ -499,7 +497,7 @@ def post_student_learning_element_id_visit(student_id,
             if condition1 and condition2:
                 condition3 = type(request.json['visit_start']) is str
                 condition4 =\
-                    re.search(date_format,
+                    re.search(cons.date_format,
                               request.json['visit_start'])
                 if condition3 and condition4:
                     result = services.add_student_learning_element_visit(

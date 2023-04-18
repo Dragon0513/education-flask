@@ -22,6 +22,8 @@ COPY setup/ /app/setup/
 
 COPY tests/ /app/tests/
 
+COPY utils/ /app/utils/
+
 COPY .flaskenv /app/.flaskenv
 
 COPY config.py /app/config.py

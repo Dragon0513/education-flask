@@ -340,10 +340,6 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_courses_for_student(self, student_id):
-        raise NotImplementedError
-
-    @abc.abstractmethod
     def get_course_topic_by_course(self, course_id) -> DM.CourseTopic:
         raise NotImplementedError
 
@@ -652,7 +648,7 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
     def add_student_to_course(self,
                               student_course)\
             -> DM.StudentCourse:
-        course_exist = self.get_courses_for_student(
+        course_exist = self.get_courses_by_student_id(
             student_course.student_id
         )
         for c in course_exist:
@@ -1236,13 +1232,6 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         else:
             return result
 
-    def get_courses_for_student(self, student_id):
-        try:
-            return self.session.query(DM.StudentCourse).filter_by(
-                student_id=student_id).all()
-        except Exception:
-            raise err.DatabaseQueryError()
-
     def get_courses_for_teacher(self, teacher_id):
         try:
             return self.session.query(DM.TeacherCourse).filter_by(
@@ -1310,7 +1299,8 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
 
     def get_learning_element_recommendation(self, learning_path_id):
         result = self.session.query(TM.LearningPathLearningElement)\
-            .filter_by(learning_path_id=learning_path_id).all()
+            .filter_by(learning_path_id=learning_path_id)\
+            .filter_by(recommended=True).all()
         return result
 
     def get_learning_path(self,
@@ -1557,13 +1547,6 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
             raise err.NoValidIdError()
         else:
             return result
-
-    def get_teacher_by_uni(self, university):
-        try:
-            return self.session.query(DM.Topic).filter_by(
-                university=university).all()
-        except Exception:
-            raise err.DatabaseQueryError()
 
     def get_user_by_id(self, user_id, lms_user_id) -> UA.Admin:
         result = self.session.query(UA.User)\

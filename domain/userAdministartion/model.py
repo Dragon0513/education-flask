@@ -27,12 +27,12 @@ class User():
 
 class Admin(User):
     def __init__(self,
-                 User) -> None:
-        super().__init__(User.name,
-                         User.university,
-                         User.lms_user_id,
-                         User.role)
-        self.user_id = User.id
+                 user) -> None:
+        super().__init__(user.name,
+                         user.university,
+                         user.lms_user_id,
+                         user.role)
+        self.user_id = user.id
 
     def serialize(self):
         return {
@@ -43,12 +43,12 @@ class Admin(User):
 
 class CourseCreator(User):
     def __init__(self,
-                 User) -> None:
-        super().__init__(User.name,
-                         User.university,
-                         User.lms_user_id,
-                         User.role)
-        self.user_id = User.id
+                 user) -> None:
+        super().__init__(user.name,
+                         user.university,
+                         user.lms_user_id,
+                         user.role)
+        self.user_id = user.id
 
     def serialize(self):
         return {
@@ -59,12 +59,12 @@ class CourseCreator(User):
 
 class Teacher(User):
     def __init__(self,
-                 User) -> None:
-        super().__init__(User.name,
-                         User.university,
-                         User.lms_user_id,
-                         User.role)
-        self.user_id = User.id
+                 user) -> None:
+        super().__init__(user.name,
+                         user.university,
+                         user.lms_user_id,
+                         user.role)
+        self.user_id = user.id
 
     def serialize(self):
         return {
@@ -75,12 +75,12 @@ class Teacher(User):
 
 class Student(User):
     def __init__(self,
-                 User) -> None:
-        super().__init__(User.name,
-                         User.university,
-                         User.lms_user_id,
-                         User.role)
-        self.user_id = User.id
+                 user) -> None:
+        super().__init__(user.name,
+                         user.university,
+                         user.lms_user_id,
+                         user.role)
+        self.user_id = user.id
 
     def serialize(self):
         return {

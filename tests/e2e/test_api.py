@@ -17,6 +17,142 @@ learning_element_id = 0
 questionnaire_id = 0
 
 
+path_admin = "/admin"
+path_course = "/course"
+path_knowledge = "/knowledge"
+path_logs = "/logs"
+path_frontend_logs = "/logs/frontend"
+path_learning_analytics = "/learningAnalytics"
+path_learning_characteristics = "/learningCharacteristics"
+path_learning_element = "/learningElement"
+path_learning_path = "/learningPath"
+path_learning_strategy = "/learningStrategy"
+path_learning_style = "/learningStyle"
+path_lms_course = "/lms/course"
+path_lms_student = "/lms/student"
+path_lms_user = "/lms/user"
+path_questionnaire = "/questionnaire"
+path_recommendation = "/recommendation"
+path_settings = "/settings"
+path_student = "/student"
+path_subtopic = "/subtopic"
+path_teacher = "/teacher"
+path_topic = "/topic"
+path_user = "/user"
+
+
+ils_complete = [
+    "ar_1_f1",
+    "ar_2_f5",
+    "ar_3_f9",
+    "ar_4_f13",
+    "ar_5_f17",
+    "ar_6_f21",
+    "ar_7_f25",
+    "ar_8_f29",
+    "ar_9_f33",
+    "ar_10_f37",
+    "ar_11_f41",
+    "si_1_f2",
+    "si_2_f6",
+    "si_3_f10",
+    "si_4_f14",
+    "si_5_f18",
+    "si_6_f22",
+    "si_7_f26",
+    "si_8_f30",
+    "si_9_f34",
+    "si_10_f38",
+    "si_11_f42",
+    "vv_1_f3",
+    "vv_2_f7",
+    "vv_3_f11",
+    "vv_4_f15",
+    "vv_5_f19",
+    "vv_6_f23",
+    "vv_7_f27",
+    "vv_8_f31",
+    "vv_9_f35",
+    "vv_10_f39",
+    "vv_11_f43",
+    "sg_1_f4",
+    "sg_2_f8",
+    "sg_3_f12",
+    "sg_4_f16",
+    "sg_5_f20",
+    "sg_6_f24",
+    "sg_7_f28",
+    "sg_8_f32",
+    "sg_9_f36",
+    "sg_10_f40",
+    "sg_11_f44"
+]
+ils_short = [
+    "ar_3_f9",
+    "ar_4_f13",
+    "ar_6_f21",
+    "ar_7_f25",
+    "ar_8_f29",
+    "si_1_f2",
+    "si_4_f14",
+    "si_7_f26",
+    "si_10_f38",
+    "si_11_f42",
+    "vv_2_f7",
+    "vv_5_f19",
+    "vv_7_f27",
+    "vv_10_f39",
+    "vv_11_f43",
+    "sg_1_f4",
+    "sg_2_f8",
+    "sg_4_f16",
+    "sg_10_f40",
+    "sg_11_f44"
+]
+list_k_ids = [
+    'org1_f1',
+    'org2_f2',
+    'org3_f3',
+    'ela1_f4',
+    'ela2_f5',
+    'ela3_f6',
+    'krp1_f7',
+    'krp2_f8',
+    'krp3_f9',
+    'wie1_f10',
+    'wie2_f11',
+    'wie3_f12',
+    'zp1_f13',
+    'zp2_f14',
+    'zp3_f15',
+    'kon1_f16',
+    'kon2_f17',
+    'kon3_f18',
+    'reg1_f19',
+    'reg2_f20',
+    'reg3_f21',
+    'auf1_f22',
+    'auf2_f23',
+    'auf3_f24',
+    'ans1_f25',
+    'ans2_f26',
+    'ans3_f27',
+    'zei1_f28',
+    'zei2_f29',
+    'zei3_f30',
+    'lms1_f31',
+    'lms2_f32',
+    'lms3_f33',
+    'lit1_f34',
+    'lit2_f35',
+    'lit3_f36',
+    'lu1_f37',
+    'lu2_f38',
+    'lu3_f39'
+]
+wrong_test_id = "Test ID"
+
+
 # POST METHODS
 # Create User
 @pytest.mark.parametrize("input, keys_expected, status_code_expected,\
@@ -151,7 +287,8 @@ def test_api_create_user_from_moodle(
     status_code_expected,
     save_id
 ):
-    r = client.post("/lms/user", json=input)
+    url = path_lms_user
+    r = client.post(url, json=input)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
     for key in keys_expected:
@@ -237,7 +374,8 @@ def test_api_create_course_from_moodle(
 ):
     global user_id_course_creator
     input['created_by'] = user_id_course_creator
-    r = client.post("/lms/course", json=input)
+    url = path_lms_course
+    r = client.post(url, json=input)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
     for key in keys_expected:
@@ -343,8 +481,8 @@ def test_api_create_topic_from_moodle(
     save_id
 ):
     global course_id, topic_id, sub_topic_id
-    url = "/lms/course/" + str(course_id) + \
-        "/" + str(moodle_course_id) + "/topic"
+    url = path_lms_course + "/" + str(course_id) + \
+        "/" + str(moodle_course_id) + path_topic
     if topic_id != 0:
         input['parent_id'] = topic_id
     r = client.post(url, json=input)
@@ -443,9 +581,9 @@ def test_api_create_le_from_moodle(
 ):
     global course_id
     global sub_topic_id
-    url = "/lms/course/" + str(course_id) + "/" + str(moodle_course_id) +\
-        "/topic/" + str(sub_topic_id) + "/" + \
-        str(moodle_topic_id) + "/learningElement"
+    url = path_lms_course + "/" + str(course_id) + "/" +\
+        str(moodle_course_id) + path_topic + "/" + str(sub_topic_id) +\
+        "/" + str(moodle_topic_id) + path_learning_element
     r = client.post(url, json=input)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -504,8 +642,8 @@ def test_add_teacher_to_course(
         course_id_use = 99999
     else:
         course_id_use = course_id
-    url = "/lms/course/" + str(course_id_use) + \
-        "/teacher/" + str(teacher_id_use)
+    url = path_lms_course + "/" + str(course_id_use) + \
+        path_teacher + "/" + str(teacher_id_use)
     r = client.post(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -564,8 +702,8 @@ def test_add_student_to_course(
         course_id_use = 99999
     else:
         course_id_use = course_id
-    url = "/lms/course/" + str(course_id_use) + \
-        "/student/" + str(student_id_use)
+    url = path_lms_course + "/" + str(course_id_use) + \
+        path_student + "/" + str(student_id_use)
     r = client.post(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -574,1578 +712,164 @@ def test_add_student_to_course(
 
 
 # Post Questionnaire for Student
-@pytest.mark.parametrize("input, moodle_user_id, \
+@pytest.mark.parametrize("ils_long, moodle_user_id, \
                          keys_expected, status_code_expected, \
-                         save_id", [
+                         save_id, error_id_missing, error_key_wrong, \
+                         error_answer_ils, error_answer_list_k, \
+                         error_list_k_id", [
     # Working example
     (
-        {
-            "ils":
-            [
-                {
-                    "question_id": "ar_1_f1",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_2_f5",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_3_f9",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_4_f13",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_5_f17",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_6_f21",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_7_f25",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_8_f29",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_9_f33",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_10_f37",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_11_f41",
-                    "answer": "a"
-                },
-
-                {
-                    "question_id": "vv_1_f3",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_2_f7",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_3_f11",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_4_f15",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_5_f19",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_6_f23",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_7_f27",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_8_f31",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_9_f35",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_10_f39",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_11_f43",
-                    "answer": "a"
-                },
-
-                {
-                    "question_id": "si_1_f2",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_2_f6",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_3_f10",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_4_f14",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_5_f18",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_6_f22",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_7_f26",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_8_f30",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_9_f34",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_10_f38",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_11_f42",
-                    "answer": "a"
-                },
-
-                {
-                    "question_id": "sg_1_f4",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_2_f8",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_3_f12",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_4_f16",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_5_f20",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_6_f24",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_7_f28",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_8_f32",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_9_f36",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_10_f40",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_11_f44",
-                    "answer": "a"
-                }
-            ],
-            "list_k":
-            [
-                {
-                    "question_id": 'org1_f1',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'org2_f2',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'org3_f3',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ela1_f4',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ela2_f5',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ela3_f6',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'krp1_f7',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'krp2_f8',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'krp3_f9',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'wie1_f10',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'wie2_f11',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'wie3_f12',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zp1_f13',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zp2_f14',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zp3_f15',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'kon1_f16',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'kon2_f17',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'kon3_f18',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'reg1_f19',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'reg2_f20',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'reg3_f21',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'auf1_f22',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'auf2_f23',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'auf3_f24',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ans1_f25',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ans2_f26',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ans3_f27',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zei1_f28',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zei2_f29',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zei3_f30',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lms1_f31',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lms2_f32',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lms3_f33',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lit1_f34',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lit2_f35',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lit3_f36',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lu1_f37',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lu2_f38',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lu3_f39',
-                    "answer": 1
-                }
-            ]
-        },
+        True,
         4,
         ['id', 'student_id', 'learning_style', 'learning_strategy'],
         201,
-        True
+        True,
+        False,
+        False,
+        False,
+        False,
+        False
     ),
     # Working example short questionnaire
     (
-        {
-            "ils":
-            [
-                {
-                    "question_id": "ar_3_f9",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_4_f13",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_6_f21",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_7_f25",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_8_f29",
-                    "answer": "a"
-                },
-
-                {
-                    "question_id": "vv_2_f7",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_5_f19",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_7_f27",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_10_f39",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_11_f43",
-                    "answer": "a"
-                },
-
-
-                {
-                    "question_id": "si_1_f2",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_4_f14",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_7_f26",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_10_f38",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_11_f42",
-                    "answer": "a"
-                },
-
-                {
-                    "question_id": "sg_1_f4",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_2_f8",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_4_f16",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_10_f40",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_11_f44",
-                    "answer": "a"
-                }
-            ],
-            "list_k":
-            [
-                {
-                    "question_id": 'org1_f1',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'org2_f2',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'org3_f3',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ela1_f4',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ela2_f5',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ela3_f6',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'krp1_f7',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'krp2_f8',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'krp3_f9',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'wie1_f10',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'wie2_f11',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'wie3_f12',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zp1_f13',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zp2_f14',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zp3_f15',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'kon1_f16',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'kon2_f17',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'kon3_f18',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'reg1_f19',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'reg2_f20',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'reg3_f21',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'auf1_f22',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'auf2_f23',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'auf3_f24',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ans1_f25',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ans2_f26',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ans3_f27',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zei1_f28',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zei2_f29',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zei3_f30',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lms1_f31',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lms2_f32',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lms3_f33',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lit1_f34',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lit2_f35',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lit3_f36',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lu1_f37',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lu2_f38',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lu3_f39',
-                    "answer": 1
-                }
-            ]
-        },
+        False,
         4,
         ['id', 'student_id', 'learning_style', 'learning_strategy'],
         201,
-        True
+        True,
+        False,
+        False,
+        False,
+        False,
+        False
     ),
     # Missing mandatory answer
     (
-        {
-            "ils":
-            [
-                {
-                    "question_id": "ar_3_f9",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_4_f13",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_6_f21",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_7_f25",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_8_f29",
-                    "answer": "a"
-                },
-
-                {
-                    "question_id": "vv_2_f7",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_5_f19",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_7_f27",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_10_f39",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_11_f43",
-                    "answer": "a"
-                },
-
-
-                {
-                    "question_id": "si_1_f2",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_4_f14",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_7_f26",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_10_f38",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_11_f42",
-                    "answer": "a"
-                },
-
-                {
-                    "question_id": "sg_1_f4",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_2_f8",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_4_f16",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_10_f40",
-                    "answer": "a"
-                }
-            ],
-            "list_k":
-            [
-                {
-                    "question_id": 'org1_f1',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'org2_f2',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'org3_f3',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ela1_f4',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ela2_f5',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ela3_f6',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'krp1_f7',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'krp2_f8',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'krp3_f9',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'wie1_f10',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'wie2_f11',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'wie3_f12',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zp1_f13',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zp2_f14',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zp3_f15',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'kon1_f16',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'kon2_f17',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'kon3_f18',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'reg1_f19',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'reg2_f20',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'reg3_f21',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'auf1_f22',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'auf2_f23',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'auf3_f24',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ans1_f25',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ans2_f26',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ans3_f27',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zei1_f28',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zei2_f29',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zei3_f30',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lms1_f31',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lms2_f32',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lms3_f33',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lit1_f34',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lit2_f35',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lit3_f36',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lu1_f37',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lu2_f38',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lu3_f39',
-                    "answer": 1
-                }
-            ]
-        },
+        False,
         4,
         ['error'],
         400,
+        False,
+        True,
+        False,
+        False,
+        False,
         False
     ),
     # Wrong ID for question
     (
-        {
-            "ils":
-            [
-                {
-                    "question_id": "ARF1",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ARF2",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ARF3",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ARF4",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ARF5",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ARF6",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ARF7",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ARF8",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ARF9",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ARF10",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ARF11",
-                    "answer": "a"
-                },
-
-                {
-                    "question_id": "VV1",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "VV2",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "VV3",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "VV4",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "VV5",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "VV6",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "VV7",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "VV8",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "VV9",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "VV10",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "VV11",
-                    "answer": "a"
-                },
-
-                {
-                    "question_id": "SI1",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "SI2",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "SI3",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "SI4",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "SI5",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "SI6",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "SI7",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "SI8",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "SI9",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "SI10",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "SI11",
-                    "answer": "a"
-                },
-
-                {
-                    "question_id": "GS1",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "GS2",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "GS3",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "GS4",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "GS5",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "GS6",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "GS7",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "GS8",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "GS9",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "GS10",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "GS11",
-                    "answer": "a"
-                }
-            ],
-            "list_k":
-            [
-                {
-                    "question_id": 'org1_f1',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'org2_f2',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'org3_f3',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ela1_f4',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ela2_f5',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ela3_f6',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'krp1_f7',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'krp2_f8',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'krp3_f9',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'wie1_f10',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'wie2_f11',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'wie3_f12',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zp1_f13',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zp2_f14',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zp3_f15',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'kon1_f16',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'kon2_f17',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'kon3_f18',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'reg1_f19',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'reg2_f20',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'reg3_f21',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'auf1_f22',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'auf2_f23',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'auf3_f24',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ans1_f25',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ans2_f26',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ans3_f27',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zei1_f28',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zei2_f29',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zei3_f30',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lms1_f31',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lms2_f32',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lms3_f33',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lit1_f34',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lit2_f35',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lit3_f36',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lu1_f37',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lu2_f38',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lu3_f39',
-                    "answer": 1
-                }
-            ]
-        },
+        True,
         4,
         ['error'],
         400,
+        False,
+        False,
+        True,
+        False,
+        False,
         False
     ),
-    # Wrong number as parameter
+    # Wrong answer type for ILS
     (
-        {
-            "ils":
-            [
-                {
-                    "question_id": "ar_1_f1",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_2_f5",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_3_f9",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_4_f13",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_5_f17",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_6_f21",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_7_f25",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_8_f29",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_9_f33",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_10_f37",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "ar_11_f41",
-                    "answer": "a"
-                },
-
-                {
-                    "question_id": "vv_1_f3",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_2_f7",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_3_f11",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_4_f15",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_5_f19",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_6_f23",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_7_f27",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_8_f31",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_9_f35",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_10_f39",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "vv_11_f43",
-                    "answer": "a"
-                },
-
-                {
-                    "question_id": "si_1_f2",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_2_f6",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_3_f10",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_4_f14",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_5_f18",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_6_f22",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_7_f26",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_8_f30",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_9_f34",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_10_f38",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "si_11_f42",
-                    "answer": "a"
-                },
-
-                {
-                    "question_id": "sg_1_f4",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_2_f8",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_3_f12",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_4_f16",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_5_f20",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_6_f24",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_7_f28",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_8_f32",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_9_f36",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_10_f40",
-                    "answer": "a"
-                },
-                {
-                    "question_id": "sg_11_f44",
-                    "answer": "a"
-                }
-            ],
-            "list_k":
-            [
-                {
-                    "question_id": 'org1_f1',
-                    "answer": 7
-                },
-                {
-                    "question_id": 'org2_f2',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'org3_f3',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ela1_f4',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ela2_f5',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ela3_f6',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'krp1_f7',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'krp2_f8',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'krp3_f9',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'wie1_f10',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'wie2_f11',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'wie3_f12',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zp1_f13',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zp2_f14',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zp3_f15',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'kon1_f16',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'kon2_f17',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'kon3_f18',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'reg1_f19',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'reg2_f20',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'reg3_f21',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'auf1_f22',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'auf2_f23',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'auf3_f24',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ans1_f25',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ans2_f26',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'ans3_f27',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zei1_f28',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zei2_f29',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'zei3_f30',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lms1_f31',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lms2_f32',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lms3_f33',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lit1_f34',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lit2_f35',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lit3_f36',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lu1_f37',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lu2_f38',
-                    "answer": 1
-                },
-                {
-                    "question_id": 'lu3_f39',
-                    "answer": 1
-                }
-            ]
-        },
+        True,
         4,
         ['error'],
         400,
+        False,
+        False,
+        False,
+        True,
+        False,
         False
+    ),
+    # Wrong answer type LIST-K
+    (
+        True,
+        4,
+        ['error'],
+        400,
+        False,
+        False,
+        False,
+        False,
+        True,
+        False
+    ),
+    # Wrong question ID for LIST-K
+    (
+        True,
+        4,
+        ['error'],
+        400,
+        False,
+        False,
+        False,
+        False,
+        False,
+        True
     )
 ])
 def test_post_questionnaire(
     client,
-    input,
+    ils_long,
     moodle_user_id,
     keys_expected,
     status_code_expected,
-    save_id
+    save_id,
+    error_id_missing,
+    error_key_wrong,
+    error_answer_ils,
+    error_answer_list_k,
+    error_list_k_id
 ):
     global student_id
-    url = "/lms/student/" + str(student_id) + \
-        "/" + str(moodle_user_id) + "/questionnaire"
-    r = client.post(url, json=input)
+    json_input = {}
+    ils = []
+    if ils_long:
+        for id in ils_complete:
+            temp = {}
+            if error_key_wrong:
+                temp['question_id'] = wrong_test_id
+            else:
+                temp['question_id'] = id
+            if error_answer_ils:
+                temp['answer'] = "c"
+            else:
+                temp['answer'] = "a"
+            ils.append(temp)
+        json_input['ils'] = ils
+    elif error_id_missing:
+        json_input['ils'] = ils
+    else:
+        for id in ils_short:
+            temp = {}
+            if error_key_wrong:
+                temp['question_id'] = wrong_test_id
+            else:
+                temp['question_id'] = id
+            if error_answer_ils:
+                temp['answer'] = "c"
+            else:
+                temp['answer'] = "a"
+            ils.append(temp)
+        json_input['ils'] = ils
+    list_k = []
+    for id in list_k_ids:
+        temp = {}
+        if error_list_k_id:
+            temp['question_id'] = wrong_test_id
+        else:
+            temp['question_id'] = id
+        if error_answer_list_k:
+            temp['answer'] = 7
+        else:
+            temp['answer'] = 1
+        list_k.append(temp)
+    json_input['list_k'] = list_k
+
+    url = path_lms_student + "/" + str(student_id) + \
+        "/" + str(moodle_user_id) + path_questionnaire
+    r = client.post(url, json=json_input)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
     for key in keys_expected:
@@ -2194,8 +918,8 @@ def test_post_topic_visit(
     status_code_expected
 ):
     global student_id, topic_id
-    url = "/lms/student/" + str(student_id) + \
-        "/" + str(moodle_user_id) + "/topic/" + str(topic_id)
+    url = path_lms_student + "/" + str(student_id) + \
+        "/" + str(moodle_user_id) + path_topic + "/" + str(topic_id)
     r = client.post(url, json=input)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -2243,8 +967,8 @@ def test_post_learning_element_visit(
     status_code_expected
 ):
     global student_id, learning_element_id
-    url = "/lms/student/" + str(student_id) + \
-        "/" + str(moodle_user_id) + "/learningElement/" + \
+    url = path_lms_student + "/" + str(student_id) + \
+        "/" + str(moodle_user_id) + path_learning_element + "/" + \
         str(learning_element_id)
     r = client.post(url, json=input)
     assert r.status_code == status_code_expected
@@ -2282,9 +1006,10 @@ def test_post_learning_path(
     status_code_expected
 ):
     global user_id_student, student_id, course_id, sub_topic_id
-    url = "/user/" + str(user_id_student) + "/" + str(moodle_user_id) +\
-        "/student/" + str(student_id) + "/course/" + str(course_id) +\
-        "/topic/" + str(sub_topic_id) + "/learningPath"
+    url = path_user + "/" + str(user_id_student) + "/" + str(moodle_user_id) +\
+        path_student + "/" + str(student_id) + path_course + "/" +\
+        str(course_id) + path_topic + "/" + str(sub_topic_id) +\
+        path_learning_path
     r = client.post(url, json=input)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -2377,7 +1102,7 @@ def test_api_post_frontend_logs(
     keys_expected,
     status_code_expected
 ):
-    url = "/logs/frontend"
+    url = path_frontend_logs
     r = client.post(url, json=input)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -2417,8 +1142,9 @@ def test_get_students_learning_characteristics(
         student_id_use = 99999
     else:
         student_id_use = student_id
-    url = "/user/" + str(user_id_student) + "/" + str(lms_user_id) + \
-        "/student/" + str(student_id_use) + "/learningCharacteristics"
+    url = path_user + "/" + str(user_id_student) + "/" + str(lms_user_id) + \
+        path_student + "/" + str(student_id_use) + \
+        path_learning_characteristics
     r = client.get(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -2456,8 +1182,8 @@ def test_get_students_learning_analytics(
         student_id_use = 99999
     else:
         student_id_use = student_id
-    url = "/user/" + str(user_id_student) + "/" + str(lms_user_id) + \
-        "/student/" + str(student_id_use) + "/learningAnalytics"
+    url = path_user + "/" + str(user_id_student) + "/" + str(lms_user_id) + \
+        path_student + "/" + str(student_id_use) + path_learning_analytics
     r = client.get(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -2498,8 +1224,8 @@ def test_get_students_learning_style(
         student_id_use = 99999
     else:
         student_id_use = student_id
-    url = "/user/" + str(user_id_student) + "/" + str(lms_user_id) + \
-        "/student/" + str(student_id_use) + "/learningStyle"
+    url = path_user + "/" + str(user_id_student) + "/" + str(lms_user_id) + \
+        path_student + "/" + str(student_id_use) + path_learning_style
     r = client.get(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -2537,8 +1263,8 @@ def test_get_students_learning_strategy(
         student_id_use = 99999
     else:
         student_id_use = student_id
-    url = "/user/" + str(user_id_student) + "/" + str(lms_user_id) + \
-        "/student/" + str(student_id_use) + "/learningStrategy"
+    url = path_user + "/" + str(user_id_student) + "/" + str(lms_user_id) + \
+        path_student + "/" + str(student_id_use) + path_learning_strategy
     r = client.get(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -2576,8 +1302,8 @@ def test_get_students_knowledge(
         student_id_use = 99999
     else:
         student_id_use = student_id
-    url = "/user/" + str(user_id_student) + "/" + str(lms_user_id) + \
-        "/student/" + str(student_id_use) + "/knowledge"
+    url = path_user + "/" + str(user_id_student) + "/" + str(lms_user_id) + \
+        path_student + "/" + str(student_id_use) + path_knowledge
     r = client.get(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -2618,8 +1344,8 @@ def test_get_student_courses(
         student_id_use = 99999
     else:
         student_id_use = student_id
-    url = "/user/" + str(user_id_student) + "/" + str(lms_user_id) + \
-        "/student/" + str(student_id_use) + "/course"
+    url = path_user + "/" + str(user_id_student) + "/" + str(lms_user_id) + \
+        path_student + "/" + str(student_id_use) + path_course
     r = client.get(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -2679,8 +1405,9 @@ def test_get_student_course(
         course_id_use = 99999
     else:
         course_id_use = course_id
-    url = "/user/" + str(user_id_student) + "/" + str(lms_user_id) + \
-        "/student/" + str(student_id_use) + "/course/" + str(course_id_use)
+    url = path_user + "/" + str(user_id_student) + "/" + str(lms_user_id) + \
+        path_student + "/" + str(student_id_use) + \
+        path_course + "/" + str(course_id_use)
     r = client.get(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -2739,9 +1466,9 @@ def test_get_student_course_topics(
         course_id_use = 99999
     else:
         course_id_use = course_id
-    url = "/user/" + str(user_id_student) + "/" + str(lms_user_id) + \
-        "/student/" + str(student_id_use) + "/course/" + str(course_id_use) +\
-        "/topic"
+    url = path_user + "/" + str(user_id_student) + "/" + str(lms_user_id) + \
+        path_student + "/" + str(student_id_use) + path_course + "/" +\
+        str(course_id_use) + path_topic
     r = client.get(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -2806,9 +1533,9 @@ def test_get_les_in_course_for_student(
         course_id_use = 99999
     else:
         course_id_use = course_id
-    url = "/user/" + str(user_id_student) + "/" + str(lms_user_id) + \
-        "/student/" + str(student_id_use) + "/course/" + str(course_id_use) +\
-        "/learningElement"
+    url = path_user + "/" + str(user_id_student) + "/" + str(lms_user_id) + \
+        path_student + "/" + str(student_id_use) + path_course + "/" +\
+        str(course_id_use) + path_learning_element
     r = client.get(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -2886,9 +1613,9 @@ def test_get_topic_by_id_for_student(
         topic_id_use = 99999
     else:
         topic_id_use = topic_id
-    url = "/user/" + str(user_id_student) + "/" + str(lms_user_id) + \
-        "/student/" + str(student_id_use) + "/course/" + str(course_id_use) +\
-        "/topic/" + str(topic_id_use)
+    url = path_user + "/" + str(user_id_student) + "/" + str(lms_user_id) + \
+        path_student + "/" + str(student_id_use) + path_course + "/" +\
+        str(course_id_use) + path_topic + "/" + str(topic_id_use)
     r = client.get(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -2960,9 +1687,10 @@ def test_get_topic_recommendation_for_student(
         topic_id_use = 99999
     else:
         topic_id_use = sub_topic_id
-    url = "/user/" + str(user_id_student) + "/" + str(lms_user_id) + \
-        "/student/" + str(student_id_use) + "/course/" + str(course_id_use) +\
-        "/topic/" + str(topic_id_use) + "/recommendation"
+    url = path_user + "/" + str(user_id_student) + "/" + str(lms_user_id) + \
+        path_student + "/" + str(student_id_use) + path_course + "/" +\
+        str(course_id_use) + path_topic + "/" + str(topic_id_use) +\
+        path_recommendation
     r = client.get(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -3034,9 +1762,10 @@ def test_get_learning_path_for_student(
         topic_id_use = 99999
     else:
         topic_id_use = sub_topic_id
-    url = "/user/" + str(user_id_student) + "/" + str(lms_user_id) + \
-        "/student/" + str(student_id_use) + "/course/" + str(course_id_use) +\
-        "/topic/" + str(topic_id_use) + "/learningPath"
+    url = path_user + "/" + str(user_id_student) + "/" + str(lms_user_id) + \
+        path_student + "/" + str(student_id_use) + path_course + "/" +\
+        str(course_id_use) + path_topic + "/" + str(topic_id_use) +\
+        path_learning_path
     r = client.get(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -3113,9 +1842,10 @@ def test_get_sub_topics_for_topic(
         topic_id_use = 99999
     else:
         topic_id_use = topic_id
-    url = "/user/" + str(user_id_student) + "/" + str(lms_user_id) + \
-        "/student/" + str(student_id_use) + "/course/" + str(course_id_use) +\
-        "/topic/" + str(topic_id_use) + "/subtopic"
+    url = path_user + "/" + str(user_id_student) + "/" + str(lms_user_id) + \
+        path_student + "/" + str(student_id_use) + path_course + "/" +\
+        str(course_id_use) + path_topic + "/" + str(topic_id_use) +\
+        path_subtopic
     r = client.get(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -3199,9 +1929,10 @@ def test_get_les_for_topic_for_student(
         topic_id_use = 99999
     else:
         topic_id_use = sub_topic_id
-    url = "/user/" + str(user_id_student) + "/" + str(lms_user_id) + \
-        "/student/" + str(student_id_use) + "/course/" + str(course_id_use) +\
-        "/topic/" + str(topic_id_use) + "/learningElement"
+    url = path_user + "/" + str(user_id_student) + "/" + str(lms_user_id) + \
+        path_student + "/" + str(student_id_use) + path_course + "/" +\
+        str(course_id_use) + path_topic + "/" + str(topic_id_use) +\
+        path_learning_element
     r = client.get(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -3300,10 +2031,10 @@ def test_get_le_by_id_for_student(
         learning_element_id_use = 99999
     else:
         learning_element_id_use = learning_element_id
-    url = "/user/" + str(user_id_student) + "/" + str(lms_user_id) + \
-        "/student/" + str(student_id_use) + "/course/" + str(course_id_use) +\
-        "/topic/" + str(topic_id_use) + "/learningElement/" +\
-        str(learning_element_id_use)
+    url = path_user + "/" + str(user_id_student) + "/" + str(lms_user_id) + \
+        path_student + "/" + str(student_id_use) + path_course + "/" +\
+        str(course_id_use) + path_topic + "/" + str(topic_id_use) +\
+        path_learning_element + "/" + str(learning_element_id_use)
     r = client.get(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -3345,8 +2076,8 @@ def test_get_users_by_admin_id(
         user_id_use = 99999
     else:
         user_id_use = user_id_admin
-    url = "/user/" + str(user_id_use) + "/" + str(lms_user_id) + \
-        "/admin/" + str(admin_id) + "/user"
+    url = path_user + "/" + str(user_id_use) + "/" + str(lms_user_id) + \
+        path_admin + "/" + str(admin_id) + path_user
     r = client.get(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -3388,8 +2119,8 @@ def test_get_logs_by_admin_id(
         user_id_use = 99999
     else:
         user_id_use = user_id_admin
-    url = "/user/" + str(user_id_use) + "/" + str(lms_user_id) + \
-        "/admin/" + str(admin_id) + "/logs"
+    url = path_user + "/" + str(user_id_use) + "/" + str(lms_user_id) + \
+        path_admin + "/" + str(admin_id) + path_logs
     r = client.get(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -3431,8 +2162,8 @@ def test_get_courses_by_teacher_id(
         user_id_use = 99999
     else:
         user_id_use = user_id_teacher
-    url = "/user/" + str(user_id_use) + "/" + str(lms_user_id) + \
-        "/teacher/" + str(teacher_id) + "/course"
+    url = path_user + "/" + str(user_id_use) + "/" + str(lms_user_id) + \
+        path_teacher + "/" + str(teacher_id) + path_course
     r = client.get(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -3474,7 +2205,7 @@ def test_get_user_by_id(
         user_id_use = 99999
     else:
         user_id_use = user_id_student
-    url = "/user/" + str(user_id_use) + "/" + str(lms_user_id)
+    url = path_user + "/" + str(user_id_use) + "/" + str(lms_user_id)
     r = client.get(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -3512,7 +2243,8 @@ def test_get_user_settings_by_id(
         user_id_use = 99999
     else:
         user_id_use = user_id_student
-    url = "/user/" + str(user_id_use) + "/" + str(lms_user_id) + "/settings"
+    url = path_user + "/" + str(user_id_use) + "/" + \
+        str(lms_user_id) + path_settings
     r = client.get(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -3568,7 +2300,8 @@ def test_update_user_settings_by_id(
         user_id_use = 99999
     else:
         user_id_use = user_id_student
-    url = "/user/" + str(user_id_use) + "/" + str(lms_user_id) + "/settings"
+    url = path_user + "/" + str(user_id_use) + "/" + \
+        str(lms_user_id) + path_settings
     r = client.put(url, json=request_body)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -3669,8 +2402,8 @@ def test_update_learning_style_by_student_id(
         user_id_use = 99999
     else:
         user_id_use = user_id_student
-    url = "/user/" + str(user_id_use) + "/" + str(lms_user_id) + \
-        "/student/" + str(student_id) + "/learningStyle"
+    url = path_user + "/" + str(user_id_use) + "/" + str(lms_user_id) + \
+        path_student + "/" + str(student_id) + path_learning_style
     r = client.put(url, json=request_body)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -3737,7 +2470,7 @@ def test_update_user_from_moodle(
     status_code_expected
 ):
     global user_id_student
-    url = "/lms/user/" + str(user_id_student) + "/" + \
+    url = path_lms_user + "/" + str(user_id_student) + "/" + \
         str(moodle_user_id)
     r = client.put(url, json=input)
     assert r.status_code == status_code_expected
@@ -3796,7 +2529,7 @@ def test_update_course_from_moodle(
     status_code_expected
 ):
     global course_id
-    url = "/lms/course/" + str(course_id) + "/" + str(moodle_course_id)
+    url = path_lms_course + "/" + str(course_id) + "/" + str(moodle_course_id)
     r = client.put(url, json=input)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -3896,8 +2629,8 @@ def test_update_topic_from_moodle(
         input['parent_id'] = topic_id
     else:
         topic_id_use = topic_id
-    url = "/lms/course/" + str(course_id) + \
-        "/" + str(moodle_course_id) + "/topic/" + \
+    url = path_lms_course + "/" + str(course_id) + \
+        "/" + str(moodle_course_id) + path_topic + "/" + \
         str(topic_id_use) + "/" + str(moodle_topic_id)
     r = client.put(url, json=input)
     assert r.status_code == status_code_expected
@@ -3972,10 +2705,10 @@ def test_update_le_from_moodle(
     status_code_expected
 ):
     global course_id, sub_topic_id, learning_element_id
-    url = "/lms/course/" + str(course_id) + "/" + str(moodle_course_id) + \
-        "/topic/" + str(sub_topic_id) + "/" + str(moodle_topic_id) + \
-        "/learningElement/" + str(learning_element_id) + "/" + \
-        str(moodle_learning_element_id)
+    url = path_lms_course + "/" + str(course_id) + "/" + \
+        str(moodle_course_id) + path_topic + "/" + str(sub_topic_id) + \
+        "/" + str(moodle_topic_id) + path_learning_element + "/" + \
+        str(learning_element_id) + "/" + str(moodle_learning_element_id)
     r = client.put(url, json=input)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -4014,7 +2747,8 @@ def test_reset_user_settings(
         user_id_use = 99999
     else:
         user_id_use = user_id_student
-    url = "/user/" + str(user_id_use) + "/" + str(lms_user_id) + "/settings"
+    url = path_user + "/" + str(user_id_use) + "/" + \
+        str(lms_user_id) + path_settings
     r = client.delete(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -4053,8 +2787,8 @@ def test_reset_learning_characteristics(
         user_id_use = 99999
     else:
         user_id_use = user_id_student
-    url = "/user/" + str(user_id_use) + "/" + str(lms_user_id) + \
-        "/student/" + str(student_id) + "/learningCharacteristics"
+    url = path_user + "/" + str(user_id_use) + "/" + str(lms_user_id) + \
+        path_student + "/" + str(student_id) + path_learning_characteristics
     r = client.delete(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -4092,8 +2826,8 @@ def test_reset_learning_analytics(
         user_id_use = 99999
     else:
         user_id_use = user_id_student
-    url = "/user/" + str(user_id_use) + "/" + str(lms_user_id) + \
-        "/student/" + str(student_id) + "/learningAnalytics"
+    url = path_user + "/" + str(user_id_use) + "/" + str(lms_user_id) + \
+        path_student + "/" + str(student_id) + path_learning_analytics
     r = client.delete(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -4134,8 +2868,8 @@ def test_reset_learning_style(
         user_id_use = 99999
     else:
         user_id_use = user_id_student
-    url = "/user/" + str(user_id_use) + "/" + str(lms_user_id) + \
-        "/student/" + str(student_id) + "/learningStyle"
+    url = path_user + "/" + str(user_id_use) + "/" + str(lms_user_id) + \
+        path_student + "/" + str(student_id) + path_learning_style
     r = client.delete(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -4173,8 +2907,8 @@ def test_reset_learning_strategy(
         user_id_use = 99999
     else:
         user_id_use = user_id_student
-    url = "/user/" + str(user_id_use) + "/" + str(lms_user_id) + \
-        "/student/" + str(student_id) + "/learningStrategy"
+    url = path_user + "/" + str(user_id_use) + "/" + str(lms_user_id) + \
+        path_student + "/" + str(student_id) + path_learning_strategy
     r = client.delete(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -4212,8 +2946,8 @@ def test_reset_knowledge(
         user_id_use = 99999
     else:
         user_id_use = user_id_student
-    url = "/user/" + str(user_id_use) + "/" + str(lms_user_id) + \
-        "/student/" + str(student_id) + "/knowledge"
+    url = path_user + "/" + str(user_id_use) + "/" + str(lms_user_id) + \
+        path_student + "/" + str(student_id) + path_knowledge
     r = client.delete(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -4258,7 +2992,7 @@ def test_delete_user(
         user_id_use = user_id_student
     else:
         user_id_use = user_id_teacher
-    url = "/lms/user/" + str(user_id_use) + "/" + str(moodle_user_id)
+    url = path_lms_user + "/" + str(user_id_use) + "/" + str(moodle_user_id)
     r = client.delete(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -4340,10 +3074,10 @@ def test_api_delete_le_from_moodle(
         learning_element_id_use = 99999
     else:
         learning_element_id_use = learning_element_id
-    url = "/lms/course/" + str(course_id_use) + "/" + str(moodle_course_id) + \
-        "/topic/" + str(topic_id_use) + "/" + str(moodle_topic_id) + \
-        "/learningElement/" + str(learning_element_id_use) + "/" + \
-        str(moodle_learning_element_id)
+    url = path_lms_course + "/" + str(course_id_use) + "/" +\
+        str(moodle_course_id) + path_topic + "/" + str(topic_id_use) +\
+        "/" + str(moodle_topic_id) + path_learning_element + "/" +\
+        str(learning_element_id_use) + "/" + str(moodle_learning_element_id)
     r = client.delete(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))
@@ -4401,8 +3135,8 @@ def test_api_delete_topic_from_moodle(
         topic_id_use = 99999
     else:
         topic_id_use = sub_topic_id
-    url = "/lms/course/" + str(course_id_use) + \
-        "/" + str(moodle_course_id) + "/topic/" + \
+    url = path_lms_course + "/" + str(course_id_use) + \
+        "/" + str(moodle_course_id) + path_topic + "/" + \
         str(topic_id_use) + "/" + str(moodle_topic_id)
     r = client.delete(url)
     assert r.status_code == status_code_expected
@@ -4441,7 +3175,8 @@ def test_api_delete_course_from_moodle(
         course_id_use = 99999
     else:
         course_id_use = course_id
-    url = "/lms/course/" + str(course_id_use) + "/" + str(moodle_course_id)
+    url = path_lms_course + "/" + \
+        str(course_id_use) + "/" + str(moodle_course_id)
     r = client.delete(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip('\n'))

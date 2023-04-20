@@ -1208,7 +1208,7 @@ def create_learning_path_for_tests(uow):
         student_id=1,
         course_id=1,
         topic_id=1,
-        algorithm="Graf"
+        algorithm="aco"
     )
 
 
@@ -2492,7 +2492,7 @@ def test_create_learning_path():
         student_id=1,
         course_id=1,
         topic_id=1,
-        algorithm="Graf"
+        algorithm="aco"
     )
     assert type(result) == dict
     assert result != {}

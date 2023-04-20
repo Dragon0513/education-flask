@@ -31,14 +31,18 @@ class LearningPath:
             'calculated_on': self.calculated_on
         }
 
-    def get_learning_path(self, student_id, learning_style, algorithm, list_Learning_element):
-        
-        list_Learning_element={}
+    def get_learning_path(self, student_id, learning_style, algorithm, learning_element):
 
         if algorithm == "Graf":
-            path = graf.GrafAlgorithm(
-                student_id=student_id, learning_style=learning_style)
-            temp = path.get_learning_path(input_learning_style=learning_style, list_Learning_element=list_Learning_element)
+            path = graf.GrafAlgorithm(student_id=student_id,
+                                      learning_path=None, 
+                                      learning_style=learning_style,
+                                      learning_element = learning_element,
+                                      )
+            # for ele in list_learning_element:            
+            #     print("*****",ele.classification," ", type(list_learning_element))
+            #temp = path.get_learning_path(input_learning_style=learning_style, list_Learning_element=list_Learning_element)
+            temp = " "
             self.path = ", ".join(temp)
         elif algorithm == "GA":
             path = ga.GA_Algorithm(

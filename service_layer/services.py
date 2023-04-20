@@ -447,7 +447,26 @@ def create_learning_path(
         learning_elements = get_learning_elements_for_topic_id(
             uow,
             topic_id
-        )
+        ) 
+
+        characteristics = get_learning_characteristics(uow, student_id)
+
+        #print("characteristics", characteristics, len(characteristics))
+        #print("\n\naqui --- learning_elements:\n", len(learning_elements))        
+        learning_style = get_learning_style(uow, characteristics['id'])
+
+        #set learning style example
+        learning_style['perception_dimension'] = 'sns'
+        learning_style['perception_value']= 3
+        learning_style['input_dimension']= 'vrb'
+        learning_style['input_value']= 5
+        learning_style['processing_dimension']= 'act'
+        learning_style['processing_value']= 1
+        learning_style['understanding_dimension']= 'seq' 
+        learning_style['understanding_value']= 9
+          
+        list_learning_element = uow.learning_element.learning_element
+
         i = 1
         for le in learning_elements:
             path_element = TM.LearningPathLearningElement(
@@ -457,12 +476,18 @@ def create_learning_path(
                 i,
                 None
             )
-            uow.learning_path_learning_element\
-                .create_learning_path_learning_element(
-                    path_element
-                )
-            uow.commit()
-            i += 1
+ 
+        learning_path.get_learning_path(student_id,
+                                        learning_style,
+                                        algorithm,
+                                        list_learning_element)
+
+        uow.learning_path_learning_element\
+            .create_learning_path_learning_element(
+                path_element
+            )
+        uow.commit()
+        i += 1
         return result
 
 

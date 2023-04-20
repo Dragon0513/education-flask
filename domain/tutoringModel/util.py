@@ -159,3 +159,44 @@ def get_list_LPLE(learning_path, dict_Learning_element, LP_id):
             List_LPLE.append(LPLE)
     #print("List_LPLE: ",[i.learning_element_id for i in List_LPLE])
     return List_LPLE
+
+
+def get_learning_style( learning_style):
+    print("### get_learning_style")
+    
+    result = {}
+    if(learning_style.processing_dimension == "act"):
+        result["act"] = learning_style.processing_value
+    else:
+        result["ref"] = learning_style.processing_value
+
+    if(learning_style.perception_dimension == "sns"):
+        result["sns"] = learning_style.perception_value
+    else:
+        result["int"] = learning_style.perception_value
+
+    if(learning_style.input_dimension == "vis"):
+        result["vis"] = learning_style.input_value
+    else:
+        result["vrb"] = learning_style.input_value    
+
+    if(learning_style.understanding_dimension == "glo"):
+        result["glo"] = learning_style.understanding_value
+    else:
+        result["seq"] = learning_style.understanding_value
+    
+    print("###get_learning_style",result)
+    print(result)
+    return result    
+
+
+def get_learning_element( learning_elements):
+    result = []
+    print("### get_learning_element")
+    for ele in learning_elements:            
+        print("*****",ele.classification," ", type(learning_elements))
+        result.append(ele.classification)
+    print(result)
+    print("###learning_elements",result)
+    return result   
+

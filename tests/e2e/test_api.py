@@ -983,7 +983,7 @@ def test_post_learning_element_visit(
     # Working Example
     (
         {
-            "algorithm": "graf"
+            "algorithm": "aco"
         },
         4,
         ['id', 'course_id', 'topic_id', 'student_id',\

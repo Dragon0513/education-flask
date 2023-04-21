@@ -432,6 +432,12 @@ def create_learning_path(
 ) -> dict:
     with uow:
         get_user_by_id(uow, user_id, lms_user_id)
+        learning_elements = get_learning_elements_for_topic_id(
+            uow,
+            topic_id
+        )
+        if learning_elements == []:
+            raise err.NoLearningElementsError()
         paths_exisiting = get_learning_paths(
             uow=uow,
             student_id=student_id
@@ -464,52 +470,68 @@ def create_learning_path(
             )
         uow.commit()
         result = learning_path.serialize()
-        learning_elements = get_learning_elements_for_topic_id(
-            uow,
-            topic_id
-        )
-        learning_style = get_learning_style_by_student_id(
-            uow=uow,
-            student_id=student_id
-        )
-        list_of_les = []
-        learning_style = get_learning_style_by_student_id(
-            uow=uow,
-            student_id=student_id
-        )
-        list_of_les = []
-        for le in learning_elements:
-            element = get_learning_element_by_id(
+        if len(learning_elements) == 1:
+            le = get_learning_element_by_id(
                 uow=uow,
                 user_id=user_id,
                 lms_user_id=lms_user_id,
                 student_id=student_id,
                 course_id=course_id,
                 topic_id=topic_id,
-                learning_element_id=le['learning_element_id']
+                learning_element_id=learning_elements[0]['learning_element_id']
             )
-            list_of_les.append(element)
-        learning_path.get_learning_path(
-            student_id=student_id,
-            learning_style=learning_style,
-            algorithm=algorithm.lower(),
-            list_of_les=list_of_les
-        )
-        result = learning_path.serialize()
-        for i, le in enumerate(result['path'].replace(",", "").split()):
-            for temp in list_of_les:
-                if temp['classification'] == le:
-                    path_element = TM.LearningPathLearningElement(
-                        learning_element_id=temp['id'],
-                        learning_path_id=result['id'],
-                        recommended=True if i == 0 else False,
-                        position=i+1,
-                        learning_element=None
-                    )
-                    uow.learning_path_learning_element\
-                        .create_learning_path_learning_element(
-                            path_element
+            path_element = TM.LearningPathLearningElement(
+                learning_element_id=le['id'],
+                learning_path_id=result['id'],
+                recommended=True,
+                position=1,
+                learning_element=None
+            )
+            uow.learning_path_learning_element\
+                .create_learning_path_learning_element(
+                    path_element
+                )
+            learning_path.path = le['classification']
+            result = learning_path.serialize()
+        else:
+            learning_style = get_learning_style_by_student_id(
+                uow=uow,
+                student_id=student_id
+            )
+            list_of_les = []
+            for le in learning_elements:
+                element = get_learning_element_by_id(
+                    uow=uow,
+                    user_id=user_id,
+                    lms_user_id=lms_user_id,
+                    student_id=student_id,
+                    course_id=course_id,
+                    topic_id=topic_id,
+                    learning_element_id=le['learning_element_id']
+                )
+                list_of_les.append(element)
+
+            learning_path.get_learning_path(
+                student_id=student_id,
+                learning_style=learning_style,
+                algorithm=algorithm.lower(),
+                list_of_les=list_of_les
+            )
+            result = learning_path.serialize()
+            for i, le in enumerate(result['path'].replace(",", "").split()):
+                for temp in list_of_les:
+                    if temp['classification'] == le:
+                        path_element = TM.LearningPathLearningElement(
+                            learning_element_id=temp['id'],
+                            learning_path_id=result['id'],
+                            recommended=True if i == 0 else False,
+                            position=i+1,
+                            learning_element=None
                         )
+                        uow.learning_path_learning_element\
+                            .create_learning_path_learning_element(
+                                path_element
+                            )
         uow.commit()
         return result
 

@@ -432,6 +432,26 @@ def create_learning_path(
 ) -> dict:
     with uow:
         get_user_by_id(uow, user_id, lms_user_id)
+        paths_exisiting = get_learning_paths(
+            uow=uow,
+            student_id=student_id
+        )
+        for path_exisiting in paths_exisiting:
+            condition1 = int(path_exisiting['course_id']) == int(course_id)
+            condition2 = int(path_exisiting['topic_id']) == int(topic_id)
+            if condition1 and condition2:
+                delete_learning_path_learning_element(
+                    uow=uow,
+                    learning_path_id=int(path_exisiting['id'])
+                )
+                delete_learning_path_topic(
+                    uow=uow,
+                    learning_path_id=int(path_exisiting['id'])
+                )
+                delete_learning_path(
+                    uow=uow,
+                    learning_path_id=int(path_exisiting['id'])
+                )
         learning_path = TM.LearningPath(
             student_id,
             course_id,
@@ -485,7 +505,7 @@ def create_learning_path(
                         .create_learning_path_learning_element(
                             path_element
                         )
-                    uow.commit()
+        uow.commit()
         return result
 
 
@@ -872,6 +892,17 @@ def delete_learning_element(
 
 def delete_learning_path(
         uow: unit_of_work.AbstractUnitOfWork,
+        learning_path_id
+):
+    with uow:
+        uow.learning_path.delete_learning_path(
+            learning_path_id
+        )
+        uow.commit()
+
+
+def delete_learning_paths(
+        uow: unit_of_work.AbstractUnitOfWork,
         student_id
 ):
     with uow:
@@ -977,7 +1008,7 @@ def delete_student(
         delete_student_learning_element(uow, student[0].id)
         delete_student_topic(uow, student[0].id)
         delete_student_course(uow, student[0].id)
-        delete_learning_path(uow, student[0].id)
+        delete_learning_paths(uow, student[0].id)
         questionnaire = uow.questionnaire\
             .get_questionnaire_by_student_id(
                 student[0].id

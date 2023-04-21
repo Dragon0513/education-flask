@@ -510,7 +510,6 @@ def create_learning_path(
                     learning_element_id=le['learning_element_id']
                 )
                 list_of_les.append(element)
-
             learning_path.get_learning_path(
                 student_id=student_id,
                 learning_style=learning_style,

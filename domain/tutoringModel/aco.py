@@ -9,9 +9,6 @@ from domain.tutoringModel import utils
 class AntColonySolver:
     def __init__(self):
         self.cost_fn = utils.distance
-        self.time = 0
-        self.min_time = 0
-        self.timeout = 0
         self.stop_factor = 2
         self.min_round_trips = 10
         self.max_round_trips = 0
@@ -114,7 +111,6 @@ class AntColonySolver:
         best_path_cost = np.inf
         best_epochs = []
         epoch = 0
-        time_start = time.perf_counter()
         while True:
             epoch += 1
 
@@ -142,7 +138,7 @@ class AntColonySolver:
                         best_path_cost,
                         best_epochs)
 
-            if self.loop_termination(best_epochs, time_start, epoch):
+            if self.loop_termination(best_epochs, epoch):
                 break
             else:
                 continue
@@ -254,7 +250,6 @@ class AntColonySolver:
 
     def loop_termination(self,
                          best_epochs,
-                         time_start,
                          epoch):
         # Do we terminate?
 
@@ -262,10 +257,6 @@ class AntColonySolver:
         # (note: 2+ solutions are not guaranteed)
         if not len(best_epochs):
             return False
-
-        # Timer takes priority over other constraints
-        if self.time or self.min_time or self.timeout:
-            return self.loop_termination_time(time_start)
 
         # First epoch only has start smell - question:
         # how many epochs are required for a reasonable result?
@@ -282,16 +273,4 @@ class AntColonySolver:
 
         # Lets keep redoubling our efforts until we can't find anything more
         if self.stop_factor and epoch > (best_epochs[-1] * self.stop_factor):
-            return True
-
-    def loop_termination_time(self, time_start):
-        clock = time.perf_counter() - time_start
-        if self.time:
-            if clock > self.time:
-                return True
-            else:
-                return False
-        if self.min_time and clock < self.min_time:
-            return False
-        if self.timeout and clock > self.timeout:
             return True

@@ -67,7 +67,7 @@ class LearningPath:
             else:
                 if lz_in_list:
                     list_of_les_classifications.insert(
-                        len(list_of_les_classifications)-2,
+                        len(list_of_les_classifications)-1,
                         le['classification']
                     )
                 else:

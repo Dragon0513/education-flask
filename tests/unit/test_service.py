@@ -2516,7 +2516,7 @@ def test_delete_learning_path():
                                  .learning_path)
     entries_beginning_path_le = len(uow.learning_path_learning_element
                                     .learning_path_learning_element)
-    result = services.delete_learning_path(
+    result = services.delete_learning_paths(
         uow=uow,
         student_id=1
     )

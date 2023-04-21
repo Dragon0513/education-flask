@@ -473,6 +473,11 @@ def create_learning_path(
             student_id=student_id
         )
         list_of_les = []
+        learning_style = get_learning_style_by_student_id(
+            uow=uow,
+            student_id=student_id
+        )
+        list_of_les = []
         for le in learning_elements:
             element = get_learning_element_by_id(
                 uow=uow,

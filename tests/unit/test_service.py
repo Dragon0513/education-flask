@@ -9,7 +9,7 @@ import time
 import errors as err
 
 
-class FakeRepository(repository.AbstractRepository):
+class FakeRepository(repository.AbstractRepository):  # pragma: no cover
     def __init__(self,
                  admin=[],
                  course=[],
@@ -946,7 +946,7 @@ class FakeRepository(repository.AbstractRepository):
         self.user.add(user)
 
 
-class FakeUnitOfWork(unit_of_work.AbstractUnitOfWork):
+class FakeUnitOfWork(unit_of_work.AbstractUnitOfWork):  # pragma: no cover
     def __init__(self):
         self.admin = FakeRepository()
         self.course = FakeRepository()

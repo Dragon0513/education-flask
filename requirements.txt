@@ -13,6 +13,7 @@ colorama==0.4.6
 coverage==7.2.1
 cryptography==37.0.1
 distlib==0.3.6
+exceptiongroup==1.1.1
 filelock==3.9.0
 Flask==2.2.3
 Flask-Cors==3.0.10
@@ -42,7 +43,7 @@ pyOpenSSL==22.0.0
 pyparsing==3.0.9
 pyproject_api==1.5.0
 PySocks==1.7.1
-pytest==7.1.2
+pytest==7.3.1
 pytest-cov==4.0.0
 pytest-dotenv==0.5.2
 pytest-postgresql==4.1.1

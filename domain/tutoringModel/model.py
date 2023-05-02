@@ -37,17 +37,15 @@ class LearningPath:
             path = graf.GrafAlgorithm(student_id=student_id,
                                       learning_path=None, 
                                       learning_style=learning_style,
-                                      learning_element = learning_element,
+                                      Learning_element = learning_element,
                                       )
-            # for ele in list_learning_element:            
-            #     print("*****",ele.classification," ", type(list_learning_element))
-            #temp = path.get_learning_path(input_learning_style=learning_style, list_Learning_element=list_Learning_element)
-            temp = " "
-            self.path = ", ".join(temp)
+            temp = path.get_learning_path(input_learning_style=learning_style,
+                          input_Learning_element=learning_element)
+            self.path = ", "#.join(temp)
         elif algorithm == "GA":
             path = ga.GA_Algorithm(
                 student_id=student_id, learning_style=learning_style)
-            temp = path.get_learning_path(input_learning_style=learning_style, list_Learning_element=list_Learning_element)
+            temp = "" #path.get_learning_path(input_learning_style=learning_style, input_Learning_element=learning_element)
             self.path = ", ".join(temp)
         else:
             raise err.NoValidAlgorithmError()

@@ -103,9 +103,9 @@ class GA_Algorithmus(object):
             self.population[20:temp, :] = sample
 
     def sort_population(self, fitness):
-
         idx = np.argsort(fitness)
         return self.population[idx]
+
 
     def crossover(self, parent, pop):
 
@@ -116,7 +116,7 @@ class GA_Algorithmus(object):
             # choose crossover learning elements
             temp = (self.le_size - 1)
             cross_points = np.random.randint(0, 2, temp).astype(bool)
-            # choose the crossover learning element
+            
             keep_LE = parent[~cross_points]  # find the LE number
             swap_LE = pop[i_, np.isin(pop[i_].ravel(), keep_LE, invert=True)]
             parent[:] = np.concatenate((keep_LE, swap_LE))
@@ -235,8 +235,12 @@ class GA_Algorithmus(object):
 
     def get_learning_path(self, input_learning_style={"ACT": 1, "SNS": 7,
                                                       "VIS": 5, "GLO": 1},
-                          dict_Learning_element=None):
+                          input_Learning_element=None):
         time1 = time.time()
+
+        print("################## RESULT: Entro",input_learning_style)     
+        if input_learning_style is not None:
+            input_learning_style = util.get_learning_style(input_learning_style)
 
         if (len(input_learning_style) != 4):
             raise err.WrongLearningStyleNumberError()
@@ -247,10 +251,18 @@ class GA_Algorithmus(object):
         if util.check_name_learning_style(input_learning_style):
             raise err.WrongLearningStyleDimensionError()
 
+        if input_Learning_element is not None:            
+            Learning_elements = util.get_learning_element(input_Learning_element)
+        else:
+           Learning_elements = ["KÜ", "LK", "ZF", "RQ",
+                                "SE", "FO", "ZL", "AN", 
+                                "ÜB", "BE", "AB", "LZ"]
+        print("################## RESULT: Entro",Learning_elements)
+
         learning_path = []
         self.calculate_learning_path(input_learning_style)
 
-        elements = np.array(self.learning_elements)
+        elements = np.array(learning_elements)
         population = self.valide_population()
         idx = population[0]
         sort_learning_path = elements[idx]

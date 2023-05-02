@@ -1,4 +1,4 @@
-from domain.tutoringModel import model as tutoringModel
+from domain.tutoringModel import model as TM
 from domain.domainModel import model as LE
 import numpy as np
 
@@ -142,61 +142,73 @@ def get_dict_Learning_element():
     return dict_Learning_element
 
 
-def get_list_LPLE(learning_path, dict_Learning_element, LP_id):
+def get_list_LPLE(learning_path, input_Learning_element, LP_id):
 
-    if(dict_Learning_element is None):
-        dict_Learning_element = get_dict_Learning_element()
+    # if(dict_Learning_element is None):
+    #     dict_Learning_element = get_dict_Learning_element()
 
     List_LPLE = []
-    for key in learning_path:
-        condition = dict_Learning_element.get(key) is not None
-        if (condition):
-            element = dict_Learning_element.get(key)
-            LPLE = tutoringModel.LearningPathLearningElement(learning_element_id=element.id,
-                                                             learning_path_id=LP_id,
-                                                             recommended=True,
-                                                             position=None)
+    for element in input_Learning_element:
+
+        classification= element.classification
+        condition = classification is not None
+        condition2 = classification in learning_path
+        
+        if (condition and condition2 ):
+            
+            LPLE = TM.LearningPathLearningElement(learning_element_id=element.id,
+                                                  learning_path_id=LP_id,
+                                                  recommended=True,
+                                                  position=learning_path.index(classification))
+            print("### classification: ",classification, " id: ",LPLE.learning_element_id," LPLE.position: ", LPLE.position )                                      
             List_LPLE.append(LPLE)
-    #print("List_LPLE: ",[i.learning_element_id for i in List_LPLE])
+
+    print("####List_LPLE: ",[i.position for i in List_LPLE])
     return List_LPLE
 
 
 def get_learning_style( learning_style):
-    print("### get_learning_style")
-    
+    #print("\n\n\n### get_learning_style",type(learning_style),"--", learning_style)    
     result = {}
-    if(learning_style.processing_dimension == "act"):
-        result["act"] = learning_style.processing_value
-    else:
-        result["ref"] = learning_style.processing_value
 
-    if(learning_style.perception_dimension == "sns"):
-        result["sns"] = learning_style.perception_value
+    if(learning_style.get('processing_dimension')== "act"):
+        result["act"] = learning_style.get('processing_value')
     else:
-        result["int"] = learning_style.perception_value
+        result["ref"] = learning_style.get('processing_value')
+  
+    if(learning_style.get('perception_dimension') == "sns"):
+        result["sns"] = learning_style.get('perception_value')
+    else:
+        result["int"] = learning_style.get('perception_value')
 
-    if(learning_style.input_dimension == "vis"):
-        result["vis"] = learning_style.input_value
+    if(learning_style.get('input_dimension') == "vis"):
+        result["vis"] = learning_style.get('input_value')
     else:
-        result["vrb"] = learning_style.input_value    
+        result["vrb"] = learning_style.get('input_value')   
 
-    if(learning_style.understanding_dimension == "glo"):
-        result["glo"] = learning_style.understanding_value
+    if(learning_style.get('understanding_dimension') == "glo"):
+        result["glo"] = learning_style.get('understanding_value')
     else:
-        result["seq"] = learning_style.understanding_value
+        result["seq"] = learning_style.get('understanding_value')
     
-    print("###get_learning_style",result)
-    print(result)
+
+
+    for key, value in dict(result).items():
+        if value == None:
+            del result[key]
+
+    #print("\n\n###get_learning_style",result )
+    #print(" -----------",len(result) != 4)
+   
     return result    
 
 
 def get_learning_element( learning_elements):
-    result = []
-    print("### get_learning_element")
+    result = []    
     for ele in learning_elements:            
-        print("*****",ele.classification," ", type(learning_elements))
+        #print("*****",ele.classification," ", type(learning_elements))
         result.append(ele.classification)
-    print(result)
-    print("###learning_elements",result)
+    #print(result)
+    #print("###learning_elements",result)
     return result   
 

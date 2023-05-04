@@ -432,6 +432,32 @@ def create_learning_path(
 ) -> dict:
     with uow:
         get_user_by_id(uow, user_id, lms_user_id)
+        learning_elements = get_learning_elements_for_topic_id(
+            uow,
+            topic_id
+        )
+        if learning_elements == []:
+            raise err.NoLearningElementsError()
+        paths_exisiting = get_learning_paths(
+            uow=uow,
+            student_id=student_id
+        )
+        for path_exisiting in paths_exisiting:
+            condition1 = int(path_exisiting['course_id']) == int(course_id)
+            condition2 = int(path_exisiting['topic_id']) == int(topic_id)
+            if condition1 and condition2:
+                delete_learning_path_learning_element(
+                    uow=uow,
+                    learning_path_id=int(path_exisiting['id'])
+                )
+                delete_learning_path_topic(
+                    uow=uow,
+                    learning_path_id=int(path_exisiting['id'])
+                )
+                delete_learning_path(
+                    uow=uow,
+                    learning_path_id=int(path_exisiting['id'])
+                )
         learning_path = TM.LearningPath(
             student_id,
             course_id,
@@ -444,25 +470,68 @@ def create_learning_path(
             )
         uow.commit()
         result = learning_path.serialize()
-        learning_elements = get_learning_elements_for_topic_id(
-            uow,
-            topic_id
-        )
-        i = 1
-        for le in learning_elements:
+        if len(learning_elements) == 1:
+            le = get_learning_element_by_id(
+                uow=uow,
+                user_id=user_id,
+                lms_user_id=lms_user_id,
+                student_id=student_id,
+                course_id=course_id,
+                topic_id=topic_id,
+                learning_element_id=learning_elements[0]['learning_element_id']
+            )
             path_element = TM.LearningPathLearningElement(
-                le['id'],
-                result['id'],
-                True if i == 1 else False,
-                i,
-                None
+                learning_element_id=le['id'],
+                learning_path_id=result['id'],
+                recommended=True,
+                position=1,
+                learning_element=None
             )
             uow.learning_path_learning_element\
                 .create_learning_path_learning_element(
                     path_element
                 )
-            uow.commit()
-            i += 1
+            learning_path.path = le['classification']
+            result = learning_path.serialize()
+        else:
+            learning_style = get_learning_style_by_student_id(
+                uow=uow,
+                student_id=student_id
+            )
+            list_of_les = []
+            for le in learning_elements:
+                element = get_learning_element_by_id(
+                    uow=uow,
+                    user_id=user_id,
+                    lms_user_id=lms_user_id,
+                    student_id=student_id,
+                    course_id=course_id,
+                    topic_id=topic_id,
+                    learning_element_id=le['learning_element_id']
+                )
+                list_of_les.append(element)
+            learning_path.get_learning_path(
+                student_id=student_id,
+                learning_style=learning_style,
+                _algorithm=algorithm.lower(),
+                list_of_les=list_of_les
+            )
+            result = learning_path.serialize()
+            for i, le in enumerate(result['path'].replace(",", "").split()):
+                for temp in list_of_les:
+                    if temp['classification'] == le:
+                        path_element = TM.LearningPathLearningElement(
+                            learning_element_id=temp['id'],
+                            learning_path_id=result['id'],
+                            recommended=True if i == 0 else False,
+                            position=i+1,
+                            learning_element=None
+                        )
+                        uow.learning_path_learning_element\
+                            .create_learning_path_learning_element(
+                                path_element
+                            )
+        uow.commit()
         return result
 
 
@@ -849,6 +918,17 @@ def delete_learning_element(
 
 def delete_learning_path(
         uow: unit_of_work.AbstractUnitOfWork,
+        learning_path_id
+):
+    with uow:
+        uow.learning_path.delete_learning_path(
+            learning_path_id
+        )
+        uow.commit()
+
+
+def delete_learning_paths(
+        uow: unit_of_work.AbstractUnitOfWork,
         student_id
 ):
     with uow:
@@ -954,7 +1034,7 @@ def delete_student(
         delete_student_learning_element(uow, student[0].id)
         delete_student_topic(uow, student[0].id)
         delete_student_course(uow, student[0].id)
-        delete_learning_path(uow, student[0].id)
+        delete_learning_paths(uow, student[0].id)
         questionnaire = uow.questionnaire\
             .get_questionnaire_by_student_id(
                 student[0].id

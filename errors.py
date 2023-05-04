@@ -62,3 +62,8 @@ class AlreadyExisting(Exception):
 class NoValidParameterValueError(Exception):
     code = 400
     description = "The send parameters have a wrong value!"
+
+
+class NoLearningElementsError(Exception):
+    code = 400
+    description = "There are no learning elements for this topic!"

@@ -1,7 +1,8 @@
 from domain.tutoringModel import graf, aco
 import errors as err
 import time
-from domain.tutoringModel.utils import distance, get_coordinates
+from domain.tutoringModel.utils import get_coordinates
+from utils import constants as cons
 
 
 class LearningPath:
@@ -35,8 +36,9 @@ class LearningPath:
     def get_learning_path(self,
                           student_id,
                           learning_style,
-                          algorithm,
+                          _algorithm,
                           list_of_les):
+        algorithm = _algorithm.lower()
         if algorithm == "graf":
             path = graf.GrafAlgorithm(
                 student_id=student_id, learning_style=learning_style)
@@ -59,9 +61,9 @@ class LearningPath:
         lz_in_list = False
         list_of_les_classifications = []
         for le in list_of_les:
-            if le['classification'] == 'KÜ':
+            if le['classification'] == cons.abbreviation_ct:
                 list_of_les_classifications.insert(0, le['classification'])
-            elif le['classification'] == 'LZ':
+            elif le['classification'] == cons.abbreviation_as:
                 list_of_les_classifications.append(le['classification'])
                 lz_in_list = True
             else:

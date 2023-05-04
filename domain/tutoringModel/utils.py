@@ -1,4 +1,5 @@
 import math
+from utils import constants as cons
 
 # Interpretation of Graf et al. for Learning Elements
 # -1: negative Influence; 0: neutral; 1: positive Influence
@@ -19,25 +20,25 @@ influence = {
 def get_coordinates(learning_style, list_of_les):
     coordinates = {}
     for elememnt in list_of_les:
-        if elememnt == "KÜ":
-            coordinates['KÜ'] = (13, 13, 13, 13)
-        elif elememnt == "EK":
-            coordinates['EK'] = (12, 12, 12, 12)
-        elif elememnt == "LZ":
-            coordinates['LZ'] = (-12, -12, -12, -12)
-        elif elememnt == "ZF":
+        if elememnt == cons.abbreviation_ct:
+            coordinates[cons.abbreviation_ct] = (13, 13, 13, 13)
+        elif elememnt == cons.abbreviation_co:
+            coordinates[cons.abbreviation_co] = (12, 12, 12, 12)
+        elif elememnt == cons.abbreviation_as:
+            coordinates[cons.abbreviation_as] = (-12, -12, -12, -12)
+        elif elememnt == cons.abbreviation_cc:
             if(learning_style['processing_dimension'] == 'ref'
                and learning_style['understanding_dimension'] == 'seq'):
                 if learning_style['processing_value'] >\
                         learning_style['understanding_value']:
-                    coordinates['ZF'] = (11, 11, 11, 11)
+                    coordinates[cons.abbreviation_cc] = (11, 11, 11, 11)
                 else:
-                    coordinates['ZF'] = (0, 0, 0, 0)
+                    coordinates[cons.abbreviation_cc] = (0, 0, 0, 0)
             elif(learning_style['processing_dimension'] == 'ref'
                  or learning_style['understanding_dimension'] == 'glo'):
-                coordinates['ZF'] = (11, 11, 11, 11)
+                coordinates[cons.abbreviation_cc] = (11, 11, 11, 11)
             else:
-                coordinates['ZF'] = (0, 0, 0, 0)
+                coordinates[cons.abbreviation_cc] = (0, 0, 0, 0)
         else:
             coordinate = list()
             if learning_style['processing_dimension'] == "act":

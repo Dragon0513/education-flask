@@ -513,7 +513,7 @@ def create_learning_path(
             learning_path.get_learning_path(
                 student_id=student_id,
                 learning_style=learning_style,
-                algorithm=algorithm.lower(),
+                _algorithm=algorithm.lower(),
                 list_of_les=list_of_les
             )
             result = learning_path.serialize()

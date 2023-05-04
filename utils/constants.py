@@ -1,2 +1,15 @@
 date_format = r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z'
 deletion_message = "Deletion was successful!"
+
+abbreviation_ct = 'KÜ'
+abbreviation_co = 'EK'
+abbreviation_rq = 'RQ'
+abbreviation_se = 'SE'
+abbreviation_fo = 'FO'
+abbreviation_rm = 'ZL'
+abbreviation_an = 'AN'
+abbreviation_ec = 'ÜB'
+abbreviation_ex = 'BE'
+abbreviation_ra = 'AB'
+abbreviation_cc = 'ZF'
+abbreviation_as = 'LZ'

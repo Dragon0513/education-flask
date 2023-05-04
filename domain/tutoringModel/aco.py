@@ -1,6 +1,5 @@
 from itertools import chain
 from typing import Any, List, Tuple
-import time
 import random
 import numpy as np
 from domain.tutoringModel import utils

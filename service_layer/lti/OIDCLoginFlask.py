@@ -4,7 +4,7 @@ import urllib.parse
 from service_layer import services, unit_of_work
 import service_layer.crypto.JWTKeyManagement as JWTKeyManagement
 from errors import errors as err
-from flask import redirect,make_response
+from flask import jsonify, redirect,make_response
 from flask.wrappers import Request
 from werkzeug.wrappers.response import Response
 from service_layer.crypto.cryptorandom import CryptoRandom
@@ -14,6 +14,7 @@ from service_layer.lti.Roles import RoleMapper
 from service_layer.service.CookieServiceFlask import CookieServiceFlask
 from service_layer.lti.config.ToolConfigJson import ToolConfigJson
 import service_layer.service.SessionServiceFlask as SessionServiceFlask
+from domain.userAdministartion import model as UA
 
 
 class OIDCLoginFlask(OIDCLogin):
@@ -108,7 +109,7 @@ class OIDCLoginFlask(OIDCLogin):
 
         # Verify the state parameter
         if not self._request.form.get('state'):
-            self._response = "No state found", 403
+            self._response = jsonify({'error': 'No state found'}), 403
             return self
         
         # verify state paramter signature
@@ -116,7 +117,7 @@ class OIDCLoginFlask(OIDCLogin):
         state_form = JWTKeyManagement.verify_jwt(state_form_jwt)
         assert(JWTKeyManagement.verify_state_jwt_payload(state_form))
         if not state_form:
-            self._response = "Invalid state signature", 403
+            self._response = jsonify({'error': 'Invalid state signature'}), 403
             return self
 
         return self
@@ -131,9 +132,9 @@ class OIDCLoginFlask(OIDCLogin):
         
         # check if error in request
         if self._request.form.get('error'):
-            self._response = self._request.form.get('error'), 400
+            self._response = jsonify({'error': self._request.form.get('error')}), 400
         if not self._request.form.get('id_token'):
-            self._response = "No id_token found", 400
+            self._response = jsonify({'error': 'No id_token found'}), 400
 
         # Decode the id_token
         id_token_jwt = self._request.form.get('id_token', type=str) or ''
@@ -174,7 +175,7 @@ class OIDCLoginFlask(OIDCLogin):
         assert(JWTKeyManagement.verify_state_jwt_payload(state_form))
 
         # generate nonce to obtain cookie
-        nonce_jwt = JWTKeyManagement.generate_nonce_jwt(self.id_token.nonce, self._request.referrer, os.environ.get('BACKEND_URL', 'http://localhost:5000'))
+        nonce_jwt = JWTKeyManagement.generate_nonce_jwt(self.id_token.nonce, self._request.referrer, os.environ.get('BACKEND_URL', 'http://fakedomain.com:5000'))
         SessionServiceFlask.set(self.id_token.nonce, 'nonce_jwt', nonce_jwt)
         # get platform
         try:
@@ -190,14 +191,15 @@ class OIDCLoginFlask(OIDCLogin):
         # TODO🧾 based on issuer platform get corresponsing implementaiton and write id token data into structures
 
         # create user
-        # TODO🧾 create user if not exist
+        # TODO🧾 create student user if not exist
         try:
-            services.create_user(unit_of_work.SqlAlchemyUnitOfWork(),
-                                self.id_token.name,
-                                self.id_token['https://purl.imsglobal.org/spec/lti/claim/tool_platform']['name'],
-                                self.id_token.sub, 
-                                RoleMapper(self.id_token['https://purl.imsglobal.org/spec/lti/claim/roles']).get_role()
-                            )
+            user = services.get_user_by_lms_id(unit_of_work.SqlAlchemyUnitOfWork(), self.id_token.sub)
+            if not user:
+                user = services.create_user(unit_of_work.SqlAlchemyUnitOfWork(), name=self.id_token.name, university=self.id_token['https://purl.imsglobal.org/spec/lti/claim/tool_platform']['name'], lms_user_id=self.id_token.sub, role=RoleMapper(self.id_token['https://purl.imsglobal.org/spec/lti/claim/roles']).get_role())
+            if user['role'] == 'student':
+                # Type student, has to work cause of Substitution Principle
+                user = services.get_student_by_user_id(unit_of_work.SqlAlchemyUnitOfWork(), user['id'])
+            SessionServiceFlask.set(self.id_token.nonce, 'user', user)
         except Exception as e:
             raise err.ErrorException(e,message="User could not be created", status_code=400)
 
@@ -226,15 +228,28 @@ class OIDCLoginFlask(OIDCLogin):
         if not token:
             self._response = "Invalid nonce", 403
             return make_response(self._response)
-        user_id = token.sub
+        
+        user = SessionServiceFlask.get(nonce_payload['nonce'], 'user')
+        if not user:
+            self._response = "Invalid state", 403
+            # TODO 🧾 redirect to login
+            return make_response(self._response)
+        
         role = RoleMapper(token['https://purl.imsglobal.org/spec/lti/claim/roles']).get_role().lower()
-        cookie_expiration = 2 # 1 Minutes
+        cookie_expiration = 20 # 1 Minutes
         state_jwt = JWTKeyManagement.generate_state_jwt(nonce=CryptoRandom.createuniqueid(32), 
                                                         state=CryptoRandom.createuniqueid(32), 
                                                         audience=self._request.referrer, 
-                                                        issuer=os.environ.get('BACKEND_URL', 'http://localhost:5000'),
+                                                        issuer=os.environ.get('BACKEND_URL', 'http://fakedomain.com:5000'),
                                                         expiration=cookie_expiration,
-                                                        additional_claims={'user_id': user_id, 'role': role, 'session_nonce': nonce_payload['nonce']}
+                                                        additional_claims={'id': user.get('id'),
+                                                                           'user_id': user.get('user_id'),
+                                                                           'lms_user_id' : user['lms_user_id'], 
+                                                                           'university': user['university'],                                                                           
+                                                                           'role': role, 
+                                                                           'role_id': user['role_id'],
+                                                                           'session_nonce': nonce_payload['nonce']
+                                                                           }
                                                         )
         response = Response(
             response=json.dumps(state_jwt),
@@ -242,24 +257,33 @@ class OIDCLoginFlask(OIDCLogin):
             mimetype='application/json'
         )
         # set 🔑 auth 🍪 cookie
-        self._cookie_service.set_cookie(response=response,key='haski_state',value=state_jwt, secure=False, httponly=True, samesite='Lax', max_age=cookie_expiration*60, domain="fakedomain.com")
+        domain = urllib.parse.urlparse(self._request.referrer).hostname
+        self._cookie_service.set_cookie(response=response,key='haski_state',value=state_jwt, secure=False, httponly=True, samesite='Lax', max_age=cookie_expiration*60, domain=domain)
         return response
 
     def get_loginstatus(self) -> Response:
-        # verify state jwt in request cookie
+        # check if cookie exists
+        if not self._request.cookies.get('haski_state'):
+            self._response = jsonify({'message': 'No cookie found', 'status': 403})
+            return make_response(self._response)
+        
+        # verify state jwt in request cookie        
         state_jwt = self._request.cookies.get('haski_state')
         if not state_jwt:
-            self._response = "No state found", 403
+            self._response = jsonify({'message': 'No state found', 'status': 403})
             # TODO 🧾 redirect to login
             return make_response(self._response)
         state_payload = JWTKeyManagement.verify_jwt(state_jwt)
         if not state_payload:
-            self._response = "Invalid state signature", 403
+            self._response = jsonify({'error': 'Invalid state signature'}), 403
             # TODO 🧾 redirect to login
             return make_response(self._response)
-        # return OK
-        return make_response("OK", 200)
+        return jsonify({'status': 200, 'message': 'User is logged in', 'data': state_payload})
     
     def get_logout(self) -> Response:
-        # TODO 🧾 delete cookie
-        return make_response("OK", 200)
+        self._response = jsonify({'status': 200})
+        make_response(self._response)
+        domain = urllib.parse.urlparse(self._request.referrer).hostname
+        self._cookie_service.set_cookie(response=self._response,key='haski_state',value="", secure=False, httponly=True, samesite='Lax', max_age=0, domain=domain)
+        
+        return self._response

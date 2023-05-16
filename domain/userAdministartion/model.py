@@ -1,4 +1,5 @@
 class User():
+    id = None
     def __init__(self,
                  name,
                  university,
@@ -27,65 +28,69 @@ class User():
 
 class Admin(User):
     def __init__(self,
-                 user) -> None:
+                 user: User) -> None:
         super().__init__(user.name,
                          user.university,
                          user.lms_user_id,
-                         user.role)
+                         role=user.role)
         self.user_id = user.id
 
     def serialize(self):
         return {
             'id': self.id,
-            'user_id': self.user_id
+            'user_id': self.user_id,
+            **super().serialize()
         }
 
 
 class CourseCreator(User):
     def __init__(self,
-                 user) -> None:
+                 user: User) -> None:
         super().__init__(user.name,
                          user.university,
                          user.lms_user_id,
-                         user.role)
+                         role=user.role)
         self.user_id = user.id
 
     def serialize(self):
         return {
             'id': self.id,
-            'user_id': self.user_id
+            'user_id': self.user_id,
+            **super().serialize()
         }
 
 
 class Teacher(User):
     def __init__(self,
-                 user) -> None:
+                 user : User) -> None:
         super().__init__(user.name,
                          user.university,
                          user.lms_user_id,
-                         user.role)
+                         role=user.role)
         self.user_id = user.id
 
     def serialize(self):
         return {
             'id': self.id,
-            'user_id': self.user_id
+            'user_id': self.user_id,
+            **super().serialize()
         }
 
 
 class Student(User):
     def __init__(self,
-                 user) -> None:
+                 user : User) -> None:
         super().__init__(user.name,
                          user.university,
                          user.lms_user_id,
-                         user.role)
+                         role=user.role)
         self.user_id = user.id
 
     def serialize(self):
         return {
             'id': self.id,
-            'user_id': self.user_id
+            'user_id': self.user_id,
+            **super().serialize()
         }
 
 

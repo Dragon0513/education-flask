@@ -22,7 +22,8 @@ app.secret_key = os.environ.get('SECRET_KEY')
 CORS(app, supports_credentials=True)
 orm.start_mappers()
 cache = Cache(app)
-tool_conf = ToolConfigJson(os.path.abspath(os.path.join(app.root_path, '../configs/lti_config.json')))
+tool_conf = ToolConfigJson(os.path.abspath(
+    os.path.join(app.root_path, '../configs/lti_config.json')))
 app.config["JWT_SECRET_KEY"] = app.secret_key
 app.config["JWT_ALGORITHM"] = "RSA256"
 
@@ -46,75 +47,98 @@ mocked_frontend_log = {"logs": [{
     "id": "v3-1665130071366-6352791670096",
     "navigationType": "reload"
 }]}
+
+
 @app.errorhandler(Exception)
 def handle_custom_exception(ex):
     response = json.dumps({'error': ex.__class__.__name__, 'message': str(ex)})
-    return response
+    return response, 500
+
 
 def authorize(role):
     '''🔑 Decorator for checking if user has the required permission to access the endpoint'''
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kws):
-                state_jwt = request.cookies.get('haski_state')
-                if state_jwt is None:
-                    raise err.StateNotMatchingError()
+            state_jwt = request.cookies.get('haski_state')
+            if state_jwt is None:
+                raise err.StateNotMatchingError()
 
-                if not JWTKeyManagement.verify_jwt_payload(JWTKeyManagement.verify_jwt(state_jwt), verify_nonce=False):
-                    raise err.UnauthorizedError()
-                state = JWTKeyManagement.verify_jwt(state_jwt)
-                if 'role' not in state:
-                    raise err.UnauthorizedError()
-                if role not in state['role']:
-                    raise err.UnauthorizedError()
+            if not JWTKeyManagement.verify_jwt_payload(JWTKeyManagement.verify_jwt(state_jwt), verify_nonce=False):
+                raise err.UnauthorizedError()
+            state = JWTKeyManagement.verify_jwt(state_jwt)
+            if 'role' not in state:
+                raise err.UnauthorizedError()
+            if role not in state['role']:
+                raise err.UnauthorizedError()
 
-                return f(state, *args, **kws)          
+            return f(state, *args, **kws)
         return decorated_function
     return decorator
 
 # ##### TEST ENDPOINT #####
-@app.route("/user")
-@authorize('instructor')
-def get_user_info(state):
-    user_info = services.get_user_info(unit_of_work.SqlAlchemyUnitOfWork(), state['user_id'])
-    user_dict = {'user': user_info, 'id': state['user_id']}
-    status_code = 200
-    return jsonify(user_dict), status_code
+
+
+@app.route("/lms/user_from_cookie", methods=['GET'])
+@cross_origin(supports_credentials=True)
+def get_user_info():
+    method = request.method
+    state_jwt = request.cookies.get('haski_state')
+    if state_jwt is None:
+        raise err.StateNotMatchingError()
+
+    if not JWTKeyManagement.verify_jwt_payload(JWTKeyManagement.verify_jwt(state_jwt), verify_nonce=False):
+        raise err.UnauthorizedError()
+    state = JWTKeyManagement.verify_jwt(state_jwt)
+    match method:
+        case 'GET':
+            user = services.get_student_by_user_id(
+                unit_of_work.SqlAlchemyUnitOfWork(),
+                state['user_id']
+            )
+            status_code = 200
+            return jsonify(user), status_code
+        
 
 # User Administration via LMS
+
+
 @app.route("/lms/user", methods=['POST'])
 @cross_origin(supports_credentials=True)
 def create_user():
     method = request.method
     match method:
         case 'POST':
-            condition1 = 'name' in request.json
-            condition2 = 'university' in request.json
-            condition3 = 'lms_user_id' in request.json
-            condition4 = 'role' in request.json
-            if condition1 and condition2 and condition3 and condition4:
-                condition5 = type(request.json['name']) is str
-                condition6 = type(request.json['university']) is str
-                condition7 = type(request.json['lms_user_id']) is int
-                condition8 = type(request.json['role']) is str
-                if condition5 and condition6 and condition7 and condition8:
-                    role = request.json["role"].lower()
-                    available_roles = [
-                        'admin', 'course creator', 'student', 'teacher']
-                    if role not in available_roles:
-                        raise err.NoValidRoleError()
+            if request.json:
+                condition1 = 'name' in request.json
+                condition2 = 'university' in request.json
+                condition3 = 'lms_user_id' in request.json
+                condition4 = 'role' in request.json
+                if condition1 and condition2 and condition3 and condition4:
+                    condition5 = type(request.json['name']) is str
+                    condition6 = type(request.json['university']) is str
+                    condition7 = type(request.json['lms_user_id']) is int
+                    condition8 = type(request.json['role']) is str
+                    if condition5 and condition6 and condition7 and condition8:
+                        role = request.json["role"].lower()
+                        available_roles = [
+                            'admin', 'course creator', 'student', 'teacher']
+                        if role not in available_roles:
+                            raise err.NoValidRoleError()
+                        else:
+                            user = services.create_user(
+                                unit_of_work.SqlAlchemyUnitOfWork(),
+                                request.json["name"],
+                                request.json["university"],
+                                request.json["lms_user_id"],
+                                role
+                            )
+                            status_code = 201
+                            return jsonify(user), status_code
                     else:
-                        user = services.create_user(
-                            unit_of_work.SqlAlchemyUnitOfWork(),
-                            request.json["name"],
-                            request.json["university"],
-                            request.json["lms_user_id"],
-                            role
-                        )
-                        status_code = 201
-                        return jsonify(user), status_code
+                        raise err.WrongParameterValueError()
                 else:
-                    raise err.WrongParameterValueError()
+                    raise err.MissingParameterError()
             else:
                 raise err.MissingParameterError()
 
@@ -254,39 +278,57 @@ def lti_login():
     return services.get_oidc_login(request, tool_conf, session=session)
 
 # 2. After the platform has verified the LTI launch request, it uses this endpoint to which we redirected
+
+
 @app.route('/lti_launch/', methods=['POST'])
 def lti_launch():
     return services.get_lti_launch(request, tool_conf, session=session)
 
 # 3. Get cookie for frontend if end of OIDC Login workflow by using a short living valid nonce
+
+
 @app.route('/login', methods=['POST'])
+@cross_origin(supports_credentials=True)
 def login():
     return services.get_login(request, tool_conf, session=session)
 
 # 4. Get login status if user is already logged in by using a valid cookie
-@app.route('/loginstatus', methods=['GET'])
-@authorize('instructor')
-def loginstatus():
-    return services.get_loginstatus(request, tool_conf, session=session)
 
+
+@app.route('/loginstatus', methods=['GET'])
+@cross_origin(supports_credentials=True)
+def loginstatus():
+
+    return services.get_loginstatus(request, tool_conf, session=session)
 # 5. Logout by deleting cookie
+
+
 @app.route('/logout', methods=['GET'])
+@cross_origin(supports_credentials=True)
 def logout():
     return services.get_logout(request, tool_conf, session=session)
 
 # Send the enpoint which launches the LTI tool to the frontend
+
+
 @app.route('/lti_launch_view', methods=['GET'])
+@cross_origin(supports_credentials=True)
 def lti_launch_view():
     response = make_response()
-    response.data = json.dumps({'lti_launch_view': tool_conf.get_haski_activity_url(os.environ.get('LMS_URL', "http://fakedomain.com")) })
+    response.data = json.dumps({'lti_launch_view': tool_conf.get_haski_activity_url(
+        os.environ.get('LMS_URL', "http://fakedomain.com"))})
     return response
 
 # Login with username and password
+
+
 @app.route('/login_credentials', methods=['POST'])
 def login_credentials():
     return services.get_login_credentials(request, tool_conf, session=session)
 
 # ##### LOGGING ENDPOINTS #####
+
+
 @app.route("/lms/course/<course_id>/<lms_course_id>/topic",
            methods=['POST'])
 @cross_origin(supports_credentials=True)
@@ -504,6 +546,7 @@ def learning_element_administration(course_id,
             return jsonify(result), status_code
 
 # ##### HASKI ENDPOINTS #####
+
 
 @app.route("/lms/course/<course_id>/student/<student_id>",
            methods=['POST'])
@@ -1142,6 +1185,23 @@ def get_learning_path(
             status_code = 200
             return jsonify(result), status_code
 
+# @app.route("/user/<user_id>/course/<course_lms_id>/topic/<topic_lms_id>/learningpath", methods=['GET'])
+# @cross_origin(supports_credentials=True)
+# def get_topic_learning_path(
+#     user_id,
+#     course_lms_id,
+#     topic_lms_id):
+#     method = request.method
+#     match method:
+#         case 'GET':
+#             result = services.get_topic_learning_path(
+#                 unit_of_work.SqlAlchemyUnitOfWork(),
+#                 user_id,
+#                 course_lms_id,
+#                 topic_lms_id
+#             )
+#             status_code = 200
+#             return jsonify(result), status_code
 
 # User Endpoints
 @app.route("/user/<user_id>/<lms_user_id>", methods=['GET'])
@@ -1297,7 +1357,7 @@ def get_teacher_courses(user_id, lms_user_id, teacher_id):
             )
             status_code = 200
             return jsonify(courses), status_code
-        
+
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)

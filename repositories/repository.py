@@ -1,4 +1,6 @@
 import abc
+
+from deprecated import deprecated
 from domain.domainModel import model as DM
 from domain.learnersModel import model as LM
 from domain.tutoringModel import model as TM
@@ -547,7 +549,15 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
     @abc.abstractmethod
     def get_user_by_id(self,
                        user_id,
-                       lms_user_id) -> UA.User:
+                       lms_user_id=None) -> UA.User:
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def get_user_by_lms_id(self, lms_user_id) -> UA.User:
+        raise NotImplementedError
+    
+    @abc.abstractmethod
+    def get_student_by_user_id(self, user_id) -> UA.Student:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -1548,10 +1558,29 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         else:
             return result
 
-    def get_user_by_id(self, user_id, lms_user_id) -> UA.Admin:
-        result = self.session.query(UA.User)\
-            .filter_by(id=user_id)\
-            .filter_by(lms_user_id=lms_user_id).all()
+    def get_user_by_id(self, user_id, lms_user_id=None) -> UA.User:
+        if lms_user_id:
+            result = self.session.query(UA.User)\
+                .filter_by(id=user_id)\
+                .filter_by(lms_user_id=lms_user_id).all()
+        else:
+            result = self.session.query(UA.User).filter_by(id=user_id).all()
+        if result == []:
+            raise err.NoValidIdError()
+        else:
+            return result
+        
+    def get_user_by_lms_id(self, lms_user_id) -> UA.User:
+        result = self.session.query(UA.User).filter_by(lms_user_id=lms_user_id).all()
+        # TODO handle multiple users with same lms_user_id
+        if result == []:
+            raise err.NoValidIdError()
+        else:
+            return result
+
+    def get_student_by_user_id(self, user_id) -> UA.Student:
+        result = self.session.query(UA.Student).filter_by(user_id=user_id).all()
+        # TODO handle multiple users with same lms_user_id
         if result == []:
             raise err.NoValidIdError()
         else:

@@ -818,6 +818,13 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
                     i.lms_user_id == lms_user_id:
                 result.append(i)
         return result
+    
+    def get_user_by_lms_user_id(self, lms_user_id):
+        result = []
+        for i in self.user:
+            if i.lms_user_id == lms_user_id:
+                result.append(i)
+        return result
 
     def get_users_by_uni(self, university):
         result = []

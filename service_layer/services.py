@@ -8,7 +8,7 @@ from domain.userAdministartion import model as UA
 from domain.learnersModel import model as LM
 from domain.domainModel import model as DM
 from domain.tutoringModel import model as TM
-import errors as err
+import errors.errors as err
 
 
 def add_course_creator_to_course(
@@ -789,11 +789,14 @@ def create_user(
                 role = create_teacher(uow, user)
                 user.role_id = role['id']
             case "learner":
-                create_student(uow, user)
+                role = create_student(uow, user)
+                user.role_id = role['id']
             case "instructor":
-                create_teacher(uow, user)
+                role = create_teacher(uow, user)
+                user.role_id = role['id']
             case "administrator":
-                create_admin(uow, user)
+                role = create_admin(uow, user)
+                user.role_id = role['id']
             case "unknown":
                 raise ValueError("Unknown role")
         result = user.serialize()
@@ -1647,6 +1650,59 @@ def get_learning_path(
             result = learning_path[0].serialize()
         return result
 
+# def get_topic_learning_path(
+#     uow: unit_of_work.AbstractUnitOfWork,
+#     user_id,
+#     course_lms_id,
+#     topic_lms_id
+# ):
+#     # get user
+#     # get <string>university of user
+#     # get course where university = user university and lms_id = course_lms_id
+#     # ## User to Student
+#     # get student where user_id = user.id
+#     # if no student, throw error
+#     # get topic where lms_id = topic_lms_id and university = user university and parent_id = null
+#     # get topic learning path where student_id = student.id and course_id = course.id and topic_id = topic.id
+#     user: UA.User=get_user_by_id(uow, user_id)[0]
+#     university_string = user.university
+#     course: DM.Course = uow.get_course_by_lms_id_and_university(uow, course_lms_id, university_string)[0]
+#     student: UA.Student = uow.get_student_by_user_id(uow, user_id)[0]
+#     if student is None:
+#         err.DatabaseQueryError(message="No student found for user id: " + str(user_id))
+#     topic: DM.Topic = uow.get_topic_by_lms_id_and_university_and_parent_id(uow, topic_lms_id, university_string, None)[0]
+#     topic_learning_path: TM.LearningPath = uow.get_topic_learning_path_by_student_id_and_course_id_and_topic_id(uow, student.id, course.id, topic.id)[0]
+    
+    
+#         get_course_by_id(uow, user_id, lms_user_id, course_id)
+#         learning_path = uow.learning_path.get_learning_path(
+#             student_id,
+#             course_id,
+#             topic_id
+#         )
+#         if learning_path == []:
+#             result = {}
+#         else:
+#             les_for_path = uow.learning_path_learning_element\
+#                 .get_learning_path_learning_element(
+#                     learning_path[0].id
+#                 )
+#             les = []
+#             for le in les_for_path:
+#                 le_by_id = get_learning_element_by_id(
+#                     uow,
+#                     user_id,
+#                     lms_user_id,
+#                     student_id,
+#                     course_id,
+#                     topic_id,
+#                     le.learning_element_id
+#                 )
+#                 le.learning_element = le_by_id
+#                 les.append(le.serialize())
+#             learning_path[0].path = les
+#             result = learning_path[0].serialize()
+#         return result
 
 def get_learning_paths(
         uow: unit_of_work.AbstractUnitOfWork,
@@ -2092,7 +2148,7 @@ def get_settings_for_user(
 def get_user_by_id(
         uow: unit_of_work.AbstractUnitOfWork,
         user_id,
-        lms_user_id
+        lms_user_id=None
 ) -> dict:
     with uow:
         user = uow.user.get_user_by_id(user_id, lms_user_id)
@@ -2105,6 +2161,38 @@ def get_user_by_id(
             result = user[0].serialize()
         return result
 
+def get_user_by_lms_id(
+    uow: unit_of_work.AbstractUnitOfWork,
+    lms_user_id
+) -> dict:
+    with uow:
+        user = uow.user.get_user_by_lms_id(lms_user_id)
+        settings = uow.settings.get_settings(user[0].id)
+        if user == []:
+            result = {}
+        else:
+            user[0].settings = settings[0].serialize()
+            user[0].role_id = None
+            result = user[0].serialize()
+        return result
+    
+def get_student_by_user_id(
+    uow: unit_of_work.AbstractUnitOfWork,
+    user_id
+) -> dict:
+    with uow:
+        student = uow.student.get_student_by_user_id(user_id)
+        user = uow.user.get_user_by_id(user_id)
+        student[0].__init__(user[0])
+        settings = uow.settings.get_settings(user_id)
+        if student[0] == []:
+            result = {}
+        else:
+            student[0].settings = settings[0].serialize()
+            student[0].role_id = None
+            result = student[0].serialize()
+        return result
+    
 
 def update_course(
         uow: unit_of_work.AbstractUnitOfWork,

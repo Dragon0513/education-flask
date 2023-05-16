@@ -62,7 +62,8 @@ def set(nonce_identifier : str, key, value):
         sessions[nonce_identifier] = Session()
     sessions[nonce_identifier][key] = value
 
-def get(nonce_identifier : str, key) -> LTIIDToken | None:
+def get(nonce_identifier : str, key):
+    check_expiration()
     if nonce_identifier in sessions:
         if key in sessions[nonce_identifier]:
             return sessions[nonce_identifier][key]

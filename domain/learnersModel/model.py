@@ -96,13 +96,19 @@ class LearningAnalytics:
 
 class Questionnaire:
     def __init__(self,
-                 student_id) -> None:
+                 student_id,
+                 learning_style=None,
+                 learning_strategy=None) -> None:
         self.student_id = student_id
+        self.learning_style = learning_style
+        self.learning_strategy = learning_strategy
 
     def serialize(self):
         return {
             'id': self.id,
-            'student_id': self.student_id
+            'student_id': self.student_id,
+            'learning_style': self.learning_style,
+            'learning_strategy': self.learning_strategy
         }
 
 

@@ -1,3 +1,4 @@
+from flask.wrappers import Request
 from urllib.request import Request
 
 from flask import Response, make_response
@@ -7,6 +8,7 @@ from domain.userAdministartion import model as UA
 from domain.learnersModel import model as LM
 from domain.domainModel import model as DM
 from domain.tutoringModel import model as TM
+import errors as err
 
 
 def add_course_creator_to_course(
@@ -38,6 +40,14 @@ def add_student_to_course(
         course_id
 ) -> dict:
     with uow:
+        uow.student.get_student_by_student_id(student_id)
+        get_course_by_id(uow, None, None, course_id)
+        student_course = uow.student_course.get_student_course(
+            student_id,
+            course_id
+        )
+        if student_course != []:
+            raise err.AlreadyExisting()
         characteristics = get_learning_characteristics(uow, student_id)
         learning_style = get_learning_style(uow, characteristics['id'])
         student_course = DM.StudentCourse(
@@ -97,16 +107,13 @@ def add_student_to_topics(
             uow.student_topic.add_student_to_topic(student_topic)
             uow.commit()
             add_student_to_learning_element(uow, student_id, topic['topic_id'])
-from service_layer.lti.OIDCLoginFlask import OIDCLoginFlask
-from flask.wrappers import Request
 
 
 def add_student_learning_element_visit(
         uow: unit_of_work.AbstractUnitOfWork,
         student_id,
         learning_element_id,
-        visit_start,
-        previous_learning_element_id
+        visit_start
 ) -> dict:
     with uow:
         update_previous_learning_element_visit(
@@ -141,11 +148,12 @@ def add_student_topic_visit(
         previous_topic_id
 ) -> dict:
     with uow:
-        update_previous_topic_visit(
-            uow,
-            student_id,
-            visit_start
-        )
+        if previous_topic_id is not None:
+            update_previous_topic_visit(
+                uow,
+                student_id,
+                visit_start
+            )
         student_topic_visit = DM.StudentTopicVisit(
             student_id,
             topic_id,
@@ -165,6 +173,14 @@ def add_teacher_to_course(
         course_id
 ) -> dict:
     with uow:
+        get_course_by_id(uow, None, None, course_id)
+        user = uow.teacher.get_teacher_by_teacher_id(teacher_id)
+        teacher_coures = get_courses_for_teacher(uow,
+                                                 user[0].user_id,
+                                                 teacher_id)
+        for course in teacher_coures['courses']:
+            if int(course['id']) == int(course_id):
+                raise err.AlreadyExisting()
         teacher_course = DM.TeacherCourse(
             teacher_id,
             course_id
@@ -198,7 +214,7 @@ def create_course(
         created_at
 ) -> dict:
     with uow:
-        course = DM.Course(lms_id, name, university)
+        course = DM.Course(lms_id, name, university, None, None, None)
         uow.course.create_course(course)
         uow.commit()
         result = course.serialize()
@@ -239,32 +255,22 @@ def create_course_topic(
 def create_ils_input_answers(
         uow: unit_of_work.AbstractUnitOfWork,
         questionnaire_id,
-        vv_2_f7,
-        vv_5_f19,
-        vv_7_f27,
-        vv_10_f39,
-        vv_11_f43,
-        vv_1_f3=None,
-        vv_3_f11=None,
-        vv_4_f15=None,
-        vv_6_f23=None,
-        vv_8_f31=None,
-        vv_9_f35=None
+        answers
 ) -> dict:
     with uow:
         ils_input_answers = LM.IlsInputAnswers(
             questionnaire_id,
-            vv_2_f7,
-            vv_5_f19,
-            vv_7_f27,
-            vv_10_f39,
-            vv_11_f43,
-            vv_1_f3,
-            vv_3_f11,
-            vv_4_f15,
-            vv_6_f23,
-            vv_8_f31,
-            vv_9_f35
+            answers['vv_2_f7'],
+            answers['vv_5_f19'],
+            answers['vv_7_f27'],
+            answers['vv_10_f39'],
+            answers['vv_11_f43'],
+            answers['vv_1_f3'] if 'vv_1_f3' in answers.keys() else None,
+            answers['vv_3_f11'] if 'vv_3_f11' in answers.keys() else None,
+            answers['vv_4_f15'] if 'vv_4_f15' in answers.keys() else None,
+            answers['vv_6_f23'] if 'vv_6_f23' in answers.keys() else None,
+            answers['vv_8_f31'] if 'vv_8_f31' in answers.keys() else None,
+            answers['vv_9_f35'] if 'vv_9_f35' in answers.keys() else None
         )
         uow.ils_input_answers.create_ils_input_answers(ils_input_answers)
         uow.commit()
@@ -275,32 +281,22 @@ def create_ils_input_answers(
 def create_ils_perception_answers(
         uow: unit_of_work.AbstractUnitOfWork,
         questionnaire_id,
-        si_1_f2,
-        si_4_f14,
-        si_7_f26,
-        si_10_f38,
-        si_11_f42,
-        si_2_f6=None,
-        si_3_f10=None,
-        si_5_f18=None,
-        si_6_f22=None,
-        si_8_f30=None,
-        si_9_f34=None
+        answers
 ) -> dict:
     with uow:
         ils_perception_answers = LM.IlsPerceptionAnswers(
             questionnaire_id,
-            si_1_f2,
-            si_4_f14,
-            si_7_f26,
-            si_10_f38,
-            si_11_f42,
-            si_2_f6,
-            si_3_f10,
-            si_5_f18,
-            si_6_f22,
-            si_8_f30,
-            si_9_f34
+            answers['si_1_f2'],
+            answers['si_4_f14'],
+            answers['si_7_f26'],
+            answers['si_10_f38'],
+            answers['si_11_f42'],
+            answers['si_2_f6'] if 'si_2_f6' in answers.keys() else None,
+            answers['si_3_f10'] if 'si_3_f10' in answers.keys() else None,
+            answers['si_5_f18'] if 'si_5_f18' in answers.keys() else None,
+            answers['si_6_f22'] if 'si_6_f22' in answers.keys() else None,
+            answers['si_8_f30'] if 'si_8_f30' in answers.keys() else None,
+            answers['si_9_f34'] if 'si_9_f34' in answers.keys() else None
         )
         uow.ils_perception_answers\
             .create_ils_perception_answers(ils_perception_answers)
@@ -312,32 +308,22 @@ def create_ils_perception_answers(
 def create_ils_processing_answers(
         uow: unit_of_work.AbstractUnitOfWork,
         questionnaire_id,
-        ar_3_f9,
-        ar_4_f13,
-        ar_6_f21,
-        ar_7_f25,
-        ar_8_f29,
-        ar_1_f1=None,
-        ar_2_f5=None,
-        ar_5_f17=None,
-        ar_9_f33=None,
-        ar_10_f37=None,
-        ar_11_f41=None
+        answers
 ) -> dict:
     with uow:
         ils_processing_answers = LM.IlsProcessingAnswers(
             questionnaire_id,
-            ar_3_f9,
-            ar_4_f13,
-            ar_6_f21,
-            ar_7_f25,
-            ar_8_f29,
-            ar_1_f1,
-            ar_2_f5,
-            ar_5_f17,
-            ar_9_f33,
-            ar_10_f37,
-            ar_11_f41
+            answers['ar_3_f9'],
+            answers['ar_4_f13'],
+            answers['ar_6_f21'],
+            answers['ar_7_f25'],
+            answers['ar_8_f29'],
+            answers['ar_1_f1'] if 'ar_1_f1' in answers.keys() else None,
+            answers['ar_2_f5'] if 'ar_2_f5' in answers.keys() else None,
+            answers['ar_5_f17'] if 'ar_5_f17' in answers.keys() else None,
+            answers['ar_9_f33'] if 'ar_9_f33' in answers.keys() else None,
+            answers['ar_10_f37'] if 'ar_10_f37' in answers.keys() else None,
+            answers['ar_11_f41'] if 'ar_11_f41' in answers.keys() else None
         )
         uow.ils_processing_answers\
             .create_ils_processing_answers(ils_processing_answers)
@@ -349,32 +335,22 @@ def create_ils_processing_answers(
 def create_ils_understanding_answers(
         uow: unit_of_work.AbstractUnitOfWork,
         questionnaire_id,
-        sg_1_f4,
-        sg_2_f8,
-        sg_4_f16,
-        sg_10_f40,
-        sg_11_f44,
-        sg_3_f12=None,
-        sg_5_f20=None,
-        sg_6_f24=None,
-        sg_7_f28=None,
-        sg_8_f32=None,
-        sg_9_f36=None
+        answers
 ) -> dict:
     with uow:
         ils_understanding_answers = LM.IlsUnderstandingAnswers(
             questionnaire_id,
-            sg_1_f4,
-            sg_2_f8,
-            sg_4_f16,
-            sg_10_f40,
-            sg_11_f44,
-            sg_3_f12,
-            sg_5_f20,
-            sg_6_f24,
-            sg_7_f28,
-            sg_8_f32,
-            sg_9_f36
+            answers['sg_1_f4'],
+            answers['sg_2_f8'],
+            answers['sg_4_f16'],
+            answers['sg_10_f40'],
+            answers['sg_11_f44'],
+            answers['sg_3_f12'] if '' in answers.keys() else None,
+            answers['sg_5_f20'] if '' in answers.keys() else None,
+            answers['sg_6_f24'] if '' in answers.keys() else None,
+            answers['sg_7_f28'] if '' in answers.keys() else None,
+            answers['sg_8_f32'] if '' in answers.keys() else None,
+            answers['sg_9_f36'] if '' in answers.keys() else None
         )
         uow.ils_understanding_answers\
             .create_ils_understanding_answers(ils_understanding_answers)
@@ -452,12 +428,41 @@ def create_learning_element(
 
 def create_learning_path(
         uow: unit_of_work.AbstractUnitOfWork,
+        user_id,
+        lms_user_id,
         student_id,
         course_id,
         topic_id,
         algorithm
 ) -> dict:
     with uow:
+        get_user_by_id(uow, user_id, lms_user_id)
+        learning_elements = get_learning_elements_for_topic_id(
+            uow,
+            topic_id
+        )
+        if learning_elements == []:
+            raise err.NoLearningElementsError()
+        paths_exisiting = get_learning_paths(
+            uow=uow,
+            student_id=student_id
+        )
+        for path_exisiting in paths_exisiting:
+            condition1 = int(path_exisiting['course_id']) == int(course_id)
+            condition2 = int(path_exisiting['topic_id']) == int(topic_id)
+            if condition1 and condition2:
+                delete_learning_path_learning_element(
+                    uow=uow,
+                    learning_path_id=int(path_exisiting['id'])
+                )
+                delete_learning_path_topic(
+                    uow=uow,
+                    learning_path_id=int(path_exisiting['id'])
+                )
+                delete_learning_path(
+                    uow=uow,
+                    learning_path_id=int(path_exisiting['id'])
+                )
         learning_path = TM.LearningPath(
             student_id,
             course_id,
@@ -470,6 +475,68 @@ def create_learning_path(
             )
         uow.commit()
         result = learning_path.serialize()
+        if len(learning_elements) == 1:
+            le = get_learning_element_by_id(
+                uow=uow,
+                user_id=user_id,
+                lms_user_id=lms_user_id,
+                student_id=student_id,
+                course_id=course_id,
+                topic_id=topic_id,
+                learning_element_id=learning_elements[0]['learning_element_id']
+            )
+            path_element = TM.LearningPathLearningElement(
+                learning_element_id=le['id'],
+                learning_path_id=result['id'],
+                recommended=True,
+                position=1,
+                learning_element=None
+            )
+            uow.learning_path_learning_element\
+                .create_learning_path_learning_element(
+                    path_element
+                )
+            learning_path.path = le['classification']
+            result = learning_path.serialize()
+        else:
+            learning_style = get_learning_style_by_student_id(
+                uow=uow,
+                student_id=student_id
+            )
+            list_of_les = []
+            for le in learning_elements:
+                element = get_learning_element_by_id(
+                    uow=uow,
+                    user_id=user_id,
+                    lms_user_id=lms_user_id,
+                    student_id=student_id,
+                    course_id=course_id,
+                    topic_id=topic_id,
+                    learning_element_id=le['learning_element_id']
+                )
+                list_of_les.append(element)
+            learning_path.get_learning_path(
+                student_id=student_id,
+                learning_style=learning_style,
+                _algorithm=algorithm.lower(),
+                list_of_les=list_of_les
+            )
+            result = learning_path.serialize()
+            for i, le in enumerate(result['path'].replace(",", "").split()):
+                for temp in list_of_les:
+                    if temp['classification'] == le:
+                        path_element = TM.LearningPathLearningElement(
+                            learning_element_id=temp['id'],
+                            learning_path_id=result['id'],
+                            recommended=True if i == 0 else False,
+                            position=i+1,
+                            learning_element=None
+                        )
+                        uow.learning_path_learning_element\
+                            .create_learning_path_learning_element(
+                                path_element
+                            )
+        uow.commit()
         return result
 
 
@@ -500,88 +567,50 @@ def create_learning_style(
 def create_list_k(
         uow: unit_of_work.AbstractUnitOfWork,
         questionnaire_id,
-        org1_f1,
-        org2_f2,
-        org3_f3,
-        ela1_f4,
-        ela2_f5,
-        ela3_f6,
-        krp1_f7,
-        krp2_f8,
-        krp3_f9,
-        wie1_f10,
-        wie2_f11,
-        wie3_f12,
-        zp1_f13,
-        zp2_f14,
-        zp3_f15,
-        kon1_f16,
-        kon2_f17,
-        kon3_f18,
-        reg1_f19,
-        reg2_f20,
-        reg3_f21,
-        auf1_f22,
-        auf2_f23,
-        auf3_f24,
-        ans1_f25,
-        ans2_f26,
-        ans3_f27,
-        zei1_f28,
-        zei2_f29,
-        zei3_f30,
-        lms1_f31,
-        lms2_f32,
-        lms3_f33,
-        lit1_f34,
-        lit2_f35,
-        lit3_f36,
-        lu1_f37,
-        lu2_f38,
-        lu3_f39
+        answers
 ) -> dict:
     with uow:
         list_k = LM.ListK(
             questionnaire_id,
-            org1_f1,
-            org2_f2,
-            org3_f3,
-            ela1_f4,
-            ela2_f5,
-            ela3_f6,
-            krp1_f7,
-            krp2_f8,
-            krp3_f9,
-            wie1_f10,
-            wie2_f11,
-            wie3_f12,
-            zp1_f13,
-            zp2_f14,
-            zp3_f15,
-            kon1_f16,
-            kon2_f17,
-            kon3_f18,
-            reg1_f19,
-            reg2_f20,
-            reg3_f21,
-            auf1_f22,
-            auf2_f23,
-            auf3_f24,
-            ans1_f25,
-            ans2_f26,
-            ans3_f27,
-            zei1_f28,
-            zei2_f29,
-            zei3_f30,
-            lms1_f31,
-            lms2_f32,
-            lms3_f33,
-            lit1_f34,
-            lit2_f35,
-            lit3_f36,
-            lu1_f37,
-            lu2_f38,
-            lu3_f39
+            answers['org1_f1'],
+            answers['org2_f2'],
+            answers['org3_f3'],
+            answers['ela1_f4'],
+            answers['ela2_f5'],
+            answers['ela3_f6'],
+            answers['krp1_f7'],
+            answers['krp2_f8'],
+            answers['krp3_f9'],
+            answers['wie1_f10'],
+            answers['wie2_f11'],
+            answers['wie3_f12'],
+            answers['zp1_f13'],
+            answers['zp2_f14'],
+            answers['zp3_f15'],
+            answers['kon1_f16'],
+            answers['kon2_f17'],
+            answers['kon3_f18'],
+            answers['reg1_f19'],
+            answers['reg2_f20'],
+            answers['reg3_f21'],
+            answers['auf1_f22'],
+            answers['auf2_f23'],
+            answers['auf3_f24'],
+            answers['ans1_f25'],
+            answers['ans2_f26'],
+            answers['ans3_f27'],
+            answers['zei1_f28'],
+            answers['zei2_f29'],
+            answers['zei3_f30'],
+            answers['lms1_f31'],
+            answers['lms2_f32'],
+            answers['lms3_f33'],
+            answers['lit1_f34'],
+            answers['lit2_f35'],
+            answers['lit3_f36'],
+            answers['lu1_f37'],
+            answers['lu2_f38'],
+            answers['lu3_f39']
         )
         uow.list_k.create_list_k(list_k)
         uow.commit()
@@ -592,156 +621,65 @@ def create_list_k(
 def create_questionnaire(
         uow: unit_of_work.AbstractUnitOfWork,
         student_id,
-        vv_2_f7,
-        vv_5_f19,
-        vv_7_f27,
-        vv_10_f39,
-        vv_11_f43,
-        si_1_f2,
-        si_4_f14,
-        si_7_f26,
-        si_10_f38,
-        si_11_f42,
-        ar_3_f9,
-        ar_4_f13,
-        ar_6_f21,
-        ar_7_f25,
-        ar_8_f29,
-        sg_1_f4,
-        sg_2_f8,
-        sg_4_f16,
-        sg_10_f40,
-        sg_11_f44,
-        org1_f1,
-        org2_f2,
-        org3_f3,
-        ela1_f4,
-        ela2_f5,
-        ela3_f6,
-        krp1_f7,
-        krp2_f8,
-        krp3_f9,
-        wie1_f10,
-        wie2_f11,
-        wie3_f12,
-        zp1_f13,
-        zp2_f14,
-        zp3_f15,
-        kon1_f16,
-        kon2_f17,
-        kon3_f18,
-        reg1_f19,
-        reg2_f20,
-        reg3_f21,
-        auf1_f22,
-        auf2_f23,
-        auf3_f24,
-        ans1_f25,
-        ans2_f26,
-        ans3_f27,
-        zei1_f28,
-        zei2_f29,
-        zei3_f30,
-        lms1_f31,
-        lms2_f32,
-        lms3_f33,
-        lit1_f34,
-        lit2_f35,
-        lit3_f36,
-        lu1_f37,
-        lu2_f38,
-        lu3_f39,
-        **kwargs
+        ils_answers,
+        list_k_answers
 ) -> dict:
     with uow:
+        exist = uow.questionnaire.get_questionnaire_by_student_id(
+            student_id
+        )
+        if exist != []:
+            delete_questionnaire(
+                uow,
+                exist[0].id
+            )
         questionnaire = LM.Questionnaire(student_id)
         uow.questionnaire.create_questionnaire(questionnaire)
         uow.commit()
+        ils_input_answers = {}
+        ils_perception_answers = {}
+        ils_processing_answers = {}
+        ils_understanding_answers = {}
+        for id, answer in ils_answers.items():
+            if id.startswith("vv"):
+                ils_input_answers[id] = answer
+            if id.startswith("si"):
+                ils_perception_answers[id] = answer
+            if id.startswith("ar"):
+                ils_processing_answers[id] = answer
+            if id.startswith("sg"):
+                ils_understanding_answers[id] = answer
         create_ils_input_answers(uow,
                                  questionnaire.id,
-                                 vv_2_f7,
-                                 vv_5_f19,
-                                 vv_7_f27,
-                                 vv_10_f39,
-                                 vv_11_f43,
-                                 kwargs['vv_1_f3']
-                                 if 'vv_1_f3' in kwargs else None,
-                                 kwargs['vv_3_f11']
-                                 if 'vv_3_f11' in kwargs else None,
-                                 kwargs['vv_4_f15']
-                                 if 'vv_4_f15' in kwargs else None,
-                                 kwargs['vv_6_f23']
-                                 if 'vv_6_f23' in kwargs else None,
-                                 kwargs['vv_8_f31']
-                                 if 'vv_8_f31' in kwargs else None,
-                                 kwargs['vv_9_f35']
-                                 if 'vv_9_f35' in kwargs else None
+                                 ils_input_answers
                                  )
         create_ils_perception_answers(uow,
                                       questionnaire.id,
-                                      si_1_f2,
-                                      si_4_f14,
-                                      si_7_f26,
-                                      si_10_f38,
-                                      si_11_f42
+                                      ils_perception_answers
                                       )
         create_ils_processing_answers(uow,
                                       questionnaire.id,
-                                      ar_3_f9,
-                                      ar_4_f13,
-                                      ar_6_f21,
-                                      ar_7_f25,
-                                      ar_8_f29
+                                      ils_processing_answers
                                       )
         create_ils_understanding_answers(uow,
                                          questionnaire.id,
-                                         sg_1_f4,
-                                         sg_2_f8,
-                                         sg_4_f16,
-                                         sg_10_f40,
-                                         sg_11_f44
+                                         ils_understanding_answers
                                          )
         create_list_k(uow,
                       questionnaire.id,
-                      org1_f1,
-                      org2_f2,
-                      org3_f3,
-                      ela1_f4,
-                      ela2_f5,
-                      ela3_f6,
-                      krp1_f7,
-                      krp2_f8,
-                      krp3_f9,
-                      wie1_f10,
-                      wie2_f11,
-                      wie3_f12,
-                      zp1_f13,
-                      zp2_f14,
-                      zp3_f15,
-                      kon1_f16,
-                      kon2_f17,
-                      kon3_f18,
-                      reg1_f19,
-                      reg2_f20,
-                      reg3_f21,
-                      auf1_f22,
-                      auf2_f23,
-                      auf3_f24,
-                      ans1_f25,
-                      ans2_f26,
-                      ans3_f27,
-                      zei1_f28,
-                      zei2_f29,
-                      zei3_f30,
-                      lms1_f31,
-                      lms2_f32,
-                      lms3_f33,
-                      lit1_f34,
-                      lit2_f35,
-                      lit3_f36,
-                      lu1_f37,
-                      lu2_f38,
-                      lu3_f39)
+                      list_k_answers)
+        characteristics = get_learning_characteristics(
+            uow,
+            student_id
+        )
+        questionnaire.learning_style = get_learning_style(
+            uow,
+            characteristics['id']
+        )
+        questionnaire.learning_strategy = get_learning_strategy(
+            uow,
+            characteristics['id']
+        )
         result = questionnaire.serialize()
         return result
 
@@ -839,13 +777,17 @@ def create_user(
             uow, user.id)
         match role.lower():
             case "admin":
-                create_admin(uow, user)
-            case "course_creator":
-                create_course_creator(uow, user)
+                role = create_admin(uow, user)
+                user.role_id = role['id']
+            case "course creator":
+                role = create_course_creator(uow, user)
+                user.role_id = role['id']
             case "student":
-                create_student(uow, user)
+                role = create_student(uow, user)
+                user.role_id = role['id']
             case "teacher":
-                create_teacher(uow, user)
+                role = create_teacher(uow, user)
+                user.role_id = role['id']
             case "learner":
                 create_student(uow, user)
             case "instructor":
@@ -873,6 +815,8 @@ def delete_course(
         course_id
 ):
     with uow:
+        delete_course_topic_by_course(uow, course_id)
+        delete_course_creator_course(uow, course_id)
         uow.course.delete_course(course_id)
         uow.commit()
         return {}
@@ -886,6 +830,16 @@ def delete_course_creator(
         uow.course_creator.delete_course_creator(user_id)
         uow.commit()
         return {}
+
+
+def delete_course_creator_course(
+        uow: unit_of_work.AbstractUnitOfWork,
+        course_id
+):
+    with uow:
+        uow.course_creator_course\
+            .delete_course_creator_course(course_id)
+        uow.commit()
 
 
 def delete_course_topic_by_course(
@@ -920,7 +874,7 @@ def delete_ils_input_answers(
         uow.ils_input_answers\
             .delete_ils_input_answers(questionnaire_id)
         uow.commit()
-        return{}
+        return {}
 
 
 def delete_ils_perception_answers(
@@ -931,7 +885,7 @@ def delete_ils_perception_answers(
         uow.ils_perception_answers\
             .delete_ils_perception_answers(questionnaire_id)
         uow.commit()
-        return{}
+        return {}
 
 
 def delete_ils_processing_answers(
@@ -942,7 +896,7 @@ def delete_ils_processing_answers(
         uow.ils_processing_answers\
             .delete_ils_processing_answers(questionnaire_id)
         uow.commit()
-        return{}
+        return {}
 
 
 def delete_ils_understanding_answers(
@@ -953,18 +907,82 @@ def delete_ils_understanding_answers(
         uow.ils_understanding_answers\
             .delete_ils_understanding_answers(questionnaire_id)
         uow.commit()
-        return{}
+        return {}
 
 
 def delete_learning_element(
         uow: unit_of_work.AbstractUnitOfWork,
+        course_id,
+        topic_id,
         learning_element_id
 ):
     with uow:
+        get_course_by_id(uow, None, None, course_id)
+        get_topic_by_id(uow, None, None, course_id, None, topic_id)
+        delete_topic_learning_element_by_learning_element(
+            uow,
+            learning_element_id
+        )
         uow.learning_element\
             .delete_learning_element(learning_element_id)
         uow.commit()
         return {}
+
+
+def delete_learning_path(
+        uow: unit_of_work.AbstractUnitOfWork,
+        learning_path_id
+):
+    with uow:
+        uow.learning_path.delete_learning_path(
+            learning_path_id
+        )
+        uow.commit()
+
+
+def delete_learning_paths(
+        uow: unit_of_work.AbstractUnitOfWork,
+        student_id
+):
+    with uow:
+        paths = get_learning_paths(uow, student_id)
+        for path in paths:
+            delete_learning_path_learning_element(
+                uow,
+                path['id']
+            )
+            delete_learning_path_topic(
+                uow,
+                path['id']
+            )
+            uow.learning_path.delete_learning_path(
+                path['id']
+            )
+            uow.commit()
+
+
+def delete_learning_path_learning_element(
+        uow: unit_of_work.AbstractUnitOfWork,
+        learning_path_id
+):
+    with uow:
+        uow.learning_path_learning_element\
+            .delete_learning_path_learning_element(
+                learning_path_id
+            )
+        uow.commit()
+
+
+def delete_learning_path_topic(
+        uow: unit_of_work.AbstractUnitOfWork,
+        learning_path_id
+):
+    with uow:
+        uow.learning_path_topic\
+            .delete_learning_path_topic(
+                learning_path_id
+            )
+        uow.commit()
 
 
 def delete_list_k(
@@ -975,7 +993,7 @@ def delete_list_k(
         uow.list_k\
             .delete_list_k(questionnaire_id)
         uow.commit()
-        return{}
+        return {}
 
 
 def delete_questionnaire(
@@ -983,10 +1001,30 @@ def delete_questionnaire(
         questionnaire_id
 ):
     with uow:
+        delete_ils_input_answers(
+            uow,
+            questionnaire_id
+        )
+        delete_ils_perception_answers(
+            uow,
+            questionnaire_id
+        )
+        delete_ils_processing_answers(
+            uow,
+            questionnaire_id
+        )
+        delete_ils_understanding_answers(
+            uow,
+            questionnaire_id
+        )
+        delete_list_k(
+            uow,
+            questionnaire_id
+        )
         uow.questionnaire\
             .delete_questionnaire(questionnaire_id)
         uow.commit()
-        return{}
+        return {}
 
 
 def delete_settings(
@@ -1006,6 +1044,16 @@ def delete_student(
     with uow:
         student = uow.student.get_student_by_id(user_id)
         delete_learning_characteristics(uow, student[0].id)
+        delete_student_learning_element(uow, student[0].id)
+        delete_student_topic(uow, student[0].id)
+        delete_student_course(uow, student[0].id)
+        delete_learning_paths(uow, student[0].id)
+        questionnaire = uow.questionnaire\
+            .get_questionnaire_by_student_id(
+                student[0].id
+            )
+        if questionnaire != []:
+            delete_questionnaire(uow, questionnaire[0].id)
         uow.student.delete_student(user_id)
         uow.commit()
         return {}
@@ -1016,9 +1064,22 @@ def delete_teacher(
         user_id
 ):
     with uow:
+        teacher = uow.teacher.get_teacher_by_id(user_id)
+        delete_teacher_course(uow, teacher[0].id)
         uow.teacher.delete_teacher(user_id)
         uow.commit()
         return {}
+
+
+def delete_teacher_course(
+        uow: unit_of_work.AbstractUnitOfWork,
+        teacher_id
+):
+    with uow:
+        uow.teacher_course.delete_teacher_course(
+            teacher_id
+        )
+        uow.commit()
 
 
 def delete_user(
@@ -1069,13 +1130,14 @@ def delete_learning_characteristics(
 ):
     with uow:
         characteristic = get_learning_characteristics(uow, student_id)
-        delete_knowledge(uow, characteristic['id'])
-        delete_learning_analytics(uow, characteristic['id'])
-        delete_learning_strategy(uow, characteristic['id'])
-        delete_learning_style(uow, characteristic['id'])
-        uow.learning_characteristics.delete_learning_characteristics(
-            student_id)
-        uow.commit()
+        if characteristic != {}:
+            delete_knowledge(uow, characteristic['id'])
+            delete_learning_analytics(uow, characteristic['id'])
+            delete_learning_strategy(uow, characteristic['id'])
+            delete_learning_style(uow, characteristic['id'])
+            uow.learning_characteristics.delete_learning_characteristics(
+                student_id)
+            uow.commit()
         return {}
 
 
@@ -1097,6 +1159,63 @@ def delete_learning_style(
         uow.learning_style.delete_learning_style(characteristic_id)
         uow.commit()
         return {}
+
+
+def delete_student_course(
+        uow: unit_of_work.AbstractUnitOfWork,
+        student_id
+):
+    with uow:
+        uow.student_course.delete_student_course(
+            student_id
+        )
+        uow.commit()
+
+
+def delete_student_learning_element(
+        uow: unit_of_work.AbstractUnitOfWork,
+        student_id
+):
+    with uow:
+        delete_student_learning_element_visit(uow, student_id)
+        uow.student_learning_element\
+            .delete_student_learning_element(student_id)
+        uow.commit()
+
+
+def delete_student_learning_element_visit(
+        uow: unit_of_work.AbstractUnitOfWork,
+        student_id
+):
+    with uow:
+        uow.student_learning_element_visit\
+            .delete_student_learning_element_visit(
+                student_id
+            )
+        uow.commit()
+
+
+def delete_student_topic(
+        uow: unit_of_work.AbstractUnitOfWork,
+        student_id
+):
+    with uow:
+        delete_student_topic_visit(uow, student_id)
+        uow.student_topic.delete_student_topic(
+            student_id
+        )
+        uow.commit()
+
+
+def delete_student_topic_visit(
+        uow: unit_of_work.AbstractUnitOfWork,
+        student_id
+):
+    with uow:
+        uow.student_topic_visit.delete_student_topic_visit(
+            student_id
+        )
+        uow.commit()
 
 
 def delete_topic(
@@ -1138,31 +1257,67 @@ def delete_topic_learning_element_by_learning_element(
 
 def get_course_by_id(
         uow: unit_of_work.AbstractUnitOfWork,
+        user_id,
+        lms_user_id,
         course_id
 ) -> dict:
     with uow:
+        if user_id is not None and lms_user_id is not None:
+            get_user_by_id(uow, user_id, lms_user_id)
         course = uow.course.get_course_by_id(course_id)
         if course == []:
             result = {}
         else:
+            course[0].created_at = None
+            course[0].created_by = None
+            course[0].last_updated = None
             result = course[0].serialize()
         return result
 
 
 def get_courses_by_student_id(
         uow: unit_of_work.AbstractUnitOfWork,
+        user_id,
+        lms_user_id,
         student_id
 ) -> dict:
     with uow:
+        get_user_by_id(uow, user_id, lms_user_id)
+        uow.student.get_student_by_id(user_id)
         courses = uow.course.get_courses_by_student_id(
             student_id
         )
         result_courses = []
         for course in courses:
-            course_by_id = get_course_by_id(uow, course.course_id)
+            course_by_id = get_course_by_id(
+                uow, user_id, lms_user_id, course.course_id)
             result_courses.append(course_by_id)
         result = {}
         result['courses'] = result_courses
+        return result
+
+
+def get_courses_for_teacher(
+        uow: unit_of_work.AbstractUnitOfWork,
+        user_id,
+        teacher_id
+) -> dict:
+    with uow:
+        uow.teacher.get_teacher_by_id(user_id)
+        courses = uow.teacher_course.get_courses_for_teacher(
+            teacher_id
+        )
+        result = {}
+        course_list = []
+        for course in courses:
+            course_temp = uow.course.get_course_by_id(
+                course.course_id
+            )
+            course_temp[0].created_at = None
+            course_temp[0].created_by = None
+            course_temp[0].last_updated = None
+            course_list.append(course_temp[0].serialize())
+        result['courses'] = course_list
         return result
 
 
@@ -1214,14 +1369,12 @@ def get_knowledge_by_student_id(
         student_id
 ) -> dict:
     with uow:
+        uow.student.get_student_by_student_id(student_id)
         characteristic = get_learning_characteristics(
             uow,
             student_id
         )
-        learning_style = uow.learning_style.get_knowledge(
-            characteristic['id']
-        )
-        result = learning_style[0].serialize()
+        result = characteristic['knowledge']
         return result
 
 
@@ -1245,22 +1398,25 @@ def get_learning_analytics_by_student_id(
         student_id
 ) -> dict:
     with uow:
+        uow.student.get_student_by_student_id(student_id)
         characteristic = get_learning_characteristics(
             uow,
             student_id
         )
-        learning_style = uow.learning_style.get_learning_analytics(
-            characteristic['id']
-        )
-        result = learning_style[0].serialize()
+        result = characteristic['learning_analytics']
         return result
 
 
 def get_learning_characteristics(
         uow: unit_of_work.AbstractUnitOfWork,
-        student_id
+        student_id,
+        user_id=None,
+        lms_user_id=None
 ) -> dict:
     with uow:
+        uow.student.get_student_by_student_id(student_id)
+        if user_id is not None:
+            get_user_by_id(uow, user_id, lms_user_id)
         characteristics = uow.learning_characteristics\
             .get_learning_characteristics(
                 student_id)
@@ -1290,30 +1446,122 @@ def get_learning_characteristics(
 
 def get_learning_element_by_id(
         uow: unit_of_work.AbstractUnitOfWork,
+        user_id,
+        lms_user_id,
+        student_id,
+        course_id,
+        topic_id,
         learning_element_id
 ) -> dict:
     with uow:
+        get_user_by_id(uow, user_id, lms_user_id)
+        get_course_by_id(uow, user_id, lms_user_id, course_id)
+        get_topic_by_id(uow, user_id, lms_user_id,
+                        course_id, student_id, topic_id)
         learning_element = uow.learning_element\
             .get_learning_element_by_id(learning_element_id)
-        if learning_element == []:
+        if learning_element[0] is None:
             result = {}
         else:
+            student_learning_element = uow.student_learning_element\
+                .get_student_learning_element(
+                    student_id,
+                    learning_element_id
+                )
+            if student_learning_element == []:
+                learning_element[0].student_learning_element = None
+            else:
+                learning_element[0].student_learning_element =\
+                    student_learning_element[0].serialize(
+                )
             result = learning_element[0].serialize()
+        return result
+
+
+def get_learning_elements_for_course_id(
+        uow: unit_of_work.AbstractUnitOfWork,
+        user_id,
+        lms_user_id,
+        student_id,
+        course_id
+) -> dict:
+    with uow:
+        get_user_by_id(uow, user_id, lms_user_id)
+        get_course_by_id(uow, user_id, lms_user_id, course_id)
+        topics = get_topics_for_course_id(
+            uow,
+            course_id
+        )
+        result = {}
+        learning_elements = []
+        for topic in topics:
+            les = get_learning_elements_for_topic_id(
+                uow,
+                topic['topic_id']
+            )
+            for le in les:
+                le_by_id = get_learning_element_by_id(
+                    uow,
+                    user_id,
+                    lms_user_id,
+                    student_id,
+                    course_id,
+                    le['topic_id'],
+                    le['learning_element_id']
+                )
+                student_le = uow.student_learning_element\
+                    .get_student_learning_element(
+                        student_id,
+                        le['learning_element_id']
+                    )
+                le_by_id['student_learning_element'] =\
+                    student_le[0].serialize()
+                learning_elements.append(le_by_id)
+        result['learning_elements'] = learning_elements
         return result
 
 
 def get_learning_elements_for_course_and_topic_id(
         uow: unit_of_work.AbstractUnitOfWork,
+        user_id,
+        lms_user_id,
+        student_id,
         course_id,
         topic_id
 ) -> dict:
     with uow:
+        get_user_by_id(uow, user_id, lms_user_id)
+        get_course_by_id(uow, user_id, lms_user_id, course_id)
+        get_topic_by_id(uow,
+                        user_id,
+                        lms_user_id,
+                        course_id,
+                        student_id,
+                        topic_id)
         learning_elements = get_learning_elements_for_topic_id(
             uow,
             topic_id
         )
+        les = []
+        for le in learning_elements:
+            learning_element = get_learning_element_by_id(
+                uow,
+                user_id,
+                lms_user_id,
+                student_id,
+                course_id,
+                topic_id,
+                le['learning_element_id']
+            )
+            student_learning_element = uow.student_learning_element\
+                .get_student_learning_element(student_id,
+                                              le['learning_element_id'])
+            learning_element['student_learning_element'] =\
+                student_learning_element[0].serialize(
+            )
+            les.append(learning_element)
         result = {}
-        result['learning_elements'] = learning_elements
+        result['learning_elements'] = les
         return result
 
 
@@ -1333,13 +1581,43 @@ def get_learning_elements_for_topic_id(
             return []
 
 
-def get_learning_path(
+def get_learning_element_recommendation(
         uow: unit_of_work.AbstractUnitOfWork,
+        user_id,
+        lms_user_id,
         student_id,
         course_id,
         topic_id
 ) -> dict:
     with uow:
+        get_user_by_id(uow, user_id, lms_user_id)
+        get_course_by_id(uow, user_id, lms_user_id, course_id)
+        get_topic_by_id(uow, user_id, lms_user_id,
+                        course_id, student_id, topic_id)
+        path = get_learning_path(
+            uow, user_id, lms_user_id, student_id, course_id, topic_id)
+        result = uow.learning_path_learning_element\
+            .get_learning_element_recommendation(path['id'])
+        return get_learning_element_by_id(uow,
+                                          user_id,
+                                          lms_user_id,
+                                          student_id,
+                                          course_id,
+                                          topic_id,
+                                          result[0].learning_element_id)
+
+
+def get_learning_path(
+        uow: unit_of_work.AbstractUnitOfWork,
+        user_id,
+        lms_user_id,
+        student_id,
+        course_id,
+        topic_id
+) -> dict:
+    with uow:
+        get_user_by_id(uow, user_id, lms_user_id)
+        get_course_by_id(uow, user_id, lms_user_id, course_id)
         learning_path = uow.learning_path.get_learning_path(
             student_id,
             course_id,
@@ -1348,8 +1626,40 @@ def get_learning_path(
         if learning_path == []:
             result = {}
         else:
-            learning_path[0].path = None
+            les_for_path = uow.learning_path_learning_element\
+                .get_learning_path_learning_element(
+                    learning_path[0].id
+                )
+            les = []
+            for le in les_for_path:
+                le_by_id = get_learning_element_by_id(
+                    uow,
+                    user_id,
+                    lms_user_id,
+                    student_id,
+                    course_id,
+                    topic_id,
+                    le.learning_element_id
+                )
+                le.learning_element = le_by_id
+                les.append(le.serialize())
+            learning_path[0].path = les
             result = learning_path[0].serialize()
+        return result
+
+
+def get_learning_paths(
+        uow: unit_of_work.AbstractUnitOfWork,
+        student_id
+) -> list:
+    with uow:
+        paths = uow.learning_path.get_learning_paths(
+            student_id
+        )
+        result = []
+        for path in paths:
+            path.path = None
+            result.append(path.serialize())
         return result
 
 
@@ -1372,14 +1682,12 @@ def get_learning_strategy_by_student_id(
         student_id
 ) -> dict:
     with uow:
+        uow.student.get_student_by_student_id(student_id)
         characteristic = get_learning_characteristics(
             uow,
             student_id
         )
-        learning_style = uow.learning_style.get_learning_strategy(
-            characteristic['id']
-        )
-        result = learning_style[0].serialize()
+        result = characteristic['learning_strategy']
         return result
 
 
@@ -1401,25 +1709,37 @@ def get_learning_style_by_student_id(
         student_id
 ) -> dict:
     with uow:
+        uow.student.get_student_by_student_id(student_id)
         characteristic = get_learning_characteristics(
             uow,
             student_id
         )
-        learning_style = uow.learning_style.get_learning_style(
-            characteristic['id']
-        )
-        result = learning_style[0].serialize()
+        result = characteristic['learning_style']
         return result
 
 
 def get_sub_topic_by_topic_id(
         uow: unit_of_work.AbstractUnitOfWork,
+        user_id,
+        lms_user_id,
+        student_id,
+        course_id,
         topic_id
 ) -> dict:
     with uow:
+        get_user_by_id(uow, user_id, lms_user_id)
+        get_course_by_id(uow, user_id, lms_user_id, course_id)
         subtopics = uow.topic.get_sub_topics_for_topic_id(
             topic_id
         )
+        for st in subtopics:
+            student_topic = uow.student_topic\
+                .get_student_topic(student_id, topic_id)
+            if student_topic != []:
+                student_topic[0].visits = None
+                st.student_topic = student_topic[0].serialize()
+            else:
+                st.student_topic = None
         result_subtopics = []
         for subtopic in subtopics:
             result_subtopics.append(subtopic.serialize())
@@ -1430,31 +1750,81 @@ def get_sub_topic_by_topic_id(
 
 def get_topic_by_id(
         uow: unit_of_work.AbstractUnitOfWork,
+        user_id,
+        lms_user_id,
+        course_id,
+        student_id,
         topic_id
 ) -> dict:
     with uow:
+        if user_id is not None or lms_user_id is not None:
+            get_user_by_id(uow, user_id, lms_user_id)
+            get_course_by_id(uow, user_id, lms_user_id, course_id)
         topic = uow.topic.get_topic_by_id(topic_id)
         if topic == []:
             result = {}
         else:
+            student_topic = uow.student_topic.get_student_topic(
+                student_id,
+                topic_id
+            )
+            if student_topic == []:
+                topic[0].student_topic = None
+            else:
+                student_topic_visit = uow.student_topic_visit\
+                    .get_student_topic_visit(
+                        student_id,
+                        topic_id
+                    )
+                if student_topic_visit == []:
+                    student_topic[0].visits = None
+                else:
+                    student_topic[0].visits = \
+                        student_topic_visit[0].serialize()
+                topic[0].student_topic = student_topic[0].serialize()
             result = topic[0].serialize()
         return result
 
 
 def get_topics_by_student_and_course_id(
         uow: unit_of_work.AbstractUnitOfWork,
+        user_id,
+        lms_user_id,
         student_id,
         course_id
 ) -> dict:
     with uow:
+        get_user_by_id(uow, user_id, lms_user_id)
+        get_course_by_id(uow, user_id, lms_user_id, course_id)
         topics = get_topics_for_course_id(
             uow,
             course_id
         )
         result_topics = []
         for topic in topics:
-            topic_by_id = get_topic_by_id(uow, topic['topic_id'])
-            result_topics.append(topic_by_id)
+            student_topic_visit = uow.student_topic_visit\
+                .get_student_topic_visit(
+                    student_id,
+                    topic['topic_id']
+                )
+            visits = []
+            for stv in student_topic_visit:
+                visits.append(stv.serialize())
+            student_topic = uow.student_topic.get_student_topic(
+                student_id,
+                topic['topic_id']
+            )
+            student_topic[0].visits = visits
+            topic_details = get_topic_by_id(
+                uow,
+                user_id,
+                lms_user_id,
+                course_id,
+                student_id,
+                topic['topic_id']
+            )
+            topic_details['student_topic'] = student_topic[0].serialize()
+            result_topics.append(topic_details)
         result = {}
         result['topics'] = result_topics
         return result
@@ -1472,7 +1842,7 @@ def get_topics_for_course_id(
                 results.append(topic.serialize())
             return results
         except Exception:
-            return[]
+            return []
 
 
 def get_topic_learning_element_by_topic(
@@ -1507,11 +1877,38 @@ def get_topic_learning_element_by_learning_element(
         return result
 
 
+def get_users_by_admin(
+        uow: unit_of_work.AbstractUnitOfWork,
+        user_id,
+        lms_user_id
+) -> dict:
+    with uow:
+        admin_user = uow.user.get_user_by_id(
+            user_id,
+            lms_user_id
+        )
+        admin_user[0].settings = None
+        users = uow.user.get_users_by_uni(
+            admin_user[0].university
+        )
+        result = {}
+        user_list = []
+        for user in users:
+            user.settings = None
+            user.role_id = None
+            user_list.append(user.serialize())
+        result['users'] = user_list
+        return result
+
+
 def reset_knowledge(
         uow: unit_of_work.AbstractUnitOfWork,
+        user_id,
+        lms_user_id,
         characteristic_id
 ) -> dict:
     with uow:
+        get_user_by_id(uow, user_id, lms_user_id)
         knowledge = LM.Knowledge(characteristic_id)
         uow.knowledge.update_knowledge(characteristic_id, knowledge)
         uow.commit()
@@ -1520,15 +1917,20 @@ def reset_knowledge(
 
 def reset_knowledge_by_student_id(
         uow: unit_of_work.AbstractUnitOfWork,
+        user_id,
+        lms_user_id,
         student_id
 ) -> dict:
     with uow:
-        characteristic = get_knowledge(
+        get_user_by_id(uow, user_id, lms_user_id)
+        characteristic = get_learning_characteristics(
             uow,
             student_id
         )
         result = reset_knowledge(
             uow,
+            user_id,
+            lms_user_id,
             characteristic['id']
         )
         return result
@@ -1536,9 +1938,12 @@ def reset_knowledge_by_student_id(
 
 def reset_learning_analytics(
         uow: unit_of_work.AbstractUnitOfWork,
+        user_id,
+        lms_user_id,
         characteristic_id
 ) -> dict:
     with uow:
+        get_user_by_id(uow, user_id, lms_user_id)
         analytics = LM.LearningAnalytics(characteristic_id)
         uow.learning_analytics.update_learning_analytics(
             characteristic_id, analytics)
@@ -1548,15 +1953,20 @@ def reset_learning_analytics(
 
 def reset_learning_analytics_by_student_id(
         uow: unit_of_work.AbstractUnitOfWork,
+        user_id,
+        lms_user_id,
         student_id
 ) -> dict:
     with uow:
-        characteristic = get_learning_analytics(
+        get_user_by_id(uow, user_id, lms_user_id)
+        characteristic = get_learning_characteristics(
             uow,
             student_id
         )
         result = reset_learning_analytics(
             uow,
+            user_id,
+            lms_user_id,
             characteristic['id']
         )
         return result
@@ -1564,28 +1974,34 @@ def reset_learning_analytics_by_student_id(
 
 def reset_learning_characteristics(
         uow: unit_of_work.AbstractUnitOfWork,
+        user_id,
+        lms_user_id,
         student_id
 ) -> dict:
     with uow:
+        get_user_by_id(uow, user_id, lms_user_id)
         characteristics = uow.learning_characteristics\
             .get_learning_characteristics(
                 student_id)
         characteristics[0].knowledge = reset_knowledge(
-            uow, characteristics[0].id)
+            uow, user_id, lms_user_id, characteristics[0].id)
         characteristics[0].learning_analytics = reset_learning_analytics(
-            uow, characteristics[0].id)
+            uow, user_id, lms_user_id, characteristics[0].id)
         characteristics[0].learning_strategy = reset_learning_strategy(
-            uow, characteristics[0].id)
+            uow, user_id, lms_user_id, characteristics[0].id)
         characteristics[0].learning_style = reset_learning_style(
-            uow, characteristics[0].id)
+            uow, user_id, lms_user_id, characteristics[0].id)
         return characteristics[0].serialize()
 
 
 def reset_learning_strategy(
         uow: unit_of_work.AbstractUnitOfWork,
+        user_id,
+        lms_user_id,
         characteristic_id
 ) -> dict:
     with uow:
+        get_user_by_id(uow, user_id, lms_user_id)
         strategy = LM.LearningStrategy(characteristic_id)
         uow.learning_strategy.update_learning_strategy(
             characteristic_id, strategy)
@@ -1595,15 +2011,20 @@ def reset_learning_strategy(
 
 def reset_learning_strategy_by_student_id(
         uow: unit_of_work.AbstractUnitOfWork,
+        user_id,
+        lms_user_id,
         student_id
 ) -> dict:
     with uow:
+        get_user_by_id(uow, user_id, lms_user_id)
         characteristic = get_learning_characteristics(
             uow,
             student_id
         )
         result = reset_learning_strategy(
             uow,
+            user_id,
+            lms_user_id,
             characteristic['id']
         )
         return result
@@ -1611,9 +2032,12 @@ def reset_learning_strategy_by_student_id(
 
 def reset_learning_style(
         uow: unit_of_work.AbstractUnitOfWork,
+        user_id,
+        lms_user_id,
         characteristic_id
 ) -> dict:
     with uow:
+        get_user_by_id(uow, user_id, lms_user_id)
         style = LM.LearningStyle(characteristic_id)
         uow.learning_style.update_learning_style(characteristic_id, style)
         uow.commit()
@@ -1622,15 +2046,20 @@ def reset_learning_style(
 
 def reset_learning_style_by_student_id(
         uow: unit_of_work.AbstractUnitOfWork,
+        user_id,
+        lms_user_id,
         student_id
 ) -> dict:
     with uow:
+        get_user_by_id(uow, user_id, lms_user_id)
         characteristic = get_learning_characteristics(
             uow,
             student_id
         )
         result = reset_learning_style(
             uow,
+            user_id,
+            lms_user_id,
             characteristic['id']
         )
         return result
@@ -1672,6 +2101,7 @@ def get_user_by_id(
             result = {}
         else:
             user[0].settings = settings[0].serialize()
+            user[0].role_id = None
             result = user[0].serialize()
         return result
 
@@ -1684,7 +2114,7 @@ def update_course(
         university
 ) -> dict:
     with uow:
-        course = DM.Course(lms_id, name, university)
+        course = DM.Course(lms_id, name, university, None, None, None)
         uow.course.update_course(course_id, course)
         uow.commit()
         return course.serialize()
@@ -1724,6 +2154,8 @@ def update_learning_element(
 
 def update_learning_style_by_student_id(
         uow: unit_of_work.AbstractUnitOfWork,
+        user_id,
+        lms_user_id,
         student_id,
         perception_dimension,
         perception_value,
@@ -1735,6 +2167,7 @@ def update_learning_style_by_student_id(
         understanding_value
 ) -> dict:
     with uow:
+        get_user_by_id(uow, user_id, lms_user_id)
         characteristic = get_learning_characteristics(
             uow,
             student_id
@@ -1829,7 +2262,7 @@ def update_topic(
 ) -> dict:
     with uow:
         topic = DM.Topic(lms_id, is_topic, parent_id, contains_le, name,
-                         university, created_at, created_by, last_updated)
+                         university, created_by, created_at, last_updated)
         uow.topic.update_topic(topic_id, topic)
         uow.commit()
         return topic.serialize()
@@ -1851,7 +2284,9 @@ def update_user(
         return user.serialize()
 
 # ##### TEST ENDPOINT #####
-def get_user_info(uow: unit_of_work.AbstractUnitOfWork, user_id : str) -> str:
+
+
+def get_user_info(uow: unit_of_work.AbstractUnitOfWork, user_id: str) -> str:
     with uow:
         return "Admin"
         # user_info = uow.user_info.get(user_id)
@@ -1860,32 +2295,39 @@ def get_user_info(uow: unit_of_work.AbstractUnitOfWork, user_id : str) -> str:
         # return user_info
 
 # ##### LTI #####
-def get_oidc_login(request : Request, tool_conf, session):
-    ''' Return OIDC login url or error response in case of wrong parameters, unsecure or request'''     
+
+
+def get_oidc_login(request: Request, tool_conf, session):
+    ''' Return OIDC login url or error response in case of wrong parameters, unsecure or request'''
     oidc_login = OIDCLoginFlask(request, tool_conf, session=session)
     return oidc_login.check_params().auth_redirect() or Response("Error", status=500)
 
-def get_lti_launch(request : Request, tool_conf, session):
-    ''' Return LTI launch data or error response in case of wrong parameters, unsecure or request'''     
+
+def get_lti_launch(request: Request, tool_conf, session):
+    ''' Return LTI launch data or error response in case of wrong parameters, unsecure or request'''
     oidc_login = OIDCLoginFlask(request, tool_conf, session=session)
     return oidc_login.verify_state().verify_id_token().lti_launch_from_id_token() or Response("Error", status=500)
 
-def get_login(request : Request, tool_conf, session):
+
+def get_login(request: Request, tool_conf, session):
     ''' Return cookie value or None'''
     oidc_login = OIDCLoginFlask(request, tool_conf, session=session)
     return oidc_login.get_login() or None
 
-def get_loginstatus(request : Request, tool_conf, session):
+
+def get_loginstatus(request: Request, tool_conf, session):
     '''Return OK when logged in or None'''
     oidc_login = OIDCLoginFlask(request, tool_conf, session=session)
     return oidc_login.get_loginstatus() or None
 
-def get_logout(request : Request, tool_conf, session):
+
+def get_logout(request: Request, tool_conf, session):
     ''' Return logout url or None'''
     oidc_login = OIDCLoginFlask(request, tool_conf, session=session)
     return oidc_login.get_logout() or None
 
-def get_login_credentials(request : Request, tool_conf, session):
+
+def get_login_credentials(request: Request, tool_conf, session):
     ''' Return login credentials or None'''
     # TODO: implement
     # response json

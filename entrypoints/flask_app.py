@@ -274,6 +274,7 @@ def course_management(course_id, lms_course_id):
 # ##### LTI ENDPOINTS #####
 # 1. LTI login is the first step of the OIDC Login workflow initiated by the platform
 @app.route('/lti_login/', methods=['POST'])
+@cross_origin(supports_credentials=True)
 def lti_login():
     return services.get_oidc_login(request, tool_conf, session=session)
 
@@ -281,6 +282,7 @@ def lti_login():
 
 
 @app.route('/lti_launch/', methods=['POST'])
+@cross_origin(supports_credentials=True)
 def lti_launch():
     return services.get_lti_launch(request, tool_conf, session=session)
 
@@ -323,6 +325,7 @@ def lti_launch_view():
 
 
 @app.route('/login_credentials', methods=['POST'])
+@cross_origin(supports_credentials=True)
 def login_credentials():
     return services.get_login_credentials(request, tool_conf, session=session)
 

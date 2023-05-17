@@ -85,7 +85,7 @@ def verify_jwt_payload(jwt_payload, verify_nonce=True) -> bool:
     if jwt_payload['exp'] < datetime.datetime.utcnow().timestamp():
         return False
     # verify issuer
-    if jwt_payload['iss'] != os.environ.get('BACKEND_URL', 'http://localhost:5000'):
+    if jwt_payload['iss'] != os.environ.get('BACKEND_URL', 'https://backend.haski.app'):
         return False
     # verify kid
     if jwt_payload['kid'] != 'backendprivatekey':

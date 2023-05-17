@@ -273,7 +273,7 @@ def course_management(course_id, lms_course_id):
 
 # ##### LTI ENDPOINTS #####
 # 1. LTI login is the first step of the OIDC Login workflow initiated by the platform
-@app.route('/lti_login/', methods=['POST'])
+@app.route('/lti_login', methods=['POST'])
 @cross_origin(supports_credentials=True)
 def lti_login():
     return services.get_oidc_login(request, tool_conf, session=session)
@@ -281,7 +281,7 @@ def lti_login():
 # 2. After the platform has verified the LTI launch request, it uses this endpoint to which we redirected
 
 
-@app.route('/lti_launch/', methods=['POST'])
+@app.route('/lti_launch', methods=['POST'])
 @cross_origin(supports_credentials=True)
 def lti_launch():
     return services.get_lti_launch(request, tool_conf, session=session)
@@ -318,7 +318,7 @@ def logout():
 def lti_launch_view():
     response = make_response()
     response.data = json.dumps({'lti_launch_view': tool_conf.get_haski_activity_url(
-        os.environ.get('LMS_URL', "http://fakedomain.com"))})
+        os.environ.get('LMS_URL', "https://moodle.haski.app"))})
     return response
 
 # Login with username and password

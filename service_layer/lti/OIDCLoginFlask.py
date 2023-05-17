@@ -39,8 +39,9 @@ class OIDCLoginFlask(OIDCLogin):
 
         # Get the platform settings (same scheme as in the tool config json)
         # HTTP_ORIGIN is a safe way to get the origin of the request and a way to avoid CSRF attacks
+        # when redirected from http it doesnt work anymore
         try:
-            self._platform = self._tool_config.decode_platform(self._tool_config.get_platform(self._request.environ.get('HTTP_ORIGIN', '')))
+            self._platform = self._tool_config.decode_platform(self._tool_config.get_platform(os.environ.get('LMS_URL', 'https://moodle.haski.app')))
             if not self._platform:
                 raise err.ErrorException(message="No platform found", status_code=400)
         except Exception as e:
@@ -80,7 +81,7 @@ class OIDCLoginFlask(OIDCLogin):
         state_jwt = SessionServiceFlask.set_state_jwt(nonce,self._platform.auth_login_url, self._tool_config.get_tool_url(self._request.environ.get('HTTP_ORIGIN', '')))
 
 
-        platform = self._tool_config.get_platform(self._request.environ.get('HTTP_ORIGIN', ''))
+        platform = self._tool_config.get_platform(os.environ.get('LMS_URL', 'https://moodle.haski.app'))
         ru = self.make_url_accept_param(platform['auth_login_url'])
         params = {
             'client_id': platform['client_id'],
@@ -175,7 +176,7 @@ class OIDCLoginFlask(OIDCLogin):
         assert(JWTKeyManagement.verify_state_jwt_payload(state_form))
 
         # generate nonce to obtain cookie
-        nonce_jwt = JWTKeyManagement.generate_nonce_jwt(self.id_token.nonce, self._request.referrer, os.environ.get('BACKEND_URL', 'http://fakedomain.com:5000'))
+        nonce_jwt = JWTKeyManagement.generate_nonce_jwt(self.id_token.nonce, self._request.referrer, os.environ.get('BACKEND_URL', 'https://backend.haski.app'))
         SessionServiceFlask.set(self.id_token.nonce, 'nonce_jwt', nonce_jwt)
         # get platform
         try:
@@ -240,7 +241,7 @@ class OIDCLoginFlask(OIDCLogin):
         state_jwt = JWTKeyManagement.generate_state_jwt(nonce=CryptoRandom.createuniqueid(32), 
                                                         state=CryptoRandom.createuniqueid(32), 
                                                         audience=self._request.referrer, 
-                                                        issuer=os.environ.get('BACKEND_URL', 'http://fakedomain.com:5000'),
+                                                        issuer=os.environ.get('BACKEND_URL', 'https://backend.haski.app'),
                                                         expiration=cookie_expiration,
                                                         additional_claims={'id': user.get('id'),
                                                                            'user_id': user.get('user_id'),

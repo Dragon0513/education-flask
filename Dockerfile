@@ -28,6 +28,10 @@ COPY .flaskenv /app/.flaskenv
 
 COPY config.py /app/config.py
 
-COPY errors.py /app/errors.py
+COPY errors/ /app/errors/
+
+COPY configs/ /app/configs/
+
+COPY keys/ /app/keys/
 
 CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]

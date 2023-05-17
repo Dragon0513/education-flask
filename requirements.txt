@@ -17,6 +17,8 @@ exceptiongroup==1.1.1
 filelock==3.9.0
 Flask==2.2.3
 Flask-Cors==3.0.10
+flask-caching
+python-jose[cryptography]
 Flask-WTF==1.1.1
 greenlet==1.1.1
 idna==3.3

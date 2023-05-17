@@ -1,23 +1,23 @@
 {
-  "http://fakedomain.com": {
+  "https://moodle.haski.app": {
     "default": true,
-    "client_id": "L27dePw8pAl34ST",
-    "tool_url": "http://fakedomain.com:5000",
-    "frontend_login_url": "http://fakedomain.com:8080/login",
-    "target_link_uri": "http://fakedomain.com:5000/lti_launch",
-    "auth_login_url": "http://fakedomain.com/mod/lti/auth.php",
-    "auth_token_url": "http://fakedomain.com/mod/lti/token.php",
-    "key_set_url": "http://fakedomain.com/mod/lti/certs.php",
-    "haski_lti_activity": "http://fakedomain.com/mod/lti/view.php?id=2",
-    "platform_name": "moodle",
+    "client_id": "VRCKkhKlZtHNHtD",
+    "tool_url": "https://backend.haski.app",
+    "frontend_login_url": "https://haski.app/login",
+    "target_link_uri": "https://backend.haski.app/lti_launch",
+    "auth_login_url": "https://moodle.haski.app/mod/lti/auth.php",
+    "auth_token_url": "https://moodle.haski.app/mod/lti/token.php",
+    "key_set_url": "https://moodle.haski.app/mod/lti/certs.php",
+    "haski_lti_activity": "https://moodle.haski.app/mod/lti/view.php?id=138",
+    "platform_name": "HASKI",
     "key_set": {
       "keys": [
         {
           "kty": "RSA",
           "alg": "RS256",
-          "kid": "77ce2052ed246a4259da",
+          "kid": "5e58bef6fa8030be050b",
           "e": "AQAB",
-          "n": "poaM0tABqlxYEEzlqZaD1UsicOunF3WxYBeWHRFZE8s2yTzae3EXJJay6df0FevpE67d0URspbG-U0cVVZnOR7r4Q-4BqJd_KDuQ6e9ZTYCvjCbWWxEu74gutZuZ9phMPWEGB8VJYWmfr0xi0YSGAwKqkNsyqbwJuO2sIXMCjJ7TleUz4QwCGoKAzDhXG6AROKMFa85blKz3Qz7PK6AWSGsQv5I-3kYWbZmQ8dlHhUe_Fgrul9by8qcYW3as5R9R00gheR5oAcminqiZTyjEWMLurCibaAuo-DrwNLeRkh1Z5dxi0JS3EqBWeTexXt8Yoh8cIGzifvNgHkwxSVwaYQ",
+          "n": "z8uwIpHep-dGbqqutVqQPsXdwJk8ESoXPw1UD-9PmlTm06Q6PmXl5jHT9J6hTuW-9OjiycuBs07DW1At6LEAEBOJbFw2H6aflmPyhq09Cwernuk6OzekRRmnPdmfYeOcjpHAGaZ3qwaU0E6zPt_Ki1ZqdtLnB53ytO1fuYTmK1FVSbnexK9i4OkLk6OHMCHkInQTndRMWOiKWwrAoc591LlNSzgvlW_S9s-Vj2N4sHAcikKobzMMD8ixsV84Lx3mZyb13qph9qXUMJB9It-5WXa-FfsbUQZ6MeC0ks9_XSyl7tI7Q2eHUqenPimZL15uQnWek-gaE61IAK7ihKSMew",
           "use": "sig"
         }
       ]

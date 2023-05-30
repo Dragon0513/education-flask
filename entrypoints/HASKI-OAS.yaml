@@ -4,31 +4,31 @@ info:
   version: "0.1.0"
   title: "HASKI API"
 servers:
-- url: http://localhost:5000
-  description: Development server (localhost)
+  - url: http://localhost:5000
+    description: Development server (localhost)
 tags:
-- name: "HASKI-intern"
-  description: "Communication between Backend and Frontend"
-- name: "Logs"
-  description: "All log data"
-- name: "Moodle"
-  description: "Extension to communicate with Moodle LMS"
-- name: "Student"
-  description: "All Student endpoints"
-- name: "User"
-  description: "All User endpoints"
-- name: "Teacher"
-  description: "All Teacher endpoints"
-- name: "CourseCreator"
-  description: "All Course Creator endpoints"
-- name: "Admin"
-  description: "All Admin endpoints"
+  - name: "HASKI-intern"
+    description: "Communication between Backend and Frontend"
+  - name: "Logs"
+    description: "All log data"
+  - name: "Moodle"
+    description: "Extension to communicate with Moodle LMS"
+  - name: "Student"
+    description: "All Student endpoints"
+  - name: "User"
+    description: "All User endpoints"
+  - name: "Teacher"
+    description: "All Teacher endpoints"
+  - name: "CourseCreator"
+    description: "All Course Creator endpoints"
+  - name: "Admin"
+    description: "All Admin endpoints"
 paths:
   /user/{user_id}/{lms_user_id}: #Y
     get:
       tags:
-      - "HASKI-intern"
-      - "User"
+        - "HASKI-intern"
+        - "User"
       summary: "Get User"
       description: "Get the basic User data for a specific User"
       operationId: "getUser"
@@ -53,24 +53,24 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: "#/components/schemas/User"
         "400":
           description: "Bad Request"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
         "404":
           description: "Not Found"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
   /user/{user_id}/{lms_user_id}/settings: #Y
     get:
       tags:
-      - "HASKI-intern"
-      - "User"
+        - "HASKI-intern"
+        - "User"
       summary: "Get User Settings"
       description: "Get the basic User Settings for a specific User"
       operationId: "getUserSettings"
@@ -95,23 +95,23 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Settings'
+                $ref: "#/components/schemas/Settings"
         "400":
           description: "Bad Request"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
         "404":
           description: "Not Found"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
     put:
       tags:
-      - "HASKI-intern"
-      - "User"
+        - "HASKI-intern"
+        - "User"
       summary: "Update User Settings"
       description: "Update the basic User Settings for a specific User"
       operationId: "putUserSettings"
@@ -135,30 +135,30 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Settings'
+              $ref: "#/components/schemas/Settings"
       responses:
         "201":
           description: "Successful Operation"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Settings'
+                $ref: "#/components/schemas/Settings"
         "400":
           description: "Bad Request"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
         "404":
           description: "Not Found"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
     delete:
       tags:
-      - "HASKI-intern"
-      - "User"
+        - "HASKI-intern"
+        - "User"
       summary: "Delete User Settings"
       description: "Delete a specific User Settings from HASKI and set back to default Values"
       operationId: "deleteUserSettings"
@@ -183,20 +183,66 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Settings'
+                $ref: "#/components/schemas/Settings"
         "400":
           description: "Bad Request"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
         "404":
           description: "Not Found"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
-  
+                $ref: "#/components/schemas/GeneralError"
+  /user/{user_id}/{lms_user_id}/contactform:
+    post:
+      summary: "Post the content of a user specific contactform"
+      tags:
+        - "HASKI-intern"
+        - "User"
+      operationId: "postContactForm"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          description: "The ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "lms_user_id"
+          in: "path"
+          description: "The Moodle ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ContactForm"
+      responses:
+        "201":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContactForm"
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
   /user/{user_id}/{lms_user_id}/student/{student_id}/learningCharacteristics:
     get:
       tags:
@@ -233,23 +279,23 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LearningCharacteristics'
+                $ref: "#/components/schemas/LearningCharacteristics"
         "400":
           description: "Bad Request"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
         "404":
           description: "Not Found"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
     delete:
       tags:
-      - "HASKI-intern"
-      - "Student"
+        - "HASKI-intern"
+        - "Student"
       summary: "Delete Learning Characteristic"
       description: "Delete Learning Characteristic for a specific User from HASKI"
       operationId: "deleteLearningCharacteristic"
@@ -281,19 +327,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Deletion'
+                $ref: "#/components/schemas/Deletion"
         "400":
           description: "Bad Request"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
         "404":
           description: "Not Found"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError' #Y
+                $ref: "#/components/schemas/GeneralError" #Y
   /user/{user_id}/{lms_user_id}/student/{student_id}/learningAnalytics:
     get:
       tags:
@@ -330,23 +376,23 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LearningAnalytics'
+                $ref: "#/components/schemas/LearningAnalytics"
         "400":
           description: "Bad Request"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
         "404":
           description: "Not Found"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
     delete:
       tags:
-      - "HASKI-intern"
-      - "Student"
+        - "HASKI-intern"
+        - "Student"
       summary: "Delete Learning Analytics"
       description: "Delete Learning Analytics for a specific User from HASKI"
       operationId: "deleteLearningAnalytics"
@@ -378,19 +424,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Deletion'
+                $ref: "#/components/schemas/Deletion"
         "400":
           description: "Bad Request"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
         "404":
           description: "Not Found"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError' #Y
+                $ref: "#/components/schemas/GeneralError" #Y
   /user/{user_id}/{lms_user_id}/student/{student_id}/learningStyle:
     get:
       tags:
@@ -427,19 +473,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LearningStyle'
+                $ref: "#/components/schemas/LearningStyle"
         "400":
           description: "Bad Request"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
         "404":
           description: "Not Found"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
     put:
       tags:
         - "HASKI-intern"
@@ -474,30 +520,30 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/LearningStyle'
+              $ref: "#/components/schemas/LearningStyle"
       responses:
         "201":
           description: "Successful Operation"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LearningStyle'
+                $ref: "#/components/schemas/LearningStyle"
         "400":
           description: "Bad Request"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
         "404":
           description: "Not Found"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
     delete:
       tags:
-      - "HASKI-intern"
-      - "Student"
+        - "HASKI-intern"
+        - "Student"
       summary: "Delete Learning Style"
       description: "Delete Learning Style for a specific User from HASKI"
       operationId: "deleteLearningStyle"
@@ -529,19 +575,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Deletion'
+                $ref: "#/components/schemas/Deletion"
         "400":
           description: "Bad Request"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
         "404":
           description: "Not Found"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError' #Y
+                $ref: "#/components/schemas/GeneralError" #Y
   /user/{user_id}/{lms_user_id}/student/{student_id}/learningStrategy:
     get:
       tags:
@@ -578,23 +624,23 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LearningStrategy'
+                $ref: "#/components/schemas/LearningStrategy"
         "400":
           description: "Bad Request"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
         "404":
           description: "Not Found"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
     delete:
       tags:
-      - "HASKI-intern"
-      - "Student"
+        - "HASKI-intern"
+        - "Student"
       summary: "Delete Learning Strategy"
       description: "Delete Learning Strategy for a specific User from HASKI"
       operationId: "deleteLearningStrategy"
@@ -626,19 +672,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Deletion'
+                $ref: "#/components/schemas/Deletion"
         "400":
           description: "Bad Request"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
         "404":
           description: "Not Found"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError' #Y
+                $ref: "#/components/schemas/GeneralError" #Y
   /user/{user_id}/{lms_user_id}/student/{student_id}/knowledge:
     get:
       tags:
@@ -675,23 +721,23 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Knowledge'
+                $ref: "#/components/schemas/Knowledge"
         "400":
           description: "Bad Request"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
         "404":
           description: "Not Found"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
     delete:
       tags:
-      - "HASKI-intern"
-      - "Student"
+        - "HASKI-intern"
+        - "Student"
       summary: "Delete knowledge"
       description: "Delete knowledge for a specific User from HASKI"
       operationId: "deleteKnowledge"
@@ -723,19 +769,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Deletion'
+                $ref: "#/components/schemas/Deletion"
         "400":
           description: "Bad Request"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
         "404":
           description: "Not Found"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError' #Y
+                $ref: "#/components/schemas/GeneralError" #Y
   /user/{user_id}/{lms_user_id}/student/{student_id}/course:
     get:
       tags:
@@ -772,19 +818,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CoursesStudent'
+                $ref: "#/components/schemas/CoursesStudent"
         "400":
           description: "Bad Request"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
         "404":
           description: "Not Found"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError' #Y
+                $ref: "#/components/schemas/GeneralError" #Y
   /user/{user_id}/{lms_user_id}/student/{student_id}/course/{course_id}:
     get:
       tags:
@@ -828,19 +874,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CourseStudent'
+                $ref: "#/components/schemas/CourseStudent"
         "400":
           description: "Bad Request"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
         "404":
           description: "Not Found"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError' #ToDo
+                $ref: "#/components/schemas/GeneralError" #ToDo
   /user/{user_id}/{lms_user_id}/student/{student_id}/course/{course_id}/topic:
     get:
       tags:
@@ -884,19 +930,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TopicsStudent'
+                $ref: "#/components/schemas/TopicsStudent"
         "400":
           description: "Bad Request"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
         "404":
           description: "Not Found"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError' #ToDo
+                $ref: "#/components/schemas/GeneralError" #ToDo
   /user/{user_id}/{lms_user_id}/student/{student_id}/course/{course_id}/learningElement:
     get:
       tags:
@@ -940,19 +986,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LearningElementsStudent'
+                $ref: "#/components/schemas/LearningElementsStudent"
         "400":
           description: "Bad Request"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
         "404":
           description: "Not Found"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError' #ToDo
+                $ref: "#/components/schemas/GeneralError" #ToDo
   /user/{user_id}/{lms_user_id}/student/{student_id}/course/{course_id}/topic/{topic_id}:
     get:
       tags:
@@ -1003,20 +1049,20 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TopicStudent'
+                $ref: "#/components/schemas/TopicStudent"
         "400":
           description: "Bad Request"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
         "404":
           description: "Not Found"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError' #ToDo
-  /user/{user_id}/{lms_user_id}/student/{student_id}/course/{course_id}/topic/{topic_id}/recommendation: 
+                $ref: "#/components/schemas/GeneralError" #ToDo
+  /user/{user_id}/{lms_user_id}/student/{student_id}/course/{course_id}/topic/{topic_id}/recommendation:
     get:
       tags:
         - "HASKI-intern"
@@ -1066,19 +1112,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TopicStudent'
+                $ref: "#/components/schemas/TopicStudent"
         "400":
           description: "Bad Request"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
         "404":
           description: "Not Found"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError' #?
+                $ref: "#/components/schemas/GeneralError" #?
   /user/{user_id}/{lms_user_id}/student/{student_id}/course/{course_id}/topic/{topic_id}/learningPath:
     get:
       tags:
@@ -1129,19 +1175,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LearningElementsPath'
+                $ref: "#/components/schemas/LearningElementsPath"
         "400":
           description: "Bad Request"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
         "404":
           description: "Not Found"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError' #ToDo
+                $ref: "#/components/schemas/GeneralError" #ToDo
   /user/{user_id}/{lms_user_id}/student/{student_id}/course/{course_id}/topic/{topic_id}/subtopic:
     get:
       tags:
@@ -1192,19 +1238,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TopicsStudent'
+                $ref: "#/components/schemas/TopicsStudent"
         "400":
           description: "Bad Request"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
         "404":
           description: "Not Found"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError' #ToDo
+                $ref: "#/components/schemas/GeneralError" #ToDo
   /user/{user_id}/{lms_user_id}/student/{student_id}/course/{course_id}/topic/{topic_id}/learningElement:
     get:
       tags:
@@ -1255,19 +1301,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LearningElementsStudent'
+                $ref: "#/components/schemas/LearningElementsStudent"
         "400":
           description: "Bad Request"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
         "404":
           description: "Not Found"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError' #ToDo
+                $ref: "#/components/schemas/GeneralError" #ToDo
   /user/{user_id}/{lms_user_id}/student/{student_id}/course/{course_id}/topic/{topic_id}/learningElement/{learning_element_id}:
     get:
       tags:
@@ -1325,19 +1371,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LearningElementStudent'
+                $ref: "#/components/schemas/LearningElementStudent"
         "400":
           description: "Bad Request"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
         "404":
           description: "Not Found"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError' #ToDo
+                $ref: "#/components/schemas/GeneralError" #ToDo
 
   /user/{user_id}/{lms_user_id}/teacher/{teacher_id}/course:
     get:
@@ -1375,19 +1421,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CoursesTeacher'
+                $ref: "#/components/schemas/CoursesTeacher"
         "400":
           description: "Bad Request"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
         "404":
           description: "Not Found"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError' #ToDo
+                $ref: "#/components/schemas/GeneralError" #ToDo
 
   /user/{user_id}/{lms_user_id}/admin/{admin_id}/user:
     get:
@@ -1425,19 +1471,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UsersListAdmin'
+                $ref: "#/components/schemas/UsersListAdmin"
         "400":
           description: "Bad Request"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
         "404":
           description: "Not Found"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError' #?
+                $ref: "#/components/schemas/GeneralError" #?
   /user/{user_id}/{lms_user_id}/admin/{admin_id}/logs:
     get:
       tags:
@@ -1475,25 +1521,25 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Logs'
+                $ref: "#/components/schemas/Logs"
         "400":
           description: "Bad Request"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
         "404":
           description: "Not Found"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError' #?
+                $ref: "#/components/schemas/GeneralError" #?
 
   /logs/frontend:
     post:
       tags:
-      - "HASKI-intern"
-      - "Logs"
+        - "HASKI-intern"
+        - "Logs"
       summary: "Post Frontend Logs"
       description: "Post a new Frontend Log to the Backend"
       operationId: "postFrontendLog"
@@ -1502,31 +1548,31 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/FrontendLog'
+              $ref: "#/components/schemas/FrontendLog"
       responses:
         "201":
           description: "Successful Operation"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FrontendLog'
+                $ref: "#/components/schemas/FrontendLog"
         "400":
           description: "Bad Request"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
         "404":
           description: "Not Found"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError' #Y
-  
+                $ref: "#/components/schemas/GeneralError" #Y
+
   /lms/user:
     post:
       tags:
-      - "Moodle"
+        - "Moodle"
       summary: "Create User from Moodle"
       description: "Post the basic User data for a new User from Moodle"
       operationId: "postUserMoodle"
@@ -1535,30 +1581,30 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: "#/components/schemas/User"
       responses:
         "201":
           description: "Successful Operation"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: "#/components/schemas/User"
         "400":
           description: "Bad Request"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
         "404":
           description: "Not Found"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError' #Y #Y
+                $ref: "#/components/schemas/GeneralError" #Y #Y
   /lms/user/{user_id}/{lms_user_id}:
     put:
       tags:
-      - "Moodle"
+        - "Moodle"
       summary: "Update User Moodle"
       description: "Update the basic User data for a specific User from Moodle"
       operationId: "putUserMoodle"
@@ -1582,29 +1628,29 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: "#/components/schemas/User"
       responses:
         "201":
           description: "Successful Operation"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: "#/components/schemas/User"
         "400":
           description: "Bad Request"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
         "404":
           description: "Not Found"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
     delete:
       tags:
-      - "Moodle"
+        - "Moodle"
       summary: "Delete User Moodle"
       description: "Delete a specific User from HASKI from Moodle"
       operationId: "deleteUserMoodle"
@@ -1629,23 +1675,23 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Deletion'
+                $ref: "#/components/schemas/Deletion"
         "400":
           description: "Bad Request"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
         "404":
           description: "Not Found"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError' #Y
+                $ref: "#/components/schemas/GeneralError" #Y
   /lms/course:
     post:
       tags:
-      - "Moodle"
+        - "Moodle"
       summary: "Create Course from Moodle"
       description: "Post a new Course from Moodle"
       operationId: "postCourseMoodle"
@@ -1654,30 +1700,30 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Course'
+              $ref: "#/components/schemas/Course"
       responses:
         "201":
           description: "Successful Operation"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Course'
+                $ref: "#/components/schemas/Course"
         "400":
           description: "Bad Request"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
         "404":
           description: "Not Found"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError' #Y
+                $ref: "#/components/schemas/GeneralError" #Y
   /lms/course/{course_id}/{lms_course_id}:
     put:
       tags:
-      - "Moodle"
+        - "Moodle"
       summary: "Update Course Moodle"
       description: "Update the basic Course data from Moodle"
       operationId: "putCourseMoodle"
@@ -1701,29 +1747,29 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Course'
+              $ref: "#/components/schemas/Course"
       responses:
         "201":
           description: "Successful Operation"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Course'
+                $ref: "#/components/schemas/Course"
         "400":
           description: "Bad Request"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
         "404":
           description: "Not Found"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
     delete:
       tags:
-      - "Moodle"
+        - "Moodle"
       summary: "Delete Course Moodle"
       description: "Delete a Course from Moodle"
       operationId: "deleteCourseMoodle"
@@ -1748,23 +1794,23 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Deletion'
+                $ref: "#/components/schemas/Deletion"
         "400":
           description: "Bad Request"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
         "404":
           description: "Not Found"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError' #Y
+                $ref: "#/components/schemas/GeneralError" #Y
   /lms/course/{course_id}/{lms_course_id}/topic:
     post:
       tags:
-      - "Moodle"
+        - "Moodle"
       summary: "Create Topic from Moodle"
       description: "Post a new Topic from Moodle"
       operationId: "postTopicMoodle"
@@ -1788,30 +1834,30 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Topic'
+              $ref: "#/components/schemas/Topic"
       responses:
         "201":
           description: "Successful Operation"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Topic'
+                $ref: "#/components/schemas/Topic"
         "400":
           description: "Bad Request"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
         "404":
           description: "Not Found"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError' #Y
+                $ref: "#/components/schemas/GeneralError" #Y
   /lms/course/{course_id}/{lms_course_id}/topic/{topic_id}/{lms_topic_id}:
     put:
       tags:
-      - "Moodle"
+        - "Moodle"
       summary: "Update Topic Moodle"
       description: "Update the basic Topic data from Moodle"
       operationId: "putTopicMoodle"
@@ -1849,29 +1895,29 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Topic'
+              $ref: "#/components/schemas/Topic"
       responses:
         "201":
           description: "Successful Operation"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Topic'
+                $ref: "#/components/schemas/Topic"
         "400":
           description: "Bad Request"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
         "404":
           description: "Not Found"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
     delete:
       tags:
-      - "Moodle"
+        - "Moodle"
       summary: "Delete Topic Moodle"
       description: "Delete a Topic from Moodle"
       operationId: "deleteTopicMoodle"
@@ -1910,23 +1956,23 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Deletion'
+                $ref: "#/components/schemas/Deletion"
         "400":
           description: "Bad Request"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
         "404":
           description: "Not Found"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError' #Y #Y
+                $ref: "#/components/schemas/GeneralError" #Y #Y
   /lms/course/{course_id}/{lms_course_id}/topic/{topic_id}/{lms_topic_id}/learningElement:
     post:
       tags:
-      - "Moodle"
+        - "Moodle"
       summary: "Create Learning Element from Moodle"
       description: "Post a new Learning Element from Moodle"
       operationId: "postLEMoodle"
@@ -1964,30 +2010,30 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/LearningElement'
+              $ref: "#/components/schemas/LearningElement"
       responses:
         "201":
           description: "Successful Operation"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LearningElement'
+                $ref: "#/components/schemas/LearningElement"
         "400":
           description: "Bad Request"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
         "404":
           description: "Not Found"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError' #Y
+                $ref: "#/components/schemas/GeneralError" #Y
   /lms/course/{course_id}/{lms_course_id}/topic/{topic_id}/{lms_topic_id}/learningElement/{learning_element_id}/{lms_learning_element_id}:
     put:
       tags:
-      - "Moodle"
+        - "Moodle"
       summary: "Update Learning Element Moodle"
       description: "Update the basic Learning Element data from Moodle"
       operationId: "putLEMoodle"
@@ -2039,29 +2085,29 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/LearningElement'
+              $ref: "#/components/schemas/LearningElement"
       responses:
         "201":
           description: "Successful Operation"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LearningElement'
+                $ref: "#/components/schemas/LearningElement"
         "400":
           description: "Bad Request"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
         "404":
           description: "Not Found"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
     delete:
       tags:
-      - "Moodle"
+        - "Moodle"
       summary: "Delete Learning Element Moodle"
       description: "Delete a Learning Element from Moodle"
       operationId: "deleteLEMoodle"
@@ -2114,19 +2160,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Deletion'
+                $ref: "#/components/schemas/Deletion"
         "400":
           description: "Bad Request"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
         "404":
           description: "Not Found"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError' #Y
+                $ref: "#/components/schemas/GeneralError" #Y
   /lms/course/{course_id}/student/{student_id}:
     post:
       tags:
@@ -2155,23 +2201,23 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CourseStudent'
+                $ref: "#/components/schemas/CourseStudent"
         "400":
           description: "Bad Request"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
         "404":
           description: "Not Found"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError' #Y
+                $ref: "#/components/schemas/GeneralError" #Y
   /lms/student/{student_id}/{lms_user_id}/questionnaire:
     post:
       tags:
-      - "Moodle"
+        - "Moodle"
       summary: "Post ILS Questionnaire"
       description: "Post the answers to the ILS Questionnaire for a specific User from Moodle"
       operationId: "postIlsMoodle"
@@ -2195,30 +2241,30 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Questionnaire'
+              $ref: "#/components/schemas/Questionnaire"
       responses:
         "201":
           description: "Successful Operation"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LearningStyle'
+                $ref: "#/components/schemas/LearningStyle"
         "400":
           description: "Bad Request"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
         "404":
           description: "Not Found"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError' #Y
+                $ref: "#/components/schemas/GeneralError" #Y
   /lms/student/{student_id}/{lms_user_id}/topic/{topic_id}:
     post:
       tags:
-      - "Moodle"
+        - "Moodle"
       summary: "Update User Topic Moodle"
       description: "Update the topic user data for a specific User from Moodle"
       operationId: "putUserTopicMoodle"
@@ -2249,30 +2295,30 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TopicVisit'
+              $ref: "#/components/schemas/TopicVisit"
       responses:
         "201":
           description: "Successful Operation"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TopicVisit'
+                $ref: "#/components/schemas/TopicVisit"
         "400":
           description: "Bad Request"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
         "404":
           description: "Not Found"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError' #Y
+                $ref: "#/components/schemas/GeneralError" #Y
   /lms/student/{student_id}/{lms_user_id}/learning_element/{learning_element_id}:
     post:
       tags:
-      - "Moodle"
+        - "Moodle"
       summary: "Update User Learning Element Moodle"
       description: "Update the Learning Element user data for a specific User from Moodle"
       operationId: "putUserLearningElementMoodle"
@@ -2303,27 +2349,27 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/LearningElementVisit'
+              $ref: "#/components/schemas/LearningElementVisit"
       responses:
         "201":
           description: "Successful Operation"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LearningElementVisit'
+                $ref: "#/components/schemas/LearningElementVisit"
         "400":
           description: "Bad Request"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
         "404":
           description: "Not Found"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError' #Y
-  
+                $ref: "#/components/schemas/GeneralError" #Y
+
 components:
   schemas:
     AccessLog:
@@ -2423,7 +2469,7 @@ components:
         courses:
           type: "array"
           items:
-            $ref: '#/components/schemas/CourseAdmin'
+            $ref: "#/components/schemas/CourseAdmin"
     CourseCourseCreator:
       type: "object"
       properties:
@@ -2457,14 +2503,14 @@ components:
           example: 3
           description: "The number of Teachers within the course"
         teachers:
-          $ref: '#/components/schemas/UsersList'
+          $ref: "#/components/schemas/UsersList"
     CoursesCourseCreator:
       type: "object"
       properties:
         courses:
           type: "array"
           items:
-            $ref: '#/components/schemas/CourseCourseCreator'
+            $ref: "#/components/schemas/CourseCourseCreator"
     CourseStudent:
       type: "object"
       properties:
@@ -2493,7 +2539,7 @@ components:
         courses:
           type: "array"
           items:
-            $ref: '#/components/schemas/CourseStudent'
+            $ref: "#/components/schemas/CourseStudent"
     CourseTeacher:
       type: "object"
       properties:
@@ -2532,7 +2578,7 @@ components:
         courses:
           type: "array"
           items:
-            $ref: '#/components/schemas/CourseTeacher'
+            $ref: "#/components/schemas/CourseTeacher"
     DashboardStudentCourse:
       type: "object"
       properties:
@@ -2543,26 +2589,26 @@ components:
         learning_style:
           type: "array"
           items:
-            $ref: '#/components/schemas/LearningStyle'
+            $ref: "#/components/schemas/LearningStyle"
         learning_style_course:
           type: "array"
           items:
-            $ref: '#/components/schemas/LearningStyle'
+            $ref: "#/components/schemas/LearningStyle"
     DashboardStudentOverview:
       type: "object"
       properties:
         courses:
           type: "array"
           items:
-            $ref: '#/components/schemas/CourseStudent'
+            $ref: "#/components/schemas/CourseStudent"
         learning_style:
           type: "array"
           items:
-            $ref: '#/components/schemas/LearningStyle'
+            $ref: "#/components/schemas/LearningStyle"
         learning_strategy:
           type: "array"
           items:
-            $ref: '#/components/schemas/LearningStrategy'
+            $ref: "#/components/schemas/LearningStrategy"
     DashboardStudentTopic:
       type: "object"
       properties:
@@ -2607,15 +2653,15 @@ components:
         learning_style:
           type: "array"
           items:
-            $ref: '#/components/schemas/LearningStyleTeacher'
+            $ref: "#/components/schemas/LearningStyleTeacher"
         performer:
           type: "array"
           items:
-            $ref: '#/components/schemas/Performer'
+            $ref: "#/components/schemas/Performer"
         time_spend:
           type: "array"
           items:
-            $ref: '#/components/schemas/TimeTrackerTeacher'
+            $ref: "#/components/schemas/TimeTrackerTeacher"
     DashboardTeacherFeedback:
       type: "object"
       properties:
@@ -2693,19 +2739,19 @@ components:
         feedback:
           type: "array"
           items:
-            $ref: '#/components/schemas/DashboardTeacherFeedback'
+            $ref: "#/components/schemas/DashboardTeacherFeedback"
         clicks:
           type: "array"
           items:
-            $ref: '#/components/schemas/DashboardTeacherClicksLE'
+            $ref: "#/components/schemas/DashboardTeacherClicksLE"
         knowledge:
           type: "array"
           items:
-            $ref: '#/components/schemas/DashboardTeacherKnowledgeLE'
+            $ref: "#/components/schemas/DashboardTeacherKnowledgeLE"
         time:
           type: "array"
           items:
-            $ref: '#/components/schemas/DashboardTeacherTimeLE'
+            $ref: "#/components/schemas/DashboardTeacherTimeLE"
     DashboardTeacherTime:
       type: "object"
       properties:
@@ -2719,7 +2765,7 @@ components:
           items:
             type: "object"
             properties:
-              topic_name: 
+              topic_name:
                 type: "string"
                 example: "Test Topic 1"
                 description: "The name of the topic"
@@ -2756,15 +2802,15 @@ components:
         clicks:
           type: "array"
           items:
-            $ref: '#/components/schemas/DashboardTeacherClicks'
+            $ref: "#/components/schemas/DashboardTeacherClicks"
         knowledge:
           type: "array"
           items:
-            $ref: '#/components/schemas/DashboardTeacherKnowledge'
+            $ref: "#/components/schemas/DashboardTeacherKnowledge"
         time:
           type: "array"
           items:
-            $ref: '#/components/schemas/DashboardTeacherTime'
+            $ref: "#/components/schemas/DashboardTeacherTime"
     Deletion:
       type: "object"
       properties:
@@ -2791,20 +2837,20 @@ components:
     FrontendLogEntryFCP:
       type: "object"
       properties:
-        name: 
+        name:
           type: "string"
           example: "first-contentful-paint"
           description: "name of the entry"
-        entryType: 
+        entryType:
           type: "string"
           example: "paint"
           description: "The type of the entry"
-        startTime: 
+        startTime:
           type: "number"
           format: "double"
           example: 3957.6999999284744
           description: "The start time of the entry"
-        duration: 
+        duration:
           type: "number"
           format: "double"
           example: 0
@@ -2915,13 +2961,13 @@ components:
           description: "The decoded body size of the entry"
         serverTiming:
           type: "array"
-          items: 
+          items:
             type: "string"
             example: ""
           description: "The server timing of the entry"
         workerTiming:
           type: "array"
-          items: 
+          items:
             type: "string"
             example: ""
           description: "The worker timing of the entry"
@@ -2979,7 +3025,7 @@ components:
     FrontendLogEntryLCP:
       type: "object"
       properties:
-        name: 
+        name:
           type: "string"
           example: ""
           description: "The name of the entry"
@@ -2997,7 +3043,7 @@ components:
           format: "double"
           example: 0
           description: "The duration of the entry"
-        size: 
+        size:
           type: "integer"
           format: "int64"
           example: 867
@@ -3017,7 +3063,7 @@ components:
           format: "double"
           example: 0
           description: "The frame time for the first animation"
-        id: 
+        id:
           type: "string"
           example: ""
           description: "The id of the entry"
@@ -3031,31 +3077,31 @@ components:
       type: "object"
     FrontendLog:
       type: "object"
-      required: 
-      - "name"
-      - "value"
-      - "rating"
-      - "delta"
-      - "entries"
-      - "id"
-      - "navigationType"
-      properties: 
+      required:
+        - "name"
+        - "value"
+        - "rating"
+        - "delta"
+        - "entries"
+        - "id"
+        - "navigationType"
+      properties:
         name:
           type: "string"
           example: "FCP"
           description: "Name of the log data"
           enum: ["FCP", "TTFB", "CLS", "LCP", "FID", "INP"]
-        value: 
+        value:
           type: "number"
           format: "double"
           example: 3957.6999999284744
           description: "Value of the log data"
-        rating: 
+        rating:
           type: "string"
           example: "poor"
           description: "Rating of the log data"
           enum: ["good", "needs-improvement", "poor"]
-        delta: 
+        delta:
           type: "number"
           format: "double"
           example: 3957.6999999284744
@@ -3064,13 +3110,13 @@ components:
           type: "array"
           description: "A frontend log data entry"
           items:
-            anyOf: 
-              - $ref: '#/components/schemas/FrontendLogEntryFCP'
-              - $ref: '#/components/schemas/FrontendLogEntryTTFB'
-              - $ref: '#/components/schemas/FrontendLogEntryCLS'
-              - $ref: '#/components/schemas/FrontendLogEntryLCP'
-              - $ref: '#/components/schemas/FrontendLogEntryFID'
-              - $ref: '#/components/schemas/FrontendLogEntryINP'
+            anyOf:
+              - $ref: "#/components/schemas/FrontendLogEntryFCP"
+              - $ref: "#/components/schemas/FrontendLogEntryTTFB"
+              - $ref: "#/components/schemas/FrontendLogEntryCLS"
+              - $ref: "#/components/schemas/FrontendLogEntryLCP"
+              - $ref: "#/components/schemas/FrontendLogEntryFID"
+              - $ref: "#/components/schemas/FrontendLogEntryINP"
         id:
           type: "string"
           example: "v3-1665068191217-4248786867866"
@@ -3079,7 +3125,14 @@ components:
           type: "string"
           example: "navigate"
           description: "The navigation type of the log data"
-          enum: ["navigate", "reload", "back-forward", "back-forward-cache", "prerender"]
+          enum:
+            [
+              "navigate",
+              "reload",
+              "back-forward",
+              "back-forward-cache",
+              "prerender",
+            ]
     GeneralError:
       type: "object"
       properties:
@@ -3092,7 +3145,7 @@ components:
       items:
         type: "object"
         properties:
-          question_id: 
+          question_id:
             type: "string"
             example: "vv_1_f3"
             description: "The ID of the question from the ILS and the number of the question in the questionnaire"
@@ -3110,19 +3163,19 @@ components:
         learning_style:
           type: "array"
           items:
-            $ref: '#/components/schemas/LearningStyle'
+            $ref: "#/components/schemas/LearningStyle"
         learning_strategy:
           type: "array"
           items:
-            $ref: '#/components/schemas/LearningStrategy'
+            $ref: "#/components/schemas/LearningStrategy"
         knowledge:
           type: "array"
           items:
-            $ref: '#/components/schemas/Knowledge'
+            $ref: "#/components/schemas/Knowledge"
         learning_analytics:
           type: "array"
           items:
-            $ref: '#/components/schemas/LearningAnalytics'
+            $ref: "#/components/schemas/LearningAnalytics"
     LearningElement:
       type: "object"
       properties:
@@ -3225,7 +3278,7 @@ components:
         learning_elements:
           type: "array"
           items:
-            $ref: '#/components/schemas/LearningElementStudent'
+            $ref: "#/components/schemas/LearningElementStudent"
     LearningElementsPath:
       type: "array"
       items:
@@ -3237,7 +3290,7 @@ components:
             example: 1
             description: "The position of the learning element within the path"
           learning_element:
-            $ref: '#/components/schemas/LearningElementStudent'
+            $ref: "#/components/schemas/LearningElementStudent"
     LearningElementVisit:
       type: "object"
       properties:
@@ -3304,7 +3357,7 @@ components:
           type: "number"
           format: "double"
           example: -9.5
-          description: "The minimum of the perception dimension"  
+          description: "The minimum of the perception dimension"
         perception_max:
           type: "number"
           format: "double"
@@ -3319,7 +3372,7 @@ components:
           type: "number"
           format: "double"
           example: -9.5
-          description: "The minimum of the input dimension"  
+          description: "The minimum of the input dimension"
         input_max:
           type: "number"
           format: "double"
@@ -3334,7 +3387,7 @@ components:
           type: "number"
           format: "double"
           example: -9.5
-          description: "The minimum of the processing dimension"  
+          description: "The minimum of the processing dimension"
         processing_max:
           type: "number"
           format: "double"
@@ -3349,7 +3402,7 @@ components:
           type: "number"
           format: "double"
           example: -9.5
-          description: "The minimum of the understanding dimension"  
+          description: "The minimum of the understanding dimension"
         understanding_max:
           type: "number"
           format: "double"
@@ -3365,23 +3418,23 @@ components:
         access_logs:
           type: "array"
           items:
-            $ref: '#/components/schemas/AccessLog'
+            $ref: "#/components/schemas/AccessLog"
         frontend_logs:
           type: "array"
           items:
-            $ref: '#/components/schemas/FrontendLog'
+            $ref: "#/components/schemas/FrontendLog"
         main_logs:
           type: "array"
           items:
-            $ref: '#/components/schemas/MainLog'
+            $ref: "#/components/schemas/MainLog"
         error_logs:
           type: "array"
           items:
-            $ref: '#/components/schemas/ErrorLog'
+            $ref: "#/components/schemas/ErrorLog"
         system_logs:
           type: "array"
           items:
-            $ref: '#/components/schemas/SystemLog'
+            $ref: "#/components/schemas/SystemLog"
     MainLog:
       type: "object"
       properties:
@@ -3420,22 +3473,37 @@ components:
       type: "object"
       properties:
         ils:
-          $ref: '#/components/schemas/IlsQuestionnaire'
+          $ref: "#/components/schemas/IlsQuestionnaire"
         list_k:
-          $ref: '#/components/schemas/ListKQuestionnaire'
+          $ref: "#/components/schemas/ListKQuestionnaire"
     Settings:
       type: "object"
       required:
-      - "password"
+        - "password"
       properties:
         theme:
           type: "array"
           items:
-            $ref: '#/components/schemas/Theme'
+            $ref: "#/components/schemas/Theme"
         password:
           type: "string"
           example: "password"
           description: "The password of the User"
+    ContactForm:
+      type: "object"
+      properties:
+        report_topic:
+          type: "string"
+          example: "Lernelement / UI / Design / Sonstiges"
+          description: "The topic of the report"
+        report_type:
+          type: "string"
+          example: "Problem / Fehler / Bewertung / Funktionalität / Sonstiges"
+          description: "The type of the report"
+        report_description:
+          type: "string"
+          example: "Das Lernelement ist nicht verständlich"
+          description: "The description of the report"
     SystemLog:
       type: "object"
       properties:
@@ -3597,7 +3665,7 @@ components:
         topics:
           type: "array"
           items:
-            $ref: '#/components/schemas/TopicStudent'
+            $ref: "#/components/schemas/TopicStudent"
     TopicsPath:
       type: "array"
       items:
@@ -3609,7 +3677,7 @@ components:
             example: 1
             description: "The position of the topic within the path"
           topic:
-            $ref: '#/components/schemas/TopicStudent'
+            $ref: "#/components/schemas/TopicStudent"
     TopicVisit:
       type: "object"
       properties:
@@ -3626,10 +3694,10 @@ components:
     User:
       type: "object"
       required:
-      - "name"
-      - "university"
-      - "lms_user_id"
-      - "role"
+        - "name"
+        - "university"
+        - "lms_user_id"
+        - "role"
       properties:
         id:
           type: "number"
@@ -3655,8 +3723,8 @@ components:
           description: "The role the User has in the System"
         settings:
           type: "array"
-          items: 
-            $ref: '#/components/schemas/Settings'
+          items:
+            $ref: "#/components/schemas/Settings"
     UsersList:
       type: "array"
       items:

@@ -54,6 +54,8 @@ class AbstractUnitOfWork(abc.ABC):
         repository.AbstractRepository
     settings:\
         repository.AbstractRepository
+    contact_form:\
+        repository.AbstractRepository
     student:\
         repository.AbstractRepository
     student_course:\

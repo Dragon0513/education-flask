@@ -2075,6 +2075,32 @@ def get_settings_for_user(
             result = settings[0].serialize()
         return result
 
+def create_contact_form(
+        uow: unit_of_work.AbstractUnitOfWork,
+        user_id,
+        lms_user_id,
+        report_topic,
+        report_type,
+        report_description,
+        date
+) -> dict:
+    with uow:
+        user = get_user_by_id(uow, user_id, lms_user_id)
+        if user == {}:
+            result = None
+        else:
+            contact_form = UA.ContactForm(
+                user_id,
+                report_topic,
+                report_type,
+                report_description,
+                date
+            )
+            uow.contact_form.create_contact_form(contact_form)
+            uow.commit()
+            result = contact_form.serialize()
+        return result
+    
 
 def get_user_by_id(
         uow: unit_of_work.AbstractUnitOfWork,

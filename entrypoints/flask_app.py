@@ -1118,6 +1118,33 @@ def get_settings_by_user_id(user_id, lms_user_id):
             status_code = 200
             return jsonify(settings), status_code
 
+@app.route("/user/<user_id>/<lms_user_id>/contactform",
+              methods=['POST'])
+@cross_origin(supports_credentials=True)
+def contact_form(user_id, lms_user_id):
+    method = request.method
+    match method:
+        case 'POST':
+            condition1 = request.json is not None
+            condition2 = 'report_type' in request.json
+            condition3 = 'report_topic' in request.json
+            condition4 = 'report_description' in request.json
+            if condition1 and condition2 and condition3 and condition4:
+                result = services.create_contact_form(
+                    unit_of_work.SqlAlchemyUnitOfWork(),
+                    user_id,
+                    lms_user_id,
+                    request.json['report_type'],
+                    request.json['report_topic'],
+                    request.json['report_description']
+                )
+                if result is None:
+                    raise err.ContactFormError()
+                status_code = 201
+                return jsonify(result), status_code
+            else:
+                raise err.MissingParameterError()
+
 
 # Log Endpoints
 @app.route("/logs/frontend", methods=['POST'])

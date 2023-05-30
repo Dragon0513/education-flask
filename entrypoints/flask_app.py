@@ -1,3 +1,4 @@
+import datetime
 from flask import Flask, jsonify, request
 from service_layer import services, unit_of_work
 from repositories import orm
@@ -1136,7 +1137,8 @@ def contact_form(user_id, lms_user_id):
                     lms_user_id,
                     request.json['report_type'],
                     request.json['report_topic'],
-                    request.json['report_description']
+                    request.json['report_description'],
+                    datetime.datetime.now()
                 )
                 if result is None:
                     raise err.ContactFormError()

@@ -152,6 +152,8 @@ class SqlAlchemyUnitOfWork(AbstractUnitOfWork):  # pragma: no cover
             repository.SqlAlchemyRepository(self.session)
         self.settings =\
             repository.SqlAlchemyRepository(self.session)
+        self.contact_form =\
+            repository.SqlAlchemyRepository(self.session)
         self.student =\
             repository.SqlAlchemyRepository(self.session)
         self.student_course =\

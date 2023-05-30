@@ -41,6 +41,7 @@ cursor = conn.cursor()
 # Droping table if already exists.
 cursor.execute("DROP TABLE IF EXISTS haski_user")
 cursor.execute("DROP TABLE IF EXISTS settings")
+cursor.execute("DROP TABLE IF EXISTS contact_form")
 cursor.execute("DROP TABLE IF EXISTS admin")
 cursor.execute("DROP TABLE IF EXISTS course_creator")
 cursor.execute("DROP TABLE IF EXISTS teacher")
@@ -125,7 +126,7 @@ sql = '''
         report_topic text COLLATE pg_catalog."default",
         report_type text COLLATE pg_catalog."default",
         report_description text COLLATE pg_catalog."default",
-        date date NOT NULL,
+        date timestamp without time zone NOT NULL,
         CONSTRAINT contact_form_pkey PRIMARY KEY (id),
         CONSTRAINT user_id FOREIGN KEY (user_id)
             REFERENCES public."haski_user" (id) MATCH SIMPLE

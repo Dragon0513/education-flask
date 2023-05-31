@@ -1622,6 +1622,13 @@ def test_get_settings_for_user():
     assert type(result) == dict
     assert result != {}
 
+def test_create_contact_form():
+    uow = FakeUnitOfWork()
+    create_student_for_tests(uow)
+    result = services.create_contact_form(uow,1,"Lernelement","Funktionalität","Test")
+    assert type(result) == dict
+    assert result != {}
+
 
 def test_update_user():
     uow = FakeUnitOfWork()

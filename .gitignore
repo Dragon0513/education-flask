@@ -10,3 +10,4 @@ coverage.xml
 keys/private.pem
 keys/public.pem
 .vscode/settings.json
+.flaskenv

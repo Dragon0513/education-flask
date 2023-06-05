@@ -237,7 +237,7 @@ class OIDCLoginFlask(OIDCLogin):
             return make_response(self._response)
         
         role = RoleMapper(token['https://purl.imsglobal.org/spec/lti/claim/roles']).get_role().lower()
-        cookie_expiration = 20 # 1 Minutes
+        cookie_expiration = 43200 # 1 Minutes
         state_jwt = JWTKeyManagement.generate_state_jwt(nonce=CryptoRandom.createuniqueid(32), 
                                                         state=CryptoRandom.createuniqueid(32), 
                                                         audience=self._request.referrer, 

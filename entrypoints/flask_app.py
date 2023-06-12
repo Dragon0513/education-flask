@@ -1124,28 +1124,30 @@ def get_settings_by_user_id(user_id, lms_user_id):
 @cross_origin(supports_credentials=True)
 def contact_form(user_id, lms_user_id):
     method = request.method
-    match method:
-        case 'POST':
-            condition1 = request.json is not None
-            condition2 = 'report_type' in request.json
-            condition3 = 'report_topic' in request.json
-            condition4 = 'report_description' in request.json
-            if condition1 and condition2 and condition3 and condition4:
-                result = services.create_contact_form(
-                    unit_of_work.SqlAlchemyUnitOfWork(),
-                    user_id,
-                    lms_user_id,
-                    request.json['report_type'],
-                    request.json['report_topic'],
-                    request.json['report_description'],
-                    datetime.datetime.now()
-                )
-                if result is None:
-                    raise err.ContactFormError()
-                status_code = 201
-                return jsonify(result), status_code
-            else:
-                raise err.MissingParameterError()
+
+    if request.json is None:
+        raise err.MissingParameterError()
+    
+    for el in ['report_type', 'report_topic', 'report_description']:
+        if el not in request.json:
+            raise err.MissingParameterError()
+    
+    result = services.create_contact_form(
+        unit_of_work.SqlAlchemyUnitOfWork(),
+        user_id,
+        lms_user_id,
+        request.json['report_type'],
+        request.json['report_topic'],
+        request.json['report_description'],
+        datetime.datetime.now()
+    )
+
+    if result is None:
+        raise err.ContactFormError()
+    
+    status_code = 201
+    return jsonify(result), status_code
+
 
 
 # Log Endpoints

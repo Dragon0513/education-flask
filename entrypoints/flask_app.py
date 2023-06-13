@@ -5,8 +5,6 @@ import errors as err
 from flask_cors import CORS, cross_origin
 import re
 from utils import constants as cons
-from utils.auth.auth import authorize
-from utils.auth.permissions import Permissions
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
@@ -42,7 +40,6 @@ def handle_exception(err):
 # User Administration via LMS
 @app.route("/lms/user", methods=['POST'])
 @cross_origin(supports_credentials=True)
-@authorize(Permissions.ADMIN)
 def create_user():
     method = request.method
     match method:

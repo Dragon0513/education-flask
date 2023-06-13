@@ -3,7 +3,7 @@ import errors as err
 from flask import request
 from werkzeug.exceptions import Unauthorized
 from service_layer.crypto.JWTKeyManagement import JWTKeyManagement
-from permissions import Permissions
+from utils.auth.permissions import Permissions
 
 
 def authorize(required_permissions: list[Permissions]):

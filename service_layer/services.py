@@ -1,5 +1,4 @@
 from flask.wrappers import Request
-from urllib.request import Request
 
 from flask import Response, make_response
 from service_layer import unit_of_work
@@ -2397,7 +2396,7 @@ def get_lti_launch(request: Request, tool_conf, session):
     return oidc_login.verify_state().verify_id_token().lti_launch_from_id_token() or Response("Error", status=500)
 
 
-def get_login(request: Request, tool_conf, session):
+def get_login(request, tool_conf, session):
     ''' Return cookie value or None'''
     oidc_login = OIDCLoginFlask(request, tool_conf, session=session)
     return oidc_login.get_login() or None

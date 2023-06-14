@@ -12,7 +12,7 @@ class OIDCLogin(ABC):
         self._tool_config = tool_config
         
     @abstractmethod
-    def check_params(self):
+    def check_params(self) -> 'OIDCLogin':
         pass
 
     @abstractmethod

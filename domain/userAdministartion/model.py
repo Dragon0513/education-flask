@@ -106,6 +106,7 @@ class Settings():
             'pswd': self.pswd
         }
 
+
 class ContactForm():
     def __init__(self,
                  user_id,
@@ -118,6 +119,7 @@ class ContactForm():
         self.report_type = report_type,
         self.report_description = report_description,
         self.date = date
+
     def serialize(self):
         return {
             'id': self.id,

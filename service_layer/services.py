@@ -2075,6 +2075,7 @@ def get_settings_for_user(
             result = settings[0].serialize()
         return result
 
+
 def create_contact_form(
         uow: unit_of_work.AbstractUnitOfWork,
         user_id,
@@ -2100,7 +2101,7 @@ def create_contact_form(
             uow.commit()
             result = contact_form.serialize()
         return result
-    
+
 
 def get_user_by_id(
         uow: unit_of_work.AbstractUnitOfWork,

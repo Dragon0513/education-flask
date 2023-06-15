@@ -2,10 +2,12 @@ class MissingParameterError(Exception):
     code = 400
     description = "Missing parameters in request."
 
+
 class ContactFormError(Exception):
     code = 400
     description = "The Contact Form could not be created."
-    
+
+
 class WrongLearningStyleDimensionError(Exception):
     code = 400
     description = "The Input Learning Style is out the range [0-11]."

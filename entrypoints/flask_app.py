@@ -1121,7 +1121,7 @@ def get_settings_by_user_id(user_id, lms_user_id):
 
 
 @app.route("/user/<user_id>/<lms_user_id>/contactform",
-            methods=['POST'])
+           methods=['POST'])
 @cross_origin(supports_credentials=True)
 def contact_form(user_id, lms_user_id):
     method = request.method

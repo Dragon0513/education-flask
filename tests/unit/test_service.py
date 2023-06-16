@@ -1217,6 +1217,16 @@ def create_learning_element_for_tests_2(uow):
     )
 
 
+def create_contact_form_for_tests(uow):
+    services.create_contact_form(
+        uow=uow,
+        user_id=1,
+        report_topic="Lernelement",
+        report_type="Funktionalität",
+        report_description="Test"
+    )
+
+
 def create_course_topic_for_tests(uow):
     services.create_course_topic(
         uow=uow,
@@ -1623,13 +1633,15 @@ def test_get_settings_for_user():
     assert result != {}
 
 
-def test_create_contact_form():
+def test_contact_form():
     uow = FakeUnitOfWork()
     create_student_for_tests(uow)
+    create_contact_form_for_tests(uow)
     result = services.create_contact_form(uow, 1,
                                           "Lernelement",
                                           "Funktionalität",
-                                          "Test")
+                                          "Test"
+                                          )
     assert type(result) == dict
     assert result != {}
 

@@ -55,30 +55,15 @@ def handle_custom_exception(ex):
     return response, 500
 
 
-def authorize(role):
-    '''🔑 Decorator for checking if user has the required permission to access the endpoint'''
-    def decorator(f):
-        @wraps(f)
-        def decorated_function(*args, **kws):
-            state_jwt = request.cookies.get('haski_state')
-            if state_jwt is None:
-                raise err.StateNotMatchingError()
+@app.errorhandler(err.AException)
+def handle_custom_exception(ex: err.AException):
+    response = json.dumps(
+        {'error': ex.__class__.__name__, 'message': ex.message})
+    return response, ex.status_code
 
-            if not JWTKeyManagement.verify_jwt_payload(JWTKeyManagement.verify_jwt(state_jwt), verify_nonce=False):
-                raise err.UnauthorizedError()
-            state = JWTKeyManagement.verify_jwt(state_jwt)
-            if 'role' not in state:
-                raise err.UnauthorizedError()
-            if role not in state['role']:
-                raise err.UnauthorizedError()
 
-            return f(state, *args, **kws)
-        return decorated_function
-    return decorator
 
 # ##### TEST ENDPOINT #####
-
-
 @app.route("/lms/user_from_cookie", methods=['GET'])
 @cross_origin(supports_credentials=True)
 def get_user_info():
@@ -87,7 +72,9 @@ def get_user_info():
     if state_jwt is None:
         raise err.StateNotMatchingError()
 
-    if not JWTKeyManagement.verify_jwt_payload(JWTKeyManagement.verify_jwt(state_jwt), verify_nonce=False):
+    if not JWTKeyManagement.verify_jwt_payload(
+            JWTKeyManagement.verify_jwt(state_jwt),
+            verify_nonce=False):
         raise err.UnauthorizedError()
     state = JWTKeyManagement.verify_jwt(state_jwt)
     match method:
@@ -98,7 +85,7 @@ def get_user_info():
             )
             status_code = 200
             return jsonify(user), status_code
-        
+
 
 # User Administration via LMS
 
@@ -317,8 +304,9 @@ def logout():
 @cross_origin(supports_credentials=True)
 def lti_launch_view():
     response = make_response()
-    response.data = json.dumps({'lti_launch_view': tool_conf.get_haski_activity_url(
-        os.environ.get('LMS_URL', "https://moodle.haski.app"))})
+    response.data = json.dumps(
+        {'lti_launch_view': tool_conf.get_haski_activity_url(
+            os.environ.get('LMS_URL', "https://moodle.haski.app"))})
     return response
 
 # Login with username and password
@@ -1207,6 +1195,8 @@ def get_learning_path(
 #             return jsonify(result), status_code
 
 # User Endpoints
+
+
 @app.route("/user/<user_id>/<lms_user_id>", methods=['GET'])
 @cross_origin(supports_credentials=True)
 def user_by_user_id(user_id, lms_user_id):

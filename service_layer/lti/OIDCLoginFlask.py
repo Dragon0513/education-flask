@@ -283,9 +283,11 @@ class OIDCLoginFlask(OIDCLogin):
             # TODO 🧾 redirect to login
             return self._response
 
-        role = RoleMapper(
-            token['https://purl.imsglobal.org/spec/lti/claim/roles']).get_role().lower()
-        cookie_expiration = 43200  # Minutes
+        role_mapper = RoleMapper(
+            token['https://purl.imsglobal.org/spec/lti/claim/roles'])
+        role = role_mapper.get_role().lower()
+        permissions = role_mapper.get_permissions()
+        cookie_expiration = 43200  # 30 days
         state_jwt = JWTKeyManagement.generate_state_jwt(
             nonce=CryptoRandom.createuniqueid(32),
             state=CryptoRandom.createuniqueid(32),
@@ -297,7 +299,8 @@ class OIDCLoginFlask(OIDCLogin):
                                'lms_user_id': user['lms_user_id'],
                                'university': user['university'],
                                'role': role, 'role_id': user['role_id'],
-                               'session_nonce': nonce_payload['nonce']})
+                               'session_nonce': nonce_payload['nonce'],
+                               'permissions': [permission.value for permission in permissions]})
         response = Response(
             response=json.dumps({
                 # UNIX time

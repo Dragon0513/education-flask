@@ -1,7 +1,8 @@
+import json
 import unittest
 from unittest.mock import patch, MagicMock
 from flask import Flask
-from werkzeug.exceptions import Unauthorized
+import errors.errors as err
 from utils.auth.permissions import Permissions
 from utils.auth.auth import authorize
 import service_layer.crypto.JWTKeyManagement as JWTKeyManagement
@@ -47,6 +48,12 @@ class TestAuthorizeDecorator(unittest.TestCase):
                 @authorize([Permissions.READ])
                 def test_route(state):
                     return 'Success'
+
+                @self.app.errorhandler(err.AException)
+                def handle_custom_exception(ex: err.AException):
+                    response = json.dumps(
+                        {'error': str(ex), 'message': ex.message})
+                    return response, ex.status_code
 
                 # Make a request with an invalid JWT
                 c = self.app.test_client()

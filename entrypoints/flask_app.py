@@ -17,15 +17,11 @@ import service_layer.crypto.JWTKeyManagement as JWTKeyManagement
 
 
 app = Flask(__name__)
-# import secret key from environment variable
-app.secret_key = os.environ.get('SECRET_KEY')
 CORS(app, supports_credentials=True)
 orm.start_mappers()
 cache = Cache(app)
 tool_conf = ToolConfigJson(os.path.abspath(
     os.path.join(app.root_path, '../configs/lti_config.json')))
-app.config["JWT_SECRET_KEY"] = app.secret_key
-app.config["JWT_ALGORITHM"] = "RSA256"
 
 
 mocked_frontend_log = {"logs": [{
@@ -60,7 +56,6 @@ def handle_custom_exception(ex: err.AException):
     response = json.dumps(
         {'error': ex.__class__.__name__, 'message': ex.message})
     return response, ex.status_code
-
 
 
 # ##### TEST ENDPOINT #####

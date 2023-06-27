@@ -322,10 +322,9 @@ class OIDCLoginFlask(OIDCLogin):
         return response
 
     def get_logout(self) -> Response:
-        self._response = jsonify({'status': 200})
         domain = urllib.parse.urlparse(self._request.referrer).hostname
         self._cookie_service.set_cookie(
             response=self._response, key='haski_state', value="", secure=False,
             httponly=True, samesite='Lax', max_age=0, domain=domain)
 
-        return self._response
+        return '', 204

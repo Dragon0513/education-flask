@@ -31,7 +31,7 @@ class OIDCLoginFlask(OIDCLogin):
             'target_link_uri', 'lti_deployment_id'}
         super(OIDCLoginFlask, self).__init__(request, tool_config)
 
-    def check_params(self) -> OIDCLogin:
+    def check_params(self) -> 'OIDCLoginFlask':
         # Check if all parameters are present
         try:
             if not self.oidc_login_params.issubset(self._request.form.keys()):
@@ -126,21 +126,21 @@ class OIDCLoginFlask(OIDCLogin):
             If the state parameter is not valid, the request is rejected with a 403 Forbidden response.
         '''
         # 🔑 check auth
-        if self._response:
-            return self
 
         # Verify the state parameter
         if not self._request.form.get('state'):
-            self._response = {'error': 'No state found'}, 403
-            return self
+            raise err.ErrorException(
+                message="No state found", status_code=403)
 
         # verify state paramter signature
         state_form_jwt = self._request.form.get('state', type=str) or ''
         state_form = JWTKeyManagement.verify_jwt(state_form_jwt)
-        assert(JWTKeyManagement.verify_state_jwt_payload(state_form))
         if not state_form:
-            self._response = {'error': 'Invalid state signature'}, 403
-            return self
+            raise err.ErrorException(
+                message="Invalid state signature", status_code=403)
+        if not JWTKeyManagement.verify_state_jwt_payload(state_form):
+            raise err.ErrorException(
+                message="Invalid state payload", status_code=403)
 
         return self
 
@@ -148,39 +148,39 @@ class OIDCLoginFlask(OIDCLogin):
         ''' Verify the id_token
             If the id_token is not valid, the request is rejected with a 403 Forbidden response.
         '''
-        # check auth
-        if self._response:
-            return self
 
         # check if error in request
         if self._request.form.get('error'):
-            self._response = {'error': self._request.form.get('error')}, 400
+            raise err.ErrorException(
+                message=self._request.form.get('error'), status_code=400)
         if not self._request.form.get('id_token'):
-            self._response = {'error': 'No id_token found'}, 400
+            raise err.ErrorException(
+                message="No id_token found", status_code=400)
 
         # Decode the id_token
         id_token_jwt = self._request.form.get('id_token', type=str) or ''
         if not id_token_jwt:
-            self._response = "Invalid id_token, crypto key signature or lti config data of LMS may have changed", 400
-            return self
+            raise err.ErrorException(
+                message="Invalid id_token, crypto key signature or lti config data of LMS may have changed",
+                status_code=400)
+
         id_token_header_unverified = JWTKeyManagement.get_unverified_header(
             id_token_jwt)
         id_token_unverified = JWTKeyManagement.load_jwt(id_token_jwt)
 
         platform = self._tool_config.get_platform(id_token_unverified['iss'])
-        print(id_token_header_unverified)
         hmac_key: str = next(
             (key for key in platform['key_set']['keys']
              if key['kid'] == id_token_header_unverified['kid']),
             "")
         if not hmac_key:  # TODO try to get new keys, if that fails return error
-            self._response = {'error': "Invalid decryption key"}, 400
-            return self
+            raise err.ErrorException(
+                message="Invalid decryption key", status_code=400)
         self.id_token = JWTKeyManagement.verify_jwt(
             id_token_jwt, JWTKeyManagement.construct_key(hmac_key))
         if not self.id_token:
-            self._response = {'error': "Invalid id_token signature"}, 403
-            return self
+            raise err.ErrorException(
+                message="Invalid id_token signature", status_code=403)
         try:
             # TODO🧾 parse token and write into structures
             self.id_token = LTIIDToken(**self.id_token)
@@ -188,26 +188,28 @@ class OIDCLoginFlask(OIDCLogin):
                 self.id_token.nonce, 'id_token', self.id_token)
         except Exception as e:
             self._response = {'error': "Invalid id_token"}, 403
-            return self
+            raise err.ErrorException(
+                e,
+                message="Invalid id_token", status_code=403)
 
         return self
 
     def lti_launch_from_id_token(self) -> Response:
-        # check if error in state
-        if self._response:
-            return make_response(self._response)
-
+        ''' Launch LTI from id_token. Redirects to Frontend with nonce jwt in URL.
+        '''
         # state from form
         state_form_jwt = self._request.form.get('state', type=str) or ''
         state_form = JWTKeyManagement.verify_jwt(state_form_jwt)
-        assert(JWTKeyManagement.verify_state_jwt_payload(state_form))
+        if not JWTKeyManagement.verify_state_jwt_payload(state_form):
+            raise err.ErrorException(
+                message="Invalid state payload", status_code=403)
 
-        # generate nonce to obtain cookie
+        # generate nonce to obtain cookie in next request
         nonce_jwt = JWTKeyManagement.generate_nonce_jwt(
             self.id_token.nonce, self._request.referrer, os.environ.get(
                 'BACKEND_URL', 'https://backend.haski.app'))
         SessionServiceFlask.set(self.id_token.nonce, 'nonce_jwt', nonce_jwt)
-        # get platform
+        # get platform from origin
         try:
             self._platform = self._tool_config.decode_platform(
                 self._tool_config.get_platform(
@@ -253,41 +255,41 @@ class OIDCLoginFlask(OIDCLogin):
 
         return response
 
-    def get_login(self):
+    def get_cookie_expiration(self) -> Response:
         # verify nonce jwt in request
         json_data = self._request.get_json() or {}
         if not json_data.get('nonce'):
-            self._response = {'error': "No nonce found"}, 403
-            return self._response
+            raise err.ErrorException(
+                message="No nonce found", status_code=403)
         nonce_jwt = json_data['nonce'] or ''
         nonce_payload = JWTKeyManagement.verify_jwt(nonce_jwt)
         if not nonce_payload:
-            self._response = {"error": "Invalid nonce signature"}, 403
-            return self._response
+            raise err.ErrorException(
+                message="Invalid nonce signature", status_code=403)
 
         if not JWTKeyManagement.verify_jwt_payload(nonce_payload):
-            self._response = {"error": "Invalid nonce"}, 403
-            return self._response
+            raise err.ErrorException(
+                message="Invalid nonce payload", status_code=403)
         # TODO🧾 this cookie holds authorization data. implement right and role management
         # use session service id_token to get user data and write into cookie, create new user if not exist
 
         # get user based on id_token
         token = SessionServiceFlask.get(nonce_payload['nonce'], 'id_token')
         if not token:
-            self._response = {"error": "Invalid nonce"}, 403
-            return self._response
+            raise err.ErrorException(
+                message="Invalid nonce", status_code=403)
 
         user = SessionServiceFlask.get(nonce_payload['nonce'], 'user')
         if not user:
-            self._response = {"error": "Invalid state"}, 403
-            # TODO 🧾 redirect to login
-            return self._response
+            # TODO 🧾 maybe redirect to login?
+            raise err.ErrorException(
+                message="Invalid state", status_code=403)
 
         role_mapper = RoleMapper(
             token['https://purl.imsglobal.org/spec/lti/claim/roles'])
         role = role_mapper.get_role().lower()
         permissions = role_mapper.get_permissions()
-        cookie_expiration = 43200  # 30 days
+        cookie_expiration = 43200  # 30 days TODO 🧾 get from config
         state_jwt = JWTKeyManagement.generate_state_jwt(
             nonce=CryptoRandom.createuniqueid(32),
             state=CryptoRandom.createuniqueid(32),
@@ -301,6 +303,7 @@ class OIDCLoginFlask(OIDCLogin):
                                'role': role, 'role_id': user['role_id'],
                                'session_nonce': nonce_payload['nonce'],
                                'permissions': [permission.value for permission in permissions]})
+        # response object to attach a cookie
         response = Response(
             response=json.dumps({
                 # UNIX time
@@ -311,9 +314,10 @@ class OIDCLoginFlask(OIDCLogin):
         )
         # set 🔑 auth 🍪 cookie
         domain = urllib.parse.urlparse(self._request.referrer).hostname
+        secure = True if self._request.referrer.startswith('https') else False
         self._cookie_service.set_cookie(
             response=response, key='haski_state', value=state_jwt,
-            secure=False, httponly=True, samesite='Lax',
+            secure=secure, httponly=True, samesite='Lax',
             max_age=cookie_expiration, domain=domain)
         return response
 

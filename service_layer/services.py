@@ -1671,8 +1671,8 @@ def get_learning_path(
 #         err.DatabaseQueryError(message="No student found for user id: " + str(user_id))
 #     topic: DM.Topic = uow.get_topic_by_lms_id_and_university_and_parent_id(uow, topic_lms_id, university_string, None)[0]
 #     topic_learning_path: TM.LearningPath = uow.get_topic_learning_path_by_student_id_and_course_id_and_topic_id(uow, student.id, course.id, topic.id)[0]
-    
-    
+
+
 #         get_course_by_id(uow, user_id, lms_user_id, course_id)
 #         learning_path = uow.learning_path.get_learning_path(
 #             student_id,
@@ -2160,6 +2160,7 @@ def get_user_by_id(
             result = user[0].serialize()
         return result
 
+
 def get_user_by_lms_id(
     uow: unit_of_work.AbstractUnitOfWork,
     lms_user_id
@@ -2174,7 +2175,8 @@ def get_user_by_lms_id(
             user[0].role_id = None
             result = user[0].serialize()
         return result
-    
+
+
 def get_student_by_user_id(
     uow: unit_of_work.AbstractUnitOfWork,
     user_id
@@ -2191,7 +2193,7 @@ def get_student_by_user_id(
             student[0].role_id = None
             result = student[0].serialize()
         return result
-    
+
 
 def update_course(
         uow: unit_of_work.AbstractUnitOfWork,
@@ -2387,19 +2389,20 @@ def get_user_info(uow: unit_of_work.AbstractUnitOfWork, user_id: str) -> str:
 def get_oidc_login(request: Request, tool_conf, session):
     ''' Return OIDC login url or error response in case of wrong parameters, unsecure or request'''
     oidc_login = OIDCLoginFlask(request, tool_conf, session=session)
-    return oidc_login.check_params().auth_redirect() or Response("Error", status=500)
+    return oidc_login.check_params().auth_redirect()
 
 
 def get_lti_launch(request: Request, tool_conf, session):
-    ''' Return LTI launch data or error response in case of wrong parameters, unsecure or request'''
+    '''Craft nonce and state, store them in session and return\
+        LTI launch url to Frontend with nonce_jwt in url'''
     oidc_login = OIDCLoginFlask(request, tool_conf, session=session)
-    return oidc_login.verify_state().verify_id_token().lti_launch_from_id_token() or Response("Error", status=500)
+    return oidc_login.verify_state().verify_id_token().lti_launch_from_id_token()
 
 
 def get_login(request, tool_conf, session):
     ''' Return cookie value or None'''
     oidc_login = OIDCLoginFlask(request, tool_conf, session=session)
-    return oidc_login.get_login() or None
+    return oidc_login.get_cookie_expiration() or None
 
 
 def get_loginstatus(request: Request, tool_conf, session):

@@ -34,10 +34,6 @@ class OIDCLogin(ABC):
         pass
 
     @abstractmethod
-    def get_loginstatus(self):
-        pass
-
-    @abstractmethod
     def get_logout(self):
         pass
 

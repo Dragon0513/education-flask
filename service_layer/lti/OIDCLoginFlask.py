@@ -5,7 +5,7 @@ import urllib.parse
 from service_layer import services, unit_of_work
 import service_layer.crypto.JWTKeyManagement as JWTKeyManagement
 from errors import errors as err
-from flask import jsonify, redirect, make_response
+from flask import jsonify, redirect
 from flask.wrappers import Request
 from werkzeug.wrappers.response import Response
 from service_layer.crypto.cryptorandom import CryptoRandom
@@ -320,29 +320,6 @@ class OIDCLoginFlask(OIDCLogin):
             secure=secure, httponly=True, samesite='Lax',
             max_age=cookie_expiration, domain=domain)
         return response
-
-    def get_loginstatus(self):
-        # check if cookie exists
-        if not self._request.cookies.get('haski_state'):
-            self._response = jsonify(
-                {'message': 'No cookie found', 'status': 403})
-            return self._response
-
-        # verify state jwt in request cookie
-        state_jwt = self._request.cookies.get('haski_state')
-        if not state_jwt:
-            self._response = jsonify(
-                {'message': 'No state found', 'status': 403})
-            # TODO 🧾 redirect to login
-            return self._response
-        state_payload = JWTKeyManagement.verify_jwt(state_jwt)
-        if not state_payload:
-            self._response = jsonify({'error': 'Invalid state signature'}), 403
-            # TODO 🧾 redirect to login
-            return self._response
-        return jsonify(
-            {'status': 200, 'message': 'User is logged in',
-             'data': state_payload})
 
     def get_logout(self) -> Response:
         self._response = jsonify({'status': 200})

@@ -276,15 +276,7 @@ def lti_launch():
 def login():
     return services.get_login(request, tool_conf, session=session)
 
-# 4. Get login status if user is already logged in by using a valid cookie
-
-
-@app.route('/loginstatus', methods=['GET'])
-@cross_origin(supports_credentials=True)
-def loginstatus():
-
-    return services.get_loginstatus(request, tool_conf, session=session)
-# 5. Logout by deleting cookie
+# 4. Logout by deleting cookie
 
 
 @app.route('/logout', methods=['GET'])

@@ -2405,12 +2405,6 @@ def get_login(request, tool_conf, session):
     return oidc_login.get_cookie_expiration() or None
 
 
-def get_loginstatus(request: Request, tool_conf, session):
-    '''Return OK when logged in or None'''
-    oidc_login = OIDCLoginFlask(request, tool_conf, session=session)
-    return oidc_login.get_loginstatus() or None
-
-
 def get_logout(request: Request, tool_conf, session):
     ''' Return logout url or None'''
     oidc_login = OIDCLoginFlask(request, tool_conf, session=session)

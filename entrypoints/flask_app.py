@@ -290,11 +290,8 @@ def logout():
 @app.route('/lti_launch_view', methods=['GET'])
 @cross_origin(supports_credentials=True)
 def lti_launch_view():
-    response = make_response()
-    response.data = json.dumps(
-        {'lti_launch_view': tool_conf.get_haski_activity_url(
-            os.environ.get('LMS_URL', "https://moodle.haski.app"))})
-    return response
+    return {'lti_launch_view': tool_conf.get_haski_activity_url(
+            os.environ.get('LMS_URL', "https://moodle.haski.app"))}, 200
 
 # Login with username and password
 

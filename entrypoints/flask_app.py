@@ -258,7 +258,7 @@ def course_management(course_id, lms_course_id):
 @app.route('/lti_login', methods=['POST'])
 @cross_origin(supports_credentials=True)
 def lti_login():
-    return services.get_oidc_login(request, tool_conf, session=session)
+    return services.get_oidc_login(request, tool_conf)
 
 # 2. After the platform has verified the LTI launch request, it uses this endpoint to which we redirected
 
@@ -266,7 +266,7 @@ def lti_login():
 @app.route('/lti_launch', methods=['POST'])
 @cross_origin(supports_credentials=True)
 def lti_launch():
-    return services.get_lti_launch(request, tool_conf, session=session)
+    return services.get_lti_launch(request, tool_conf)
 
 # 3. Get cookie for frontend if end of OIDC Login workflow by using a short living valid nonce
 
@@ -274,7 +274,7 @@ def lti_launch():
 @app.route('/login', methods=['POST'])
 @cross_origin(supports_credentials=True)
 def login():
-    return services.get_login(request, tool_conf, session=session)
+    return services.get_login(request, tool_conf)
 
 # 4. Logout by deleting cookie
 
@@ -282,7 +282,7 @@ def login():
 @app.route('/logout', methods=['GET'])
 @cross_origin(supports_credentials=True)
 def logout():
-    return services.get_logout(request, tool_conf, session=session)
+    return services.get_logout(request, tool_conf)
 
 # Send the enpoint which launches the LTI tool to the frontend
 
@@ -292,14 +292,6 @@ def logout():
 def lti_launch_view():
     return {'lti_launch_view': tool_conf.get_haski_activity_url(
             os.environ.get('LMS_URL', "https://moodle.haski.app"))}, 200
-
-# Login with username and password
-
-
-@app.route('/login_credentials', methods=['POST'])
-@cross_origin(supports_credentials=True)
-def login_credentials():
-    return services.get_login_credentials(request, tool_conf, session=session)
 
 # ##### LOGGING ENDPOINTS #####
 

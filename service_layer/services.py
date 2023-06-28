@@ -2409,10 +2409,3 @@ def get_logout(request: Request, tool_conf):
     ''' Return logout url or None'''
     oidc_login = OIDCLoginFlask(request, tool_conf)
     return oidc_login.get_logout() or None
-
-
-def get_login_credentials(request: Request, tool_conf):
-    ''' Return login credentials or None'''
-    # TODO: implement
-    # response json
-    return make_response("OK", 200)

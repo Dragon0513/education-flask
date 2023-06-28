@@ -6,7 +6,6 @@ from service_layer.lti.lms.Platform import Platform
 
 class OIDCLogin(ABC):
     ''' Base class for OIDC login. Derive from this class and implement the abstract methods '''
-    _response = None
     _platform: Platform
 
     def __init__(self, request, tool_config: ToolConfigJson):

@@ -58,28 +58,6 @@ def handle_custom_exception(ex: err.AException):
     return response, ex.status_code
 
 
-# ##### TEST ENDPOINT #####
-@app.route("/lms/user_from_cookie", methods=['GET'])
-@cross_origin(supports_credentials=True)
-def get_user_info():
-    method = request.method
-    state_jwt = request.cookies.get('haski_state')
-    if state_jwt is None:
-        raise err.StateNotMatchingError()
-
-    if not JWTKeyManagement.verify_jwt_payload(
-            JWTKeyManagement.verify_jwt(state_jwt),
-            verify_nonce=False):
-        raise err.UnauthorizedError()
-    state = JWTKeyManagement.verify_jwt(state_jwt)
-    match method:
-        case 'GET':
-            user = services.get_student_by_user_id(
-                unit_of_work.SqlAlchemyUnitOfWork(),
-                state['user_id']
-            )
-            status_code = 200
-            return jsonify(user), status_code
 
 
 # User Administration via LMS
@@ -293,7 +271,31 @@ def lti_launch_view():
     return {'lti_launch_view': tool_conf.get_haski_activity_url(
             os.environ.get('LMS_URL', "https://moodle.haski.app"))}, 200
 
-# ##### LOGGING ENDPOINTS #####
+# Get user info from cookie
+@app.route("/lms/user_from_cookie", methods=['GET'])
+@cross_origin(supports_credentials=True)
+def get_user_info():
+    method = request.method
+    state_jwt = request.cookies.get('haski_state')
+    if state_jwt is None:
+        raise err.StateNotMatchingError()
+
+    if not JWTKeyManagement.verify_jwt_payload(
+            JWTKeyManagement.verify_jwt(state_jwt),
+            verify_nonce=False):
+        raise err.UnauthorizedError()
+    state = JWTKeyManagement.verify_jwt(state_jwt)
+    match method:
+        case 'GET':
+            user = services.get_student_by_user_id(
+                unit_of_work.SqlAlchemyUnitOfWork(),
+                state['user_id']
+            )
+            status_code = 200
+            return jsonify(user), status_code
+
+
+##### LOGGING ENDPOINTS #####
 
 
 @app.route("/lms/course/<course_id>/<lms_course_id>/topic",

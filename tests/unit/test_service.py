@@ -6,12 +6,14 @@ from domain.learnersModel import model as LM
 from domain.tutoringModel import model as TM
 from domain.domainModel import model as DM
 import time
+import datetime
 import errors as err
 
 
 class FakeRepository(repository.AbstractRepository):  # pragma: no cover
     def __init__(self,
                  admin=[],
+                 contact_form=[],
                  course=[],
                  course_creator=[],
                  course_creator_course=[],
@@ -46,6 +48,7 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
                  user=[],
                  ):
         self.admin = set(admin)
+        self.contact_form=set(contact_form)
         self.course = set(course)
         self.course_creator = set(course_creator)
         self.course_creator_course = set(course_creator_course)
@@ -949,6 +952,7 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
 class FakeUnitOfWork(unit_of_work.AbstractUnitOfWork):  # pragma: no cover
     def __init__(self):
         self.admin = FakeRepository()
+        self.contact_form=FakeRepository()
         self.course = FakeRepository()
         self.course_creator = FakeRepository()
         self.course_creator_course = FakeRepository()
@@ -1221,9 +1225,11 @@ def create_contact_form_for_tests(uow):
     services.create_contact_form(
         uow=uow,
         user_id=1,
+        lms_user_id=1,
         report_topic="Lernelement",
         report_type="Funktionalität",
-        report_description="Test"
+        report_description="Test",
+        date=datetime.datetime.now()
     )
 
 
@@ -1633,24 +1639,24 @@ def test_get_settings_for_user():
     assert result != {}
 
 
-def test_contact_form():
-    uow = FakeUnitOfWork()
-    create_student_for_tests(uow)
-    create_contact_form_for_tests(uow)
-    result = services.create_contact_form(uow, 1,
-                                          "Lernelement",
-                                          "Funktionalität",
-                                          "Test"
-                                          )
-    assert type(result) == dict
-    assert result != {}
-
-
 def test_update_user():
     uow = FakeUnitOfWork()
     create_student_for_tests(uow)
     result = services.update_user(
         uow, 1, 1, "Maria Musterfraun", university_example)
+    assert type(result) == dict
+    assert result != {}
+
+
+def test_create_contact_form():
+    uow = FakeUnitOfWork()
+    create_student_for_tests(uow)
+    result = services.create_contact_form(uow, 1, 1,
+                                          "Lernelement",
+                                          "Funktionalität",
+                                          "Test",
+                                          datetime.datetime.now()
+                                          )
     assert type(result) == dict
     assert result != {}
 

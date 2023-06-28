@@ -152,7 +152,7 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
-    def create_contact_form(self, contact_form)\
+    def create_contact_form(self, contact_form: UA.ContactForm)\
             -> UA.ContactForm:
         raise NotImplementedError
 
@@ -899,7 +899,7 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         except Exception:
             raise err.CreationError()
 
-    def create_contact_form(self, contact_form) -> UA.ContactForm:
+    def create_contact_form(self, contact_form:UA.ContactForm) -> UA.ContactForm:
         try:
             self.session.add(contact_form)
         except Exception:

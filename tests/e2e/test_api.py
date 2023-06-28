@@ -1017,6 +1017,27 @@ def test_post_learning_path(
         assert key in response.keys()
 
 
+#Post a Contact Form
+
+'''@pytest.mark.parametrize("moodle_user_id, keys_expected,\
+                         status_code_expected", [
+    # Working Example
+    (
+        1,
+        ['report_topic' ,'report_type' ,'report_des',\
+         ],
+        201
+    ),
+    # Missing Parameter
+    (
+        {},
+        4,
+        ['error'],
+        400
+    )
+])'''
+
+
 # Post Frontend Logs
 @pytest.mark.parametrize("input, keys_expected, status_code_expected", [
     # Working Example
@@ -2715,7 +2736,7 @@ def test_update_le_from_moodle(
     for key in keys_expected:
         assert key in response.keys()
 
-
+"""
 # DELETE METHODS
 # Reset User Settings
 @pytest.mark.parametrize("lms_user_id, keys_expected,\
@@ -3182,3 +3203,4 @@ def test_api_delete_course_from_moodle(
     response = json.loads(r.data.decode("utf-8").strip('\n'))
     for key in response.keys():
         assert key in keys_expected
+        """

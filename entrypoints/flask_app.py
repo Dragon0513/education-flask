@@ -1,10 +1,8 @@
-from functools import wraps
 import json
 import os
 from errors import errors as err
 
-from flask import Flask, jsonify, request, session
-from flask import make_response
+from flask import Flask, jsonify, request
 from flask_cors import CORS, cross_origin
 import re
 from utils import constants as cons
@@ -56,8 +54,6 @@ def handle_custom_exception(ex: err.AException):
     response = json.dumps(
         {'error': ex.__class__.__name__, 'message': ex.message})
     return response, ex.status_code
-
-
 
 
 # User Administration via LMS
@@ -272,6 +268,8 @@ def lti_launch_view():
             os.environ.get('LMS_URL', "https://moodle.haski.app"))}, 200
 
 # Get user info from cookie
+
+
 @app.route("/lms/user_from_cookie", methods=['GET'])
 @cross_origin(supports_credentials=True)
 def get_user_info():

@@ -8,18 +8,36 @@ from jose.backends.base import Key
 from cryptography.hazmat.primitives import (
     serialization as crypto_serialization,
 )
+import errors.errors as err
 from errors.errors import InvalidJWTError
 from config import get_project_root
 import service_layer.service.SessionServiceFlask as SessionServiceFlask
 
-private_key_location: str = os.path.join(
-    get_project_root(), "keys/private.pem"
-)
-public_key_location: str = os.path.join(get_project_root(), "keys/public.pem")
+
+def private_key_location():
+    return os.path.abspath(os.environ.get(
+        os.path.join(
+            "JWT_KEYS_LOCATION" + "private.pem"),
+        os.path.join(
+            get_project_root(),
+            "keys/private.pem")))
+
+
+def public_key_location():
+    return os.path.abspath(
+        os.environ.get(
+            os.path.join("JWT_KEYS_LOCATION", "public.pem"),
+            os.path.join(
+                get_project_root(),
+                "keys/public.pem")))
 
 
 def load_public_key():
-    with open(os.path.abspath(public_key_location), "rb") as key_file:
+    if not os.path.exists(public_key_location()):
+        raise err.KeyNotFoundError(
+            message="Public key location:" + public_key_location() +
+            " not found. Please generate a key pair as described in the README.md.")
+    with open(os.path.abspath(public_key_location()), "rb") as key_file:
         public_key = crypto_serialization.load_pem_public_key(key_file.read())
         return public_key.public_bytes(
             crypto_serialization.Encoding.PEM,
@@ -52,7 +70,11 @@ def get_unverified_header(jwt_token: str):
 
 
 def sign_jwt(payload: dict):
-    with open(os.path.abspath(private_key_location), "rb") as key_file:
+    if not os.path.exists(private_key_location()):
+        raise err.KeyNotFoundError(
+            message="Private key location:" + public_key_location() +
+            " not found. Please generate a key pair as described in the README.md.")
+    with open(os.path.abspath(private_key_location()), "rb") as key_file:
         private_key = crypto_serialization.load_pem_private_key(
             key_file.read(), password=None
         )

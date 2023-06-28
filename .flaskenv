@@ -8,3 +8,4 @@ DB_NAME=haski
 DB_PORT=5432
 BACKEND_URL=https://backend.haski.app
 LMS_URL=https://moodle.haski.app
+JWT_KEYS_LOCATION="./keys"

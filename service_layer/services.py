@@ -1,6 +1,5 @@
 from flask.wrappers import Request
 
-from flask import Response, make_response
 from service_layer import unit_of_work
 from service_layer.lti.OIDCLoginFlask import OIDCLoginFlask
 from domain.userAdministartion import model as UA

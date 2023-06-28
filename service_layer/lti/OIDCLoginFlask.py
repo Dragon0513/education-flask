@@ -5,7 +5,7 @@ import urllib.parse
 from service_layer import services, unit_of_work
 import service_layer.crypto.JWTKeyManagement as JWTKeyManagement
 from errors import errors as err
-from flask import jsonify, redirect
+from flask import redirect
 from flask.wrappers import Request
 from werkzeug.wrappers.response import Response
 from service_layer.crypto.cryptorandom import CryptoRandom
@@ -15,7 +15,6 @@ from service_layer.lti.Roles import RoleMapper
 from service_layer.service.CookieServiceFlask import CookieServiceFlask
 from service_layer.lti.config.ToolConfigJson import ToolConfigJson
 import service_layer.service.SessionServiceFlask as SessionServiceFlask
-from domain.userAdministartion import model as UA
 
 
 class OIDCLoginFlask(OIDCLogin):

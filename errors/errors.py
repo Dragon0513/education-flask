@@ -157,3 +157,11 @@ class NoLearningElementsError(AException):
             message="There are no learning elements for this topic!",
             status_code=400):
         super().__init__(exception, message, status_code)
+
+
+class KeyNotFoundError(AException):
+    def __init__(
+            self, exception: Exception | None = None,
+            message="Key not found. Please generate a key pair as described in the README.md.",
+            status_code=404):
+        super().__init__(exception, message, status_code)

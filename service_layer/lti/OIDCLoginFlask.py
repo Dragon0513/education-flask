@@ -21,8 +21,9 @@ from domain.userAdministartion import model as UA
 class OIDCLoginFlask(OIDCLogin):
     ''' Flask implementation of OIDC login '''
 
-    def __init__(self, request: Request, tool_config: ToolConfigJson,
-                 session_service=None, cookie_service=None, session=None):
+    def __init__(
+            self, request: Request, tool_config: ToolConfigJson,
+            cookie_service=None):
         self._request = request
         self._cookie_service = cookie_service if cookie_service else CookieServiceFlask(
             request)
@@ -151,8 +152,8 @@ class OIDCLoginFlask(OIDCLogin):
 
         # check if error in request
         if self._request.form.get('error'):
-            raise err.ErrorException(
-                message=self._request.form.get('error') or 'Unknown error', status_code=400)
+            raise err.ErrorException(message=self._request.form.get(
+                'error') or 'Unknown error', status_code=400)
         if not self._request.form.get('id_token'):
             raise err.ErrorException(
                 message="No id_token found", status_code=400)
@@ -187,7 +188,6 @@ class OIDCLoginFlask(OIDCLogin):
             SessionServiceFlask.set(
                 self.id_token.nonce, 'id_token', self.id_token)
         except Exception as e:
-            self._response = {'error': "Invalid id_token"}, 403
             raise err.ErrorException(
                 e,
                 message="Invalid id_token", status_code=403)

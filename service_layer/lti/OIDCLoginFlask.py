@@ -152,7 +152,7 @@ class OIDCLoginFlask(OIDCLogin):
         # check if error in request
         if self._request.form.get('error'):
             raise err.ErrorException(
-                message=self._request.form.get('error'), status_code=400)
+                message=self._request.form.get('error') or 'Unknown error', status_code=400)
         if not self._request.form.get('id_token'):
             raise err.ErrorException(
                 message="No id_token found", status_code=400)

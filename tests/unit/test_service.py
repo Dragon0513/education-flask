@@ -48,7 +48,7 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
                  user=[],
                  ):
         self.admin = set(admin)
-        self.contact_form=set(contact_form)
+        self.contact_form = set(contact_form)
         self.course = set(course)
         self.course_creator = set(course_creator)
         self.course_creator_course = set(course_creator_course)
@@ -952,7 +952,7 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
 class FakeUnitOfWork(unit_of_work.AbstractUnitOfWork):  # pragma: no cover
     def __init__(self):
         self.admin = FakeRepository()
-        self.contact_form=FakeRepository()
+        self.contact_form = FakeRepository()
         self.course = FakeRepository()
         self.course_creator = FakeRepository()
         self.course_creator_course = FakeRepository()

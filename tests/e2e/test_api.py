@@ -1017,9 +1017,10 @@ def test_post_learning_path(
         assert key in response.keys()
 
 
+'''
 #Post a Contact Form
 
-'''@pytest.mark.parametrize("moodle_user_id, keys_expected,\
+@pytest.mark.parametrize("moodle_user_id, keys_expected,\
                          status_code_expected", [
     # Working Example
     (
@@ -2735,6 +2736,7 @@ def test_update_le_from_moodle(
     response = json.loads(r.data.decode("utf-8").strip('\n'))
     for key in keys_expected:
         assert key in response.keys()
+
 
 """
 # DELETE METHODS

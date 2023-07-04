@@ -201,6 +201,10 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
         settings.id = len(self.settings) + 1
         self.settings.add(settings)
 
+    def create_contact_form(self, contact_form):
+        contact_form.id = len(self.contact_form) + 1
+        self.contact_form.add(contact_form)
+
     def create_student(self, student):
         student.id = len(self.student) + 1
         self.student.add(student)
@@ -1218,18 +1222,6 @@ def create_learning_element_for_tests_2(uow):
         created_at="2017-01-01",
         created_by=user_name_example,
         university=university_example
-    )
-
-
-def create_contact_form_for_tests(uow):
-    services.create_contact_form(
-        uow=uow,
-        user_id=1,
-        lms_user_id=1,
-        report_topic="Lernelement",
-        report_type="Funktionalität",
-        report_description="Test",
-        date=datetime.datetime.now()
     )
 
 

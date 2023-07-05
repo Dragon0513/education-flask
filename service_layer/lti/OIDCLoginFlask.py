@@ -222,11 +222,6 @@ class OIDCLoginFlask(OIDCLogin):
         response = redirect(
             self._platform.frontend_login_url + '?' + urllib.parse.urlencode({'nonce': nonce_jwt}))
 
-        # get issuer
-        # TODO🧾 based on issuer platform get corresponsing implementaiton and write id token data into structures
-
-        # create user
-        # TODO🧾 create student user if not exist
         try:
             user = services.get_user_by_lms_id(
                 unit_of_work.SqlAlchemyUnitOfWork(),

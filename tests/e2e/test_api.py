@@ -1027,7 +1027,7 @@ def test_post_learning_path(
          "report_type": "Funktionalität",\
          "report_description": "Test"},
         4,
-        ['id', 'student_id', 'report_topic', 'report_type',\
+        ['id', 'user_id', 'report_topic', 'report_type',\
          'report_description',\
          ],
         201

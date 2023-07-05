@@ -19,6 +19,7 @@ questionnaire_id = 0
 
 path_admin = "/admin"
 path_course = "/course"
+path_contactform = "/contactform"
 path_knowledge = "/knowledge"
 path_logs = "/logs"
 path_frontend_logs = "/logs/frontend"
@@ -1017,15 +1018,17 @@ def test_post_learning_path(
         assert key in response.keys()
 
 
-'''
 #Post a Contact Form
 
-@pytest.mark.parametrize("moodle_user_id, keys_expected,\
+@pytest.mark.parametrize("input, lms_user_id, keys_expected,\
                          status_code_expected", [
     # Working Example
     (
+        {"report_topic": "Lernelement",
+        "report_type": "Funktionalität",
+        "report_description": "Test" },
         1,
-        ['report_topic' ,'report_type' ,'report_des',\
+        ['report_topic' ,'report_type' ,'report_description',\
          ],
         201
     ),
@@ -1036,7 +1039,22 @@ def test_post_learning_path(
         ['error'],
         400
     )
-])'''
+])
+def test_post_contact_form(
+    client,
+    input,
+    lms_user_id,
+    keys_expected,
+    status_code_expected
+):
+    global user_id_student
+    url = path_user + "/" + str(user_id_student) + "/" + \
+        str(lms_user_id) + path_contactform
+    r = client.post(url, json=input)
+    assert r.status_code == status_code_expected
+    response = json.loads(r.data.decode("utf-8").strip('\n'))
+    for key in keys_expected:
+        assert key in response.keys()
 
 
 # Post Frontend Logs

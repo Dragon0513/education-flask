@@ -1018,17 +1018,16 @@ def test_post_learning_path(
         assert key in response.keys()
 
 
-#Post a Contact Form
-
+# Post a Contact Form
 @pytest.mark.parametrize("input, lms_user_id, keys_expected,\
                          status_code_expected", [
     # Working Example
     (
-        {"report_topic": "Lernelement",
-        "report_type": "Funktionalität",
-        "report_description": "Test" },
+        {"report_topic": "Lernelement",\
+         "report_type": "Funktionalität",\
+         "report_description": "Test"},
         1,
-        ['report_topic' ,'report_type' ,'report_description',\
+        ['report_topic', 'report_type', 'report_description',\
          ],
         201
     ),

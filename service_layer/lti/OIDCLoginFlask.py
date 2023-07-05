@@ -173,7 +173,7 @@ class OIDCLoginFlask(OIDCLogin):
             (key for key in platform['key_set']['keys']
              if key['kid'] == id_token_header_unverified['kid']),
             "")
-        if not hmac_key:  # TODO try to get new keys, if that fails return error
+        if not hmac_key:
             raise err.ErrorException(
                 message="Invalid decryption key", status_code=400)
         self.id_token = JWTKeyManagement.verify_jwt(

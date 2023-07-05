@@ -182,7 +182,6 @@ class OIDCLoginFlask(OIDCLogin):
             raise err.ErrorException(
                 message="Invalid id_token signature", status_code=403)
         try:
-            # TODO🧾 parse token and write into structures
             self.id_token = LTIIDToken(**self.id_token)
             SessionServiceFlask.set(
                 self.id_token.nonce, 'id_token', self.id_token)

@@ -40,8 +40,6 @@ class LTILIS():
     person_sourcedid = None  # OPTIONAL (person sourcedid)
     course_section_sourcedid = None  # OPTIONAL (course section sourcedid)
 
-# todo validate
-
 
 class LTIResourceLink():
     id = None  # REQUIRED (resource link id)

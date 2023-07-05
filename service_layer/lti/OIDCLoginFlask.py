@@ -263,8 +263,6 @@ class OIDCLoginFlask(OIDCLogin):
         if not JWTKeyManagement.verify_jwt_payload(nonce_payload):
             raise err.ErrorException(
                 message="Invalid nonce payload", status_code=403)
-        # TODO🧾 this cookie holds authorization data. implement right and role management
-        # use session service id_token to get user data and write into cookie, create new user if not exist
 
         # get user based on id_token
         token = SessionServiceFlask.get(nonce_payload['nonce'], 'id_token')
@@ -274,7 +272,6 @@ class OIDCLoginFlask(OIDCLogin):
 
         user = SessionServiceFlask.get(nonce_payload['nonce'], 'user')
         if not user:
-            # TODO 🧾 maybe redirect to login?
             raise err.ErrorException(
                 message="Invalid state", status_code=403)
 
@@ -282,7 +279,7 @@ class OIDCLoginFlask(OIDCLogin):
             token['https://purl.imsglobal.org/spec/lti/claim/roles'])
         role = role_mapper.get_role().lower()
         permissions = role_mapper.get_permissions()
-        cookie_expiration = 43200  # 30 days TODO 🧾 get from config
+        cookie_expiration = 43200
         state_jwt = JWTKeyManagement.generate_state_jwt(
             nonce=CryptoRandom.createuniqueid(32),
             state=CryptoRandom.createuniqueid(32),

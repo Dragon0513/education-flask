@@ -271,18 +271,18 @@ class GA_Algorithmus(object):
         if util.check_name_learning_style(input_learning_style):
             raise err.WrongLearningStyleDimensionError()
 
-        # tranformed Learning elements
-        new_Learning_element = util.add_Learning_element(input_Learning_element)
-        self.learning_elements = util.get_learning_element( new_Learning_element)
-        self.le_size = len ( self.learning_elements)    
+        
 
-        # if input_Learning_element is not None:            
-        #     Learning_elements = util.get_learning_element(input_Learning_element)
-        # else:
-        #    Learning_elements = ["KÜ", "LK", "ZF", "RQ",
-        #                         "SE", "FO", "ZL", "AN", 
-        #                         "ÜB", "BE", "AB", "LZ"]
-        # print(" RESULT: Entro",Learning_elements)
+        if input_Learning_element is not None:            
+            # tranformed set Learning elements to list
+            new_Learning_element = util.add_Learning_element(input_Learning_element)
+            self.learning_elements = util.get_learning_element( new_Learning_element)
+            self.le_size = len ( self.learning_elements)     
+
+        else:
+           print ("Error Input_learning_element is leer")
+           raise err.WrongLearningStyleDimensionError()
+
 
         
        

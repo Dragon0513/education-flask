@@ -97,7 +97,7 @@ def check_learning_style(input_learning_style):
 
 
 def check_name_learning_style(input_learning_style):
-
+    # this function may not be necessary
     is_correct = False
     list_is_correct = []
 
@@ -128,7 +128,6 @@ def get_list_LPLE(learning_path, learning_elements, LP_id):
 
     # if(dict_Learning_element is None):
     #     dict_Learning_element = get_dict_Learning_element()
-
     List_LPLE = []
     for element in learning_elements:
 
@@ -184,8 +183,8 @@ def get_learning_style( learning_style):
 
 
 def add_Learning_element(learning_elements):
-    #Initialize dictionary of learning Element zum test
-
+    #added some learning element for testing
+    #Element without RQ for testing
     elements = ["KÜ", "LK", "ZF", "SE",
                 "FO", "ZL", "AN", "ÜB", "BE", "AB", "LZ"]
     id = 0   

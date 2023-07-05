@@ -1026,8 +1026,9 @@ def test_post_learning_path(
         {"report_topic": "Lernelement",\
          "report_type": "Funktionalität",\
          "report_description": "Test"},
-        1,
-        ['report_topic', 'report_type', 'report_description',\
+        4,
+        ['id', 'student_id', 'report_topic', 'report_type',\
+         'report_description',\
          ],
         201
     ),
@@ -1046,7 +1047,7 @@ def test_post_contact_form(
     keys_expected,
     status_code_expected
 ):
-    global user_id_student
+    user_id_student = 4
     url = path_user + "/" + str(user_id_student) + "/" + \
         str(lms_user_id) + path_contactform
     r = client.post(url, json=input)

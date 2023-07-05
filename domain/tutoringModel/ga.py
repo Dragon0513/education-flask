@@ -14,14 +14,14 @@ class GA_Algorithmus(object):
                          "FO", "ZL", "AN", "ÜB", "BE", "AB", "LZ"]
     best_population = None
     n_generation = 80
-    mutate_rate = 0.2
-    cross_rate = 0.8
+    mutate_rate = 0.3
+    cross_rate = 0.9
     pop_size = 80
 
     def __init__(self,
                  student_id=0,
                  learning_path=None,
-                 learning_style={"REF": 1, "SNS": 3, "VIS": 5, "SEQ": 5},
+                 learning_style={"ref": 1, "sns": 3, "vis": 5, "seq": 5},
                  learning_elements=None,
                  id=None):
         if id is None:
@@ -50,14 +50,20 @@ class GA_Algorithmus(object):
         self.population = np.vstack(
             [np.random.permutation(positions)
              for _ in range(self.pop_size)])
+        
+        # with cluster 
+        with_cluster = False
+        with_cluster, labels = self.find_cluster(
+            self.le_coordinate,
+            n_cluster=3,
+            rseed=2)
 
-        if (self.pop_size > 30):
-            labels = self.find_cluster(
-                self.le_coordinate,
-                n_cluster=3,
-                rseed=2)
+        if( with_cluster ):           
             daten = self.get_daten_cluster(positions, labels)
             self.population[0:self.pop_size-1, :] = daten
+
+           
+
 
     def valide_population(self):
 
@@ -105,7 +111,6 @@ class GA_Algorithmus(object):
     def sort_population(self, fitness):
         idx = np.argsort(fitness)
         return self.population[idx]
-
 
     def crossover(self, parent, pop):
 
@@ -167,11 +172,21 @@ class GA_Algorithmus(object):
 
     def find_cluster(self, coordinates, n_cluster=3, rseed=2):
 
+        labels = []       
         daten = coordinates
         rng = np.random.RandomState(rseed)
+        if(len(daten)<=0 ):
+            return False, labels
+
         i = rng.permutation(daten.shape[0])[:n_cluster]
         centers = daten[i]
+        new_centers = np.unique(centers,axis=0)
+        
+        if(len(new_centers)<n_cluster ):
+            return False, labels
+
         while (True):
+           
             labels = pairwise_distances_argmin(daten, centers)
             mean_cluster = [daten[labels == i].mean(0)
                             for i in range(n_cluster)]
@@ -182,10 +197,9 @@ class GA_Algorithmus(object):
             else:
                 centers = new_centers
 
-        return labels
+        return True, labels
 
     def get_daten_cluster(self, daten, labels):
-
         labels = labels[1:len(labels)]
 
         temp = self.le_size
@@ -204,6 +218,10 @@ class GA_Algorithmus(object):
         best_total_score = 300
         self.le_coordinate = util.get_coordinate(
             learning_style, self.learning_elements)
+
+        #print(learning_style)
+        #print(self.le_coordinate )
+
         self.create_random_population()
 
         for generatiion in range(self.n_generation):
@@ -231,55 +249,68 @@ class GA_Algorithmus(object):
             self.evolve(fitness, best_sample)
 
         euclidean_distance = self.calculate_distance(best_sample)
-        #print("euclidean_distance:", euclidean_distance)
-
-    def get_learning_path(self, input_learning_style={"ACT": 1, "SNS": 7,
-                                                      "VIS": 5, "GLO": 1},
+        print("euclidean_distance:", euclidean_distance)
+      
+    def get_learning_path(self, input_learning_style={"act": 1, "sns": 7,
+                                                      "vis": 5, "glo": 1},
                           input_Learning_element=None):
-        time1 = time.time()
 
-        print("################## RESULT: Entro",input_learning_style)     
+        time1 = time.time()    
+         
         if input_learning_style is not None:
-            input_learning_style = util.get_learning_style(input_learning_style)
+            input_learning_style = util.get_learning_style(input_learning_style)  
+            print("input_learning_style:\n",input_learning_style);          
 
         if (len(input_learning_style) != 4):
             raise err.WrongLearningStyleNumberError()
 
         if util.check_learning_style(input_learning_style):
-            raise err.WrongLearningStyleDimensionError()
+            raise err.WrongLearningStyleDimensionError()     
+    
 
         if util.check_name_learning_style(input_learning_style):
             raise err.WrongLearningStyleDimensionError()
 
-        if input_Learning_element is not None:            
-            Learning_elements = util.get_learning_element(input_Learning_element)
-        else:
-           Learning_elements = ["KÜ", "LK", "ZF", "RQ",
-                                "SE", "FO", "ZL", "AN", 
-                                "ÜB", "BE", "AB", "LZ"]
-        print("################## RESULT: Entro",Learning_elements)
+        # tranformed Learning elements
+        new_Learning_element = util.add_Learning_element(input_Learning_element)
+        self.learning_elements = util.get_learning_element( new_Learning_element)
+        self.le_size = len ( self.learning_elements)    
 
-        learning_path = []
+        # if input_Learning_element is not None:            
+        #     Learning_elements = util.get_learning_element(input_Learning_element)
+        # else:
+        #    Learning_elements = ["KÜ", "LK", "ZF", "RQ",
+        #                         "SE", "FO", "ZL", "AN", 
+        #                         "ÜB", "BE", "AB", "LZ"]
+        # print(" RESULT: Entro",Learning_elements)
+
+        
+       
         self.calculate_learning_path(input_learning_style)
-
-        elements = np.array(learning_elements)
+        
+       
+        elements = np.array(self.learning_elements)
         population = self.valide_population()
         idx = population[0]
         sort_learning_path = elements[idx]
 
-        for i in range(len(sort_learning_path)):
-            value = sort_learning_path[i]
-            #learning_path[str(i)] = value
-            learning_path.append(value)
+        print ("\nga_result\n",sort_learning_path)
+       
 
+        # for i in range(len(sort_learning_path)):
+        #     value = sort_learning_path[i]
+        #     #learning_path[str(i)] = value
+        #     learning_path.append(value)
+        # print(learning_path)
         time2 = time.time()
         time_sec = time2-time1
+        print ("time_sec: ",time_sec)
+        print("_________\n")
+        # Learning_Path_id = self.id
+        # List_LPLE = util.get_list_LPLE(learning_path,
+        #                                dict_Learning_element,
+        #                                Learning_Path_id)
 
-        Learning_Path_id = self.id
-        List_LPLE = util.get_list_LPLE(learning_path,
-                                       dict_Learning_element,
-                                       Learning_Path_id)
-
-        print(Learning_Path_id)
-        print('function took {:.4f} seconds'.format(time_sec))
-        return learning_path, List_LPLE
+        # print(Learning_Path_id)
+        # print('function took {:.4f} seconds'.format(time_sec))
+        # return learning_path, List_LPLE

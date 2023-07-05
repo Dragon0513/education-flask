@@ -452,7 +452,7 @@ def create_learning_path(
         characteristics = get_learning_characteristics(uow, student_id)
 
         #print("characteristics", characteristics, len(characteristics))
-        #print("\n\naqui --- learning_elements:\n", len(learning_elements))        
+        
         learning_style = get_learning_style(uow, characteristics['id'])
 
         #set learning style example
@@ -476,7 +476,13 @@ def create_learning_path(
                 i,
                 None
             )
- 
+        algorithm = "GA"
+        #print("path_element: ",path_element);
+        #print("learning_style: ",learning_style);
+        
+        
+
+
         learning_path.get_learning_path(student_id,
                                         learning_style,
                                         algorithm,

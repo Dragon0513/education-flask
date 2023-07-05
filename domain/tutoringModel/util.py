@@ -17,6 +17,7 @@ graf = {
 }
 
 
+
 def get_coordinates(learning_style, learning_elements):
     coordinates = {}
     for elememnt in learning_elements:
@@ -37,30 +38,30 @@ def get_coordinates(learning_style, learning_elements):
         else:
             coordinate = list()
             for key in learning_style.keys():
-                if key == "ACT":
+                if key == "act":
                     coordinate.append(
-                        learning_style['ACT'] * graf[elememnt][0])
-                elif key == "REF":
+                        learning_style['act'] * graf[elememnt][0])
+                elif key == "ref":
                     coordinate.append(
-                        learning_style['REF'] * graf[elememnt][1])
-                if key == "SNS":
+                        learning_style['ref'] * graf[elememnt][1])
+                if key == "sns":
                     coordinate.append(
-                        learning_style['SNS'] * graf[elememnt][2])
-                elif key == "INT":
+                        learning_style['sns'] * graf[elememnt][2])
+                elif key == "int":
                     coordinate.append(
-                        learning_style['INT'] * graf[elememnt][3])
-                if key == "VIS":
+                        learning_style['int'] * graf[elememnt][3])
+                if key == "vis":
                     coordinate.append(
-                        learning_style['VIS'] * graf[elememnt][4])
-                elif key == "VRB":
+                        learning_style['vis'] * graf[elememnt][4])
+                elif key == "vrb":
                     coordinate.append(
-                        learning_style['VRB'] * graf[elememnt][5])
-                if key == "SEQ":
+                        learning_style['vrb'] * graf[elememnt][5])
+                if key == "seq":
                     coordinate.append(
-                        learning_style['SEQ'] * graf[elememnt][6])
-                elif key == "GLO":
+                        learning_style['seq'] * graf[elememnt][6])
+                elif key == "glo":
                     coordinate.append(
-                        learning_style['GLO'] * graf[elememnt][7])
+                        learning_style['glo'] * graf[elememnt][7])
             coordinates[elememnt] = tuple(coordinate)
     return coordinates
 
@@ -68,6 +69,8 @@ def get_coordinates(learning_style, learning_elements):
 def get_coordinate(learning_style, learning_elements):
 
     dict_coordinates = get_coordinates(learning_style, learning_elements)
+    #ele = ["KÜ", "LK", "ZF", "RQ", "SE", "FO", "ZL", "AN", "ÜB", "BE", "AB", "LZ"]
+
     ele = len(learning_elements)
     GA_coordinates = np.zeros((ele, 4))
     idx = 0
@@ -100,10 +103,10 @@ def check_name_learning_style(input_learning_style):
 
     for iterator in input_learning_style:
 
-        condition1 = (iterator == 'ACT' or iterator == 'REF')
-        condition2 = (iterator == 'SNS' or iterator == 'INT')
-        condition3 = (iterator == 'VIS' or iterator == 'VERB')
-        condition4 = (iterator == 'SEQ' or iterator == 'GLO')
+        condition1 = (iterator == 'act' or iterator == 'ref')
+        condition2 = (iterator == 'sns' or iterator == 'int')
+        condition3 = (iterator == 'vis' or iterator == 'vrb')
+        condition4 = (iterator == 'seq' or iterator == 'glo')
         if(condition1):
             list_is_correct.append(True)
         if(condition2):
@@ -120,35 +123,14 @@ def check_name_learning_style(input_learning_style):
     return is_correct
 
 
-def get_dict_Learning_element():
 
-    elements = ["KÜ", "LK", "ZF", "RQ", "SE",
-                "FO", "ZL", "AN", "ÜB", "BE", "AB", "LZ"]
-    id = 0
-    dict_Learning_element = {}
-    for ele in elements:
-        LearningElement = LE.LearningElement(lms_id=None,
-                                             activity_type=None,
-                                             classification=ele,
-                                             name=ele,
-                                             university=None,
-                                             created_by=None,
-                                             created_at=None,
-                                             last_updated=None,
-                                             )
-        LearningElement.id= id                                  
-        dict_Learning_element[ele] = LearningElement
-        id = id+1
-    return dict_Learning_element
-
-
-def get_list_LPLE(learning_path, input_Learning_element, LP_id):
+def get_list_LPLE(learning_path, learning_elements, LP_id):
 
     # if(dict_Learning_element is None):
     #     dict_Learning_element = get_dict_Learning_element()
 
     List_LPLE = []
-    for element in input_Learning_element:
+    for element in learning_elements:
 
         classification= element.classification
         condition = classification is not None
@@ -160,15 +142,15 @@ def get_list_LPLE(learning_path, input_Learning_element, LP_id):
                                                   learning_path_id=LP_id,
                                                   recommended=True,
                                                   position=learning_path.index(classification))
-            print("### classification: ",classification, " id: ",LPLE.learning_element_id," LPLE.position: ", LPLE.position )                                      
+            #print(" classification: ",classification, " id: ",LPLE.learning_element_id," LPLE.position: ", LPLE.position )                                      
             List_LPLE.append(LPLE)
 
-    print("####List_LPLE: ",[i.position for i in List_LPLE])
+    #print("List_LPLE: ",[i.position for i in List_LPLE])
     return List_LPLE
 
 
 def get_learning_style( learning_style):
-    #print("\n\n\n### get_learning_style",type(learning_style),"--", learning_style)    
+   
     result = {}
 
     if(learning_style.get('processing_dimension')== "act"):
@@ -195,20 +177,57 @@ def get_learning_style( learning_style):
 
     for key, value in dict(result).items():
         if value == None:
-            del result[key]
+            del result[key]   
 
-    #print("\n\n###get_learning_style",result )
-    #print(" -----------",len(result) != 4)
-   
     return result    
 
 
-def get_learning_element( learning_elements):
+
+def add_Learning_element(learning_elements):
+    #Initialize dictionary of learning Element zum test
+
+    elements = ["KÜ", "LK", "ZF", "SE",
+                "FO", "ZL", "AN", "ÜB", "BE", "AB", "LZ"]
+    id = 0   
+
+    for element in elements:
+        LearningElement = LE.LearningElement(lms_id=id,
+                                             activity_type=None,
+                                             classification=element,
+                                             name=element,
+                                             university=None,
+                                             created_by=None,
+                                             created_at=None,
+                                             last_updated=None,
+                                             )
+        LearningElement.id= id    
+        learning_elements.add(LearningElement)
+        #print("LE.",LearningElement.classification, " id: ", LearningElement.id, " element:",element)                       
+        #dict_Learning_element[element] = LearningElement        
+        id = id+1
+   
+    return learning_elements
+
+
+
+
+def get_learning_element( learning_elements):   
     result = []    
-    for ele in learning_elements:            
-        #print("*****",ele.classification," ", type(learning_elements))
-        result.append(ele.classification)
-    #print(result)
-    #print("###learning_elements",result)
+    lz_is_present = True
+    lz_element = ''
+    #print("OBJECT-Learning Element--",type(learning_elements))        
+    for le in learning_elements:            
+        #print("1-Learning Element--",le.classification)
+        if le.classification=='KÜ':
+            result.insert(0,le.classification)
+        elif  le.classification=='LZ':
+            lz_is_present = True
+            lz_element = le.classification
+        else:    
+            result.append(le.classification)
+
+    if(lz_is_present):
+        result.append(lz_element)       
+   
     return result   
 

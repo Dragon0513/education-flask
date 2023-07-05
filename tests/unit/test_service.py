@@ -6,7 +6,7 @@ from domain.learnersModel import model as LM
 from domain.tutoringModel import model as TM
 from domain.domainModel import model as DM
 import time
-import errors as err
+import errors.errors as err
 
 
 class FakeRepository(repository.AbstractRepository):  # pragma: no cover
@@ -818,11 +818,25 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
                     i.lms_user_id == lms_user_id:
                 result.append(i)
         return result
-    
+
     def get_user_by_lms_user_id(self, lms_user_id):
         result = []
         for i in self.user:
             if i.lms_user_id == lms_user_id:
+                result.append(i)
+        return result
+
+    def get_user_by_lms_id(self, lms_id):
+        result = []
+        for i in self.user:
+            if i.lms_id == lms_id:
+                result.append(i)
+        return result
+
+    def get_student_by_user_id(self, user_id):
+        result = []
+        for i in self.student:
+            if i.user_id == user_id:
                 result.append(i)
         return result
 

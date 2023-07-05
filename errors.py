@@ -5,7 +5,12 @@ class MissingParameterError(Exception):
 
 class ContactFormError(Exception):
     code = 400
-    description = "The Contact Form could not be created."
+    description = "The Contact Form could not be sent."
+
+
+class MissingUserError(Exception):
+    code = 400
+    description = "Missing or invalid user."
 
 
 class WrongLearningStyleDimensionError(Exception):

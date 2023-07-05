@@ -2088,7 +2088,7 @@ def create_contact_form(
     with uow:
         user = get_user_by_id(uow, user_id, lms_user_id)
         if user == {}:
-            result = None
+            raise err.MissingUserError()
         else:
             contact_form = UA.ContactForm(
                 user_id,

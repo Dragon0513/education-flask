@@ -2756,7 +2756,6 @@ def test_update_le_from_moodle(
         assert key in response.keys()
 
 
-"""
 # DELETE METHODS
 # Reset User Settings
 @pytest.mark.parametrize("lms_user_id, keys_expected,\
@@ -3223,4 +3222,3 @@ def test_api_delete_course_from_moodle(
     response = json.loads(r.data.decode("utf-8").strip('\n'))
     for key in response.keys():
         assert key in keys_expected
-        """

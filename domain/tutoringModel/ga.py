@@ -294,23 +294,18 @@ class GA_Algorithmus(object):
         idx = population[0]
         sort_learning_path = elements[idx]
 
-        print ("\nga_result\n",sort_learning_path)
-       
+        print ("\nga_result\n",sort_learning_path)      
 
-        # for i in range(len(sort_learning_path)):
-        #     value = sort_learning_path[i]
-        #     #learning_path[str(i)] = value
-        #     learning_path.append(value)
-        # print(learning_path)
+  
         time2 = time.time()
         time_sec = time2-time1
         print ("time_sec: ",time_sec)
         print("_________\n")
-        # Learning_Path_id = self.id
-        # List_LPLE = util.get_list_LPLE(learning_path,
-        #                                dict_Learning_element,
-        #                                Learning_Path_id)
+        Learning_Path_id = self.id
+        List_LPLE = util.get_list_LPLE(learning_path,
+                                       dict_Learning_element,
+                                       Learning_Path_id)
 
-        # print(Learning_Path_id)
-        # print('function took {:.4f} seconds'.format(time_sec))
-        # return learning_path, List_LPLE
+        print(Learning_Path_id)
+        print('function took {:.4f} seconds'.format(time_sec))
+        return learning_path, List_LPLE

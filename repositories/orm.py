@@ -1,4 +1,4 @@
-from sqlalchemy import MetaData, Column, Integer, String, Table, Date, Boolean
+from sqlalchemy import MetaData, Column, Integer, String, Table, Date, Boolean, Float
 from sqlalchemy.orm import mapper
 from domain.domainModel import model as DM
 from domain.learnersModel import model as LM
@@ -62,7 +62,7 @@ ils_input_answers = Table(
     "ils_input_answers",
     metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
-    Column("questionnaire_id", Integer, nullable=False),
+    Column("questionnaire_ils_id", Integer, nullable=False),
     Column("vv_1_f3", Integer, nullable=True),
     Column("vv_2_f7", Integer, nullable=False),
     Column("vv_3_f11", Integer, nullable=True),
@@ -80,7 +80,7 @@ ils_perception_answers = Table(
     "ils_perception_answers",
     metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
-    Column("questionnaire_id", Integer, nullable=False),
+    Column("questionnaire_ils_id", Integer, nullable=False),
     Column("si_1_f2", Integer, nullable=False),
     Column("si_2_f6", Integer, nullable=True),
     Column("si_3_f10", Integer, nullable=True),
@@ -98,7 +98,7 @@ ils_processing_answers = Table(
     "ils_processing_answers",
     metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
-    Column("questionnaire_id", Integer, nullable=False),
+    Column("questionnaire_ils_id", Integer, nullable=False),
     Column("ar_1_f1", Integer, nullable=True),
     Column("ar_2_f5", Integer, nullable=True),
     Column("ar_3_f9", Integer, nullable=False),
@@ -116,7 +116,7 @@ ils_understanding_answers = Table(
     "ils_understanding_answers",
     metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
-    Column("questionnaire_id", Integer, nullable=False),
+    Column("questionnaire_ils_id", Integer, nullable=False),
     Column("sg_1_f4", Integer, nullable=False),
     Column("sg_2_f8", Integer, nullable=False),
     Column("sg_3_f12", Integer, nullable=True),
@@ -210,7 +210,24 @@ learning_strategy = Table(
     "learning_strategy",
     metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
-    Column("characteristic_id", Integer, nullable=False)
+    Column("characteristic_id", Integer, nullable=False),
+    Column("cogn_str", Float, nullable=False),
+    Column("org", Float, nullable=False),
+    Column("elab", Float, nullable=False),
+    Column("crit_rev", Float, nullable=False),
+    Column("rep", Float, nullable=False),
+    Column("metacogn_str", Float, nullable=False),
+    Column("goal_plan", Float, nullable=False),
+    Column("con", Float, nullable=False),
+    Column("reg", Float, nullable=False),
+    Column("int_res_mng_str", Float, nullable=False),
+    Column("att", Float, nullable=False),
+    Column("eff", Float, nullable=False),
+    Column("time", Float, nullable=False),
+    Column("ext_res_mng_str", Float, nullable=False),
+    Column("lrn_w_cls", Float, nullable=False),
+    Column("lit_res", Float, nullable=False),
+    Column("lrn_env", Float, nullable=False)
 )
 
 learning_style = Table(
@@ -228,54 +245,54 @@ learning_style = Table(
     Column("understanding_value", Integer, nullable=False)
 )
 
-list_k = Table(
-    "list_k",
+questionnaire_list_k = Table(
+    "questionnaire_list_k",
     metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
-    Column("questionnaire_id", Integer, nullable=False),
+    Column("student_id", Integer, nullable=False),
     Column("org1_f1", Integer, nullable=False),
     Column("org2_f2", Integer, nullable=False),
     Column("org3_f3", Integer, nullable=False),
-    Column("ela1_f4", Integer, nullable=False),
-    Column("ela2_f5", Integer, nullable=False),
-    Column("ela3_f6", Integer, nullable=False),
-    Column("krp1_f7", Integer, nullable=False),
-    Column("krp2_f8", Integer, nullable=False),
-    Column("krp3_f9", Integer, nullable=False),
-    Column("wie1_f10", Integer, nullable=False),
-    Column("wie2_f11", Integer, nullable=False),
-    Column("wie3_f12", Integer, nullable=False),
-    Column("zp1_f13", Integer, nullable=False),
-    Column("zp2_f14", Integer, nullable=False),
-    Column("zp3_f15", Integer, nullable=False),
-    Column("kon1_f16", Integer, nullable=False),
-    Column("kon2_f17", Integer, nullable=False),
-    Column("kon3_f18", Integer, nullable=False),
+    Column("elab1_f4", Integer, nullable=False),
+    Column("elab2_f5", Integer, nullable=False),
+    Column("elab3_f6", Integer, nullable=False),
+    Column("crit_rev1_f7", Integer, nullable=False),
+    Column("crit_rev2_f8", Integer, nullable=False),
+    Column("crit_rev3_f9", Integer, nullable=False),
+    Column("rep1_f10", Integer, nullable=False),
+    Column("rep2_f11", Integer, nullable=False),
+    Column("rep3_f12", Integer, nullable=False),
+    Column("goal_plan1_f13", Integer, nullable=False),
+    Column("goal_plan2_f14", Integer, nullable=False),
+    Column("goal_plan3_f15", Integer, nullable=False),
+    Column("con1_f16", Integer, nullable=False),
+    Column("con2_f17", Integer, nullable=False),
+    Column("con3_f18", Integer, nullable=False),
     Column("reg1_f19", Integer, nullable=False),
     Column("reg2_f20", Integer, nullable=False),
     Column("reg3_f21", Integer, nullable=False),
-    Column("auf1_f22", Integer, nullable=False),
-    Column("auf2_f23", Integer, nullable=False),
-    Column("auf3_f24", Integer, nullable=False),
-    Column("ans1_f25", Integer, nullable=False),
-    Column("ans2_f26", Integer, nullable=False),
-    Column("ans3_f27", Integer, nullable=False),
-    Column("zei1_f28", Integer, nullable=False),
-    Column("zei2_f29", Integer, nullable=False),
-    Column("zei3_f30", Integer, nullable=False),
-    Column("lms1_f31", Integer, nullable=False),
-    Column("lms2_f32", Integer, nullable=False),
-    Column("lms3_f33", Integer, nullable=False),
-    Column("lit1_f34", Integer, nullable=False),
-    Column("lit2_f35", Integer, nullable=False),
-    Column("lit3_f36", Integer, nullable=False),
-    Column("lu1_f37", Integer, nullable=False),
-    Column("lu2_f38", Integer, nullable=False),
-    Column("lu3_f39", Integer, nullable=False)
+    Column("att1_f22", Integer, nullable=False),
+    Column("att2_f23", Integer, nullable=False),
+    Column("att3_f24", Integer, nullable=False),
+    Column("eff1_f25", Integer, nullable=False),
+    Column("eff2_f26", Integer, nullable=False),
+    Column("eff3_f27", Integer, nullable=False),
+    Column("time1_f28", Integer, nullable=False),
+    Column("time2_f29", Integer, nullable=False),
+    Column("time3_f30", Integer, nullable=False),
+    Column("lrn_w_cls1_f31", Integer, nullable=False),
+    Column("lrn_w_cls2_f32", Integer, nullable=False),
+    Column("lrn_w_cls3_f33", Integer, nullable=False),
+    Column("lit_res1_f34", Integer, nullable=False),
+    Column("lit_res2_f35", Integer, nullable=False),
+    Column("lit_res3_f36", Integer, nullable=False),
+    Column("lrn_env1_f37", Integer, nullable=False),
+    Column("lrn_env2_f38", Integer, nullable=False),
+    Column("lrn_env3_f39", Integer, nullable=False)
 )
 
-questionnaire = Table(
-    "questionnaire",
+questionnaire_ils = Table(
+    "questionnaire_ils",
     metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("student_id", Integer, nullable=False)
@@ -454,10 +471,10 @@ def start_mappers():
         LM.LearningStyle, learning_style
     )
     mapper(
-        LM.ListK, list_k
+        LM.QuestionnaireListK, questionnaire_list_k
     )
     mapper(
-        LM.Questionnaire, questionnaire
+        LM.QuestionnaireIls, questionnaire_ils
     )
     mapper(
         UA.Settings, settings

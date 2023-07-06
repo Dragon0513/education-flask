@@ -48,9 +48,9 @@ class AbstractUnitOfWork(abc.ABC):
         repository.AbstractRepository
     learning_style:\
         repository.AbstractRepository
-    list_k:\
+    questionnaire_ils:\
         repository.AbstractRepository
-    questionnaire:\
+    questionnaire_list_k:\
         repository.AbstractRepository
     settings:\
         repository.AbstractRepository
@@ -144,9 +144,9 @@ class SqlAlchemyUnitOfWork(AbstractUnitOfWork):  # pragma: no cover
             repository.SqlAlchemyRepository(self.session)
         self.learning_style =\
             repository.SqlAlchemyRepository(self.session)
-        self.list_k =\
+        self.questionnaire_list_k =\
             repository.SqlAlchemyRepository(self.session)
-        self.questionnaire =\
+        self.questionnaire_ils =\
             repository.SqlAlchemyRepository(self.session)
         self.settings =\
             repository.SqlAlchemyRepository(self.session)

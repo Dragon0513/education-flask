@@ -669,16 +669,15 @@ def get_learning_characteristics(user_id, lms_user_id, student_id):
             return jsonify(characteristic), status_code
 
 
-@app.route("/lms/student/<student_id>/<lms_user_id>/questionnaire",
+@app.route("/lms/student/<student_id>/questionnaire/ils",
            methods=['POST'])
 @cross_origin(supports_credentials=True)
-def questionnaire(student_id, lms_user_id):
+def questionnaire_ils(student_id):
     method = request.method
     match method:
         case 'POST':
-            condition1 = 'ils' in request.json
-            condition2 = "list_k" in request.json
-            if condition1 and condition2:
+            condition = 'ils' in request.json
+            if condition:
                 ils = {}
                 for key in request.json['ils']:
                     ils[key['question_id']] = key['answer']
@@ -697,18 +696,38 @@ def questionnaire(student_id, lms_user_id):
                         raise err.WrongParameterValueError()
                     if answer != "a" and answer != "b":
                         raise err.NoValidParameterValueError()
+                result = services.create_questionnaire_ils(
+                    uow=unit_of_work.SqlAlchemyUnitOfWork(),
+                    student_id=student_id,
+                    ils_answers=ils,
+                )
+                status_code = 201
+                return jsonify(result), status_code
+            else:
+                raise err.MissingParameterError()
+
+
+@app.route("/lms/student/<student_id>/questionnaire/listk",
+           methods=['POST'])
+@cross_origin(supports_credentials=True)
+def questionnaire_list_k(student_id):
+    method = request.method
+    match method:
+        case 'POST':
+            condition = "list_k" in request.json
+            if condition:
                 list_k = {}
                 for key in request.json['list_k']:
                     list_k[key['question_id']] = key['answer']
                 required_answers_list_k = [
-                    'org1_f1', 'org2_f2', 'org3_f3', 'ela1_f4', 'ela2_f5',
-                    'ela3_f6', 'krp1_f7', 'krp2_f8', 'krp3_f9', 'wie1_f10',
-                    'wie2_f11', 'wie3_f12', 'zp1_f13', 'zp2_f14', 'zp3_f15',
-                    'kon1_f16', 'kon2_f17', 'kon3_f18', 'reg1_f19', 'reg2_f20',
-                    'reg3_f21', 'auf1_f22', 'auf2_f23', 'auf3_f24', 'ans1_f25',
-                    'ans2_f26', 'ans3_f27', 'zei1_f28', 'zei2_f29', 'zei3_f30',
-                    'lms1_f31', 'lms2_f32', 'lms3_f33', 'lit1_f34', 'lit2_f35',
-                    'lit3_f36', 'lu1_f37', 'lu2_f38', 'lu3_f39'
+                    'org1_f1', 'org2_f2', 'org3_f3', 'elab1_f4', 'elab2_f5',
+                    'elab3_f6', 'crit_rev1_f7', 'crit_rev2_f8', 'crit_rev3_f9', 'rep1_f10',
+                    'rep2_f11', 'rep3_f12', 'goal_plan1_f13', 'goal_plan2_f14', 'goal_plan3_f15',
+                    'con1_f16', 'con2_f17', 'con3_f18', 'reg1_f19', 'reg2_f20',
+                    'reg3_f21', 'att1_f22', 'att2_f23', 'att3_f24', 'eff1_f25',
+                    'eff2_f26', 'eff3_f27', 'time1_f28', 'time2_f29', 'time3_f30',
+                    'lrn_w_cls1_f31', 'lrn_w_cls2_f32', 'lrn_w_cls3_f33', 'lit_res1_f34', 'lit_res2_f35',
+                    'lit_res3_f36', 'lrn_env1_f37', 'lrn_env2_f38', 'lrn_env3_f39'
                 ]
                 for key in required_answers_list_k:
                     if key not in list_k.keys():
@@ -720,10 +739,9 @@ def questionnaire(student_id, lms_user_id):
                         raise err.NoValidParameterValueError()
                     if answer < 0:
                         raise err.NoValidParameterValueError()
-                result = services.create_questionnaire(
+                result = services.create_questionnaire_list_k(
                     uow=unit_of_work.SqlAlchemyUnitOfWork(),
                     student_id=student_id,
-                    ils_answers=ils,
                     list_k_answers=list_k
                 )
                 status_code = 201

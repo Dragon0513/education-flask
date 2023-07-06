@@ -16,12 +16,12 @@ conn.autocommit = True
 cursor = conn.cursor()
 
 # Table Cleanup
-cursor.execute("DELETE FROM list_k")
 cursor.execute("DELETE FROM ils_understanding_answers")
 cursor.execute("DELETE FROM ils_processing_answers")
 cursor.execute("DELETE FROM ils_perception_answers")
 cursor.execute("DELETE FROM ils_input_answers")
-cursor.execute("DELETE FROM questionnaire")
+cursor.execute("DELETE FROM questionnaire_list_k")
+cursor.execute("DELETE FROM questionnaire_ils")
 cursor.execute("DELETE FROM learning_path_learning_element")
 cursor.execute("DELETE FROM learning_path_topic")
 cursor.execute("DELETE FROM learning_path")

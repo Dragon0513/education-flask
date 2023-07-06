@@ -37,7 +37,7 @@ class GA_Algorithmus(object):
 
         if learning_path is None:
 
-            self.learning_path = None  # self.get_learning_path(learning_style)
+            self.learning_path = None 
         else:
             self.learning_path = learning_path
 
@@ -45,13 +45,13 @@ class GA_Algorithmus(object):
 
     def create_random_population(self):
 
-        # genereate random position of population
+        # generate population with random position 
         positions = np.arange(1, self.le_size)
         self.population = np.vstack(
             [np.random.permutation(positions)
              for _ in range(self.pop_size)])
         
-        # with cluster 
+        # initialize some populations with Cluster
         with_cluster = False
         with_cluster, labels = self.find_cluster(
             self.le_coordinate,
@@ -219,9 +219,6 @@ class GA_Algorithmus(object):
         self.le_coordinate = util.get_coordinate(
             learning_style, self.learning_elements)
 
-        #print(learning_style)
-        #print(self.le_coordinate )
-
         self.create_random_population()
 
         for generatiion in range(self.n_generation):
@@ -251,7 +248,7 @@ class GA_Algorithmus(object):
         euclidean_distance = self.calculate_distance(best_sample)
         print("euclidean_distance:", euclidean_distance)
 
-        
+    
         ga_path = np.array(self.learning_elements)
         population = self.valide_population()      
         idx = population[0]
@@ -267,44 +264,42 @@ class GA_Algorithmus(object):
          
         if input_learning_style is not None:
             input_learning_style = util.get_learning_style(input_learning_style)  
-            print("input_learning_style:\n",input_learning_style);          
+            #print("input_learning_style:\n",input_learning_style);
 
         if (len(input_learning_style) != 4):
             raise err.WrongLearningStyleNumberError()
 
         if util.check_learning_style(input_learning_style):
-            raise err.WrongLearningStyleDimensionError()     
-    
+            raise err.WrongLearningStyleDimensionError()         
 
         if util.check_name_learning_style(input_learning_style):
             raise err.WrongLearningStyleDimensionError()
         if input_Learning_element is not None:            
-            # tranformed set Learning elements to list
+            # tranformed set Learning elements to a list LE
             new_Learning_element = util.add_Learning_element(input_Learning_element)
             self.learning_elements = util.get_learning_element( new_Learning_element)
             self.le_size = len ( self.learning_elements)     
 
         else:
-           print ("Error Input_learning_element is leer")
+           print ("Error Input_learning_element is None")
            raise err.WrongLearningStyleDimensionError()
 
-            
-              
-        ga_Learning_path = self.calculate_learning_path(input_learning_style)        
-        
+        result_ga_LP = self.calculate_learning_path(input_learning_style)  
+        print ("\result_ga_LP: ",result_ga_LP)      
 
-        print ("\nga_result\n",ga_Learning_path)      
+        le_path = ""
+        for ele in result_ga_LP:
+                le_path = le_path + ele + ', '
+        print("le_path",le_path)
+
   
         time2 = time.time()
         time_sec = time2-time1
         print ("time_sec: ",time_sec)
         print("_________\n")
         Learning_Path_id = self.id
+        
+       
+        return le_path
+            
 
-        # List_LPLE = util.get_list_LPLE(learning_path,
-        #                                dict_Learning_element,
-        #                                Learning_Path_id)
-
-        # print(Learning_Path_id)
-        # print('function took {:.4f} seconds'.format(time_sec))
-        # return learning_path, List_LPLE

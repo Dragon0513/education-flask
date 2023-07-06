@@ -62,9 +62,6 @@ class GA_Algorithmus(object):
             daten = self.get_daten_cluster(positions, labels)
             self.population[0:self.pop_size-1, :] = daten
 
-           
-
-
     def valide_population(self):
 
         # The first and the last LE are fixed in the LPath
@@ -104,11 +101,13 @@ class GA_Algorithmus(object):
         return fitness
 
     def set_best_sample(self, sample):
+
         if (self.pop_size > 50):
             temp = self.pop_size-3
             self.population[20:temp, :] = sample
 
     def sort_population(self, fitness):
+
         idx = np.argsort(fitness)
         return self.population[idx]
 
@@ -200,6 +199,7 @@ class GA_Algorithmus(object):
         return True, labels
 
     def get_daten_cluster(self, daten, labels):
+
         labels = labels[1:len(labels)]
 
         temp = self.le_size
@@ -250,6 +250,14 @@ class GA_Algorithmus(object):
 
         euclidean_distance = self.calculate_distance(best_sample)
         print("euclidean_distance:", euclidean_distance)
+
+        
+        ga_path = np.array(self.learning_elements)
+        population = self.valide_population()      
+        idx = population[0]
+        sort_learning_path = ga_path[idx]
+        return sort_learning_path
+
       
     def get_learning_path(self, input_learning_style={"act": 1, "sns": 7,
                                                       "vis": 5, "glo": 1},
@@ -270,9 +278,6 @@ class GA_Algorithmus(object):
 
         if util.check_name_learning_style(input_learning_style):
             raise err.WrongLearningStyleDimensionError()
-
-        
-
         if input_Learning_element is not None:            
             # tranformed set Learning elements to list
             new_Learning_element = util.add_Learning_element(input_Learning_element)
@@ -283,29 +288,23 @@ class GA_Algorithmus(object):
            print ("Error Input_learning_element is leer")
            raise err.WrongLearningStyleDimensionError()
 
-
+            
+              
+        ga_Learning_path = self.calculate_learning_path(input_learning_style)        
         
-       
-        self.calculate_learning_path(input_learning_style)
-        
-       
-        elements = np.array(self.learning_elements)
-        population = self.valide_population()
-        idx = population[0]
-        sort_learning_path = elements[idx]
 
-        print ("\nga_result\n",sort_learning_path)      
-
+        print ("\nga_result\n",ga_Learning_path)      
   
         time2 = time.time()
         time_sec = time2-time1
         print ("time_sec: ",time_sec)
         print("_________\n")
         Learning_Path_id = self.id
-        List_LPLE = util.get_list_LPLE(learning_path,
-                                       dict_Learning_element,
-                                       Learning_Path_id)
 
-        print(Learning_Path_id)
-        print('function took {:.4f} seconds'.format(time_sec))
-        return learning_path, List_LPLE
+        # List_LPLE = util.get_list_LPLE(learning_path,
+        #                                dict_Learning_element,
+        #                                Learning_Path_id)
+
+        # print(Learning_Path_id)
+        # print('function took {:.4f} seconds'.format(time_sec))
+        # return learning_path, List_LPLE

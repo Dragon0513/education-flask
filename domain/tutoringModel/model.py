@@ -32,26 +32,27 @@ class LearningPath:
             'calculated_on': self.calculated_on
         }
 
-    def get_learning_path(self, student_id, learning_style, algorithm, learning_element):       
+    def get_learning_path(self, 
+                          student_id, 
+                          learning_style, 
+                          algorithm, 
+                          list_of_les):       
         if algorithm == "Graf":
-            path = graf.GrafAlgorithm(student_id=student_id,
-                                      learning_path=None, 
-                                      learning_style=learning_style,
-                                      Learning_element = learning_elements,
-                                      )
-            temp = path.get_learning_path(input_learning_style=learning_style,
-                          input_Learning_element=learning_element)
-            self.path = ", "#.join(temp)
+             path = graf.GrafAlgorithm(
+                student_id=student_id, learning_style=learning_style)
+             temp = path.get_learning_path(input_learning_style=learning_style)
+             self.path = ", ".join(temp)
             
         if algorithm == "GA":
-            path = ga.GA_Algorithmus(student_id=student_id, learning_style=learning_style, learning_elements=learning_element)
-           
+            path = ga.GA_Algorithmus(student_id=student_id, learning_style=learning_style, learning_elements=list_of_les)   
             
-            result = path.get_learning_path(input_learning_style=learning_style, input_Learning_element=learning_element)
-            #self.path = ", ".join(temp)
+            result = path.get_learning_path(input_learning_style=learning_style, input_Learning_element=list_of_les)
+            self.path = ", ".join(result)
         else:
             raise err.NoValidAlgorithmError()
         
+
+
 
 class LearningPathTopic():
     def __init__(self,

@@ -247,13 +247,27 @@ class GA_Algorithmus(object):
 
         euclidean_distance = self.calculate_distance(best_sample)
         print("\neuclidean_distance:", euclidean_distance)
-
     
         ga_path = np.array(self.learning_elements)
         population = self.valide_population()      
         idx = population[0]
-        sort_learning_path = ga_path[idx]
-        return sort_learning_path
+        result_ga_LP = ga_path[idx]
+
+           
+        learning_path = ""
+        Contain_LE = False
+        for ele in result_ga_LP:
+            learning_path = learning_path + ele + ', '
+            Contain_LE = True
+
+        if(Contain_LE):
+            learning_path = learning_path[:-2] 
+
+        print("learning_path",learning_path)  
+
+        return learning_path
+
+
 
       
     def get_learning_path(self, input_learning_style={"act": 1, "sns": 7,
@@ -285,18 +299,8 @@ class GA_Algorithmus(object):
            raise err.WrongLearningStyleDimensionError()
 
         result_ga_LP = self.calculate_learning_path(input_learning_style)  
-        print ("\result_ga_LP: ",result_ga_LP)      
-
-        le_path = ""
-        Contain_LE = False
-        for ele in result_ga_LP:
-            le_path = le_path + ele + ', '
-            Contain_LE = True
-
-        if(Contain_LE):
-            le_path = le_path[:-2]
-
-        print("le_path",le_path)  
+        print ("\nresult_ga_LP: ",result_ga_LP)      
+        
         time2 = time.time()
         time_sec = time2-time1
         print ("time_sec: ",time_sec)
@@ -304,6 +308,6 @@ class GA_Algorithmus(object):
         Learning_Path_id = self.id
         
        
-        return le_path
+        return result_ga_LP
             
 

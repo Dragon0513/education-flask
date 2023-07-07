@@ -62,3 +62,18 @@ class AlreadyExisting(Exception):
 class NoValidParameterValueError(Exception):
     code = 400
     description = "The send parameters have a wrong value!"
+
+
+class NoLearningElementsError(Exception):
+    code = 400
+    description = "There are no learning elements for this topic!"
+
+
+class UnauthorizedError(Exception):
+    code = 401
+    description = "You are not authorized to perform this action!"
+
+
+class StateNotMatchingError(Exception):
+    code = 401
+    description = "The state does not match the state in the cookie!"

@@ -9,7 +9,7 @@ import time
 import errors as err
 
 
-class FakeRepository(repository.AbstractRepository):
+class FakeRepository(repository.AbstractRepository):  # pragma: no cover
     def __init__(self,
                  admin=[],
                  course=[],
@@ -219,593 +219,612 @@ class FakeRepository(repository.AbstractRepository):
         self.user.add(user)
 
     def delete_admin(self, user_id):
-        to_remove = next((p for p in self.admin if p.user_id == user_id), 'a')
-        self.admin.remove(to_remove)
+        to_remove = []
+        for i in self.admin:
+            if i.user_id == user_id:
+                to_remove.append(i)
+        for remove in to_remove:
+            self.admin.remove(remove)
 
     def delete_course(self, course_id):
-        to_remove = next((p for p in self.course if p.id == course_id), 'a')
-        self.course.remove(to_remove)
+        to_remove = []
+        for i in self.course:
+            if i.id == course_id:
+                to_remove.append(i)
+        for remove in to_remove:
+            self.course.remove(remove)
 
     def delete_course_creator(self, user_id):
-        to_remove = next(
-            (p for p in self.course_creator if p.user_id == user_id), None)
-        self.course_creator.remove(to_remove)
+        to_remove = []
+        for i in self.course_creator:
+            if i.user_id == user_id:
+                to_remove.append(i)
+        for remove in to_remove:
+            self.course_creator.remove(remove)
 
     def delete_course_creator_course(self, course_id):
-        to_remove = next(
-            (p for p in self.course_creator_course
-             if p.course_id == course_id), None)
-        self.course_creator_course.remove(to_remove)
+        to_remove = []
+        for i in self.course_creator_course:
+            if i.course_id == course_id:
+                to_remove.append(i)
+        for remove in to_remove:
+            self.course_creator_course.remove(remove)
 
     def delete_course_topic_by_course(self, course_id):
-        to_remove = next(
-            (p for p in self.course_topic if p.course_id == course_id), None)
-        if to_remove is not None:
-            self.course_topic.remove(to_remove)
+        to_remove = []
+        for i in self.course_topic:
+            if i.course_id == course_id:
+                to_remove.append(i)
+        for remove in to_remove:
+            self.course_topic.remove(remove)
 
     def delete_course_topic_by_topic(self, topic_id):
-        to_remove = next(
-            (p for p in self.course_topic if p.topic_id == topic_id), None)
-        self.course_topic.remove(to_remove)
+        to_remove = []
+        for i in self.course_topic:
+            if i.topic_id == topic_id:
+                to_remove.append(i)
+        for remove in to_remove:
+            self.course_topic.remove(remove)
 
     def delete_ils_input_answers(self, questionnaire_id):
-        to_remove = next(
-            (p for p in self.ils_input_answers
-             if p.questionnaire_id == questionnaire_id), None)
-        self.ils_input_answers.remove(to_remove)
+        to_remove = []
+        for i in self.ils_input_answers:
+            if i.questionnaire_id == questionnaire_id:
+                to_remove.append(i)
+        for remove in to_remove:
+            self.ils_input_answers.remove(remove)
 
     def delete_ils_perception_answers(self, questionnaire_id):
-        to_remove = next(
-            (p for p in self.ils_perception_answers
-             if p.questionnaire_id == questionnaire_id), None)
-        self.ils_perception_answers.remove(to_remove)
+        to_remove = []
+        for i in self.ils_perception_answers:
+            if i.questionnaire_id == questionnaire_id:
+                to_remove.append(i)
+        for remove in to_remove:
+            self.ils_perception_answers.remove(remove)
 
     def delete_ils_processing_answers(self, questionnaire_id):
-        to_remove = next(
-            (p for p in self.ils_processing_answers
-             if p.questionnaire_id == questionnaire_id), None)
-        self.ils_processing_answers.remove(to_remove)
+        to_remove = []
+        for i in self.ils_processing_answers:
+            if i.questionnaire_id == questionnaire_id:
+                to_remove.append(i)
+        for remove in to_remove:
+            self.ils_processing_answers.remove(remove)
 
     def delete_ils_understanding_answers(self, questionnaire_id):
-        to_remove = next(
-            (p for p in self.ils_understanding_answers
-             if p.questionnaire_id == questionnaire_id), None)
-        self.ils_understanding_answers.remove(to_remove)
+        to_remove = []
+        for i in self.ils_understanding_answers:
+            if i.questionnaire_id == questionnaire_id:
+                to_remove.append(i)
+        for remove in to_remove:
+            self.ils_understanding_answers.remove(remove)
 
     def delete_knowledge(self, characteristic_id):
-        to_remove = next(
-            (p for p in self.knowledge
-             if p.characteristic_id == characteristic_id), None)
-        self.knowledge.remove(to_remove)
+        to_remove = []
+        for i in self.knowledge:
+            if i.characteristic_id == characteristic_id:
+                to_remove.append(i)
+        for remove in to_remove:
+            self.knowledge.remove(remove)
 
     def delete_learning_analytics(self, characteristic_id):
-        to_remove = next(
-            (p for p in self.learning_analytics
-             if p.characteristic_id == characteristic_id), None)
-        self.learning_analytics.remove(to_remove)
+        to_remove = []
+        for i in self.learning_analytics:
+            if i.characteristic_id == characteristic_id:
+                to_remove.append(i)
+        for remove in to_remove:
+            self.learning_analytics.remove(remove)
 
     def delete_learning_characteristics(self, student_id):
-        to_remove = next(
-            (p for p in self.learning_characteristics
-             if p.student_id == student_id), None)
-        self.learning_characteristics.remove(to_remove)
+        to_remove = []
+        for i in self.learning_characteristics:
+            if i.student_id == student_id:
+                to_remove.append(i)
+        for remove in to_remove:
+            self.learning_characteristics.remove(remove)
 
     def delete_learning_element(self, learning_element_id):
-        to_remove = next(
-            (p for p in self.learning_element
-             if p.id == learning_element_id), None)
-        self.learning_element.remove(to_remove)
+        to_remove = []
+        for i in self.learning_element:
+            if i.id == learning_element_id:
+                to_remove.append(i)
+        for remove in to_remove:
+            self.learning_element.remove(remove)
 
     def delete_learning_path(self, learning_path_id):
-        to_remove = next(
-            (p for p in self.learning_path
-             if p.id == learning_path_id), None)
-        if to_remove is not None:
-            self.learning_path.remove(to_remove)
+        to_remove = []
+        for i in self.learning_path:
+            if i.id == learning_path_id:
+                to_remove.append(i)
+        for remove in to_remove:
+            self.learning_path.remove(remove)
 
     def delete_learning_path_learning_element(self, learning_path_id):
-        to_remove = next(
-            (p for p in self.learning_path_learning_element
-             if p.learning_path_id == learning_path_id), None)
-        if to_remove is not None:
-            self.learning_path_learning_element.remove(to_remove)
+        to_remove = []
+        for i in self.learning_path_learning_element:
+            if i.learning_path_id == learning_path_id:
+                to_remove.append(i)
+        for remove in to_remove:
+            self.learning_path_learning_element.remove(remove)
 
     def delete_learning_path_topic(self, learning_path_id):
-        to_remove = next(
-            (p for p in self.learning_path_topic
-             if p.learning_path_id == learning_path_id), None)
-        if to_remove is not None:
-            self.learning_path_topic.remove(to_remove)
+        to_remove = []
+        for i in self.learning_path_topic:
+            if i.learning_path_id == learning_path_id:
+                to_remove.append(i)
+        for remove in to_remove:
+            self.learning_path_topic.remove(remove)
 
     def delete_learning_strategy(self, characteristic_id):
-        to_remove = next(
-            (p for p in self.learning_strategy
-             if p.characteristic_id == characteristic_id), None)
-        self.learning_strategy.remove(to_remove)
+        to_remove = []
+        for i in self.learning_strategy:
+            if i.characteristic_id == characteristic_id:
+                to_remove.append(i)
+        for remove in to_remove:
+            self.learning_strategy.remove(remove)
 
     def delete_learning_style(self, characteristic_id):
-        to_remove = next(
-            (p for p in self.learning_style
-             if p.characteristic_id == characteristic_id), None)
-        self.learning_style.remove(to_remove)
+        to_remove = []
+        for i in self.learning_style:
+            if i.characteristic_id == characteristic_id:
+                to_remove.append(i)
+        for remove in to_remove:
+            self.learning_style.remove(remove)
 
     def delete_list_k(self, questionnaire_id):
-        to_remove = next(
-            (p for p in self.list_k
-             if p.questionnaire_id == questionnaire_id), None)
-        self.list_k.remove(to_remove)
+        to_remove = []
+        for i in self.list_k:
+            if i.questionnaire_id == questionnaire_id:
+                to_remove.append(i)
+        for remove in to_remove:
+            self.list_k.remove(remove)
 
     def delete_questionnaire(self, id):
-        to_remove = next(
-            (p for p in self.questionnaire
-             if p.id == id), None)
-        if to_remove is not None:
-            self.questionnaire.remove(to_remove)
+        to_remove = []
+        for i in self.questionnaire:
+            if i.id == id:
+                to_remove.append(i)
+        for remove in to_remove:
+            self.questionnaire.remove(remove)
 
     def delete_settings(self, user_id):
-        to_remove = next(
-            (p for p in self.settings if p.user_id == user_id), None)
-        self.settings.remove(to_remove)
+        to_remove = []
+        for i in self.settings:
+            if i.user_id == user_id:
+                to_remove.append(i)
+        for remove in to_remove:
+            self.settings.remove(remove)
 
     def delete_student(self, user_id):
-        to_remove = next(
-            (p for p in self.student if p.user_id == user_id), None)
-        self.student.remove(to_remove)
+        to_remove = []
+        for i in self.student:
+            if i.user_id == user_id:
+                to_remove.append(i)
+        for remove in to_remove:
+            self.student.remove(remove)
 
     def delete_student_course(self, student_id):
-        to_remove = next(
-            (p for p in self.student_course
-             if p.student_id == student_id), None)
-        if to_remove is not None:
-            self.student_course.remove(to_remove)
+        to_remove = []
+        for i in self.student_course:
+            if i.student_id == student_id:
+                to_remove.append(i)
+        for remove in to_remove:
+            self.student_course.remove(remove)
 
     def delete_student_learning_element(self, student_id):
-        to_remove = next(
-            (p for p in self.student_learning_element
-             if p.student_id == student_id), None)
-        if to_remove is not None:
-            self.student_learning_element.remove(to_remove)
+        to_remove = []
+        for i in self.student_learning_element:
+            if i.student_id == student_id:
+                to_remove.append(i)
+        for remove in to_remove:
+            self.student_learning_element.remove(remove)
 
     def delete_student_learning_element_visit(self, student_id):
-        to_remove = next(
-            (p for p in self.student_learning_element_visit
-             if p.student_id == student_id), None)
-        if to_remove is not None:
-            self.student_learning_element_visit.remove(to_remove)
+        to_remove = []
+        for i in self.student_learning_element_visit:
+            if i.self.student_id == student_id:
+                to_remove.append(i)
+        for remove in to_remove:
+            self.student_learning_element_visit.remove(remove)
 
     def delete_student_topic(self, student_id):
-        to_remove = next(
-            (p for p in self.student_topic
-             if p.student_id == student_id), None)
-        if to_remove is not None:
-            self.student_topic.remove(to_remove)
+        to_remove = []
+        for i in self.student_topic:
+            if i.student_id == student_id:
+                to_remove.append(i)
+        for remove in to_remove:
+            self.student_topic.remove(remove)
 
     def delete_student_topic_visit(self, student_id):
-        to_remove = next(
-            (p for p in self.student_topic_visit
-             if p.student_id == student_id), None)
-        if to_remove is not None:
-            self.student_topic_visit.remove(to_remove)
+        to_remove = []
+        for i in self.student_topic_visit:
+            if i.student_id == student_id:
+                to_remove.append(i)
+        for remove in to_remove:
+            self.student_topic_visit.remove(remove)
 
     def delete_teacher(self, user_id):
-        to_remove = next(
-            (p for p in self.teacher if p.user_id == user_id), None)
-        self.teacher.remove(to_remove)
+        to_remove = []
+        for i in self.teacher:
+            if i.user_id == user_id:
+                to_remove.append(i)
+        for remove in to_remove:
+            self.teacher.remove(remove)
 
     def delete_teacher_course(self, teacher_id):
-        to_remove = next(
-            (p for p in self.teacher_course
-             if p.teacher_id == teacher_id), None)
-        if to_remove is not None:
-            self.teacher_course.remove(to_remove)
+        to_remove = []
+        for i in self.teacher_course:
+            if i.teacher_id == teacher_id:
+                to_remove.append(i)
+        for remove in to_remove:
+            self.teacher_course.remove(remove)
 
     def delete_topic(self, topic_id):
-        to_remove = next(
-            (p for p in self.topic if p.id == topic_id), None)
-        self.topic.remove(to_remove)
+        to_remove = []
+        for i in self.topic:
+            if i.id == topic_id:
+                to_remove.append(i)
+        for remove in to_remove:
+            self.topic.remove(remove)
 
     def delete_topic_learning_element_by_topic(self,
                                                topic_id):
-        to_remove = next(
-            (p for p in self.topic_learning_element
-             if p.topic_id == topic_id), None)
-        self.topic_learning_element.remove(to_remove)
+        to_remove = []
+        for i in self.topic_learning_element:
+            if i.topic_id == topic_id:
+                to_remove.append(i)
+        for remove in to_remove:
+            self.topic_learning_element.remove(remove)
 
     def delete_topic_learning_element_by_learning_element(self,
                                                           learning_element_id):
-        to_remove = next(
-            (p for p in self.topic_learning_element
-             if p.learning_element_id == learning_element_id), None)
-        self.topic_learning_element.remove(to_remove)
+        to_remove = []
+        for i in self.topic_learning_element:
+            if i.learning_element_id == learning_element_id:
+                to_remove.append(i)
+        for remove in to_remove:
+            self.topic_learning_element.remove(remove)
 
     def delete_user(self, user_id, lms_user_id):
-        to_remove = next((p for p in self.user if p.id ==
-                         user_id and p.lms_user_id == lms_user_id), None)
-        self.user.remove(to_remove)
+        to_remove = []
+        for i in self.user:
+            if i.id == user_id and\
+                    i.lms_user_id == lms_user_id:
+                to_remove.append(i)
+        for remove in to_remove:
+            self.user.remove(remove)
 
     def get_admin_by_id(self, user_id):
-        result = next((p for p in self.admin if
-                       p.user_id == user_id), None)
-        if result is None:
-            return []
-        else:
-            return [result]
+        result = []
+        for i in self.admin:
+            if i.user_id == user_id:
+                result.append(i)
+        return result
 
     def get_admins_by_uni(self, university):
-        result = next((p for p in self.admin if
-                       p.university == university), None)
-        if result is None:
-            return []
-        else:
-            return [result]
+        result = []
+        for i in self.admin:
+            if i.university == university:
+                result.append(i)
+        return result
 
     def get_courses_by_uni(self, university):
-        result = next((p for p in self.course if
-                       p.university == university), None)
-        if result is None:
-            return []
-        else:
-            return [result]
+        result = []
+        for i in self.course:
+            if i.university == university:
+                result.append(i)
+        return result
 
     def get_course_by_id(self, course_id):
-        result = next((p for p in self.course if
-                       p.id == course_id), None)
-        if result is None:
-            return []
-        else:
-            return [result]
+        result = []
+        for i in self.course:
+            if i.id == course_id:
+                result.append(i)
+        return result
 
     def get_courses_by_student_id(self, student_id):
-        result = next((p for p in self.student_course if
-                       p.student_id == student_id), None)
-        if result is None:
-            return []
-        else:
-            return [result]
+        result = []
+        for i in self.student_course:
+            if i.student_id == student_id:
+                result.append(i)
+        return result
 
     def get_course_creator_by_id(self,
                                  user_id):
-        result = next((p for p in self.course_creator if
-                       p.user_id == user_id), None)
-        if result is None:
-            return []
-        else:
-            return [result]
+        result = []
+        for i in self.course_creator:
+            if i.user_id == user_id:
+                result.append(i)
+        return result
 
     def get_courses_for_teacher(self, teacher_id):
-        result = next((p for p in self.teacher_course if
-                       p.teacher_id == teacher_id), None)
-        if result is None:
-            return []
-        else:
-            return [result]
+        result = []
+        for i in self.teacher_course:
+            if i.teacher_id == teacher_id:
+                result.append(i)
+        return result
 
     def get_course_topic_by_course(self, course_id):
-        result = next((p for p in self.course_topic if
-                       p.course_id == course_id), None)
-        if result is None:
-            return []
-        else:
-            return [result]
+        result = []
+        for i in self.course_topic:
+            if i.course_id == course_id:
+                result.append(i)
+        return result
 
     def get_course_topic_by_topic(self, topic_id):
-        result = next((p for p in self.course_topic if
-                       p.topic_id == topic_id), None)
-        if result is None:
-            return []
-        else:
-            return [result]
+        result = []
+        for i in self.course_topic:
+            if i.topic_id == topic_id:
+                result.append(i)
+        return result
 
     def get_course_creators_by_uni(self, university):
-        result = next((p for p in self.course_creator if
-                       p.university == university), None)
-        if result is None:
-            return []
-        else:
-            return [result]
+        result = []
+        for i in self.course_creator:
+            if i.university == university:
+                result.append(i)
+        return result
 
     def get_ils_input_answers_by_id(self, questionnaire_id):
-        result = next((p for p in self.ils_input_answers if
-                       p.questionnaire_id == questionnaire_id), None)
-        if result is None:
-            return []
-        else:
-            return [result]
+        result = []
+        for i in self.ils_input_answers:
+            if i.questionnaire_id == questionnaire_id:
+                result.append(i)
+        return result
 
     def get_ils_perception_answers_by_id(self, questionnaire_id):
-        result = next((p for p in self.ils_perception_answers if
-                       p.questionnaire_id == questionnaire_id), None)
-        if result is None:
-            return []
-        else:
-            return [result]
+        result = []
+        for i in self.ils_perception_answers:
+            if i.questionnaire_id == questionnaire_id:
+                result.append(i)
+        return result
 
     def get_ils_processing_answers_by_id(self, questionnaire_id):
-        result = next((p for p in self.ils_processing_answers if
-                       p.questionnaire_id == questionnaire_id), None)
-        if result is None:
-            return []
-        else:
-            return [result]
+        result = []
+        for i in self.ils_processing_answers:
+            if i.questionnaire_id == questionnaire_id:
+                result.append(i)
+        return result
 
     def get_ils_understanding_answers_by_id(self, questionnaire_id):
-        result = next((p for p in self.ils_understanding_answers if
-                       p.questionnaire_id == questionnaire_id), None)
-        if result is None:
-            return []
-        else:
-            return [result]
+        result = []
+        for i in self.ils_understanding_answers:
+            if i.questionnaire_id == questionnaire_id:
+                result.append(i)
+        return result
 
     def get_knowledge(self, characteristic_id):
-        result = next((p for p in self.knowledge if
-                       p.characteristic_id == characteristic_id), None)
-        if result is None:
-            return []
-        else:
-            return [result]
+        result = []
+        for i in self.knowledge:
+            if i.characteristic_id == characteristic_id:
+                result.append(i)
+        return result
 
     def get_learning_analytics(self, characteristic_id):
-        result = next((p for p in self.learning_analytics if
-                       p.characteristic_id == characteristic_id), None)
-        if result is None:
-            return []
-        else:
-            return [result]
+        result = []
+        for i in self.learning_analytics:
+            if i.characteristic_id == characteristic_id:
+                result.append(i)
+        return result
 
     def get_learning_characteristics(self, student_id):
-        result = next((p for p in self.learning_characteristics if
-                       p.student_id == student_id), None)
-        if result is None:
-            return []
-        else:
-            return [result]
+        result = []
+        for i in self.learning_characteristics:
+            if i.student_id == student_id:
+                result.append(i)
+        return result
 
     def get_learning_element_by_id(self, learning_element_id):
-        result = next((p for p in self.learning_element if
-                       p.id == learning_element_id), None)
-        if result is None:
-            return []
-        else:
-            return [result]
+        result = []
+        for i in self.learning_element:
+            if i.id == learning_element_id:
+                result.append(i)
+        return result
 
     def get_learning_elements_by_uni(self, university):
-        result = next((p for p in self.learning_element if
-                       p.university == university), None)
-        if result is None:
-            return []
-        else:
-            return [result]
+        result = []
+        for i in self.learning_element:
+            if i.university == university:
+                result.append(i)
+        return result
 
     def get_learning_element_recommendation(self, learning_path_id):
-        result = next((p for p in self.learning_path_learning_element if
-                       p.learning_path_id == learning_path_id and
-                       p.recommended), None)
-        if result is None:
-            return []
-        else:
-            return [result]
+        result = []
+        for i in self.learning_path_learning_element:
+            if i.learning_path_id == learning_path_id and i.recommended:
+                result.append(i)
+        return result
 
     def get_learning_path(self, student_id, course_id, topic_id):
-        result = next((p for p in self.learning_path if
-                       p.student_id == student_id and
-                       p.course_id == course_id and
-                       p.topic_id == topic_id), None)
-        if result is None:
-            return []
-        else:
-            return [result]
+        result = []
+        for i in self.learning_path:
+            if i.student_id == student_id and\
+                i.course_id == course_id and\
+                    i.topic_id == topic_id:
+                result.append(i)
+        return result
 
     def get_learning_paths(self, student_id):
-        result = next((p for p in self.learning_path if
-                       p.student_id == student_id), None)
-        if result is not None:
-            return [result]
-        else:
-            return []
+        result = []
+        for i in self.learning_path:
+            if i.student_id == student_id:
+                result.append(i)
+        return result
 
-    def get_learning_path_learning_element(self, learning_path_id)\
-            -> TM.LearningPathLearningElement:
-        result = next((p for p in self.learning_path_learning_element if
-                       p.learning_path_id == learning_path_id), None)
-        if result is None:
-            return []
-        else:
-            return [result]
+    def get_learning_path_learning_element(self, learning_path_id):
+        result = []
+        for i in self.learning_path_learning_element:
+            if i.learning_path_id == learning_path_id:
+                result.append(i)
+        return result
 
     def get_learning_strategy(self, characteristic_id):
-        result = next((p for p in self.learning_strategy if
-                       p.characteristic_id == characteristic_id), None)
-        if result is None:
-            return []
-        else:
-            return [result]
+        result = []
+        for i in self.learning_strategy:
+            if i.characteristic_id == characteristic_id:
+                result.append(i)
+        return result
 
     def get_learning_style(self, characteristic_id):
-        result = next((p for p in self.learning_style if
-                       p.characteristic_id == characteristic_id), None)
-        if result is None:
-            return []
-        else:
-            return [result]
+        result = []
+        for i in self.learning_style:
+            if i.characteristic_id == characteristic_id:
+                result.append(i)
+        return result
 
     def get_list_k_by_id(self, questionnaire_id):
-        result = next((p for p in self.list_k if
-                       p.questionnaire_id == questionnaire_id), None)
-        if result is None:
-            return []
-        else:
-            return [result]
+        result = []
+        for i in self.list_k:
+            if i.questionnaire_id == questionnaire_id:
+                result.append(i)
+        return result
 
     def get_questionnaire_by_id(self, id):
-        result = next((p for p in self.questionnaire if
-                       p.id == id), None)
-        if result is None:
-            return []
-        else:
-            return [result]
+        result = []
+        for i in self.questionnaire:
+            if i.id == id:
+                result.append(i)
+        return result
 
     def get_questionnaire_by_student_id(self, student_id):
-        result = next((p for p in self.questionnaire if
-                       p.student_id == student_id), None)
-        if result is None:
-            return []
-        else:
-            return [result]
+        result = []
+        for i in self.questionnaire:
+            if i.student_id == student_id:
+                result.append(i)
+        return result
 
     def get_settings(self, user_id):
-        result = next((p for p in self.settings if
-                       p.user_id == user_id), None)
-        if result is None:
-            return []
-        else:
-            return [result]
+        result = []
+        for i in self.settings:
+            if i.user_id == user_id:
+                result.append(i)
+        return result
 
     def get_student_by_id(self, user_id):
-        result = next((p for p in self.student if
-                       p.user_id == user_id), None)
-        if result is None:
-            return []
-        else:
-            return [result]
+        result = []
+        for i in self.student:
+            if i.user_id == user_id:
+                result.append(i)
+        return result
 
     def get_student_by_student_id(self, student_id):
-        result = next((p for p in self.student if
-                       p.id == student_id), None)
-        if result is None:
-            return []
-        else:
-            return [result]
+        result = []
+        for i in self.student:
+            if i.id == student_id:
+                result.append(i)
+        return result
 
     def get_students_by_uni(self, university):
-        result = next((p for p in self.student if
-                       p.university == university), None)
-        if result is None:
-            return []
-        else:
-            return [result]
+        result = []
+        for i in self.student:
+            if i.university == university:
+                result.append(i)
+        return result
 
     def get_student_learning_element(self,
                                      student_id,
                                      learning_element_id):
-        result = next((p for p in self.student_learning_element if
-                       p.student_id == student_id and
-                       p.learning_element_id == learning_element_id),
-                      None)
-        if result is None:
-            return []
-        else:
-            return [result]
+        result = []
+        for i in self.student_learning_element:
+            if i.student_id == student_id and\
+                    i.learning_element_id == learning_element_id:
+                result.append(i)
+        return result
 
     def get_student_course(self, student_id, course_id):
-        result = next((p for p in self.student_course if
-                       p.student_id == student_id and
-                       p.course_id == course_id),
-                      None)
-        if result is None:
-            return []
-        else:
-            return [result]
+        result = []
+        for i in self.student_course:
+            if i.student_id == student_id and\
+                    i.course_id == course_id:
+                result.append(i)
+        return result
 
     def get_student_topic(self, student_id, topic_id):
-        result = next((p for p in self.student_topic if
-                       p.student_id == student_id and
-                       p.topic_id == topic_id),
-                      None)
-        if result is None:
-            return []
-        else:
-            return [result]
+        result = []
+        for i in self.student_topic:
+            if i.student_id == student_id and\
+                    i.topic_id == topic_id:
+                result.append(i)
+        return result
 
     def get_sub_topics_for_topic_id(self, topic_id):
-        result = next((p for p in self.topic if
-                       p.parent_id == topic_id), None)
-        if result is None:
-            return []
-        else:
-            return [result]
+        result = []
+        for i in self.topic:
+            if i.parent_id == topic_id:
+                result.append(i)
+        return result
 
     def get_student_topic_visit(self, student_id, topic_id):
-        result = next((p for p in self.student_topic_visit if
-                       p.student_id == student_id and
-                       p.topic_id == topic_id), None)
-        if result is None:
-            return []
-        else:
-            return [result]
+        result = []
+        for i in self.student_topic_visit:
+            if i.student_id == student_id and\
+                    i.topic_id == topic_id:
+                result.append(i)
+        return result
 
     def get_teacher_by_id(self, user_id):
-        result = next((p for p in self.teacher if
-                       p.user_id == user_id), None)
-        if result is None:
-            return []
-        else:
-            return [result]
+        result = []
+        for i in self.teacher:
+            if i.user_id == user_id:
+                result.append(i)
+        return result
 
     def get_teacher_by_teacher_id(self, teacher_id):
-        result = next((p for p in self.teacher if
-                       p.id == teacher_id), None)
-        if result is None:
-            return []
-        else:
-            return [result]
+        result = []
+        for i in self.teacher:
+            if i.id == teacher_id:
+                result.append(i)
+        return result
 
     def get_teacher_by_uni(self, university):
-        result = next((p for p in self.teacher if
-                       p.university == university), None)
-        if result is None:
-            return []
-        else:
-            return [result]
+        result = []
+        for i in self.teacher:
+            if i.university == university:
+                result.append(i)
+        return result
 
     def get_topics_by_uni(self, university):
-        result = next((p for p in self.topic if
-                       p.university == university), None)
-        if result is None:
-            return []
-        else:
-            return [result]
+        result = []
+        for i in self.topic:
+            if i.university == university:
+                result.append(i)
+        return result
 
     def get_topic_by_id(self, topic_id):
-        result = next((p for p in self.topic if
-                       p.id == topic_id), None)
-        if result is None:
-            return []
-        else:
-            return [result]
+        result = []
+        for i in self.topic:
+            if i.id == topic_id:
+                result.append(i)
+        return result
 
     def get_topic_learning_element_by_topic(self, topic_id):
-        result = next((p for p in self.topic_learning_element if
-                       p.topic_id == topic_id), None)
-        if result is None:
-            return []
-        else:
-            return [result]
+        result = []
+        for i in self.topic_learning_element:
+            if i.topic_id == topic_id:
+                result.append(i)
+        return result
 
     def get_topic_learning_element_by_learning_element(self,
                                                        learning_element_id):
-        result = next((p for p in self.topic_learning_element if
-                       p.learning_element_id == learning_element_id), None)
-        if result is None:
-            return []
-        else:
-            return [result]
+        result = []
+        for i in self.topic_learning_element:
+            if i.learning_element_id == learning_element_id:
+                result.append(i)
+        return result
 
     def get_user_by_id(self, user_id, lms_user_id):
-        result = next((p for p in self.user if
-                       p.id == user_id and
-                       p.lms_user_id == lms_user_id), None)
-        if result is None:
-            return []
-        else:
-            return [result]
+        result = []
+        for i in self.user:
+            if i.id == user_id and\
+                    i.lms_user_id == lms_user_id:
+                result.append(i)
+        return result
 
     def get_users_by_uni(self, university):
-        result = next((p for p in self.user if
-                       p.university == university), None)
-        if result is None:
-            return []
-        else:
-            return [result]
+        result = []
+        for i in self.user:
+            if i.university == university:
+                result.append(i)
+        return result
 
     def update_course(self, course_id, course):
         to_remove = next(
@@ -927,7 +946,7 @@ class FakeRepository(repository.AbstractRepository):
         self.user.add(user)
 
 
-class FakeUnitOfWork(unit_of_work.AbstractUnitOfWork):
+class FakeUnitOfWork(unit_of_work.AbstractUnitOfWork):  # pragma: no cover
     def __init__(self):
         self.admin = FakeRepository()
         self.course = FakeRepository()
@@ -1170,13 +1189,27 @@ def create_sub_topic_for_tests(uow):
     )
 
 
-def create_learning_element_for_tests(uow):
+def create_learning_element_for_tests_1(uow):
     services.create_learning_element(
         uow=uow,
         topic_id=1,
         lms_id=1,
         activity_type="quiz",
         classification="RQ",
+        name="Test LE",
+        created_at="2017-01-01",
+        created_by=user_name_example,
+        university=university_example
+    )
+
+
+def create_learning_element_for_tests_2(uow):
+    services.create_learning_element(
+        uow=uow,
+        topic_id=1,
+        lms_id=2,
+        activity_type="lesson",
+        classification="BE",
         name="Test LE",
         created_at="2017-01-01",
         created_by=user_name_example,
@@ -1201,14 +1234,14 @@ def create_topic_learning_element_for_tests(uow):
 
 
 def create_learning_path_for_tests(uow):
-    services.create_learning_path(
+    return services.create_learning_path(
         uow=uow,
         user_id=1,
         lms_user_id=1,
         student_id=1,
         course_id=1,
         topic_id=1,
-        algorithm="Graf"
+        algorithm="aco"
     )
 
 
@@ -2297,7 +2330,7 @@ def test_create_learning_element():
 
 def test_get_learning_element_by_id():
     uow = FakeUnitOfWork()
-    create_learning_element_for_tests(uow)
+    create_learning_element_for_tests_1(uow)
     result = services.get_learning_element_by_id(
         uow=uow,
         user_id=1,
@@ -2313,7 +2346,7 @@ def test_get_learning_element_by_id():
 
 def test_update_learning_element():
     uow = FakeUnitOfWork()
-    create_learning_element_for_tests(uow)
+    create_learning_element_for_tests_1(uow)
     entries_beginning = len(uow.learning_element.learning_element)
     last_updated = time.time()
     result = services.update_learning_element(
@@ -2337,7 +2370,7 @@ def test_update_learning_element():
 
 def test_delete_learning_element():
     uow = FakeUnitOfWork()
-    create_learning_element_for_tests(uow)
+    create_learning_element_for_tests_1(uow)
     entries_beginning = len(uow.learning_element.learning_element)
     result = services.delete_learning_element(
         uow=uow,
@@ -2357,7 +2390,7 @@ def test_add_student_to_course():
     create_student_for_tests(uow)
     create_course_for_tests(uow)
     create_topic_for_tests(uow)
-    create_learning_element_for_tests(uow)
+    create_learning_element_for_tests_1(uow)
     entries_beginning_course = len(uow.student_course.student_course)
     entries_beginning_topic = len(uow.student_topic.student_topic)
     entries_beginning_le = len(uow.student_learning_element
@@ -2425,7 +2458,7 @@ def test_create_course_creator_course():
 
 def test_student_learning_element_visit():
     uow = FakeUnitOfWork()
-    create_learning_element_for_tests(uow)
+    create_learning_element_for_tests_1(uow)
     create_student_for_tests(uow)
     entries_beginning = len(uow.student_learning_element_visit
                             .student_learning_element_visit)
@@ -2474,49 +2507,66 @@ def test_student_topic_visit():
     assert entries_beginning + 2 == entries_after2
 
 
-def test_create_learning_path():
+@pytest.mark.parametrize("number_of_les", [
+    # 0
+    (0),
+    # 1
+    (1),
+    # 2
+    (2)
+])
+def test_create_learning_path(number_of_les):
     uow = FakeUnitOfWork()
     create_course_creator_for_tests(uow)
     create_student_for_tests(uow)
     create_course_for_tests(uow)
     create_topic_for_tests(uow)
-    create_learning_element_for_tests(uow)
+    if number_of_les > 0:
+        create_learning_element_for_tests_1(uow)
+    if number_of_les > 1:
+        create_learning_element_for_tests_2(uow)
     entries_beginning_path = len(uow.learning_path
                                  .learning_path)
     entries_beginning_path_le = len(uow.learning_path_learning_element
                                     .learning_path_learning_element)
-    result = services.create_learning_path(
-        uow=uow,
-        user_id=1,
-        lms_user_id=1,
-        student_id=1,
-        course_id=1,
-        topic_id=1,
-        algorithm="Graf"
-    )
-    assert type(result) == dict
-    assert result != {}
-    entries_after_path = len(uow.learning_path
-                             .learning_path)
-    entries_after_path_le = len(uow.learning_path_learning_element
-                                .learning_path_learning_element)
-    assert entries_beginning_path + 1 == entries_after_path
-    assert entries_beginning_path_le + 1 == entries_after_path_le
+    if number_of_les == 0:
+        with pytest.raises(err.NoLearningElementsError):
+            create_learning_path_for_tests(uow)
+    else:
+        result = create_learning_path_for_tests(uow)
+        assert type(result) == dict
+        assert result != {}
+        entries_after_path = len(uow.learning_path
+                                 .learning_path)
+        entries_after_path_le = len(uow.learning_path_learning_element
+                                    .learning_path_learning_element)
+        assert entries_beginning_path + 1 == entries_after_path
+        assert entries_beginning_path_le + number_of_les \
+            == entries_after_path_le
+        result = create_learning_path_for_tests(uow)
+        assert type(result) == dict
+        assert result != {}
+        entries_after_path_2 = len(uow.learning_path
+                                   .learning_path)
+        entries_after_path_le_2 = len(uow.learning_path_learning_element
+                                      .learning_path_learning_element)
+        assert entries_after_path == entries_after_path_2
+        assert entries_after_path_le == entries_after_path_le_2
 
 
-def test_delete_learning_path():
+def test_delete_learning_paths():
     uow = FakeUnitOfWork()
     create_course_creator_for_tests(uow)
     create_student_for_tests(uow)
     create_course_for_tests(uow)
     create_topic_for_tests(uow)
-    create_learning_element_for_tests(uow)
+    create_learning_element_for_tests_1(uow)
     create_learning_path_for_tests(uow)
     entries_beginning_path = len(uow.learning_path
                                  .learning_path)
     entries_beginning_path_le = len(uow.learning_path_learning_element
                                     .learning_path_learning_element)
-    result = services.delete_learning_path(
+    result = services.delete_learning_paths(
         uow=uow,
         student_id=1
     )
@@ -2595,7 +2645,7 @@ def test_get_les_for_course_id():
     create_student_for_tests(uow)
     create_course_for_tests(uow)
     create_topic_for_tests(uow)
-    create_learning_element_for_tests(uow)
+    create_learning_element_for_tests_1(uow)
     add_student_to_course_for_tests(uow)
     result = services.get_learning_elements_for_course_id(
         uow=uow,
@@ -2614,7 +2664,7 @@ def test_get_les_for_course_and_topic_id():
     create_student_for_tests(uow)
     create_course_for_tests(uow)
     create_topic_for_tests(uow)
-    create_learning_element_for_tests(uow)
+    create_learning_element_for_tests_1(uow)
     add_student_to_course_for_tests(uow)
     result = services.get_learning_elements_for_course_and_topic_id(
         uow=uow,
@@ -2634,7 +2684,7 @@ def test_get_learning_element_recommendation():
     create_student_for_tests(uow)
     create_course_for_tests(uow)
     create_topic_for_tests(uow)
-    create_learning_element_for_tests(uow)
+    create_learning_element_for_tests_1(uow)
     add_student_to_course_for_tests(uow)
     create_learning_path_for_tests(uow)
     result = services.get_learning_element_recommendation(
@@ -2655,7 +2705,7 @@ def test_get_learning_path():
     create_student_for_tests(uow)
     create_course_for_tests(uow)
     create_topic_for_tests(uow)
-    create_learning_element_for_tests(uow)
+    create_learning_element_for_tests_1(uow)
     add_student_to_course_for_tests(uow)
     create_learning_path_for_tests(uow)
     result = services.get_learning_path(
@@ -2677,7 +2727,7 @@ def test_get_sub_topics():
     create_course_for_tests(uow)
     create_topic_for_tests(uow)
     create_sub_topic_for_tests(uow)
-    create_learning_element_for_tests(uow)
+    create_learning_element_for_tests_1(uow)
     add_student_to_course_for_tests(uow)
     add_student_topic_visit_for_tests(uow)
     add_student_sub_topic_visit_for_tests(uow)
@@ -2700,7 +2750,7 @@ def test_get_topics_by_student_and_course_id():
     create_course_for_tests(uow)
     create_topic_for_tests(uow)
     create_sub_topic_for_tests(uow)
-    create_learning_element_for_tests(uow)
+    create_learning_element_for_tests_1(uow)
     add_student_to_course_for_tests(uow)
     add_student_topic_visit_for_tests(uow)
     add_student_sub_topic_visit_for_tests(uow)

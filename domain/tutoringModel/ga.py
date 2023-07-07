@@ -15,7 +15,7 @@ class GA_Algorithmus(object):
     best_population = None
     n_generation = 80
     mutate_rate = 0.3
-    cross_rate = 0.9
+    cross_rate = 0.8
     pop_size = 80
 
     def __init__(self,
@@ -246,7 +246,7 @@ class GA_Algorithmus(object):
             self.evolve(fitness, best_sample)
 
         euclidean_distance = self.calculate_distance(best_sample)
-        print("euclidean_distance:", euclidean_distance)
+        print("\neuclidean_distance:", euclidean_distance)
 
     
         ga_path = np.array(self.learning_elements)
@@ -288,15 +288,19 @@ class GA_Algorithmus(object):
         print ("\result_ga_LP: ",result_ga_LP)      
 
         le_path = ""
+        Contain_LE = False
         for ele in result_ga_LP:
-                le_path = le_path + ele + ', '
-        print("le_path",le_path)
+            le_path = le_path + ele + ', '
+            Contain_LE = True
 
-  
+        if(Contain_LE):
+            le_path = le_path[:-2]
+
+        print("le_path",le_path)  
         time2 = time.time()
         time_sec = time2-time1
         print ("time_sec: ",time_sec)
-        print("_________\n")
+        print("_________")
         Learning_Path_id = self.id
         
        

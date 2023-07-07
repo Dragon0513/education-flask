@@ -10,20 +10,20 @@ import time
 
 class GA_Algorithmus(object):
 
-    learning_elements = ["KÜ", "LK", "ZF", "RQ", "SE",
-                         "FO", "ZL", "AN", "ÜB", "BE", "AB", "LZ"]
-    best_population = None
-    n_generation = 80
-    mutate_rate = 0.3
-    cross_rate = 0.8
-    pop_size = 80
-
+   
     def __init__(self,
-                 student_id=0,
-                 learning_path=None,
-                 learning_style={"ref": 1, "sns": 3, "vis": 5, "seq": 5},
-                 learning_elements=None,
-                 id=None):
+                 student_id = 0,
+                 learning_path = None,
+                 learning_style = {"ref": 1, "sns": 3, "vis": 5, "seq": 5},
+                 learning_elements = None,
+                 id = None):
+
+        self.pop_size = 80
+        self.cross_rate = 0.8
+        self.mutate_rate = 0.3
+        self.n_generation = 80
+        self.best_population = None
+
         if id is None:
             self.id = datetime.timestamp(datetime.now())
         else:
@@ -51,20 +51,19 @@ class GA_Algorithmus(object):
             [np.random.permutation(positions)
              for _ in range(self.pop_size)])
         
-        # initialize some populations with Cluster
+        # initialize some populations with Clustering
         with_cluster = False
         with_cluster, labels = self.find_cluster(
             self.le_coordinate,
             n_cluster=3,
             rseed=2)
-
         if( with_cluster ):           
             daten = self.get_daten_cluster(positions, labels)
             self.population[0:self.pop_size-1, :] = daten
 
     def valide_population(self):
 
-        # The first and the last LE are fixed in the LPath
+        # first Learning Element is fixed in the Learning path
         new_pop = np.zeros((self.pop_size,
                             self.le_size),
                            dtype=int)
@@ -90,7 +89,8 @@ class GA_Algorithmus(object):
         return line_x, line_y, line_z, line_k
 
     def get_fitness(self, line_x, line_y, line_z, line_k):
-
+        
+        #Calculate Fitness function
         re = list(zip(line_x, line_y, line_z, line_k))
         total_distance = np.empty((line_x.shape[0],), dtype=np.float64)
         total_sum = (np.square(np.diff(line_x)) +
@@ -266,9 +266,6 @@ class GA_Algorithmus(object):
         print("learning_path",learning_path)  
 
         return learning_path
-
-
-
       
     def get_learning_path(self, input_learning_style={"act": 1, "sns": 7,
                                                       "vis": 5, "glo": 1},
@@ -299,14 +296,13 @@ class GA_Algorithmus(object):
            raise err.WrongLearningStyleDimensionError()
 
         result_ga_LP = self.calculate_learning_path(input_learning_style)  
-        print ("\nresult_ga_LP: ",result_ga_LP)      
-        
+                
         time2 = time.time()
         time_sec = time2-time1
-        print ("time_sec: ",time_sec)
+        print ("Time_sec: ",time_sec)
+        print ("\nResult_ga_LP: ",result_ga_LP)      
         print("_________")
-        Learning_Path_id = self.id
-        
+           
        
         return result_ga_LP
             

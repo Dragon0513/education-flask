@@ -38,9 +38,8 @@ class LearningPath:
                           student_id,
                           learning_style,
                           _algorithm,
-                          list_of_les):
-       
-        print("algorithm",_algorithm)
+                          list_of_les):       
+        
         algorithm = _algorithm.lower()
         if algorithm == "graf":
             path = graf.GrafAlgorithm(
@@ -57,16 +56,14 @@ class LearningPath:
             for ele in result:
                 le_path = le_path + ele[0] + ', '
             self.path = le_path[:-2]
-            print("ACO_path",self.path)
-            print("len", len(list_of_les))    
-       #elif _algorithm == "ga":                  
+             
+        elif _algorithm == "ga":                  
             gaAlgo = ga.GA_Algorithmus(student_id=student_id, 
                                     learning_style=learning_style, 
                                     learning_elements=list_of_les)
             gaAlgo.get_learning_path(input_learning_style=learning_style,
                                               input_Learning_element=list_of_les)
-            print("***path",self.path)
-            print("len", len(list_of_les))                                                       
+                                                               
         else:
             raise err.NoValidAlgorithmError()
         

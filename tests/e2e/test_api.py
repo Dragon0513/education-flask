@@ -2995,6 +2995,29 @@ def test_reset_knowledge(
         assert key in keys_expected
 
 
+# Delete a Contact Form
+@pytest.mark.parametrize("lms_user_id, user_id,\
+                         status_code_expected", [
+    # Working Example
+    (
+        4,
+        4, 
+        201
+    )
+])
+def test_delete_contact_form(
+    client,
+    lms_user_id,
+    user_id,
+    status_code_expected
+):
+    user_id_student = user_id
+    url = path_user + "/" + str(user_id_student) + "/" + \
+        str(lms_user_id) + path_contactform
+    r = client.delete(url)
+    assert r.status_code == status_code_expected
+
+
 # Delete User
 @pytest.mark.parametrize("moodle_user_id, keys_expected,\
                          status_code_expected, student", [

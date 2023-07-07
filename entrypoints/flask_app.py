@@ -1149,6 +1149,14 @@ def contact_form(user_id, lms_user_id):
     return jsonify(result), status_code
 
 
+@app.route("/user/<user_id>/<lms_user_id>/contactform", methods=["DELETE"])
+@cross_origin(supports_credentials=True)
+def delete_contact_form(user_id, lms_user_id):
+    services.delete_contact_form(unit_of_work.SqlAlchemyUnitOfWork(),\
+                                 user_id)
+    return "ok", 201
+
+
 # Log Endpoints
 @app.route("/logs/frontend", methods=['POST'])
 @cross_origin(supports_credentials=True)

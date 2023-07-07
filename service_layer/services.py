@@ -797,6 +797,16 @@ def delete_admin(
         return {}
 
 
+def delete_contact_form(
+        uow: unit_of_work.AbstractUnitOfWork,
+        user_id
+):
+    with uow:
+        uow.contact_form.delete_contact_form(user_id)
+        uow.commit()
+        return {}
+
+
 def delete_course(
         uow: unit_of_work.AbstractUnitOfWork,
         course_id

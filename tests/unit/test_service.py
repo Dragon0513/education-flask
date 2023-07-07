@@ -30,8 +30,8 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
                  learning_path_topic=[],
                  learning_strategy=[],
                  learning_style=[],
-                 list_k=[],
-                 questionnaire=[],
+                 questionnaire_list_k=[],
+                 questionnaire_ils=[],
                  settings=[],
                  student=[],
                  student_course=[],
@@ -65,8 +65,8 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
         self.learning_path_topic = set(learning_path_topic)
         self.learning_strategy = set(learning_strategy)
         self.learning_style = set(learning_style)
-        self.list_k = set(list_k)
-        self.questionnaire = set(questionnaire)
+        self.questionnaire_list_k = set(questionnaire_list_k)
+        self.questionnaire_ils = set(questionnaire_ils)
         self.settings = set(settings)
         self.student = set(student)
         self.student_course = set(student_course)
@@ -186,13 +186,13 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
         learning_style.id = len(self.learning_style) + 1
         self.learning_style.add(learning_style)
 
-    def create_list_k(self, list_k):
-        list_k.id = len(self.list_k) + 1
-        self.list_k.add(list_k)
+    def create_questionnaire_list_k(self, questionnaire_list_k):
+        questionnaire_list_k.id = len(self.questionnaire_list_k) + 1
+        self.questionnaire_list_k.add(questionnaire_list_k)
 
-    def create_questionnaire(self, questionnaire):
-        questionnaire.id = len(self.questionnaire) + 1
-        self.questionnaire.add(questionnaire)
+    def create_questionnaire_ils(self, questionnaire_ils):
+        questionnaire_ils.id = len(self.questionnaire_ils) + 1
+        self.questionnaire_ils.add(questionnaire_ils)
 
     def create_settings(self, settings):
         settings.id = len(self.settings) + 1
@@ -370,21 +370,21 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
         for remove in to_remove:
             self.learning_style.remove(remove)
 
-    def delete_list_k(self, questionnaire_id):
+    def delete_questionnaire_list_k(self, questionnaire_list_k_id):
         to_remove = []
-        for i in self.list_k:
-            if i.questionnaire_id == questionnaire_id:
+        for i in self.questionnaire_list_k:
+            if i.id == questionnaire_list_k_id:
                 to_remove.append(i)
         for remove in to_remove:
-            self.list_k.remove(remove)
+            self.questionnaire_list_k.remove(remove)
 
-    def delete_questionnaire(self, id):
+    def delete_questionnaire_ils(self, questionnaire_ils_id):
         to_remove = []
-        for i in self.questionnaire:
-            if i.id == id:
+        for i in self.questionnaire_ils:
+            if i.id == questionnaire_ils_id:
                 to_remove.append(i)
         for remove in to_remove:
-            self.questionnaire.remove(remove)
+            self.questionnaire_ils.remove(remove)
 
     def delete_settings(self, user_id):
         to_remove = []
@@ -671,23 +671,30 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
                 result.append(i)
         return result
 
-    def get_list_k_by_id(self, questionnaire_id):
+    def get_questionnaire_list_k_by_id(self, questionnaire_list_k_id):
         result = []
-        for i in self.list_k:
-            if i.questionnaire_id == questionnaire_id:
+        for i in self.questionnaire_list_k:
+            if i.id == questionnaire_list_k_id:
                 result.append(i)
         return result
 
-    def get_questionnaire_by_id(self, id):
+    def get_questionnaire_ils_by_id(self, questionnaire_ils_id):
         result = []
-        for i in self.questionnaire:
-            if i.id == id:
+        for i in self.questionnaire_ils:
+            if i.id == questionnaire_ils_id:
                 result.append(i)
         return result
 
-    def get_questionnaire_by_student_id(self, student_id):
+    def get_questionnaire_list_k_by_student_id(self, student_id):
         result = []
-        for i in self.questionnaire:
+        for i in self.questionnaire_list_k:
+            if i.student_id == student_id:
+                result.append(i)
+        return result
+
+    def get_questionnaire_ils_by_student_id(self, student_id):
+        result = []
+        for i in self.questionnaire_ils:
             if i.student_id == student_id:
                 result.append(i)
         return result
@@ -974,8 +981,8 @@ class FakeUnitOfWork(unit_of_work.AbstractUnitOfWork):  # pragma: no cover
         self.learning_path_topic = FakeRepository()
         self.learning_strategy = FakeRepository()
         self.learning_style = FakeRepository()
-        self.list_k = FakeRepository()
-        self.questionnaire = FakeRepository()
+        self.questionnaire_list_k = FakeRepository()
+        self.questionnaire_ils = FakeRepository()
         self.settings = FakeRepository()
         self.student = FakeRepository()
         self.student_course = FakeRepository()
@@ -1070,46 +1077,46 @@ ils_short = [
     "sg_10_f40",
     "sg_11_f44"
 ]
-list_k_ids = [
-    'org1_f1',
-    'org2_f2',
-    'org3_f3',
-    'ela1_f4',
-    'ela2_f5',
-    'ela3_f6',
-    'krp1_f7',
-    'krp2_f8',
-    'krp3_f9',
-    'wie1_f10',
-    'wie2_f11',
-    'wie3_f12',
-    'zp1_f13',
-    'zp2_f14',
-    'zp3_f15',
-    'kon1_f16',
-    'kon2_f17',
-    'kon3_f18',
-    'reg1_f19',
-    'reg2_f20',
-    'reg3_f21',
-    'auf1_f22',
-    'auf2_f23',
-    'auf3_f24',
-    'ans1_f25',
-    'ans2_f26',
-    'ans3_f27',
-    'zei1_f28',
-    'zei2_f29',
-    'zei3_f30',
-    'lms1_f31',
-    'lms2_f32',
-    'lms3_f33',
-    'lit1_f34',
-    'lit2_f35',
-    'lit3_f36',
-    'lu1_f37',
-    'lu2_f38',
-    'lu3_f39'
+questionnaire_list_k_ids = [
+    "org1_f1",
+    "org2_f2",
+    "org3_f3",
+    "elab1_f4",
+    "elab2_f5",
+    "elab3_f6",
+    "crit_rev1_f7",
+    "crit_rev2_f8",
+    "crit_rev3_f9",
+    "rep1_f10",
+    "rep2_f11",
+    "rep3_f12",
+    "goal_plan1_f13",
+    "goal_plan2_f14",
+    "goal_plan3_f15",
+    "con1_f16",
+    "con2_f17",
+    "con3_f18",
+    "reg1_f19",
+    "reg2_f20",
+    "reg3_f21",
+    "att1_f22",
+    "att2_f23",
+    "att3_f24",
+    "eff1_f25",
+    "eff2_f26",
+    "eff3_f27",
+    "time1_f28",
+    "time2_f29",
+    "time3_f30",
+    "lrn_w_cls1_f3",
+    "lrn_w_cls2_f3",
+    "lrn_w_cls3_f3",
+    "lit_res1_f34",
+    "lit_res2_f35",
+    "lit_res3_f36",
+    "lrn_env1_f37",
+    "lrn_env2_f38",
+    "lrn_env3_f39",
 ]
 wrong_test_id = "Test ID"
 
@@ -1683,7 +1690,7 @@ def test_create_ils_input_answers():
     entries_beginning = len(uow.ils_input_answers.ils_input_answers)
     result = services.create_ils_input_answers(
         uow=uow,
-        questionnaire_id=1,
+        questionnaire_ils_id=1,
         answers=ils_input_answers
     )
     entries_after = len(uow.ils_input_answers.ils_input_answers)
@@ -1701,7 +1708,7 @@ def test_create_ils_perception_answers():
     entries_beginning = len(uow.ils_perception_answers.ils_perception_answers)
     result = services.create_ils_perception_answers(
         uow=uow,
-        questionnaire_id=1,
+        questionnaire_ils_id=1,
         answers=ils_perception_answers
     )
     entries_after = len(uow.ils_perception_answers.ils_perception_answers)
@@ -1719,7 +1726,7 @@ def test_create_ils_processing_answers():
     entries_beginning = len(uow.ils_processing_answers.ils_processing_answers)
     result = services.create_ils_processing_answers(
         uow=uow,
-        questionnaire_id=1,
+        questionnaire_ils_id=1,
         answers=ils_processing_answers
     )
     entries_after = len(uow.ils_processing_answers.ils_processing_answers)
@@ -1738,7 +1745,7 @@ def test_create_ils_understanding_answers():
         uow.ils_understanding_answers.ils_understanding_answers)
     result = services.create_ils_understanding_answers(
         uow=uow,
-        questionnaire_id=1,
+        questionnaire_ils_id=1,
         answers=ils_understanding_answers
     )
     entries_after = len(
@@ -1748,67 +1755,75 @@ def test_create_ils_understanding_answers():
     assert entries_beginning + 1 == entries_after
 
 
-def test_create_list_k():
-    uow = FakeUnitOfWork()
-    list_k_answers = {}
-    for key in list_k_ids:
-        list_k_answers[key] = 1
-    entries_beginning = len(uow.list_k.list_k)
-    result = services.create_list_k(
-        uow=uow,
-        questionnaire_id=1,
-        answers=list_k_answers
-    )
-    entries_after = len(uow.list_k.list_k)
-    assert type(result) == dict
-    assert result != {}
-    assert entries_beginning + 1 == entries_after
-
-
-@pytest.mark.parametrize("full_version", [
-    # Working Example short form
-    (
-        True
-    ),
-    # Working Example full form
-    (
-        False
-    )
-])
-def test_create_questionnaire(full_version):
+def test_create_list_k_questionnaire():
     uow = FakeUnitOfWork()
     services.create_learning_characteristics(
         uow=uow,
         student_id=1
     )
-    entries_beginning = len(uow.questionnaire.questionnaire)
-    ils_answers = {}
-    list_k_answers = {}
-    if full_version:
-        for key in ils_complete:
-            ils_answers[key] = "a"
-    else:
-        for key in ils_short:
-            ils_answers[key] = "a"
-    for key in list_k_ids:
-        list_k_answers[key] = 1
-    result = services.create_questionnaire(
+    entries_beginning = len(uow.questionnaire_list_k.questionnaire_list_k)
+    questionnaire_list_k_answers = {}
+
+    for key in questionnaire_list_k_ids:
+        questionnaire_list_k_answers[key] = 1
+    result = services.create_questionnaire_list_k(
         uow=uow,
         student_id=1,
-        ils_answers=ils_answers,
-        list_k_answers=list_k_answers
+        list_k_answers=questionnaire_list_k_answers
     )
-    entries_after = len(uow.questionnaire.questionnaire)
+    entries_after = len(uow.questionnaire_list_k.questionnaire_list_k)
     assert type(result) == dict
     assert result != {}
     assert entries_beginning + 1 == entries_after
-    services.create_questionnaire(
+    services.create_questionnaire_list_k(
         uow=uow,
         student_id=1,
-        ils_answers=ils_answers,
-        list_k_answers=list_k_answers
+        list_k_answers=questionnaire_list_k_answers
     )
-    entries_after2 = len(uow.questionnaire.questionnaire)
+    entries_after2 = len(uow.questionnaire_list_k.questionnaire_list_k)
+    assert type(result) == dict
+    assert result != {}
+    assert entries_after == entries_after2
+
+@pytest.mark.parametrize("full_version", [
+    # Working Example short form
+    (
+            True
+    ),
+    # Working Example full form
+    (
+            False
+    )
+])
+def test_create_questionnaire_ils(full_version):
+    uow = FakeUnitOfWork()
+    services.create_learning_characteristics(
+        uow=uow,
+        student_id=1
+    )
+    entries_beginning = len(uow.questionnaire_ils.questionnaire_ils)
+    questionnaire_ils_answers = {}
+    if full_version:
+        for key in ils_complete:
+            questionnaire_ils_answers[key] = "a"
+    else:
+        for key in ils_short:
+            questionnaire_ils_answers[key] = "a"
+    result = services.create_questionnaire_ils(
+        uow=uow,
+        student_id=1,
+        ils_answers=questionnaire_ils_answers,
+    )
+    entries_after = len(uow.questionnaire_ils.questionnaire_ils)
+    assert type(result) == dict
+    assert result != {}
+    assert entries_beginning + 1 == entries_after
+    services.create_questionnaire_ils(
+        uow=uow,
+        student_id=1,
+        ils_answers=questionnaire_ils_answers,
+    )
+    entries_after2 = len(uow.questionnaire_ils.questionnaire_ils)
     assert type(result) == dict
     assert result != {}
     assert entries_after == entries_after2
@@ -1822,13 +1837,13 @@ def test_delete_ils_input_answers():
             ils_input_answers[key] = "a"
     services.create_ils_input_answers(
         uow=uow,
-        questionnaire_id=1,
+        questionnaire_ils_id=1,
         answers=ils_input_answers
     )
     entries_beginning = len(uow.ils_input_answers.ils_input_answers)
     result = services.delete_ils_input_answers(
         uow=uow,
-        questionnaire_id=1
+        questionnaire_ils_id=1
     )
     entries_after = len(uow.ils_input_answers.ils_input_answers)
     assert type(result) == dict
@@ -1844,13 +1859,13 @@ def test_delete_ils_perception_answers():
             ils_perception_answers[key] = "a"
     services.create_ils_perception_answers(
         uow=uow,
-        questionnaire_id=1,
+        questionnaire_ils_id=1,
         answers=ils_perception_answers
     )
     entries_beginning = len(uow.ils_perception_answers.ils_perception_answers)
     result = services.delete_ils_perception_answers(
         uow=uow,
-        questionnaire_id=1
+        questionnaire_ils_id=1
     )
     entries_after = len(uow.ils_perception_answers.ils_perception_answers)
     assert type(result) == dict
@@ -1866,13 +1881,13 @@ def test_delete_ils_processing_answers():
             ils_processing_answers[key] = "a"
     services.create_ils_processing_answers(
         uow=uow,
-        questionnaire_id=1,
+        questionnaire_ils_id=1,
         answers=ils_processing_answers
     )
     entries_beginning = len(uow.ils_processing_answers.ils_processing_answers)
     result = services.delete_ils_processing_answers(
         uow=uow,
-        questionnaire_id=1
+        questionnaire_ils_id=1
     )
     entries_after = len(uow.ils_processing_answers.ils_processing_answers)
     assert type(result) == dict
@@ -1888,14 +1903,14 @@ def test_delete_ils_understanding_answers():
             ils_understanding_answers[key] = "a"
     services.create_ils_understanding_answers(
         uow=uow,
-        questionnaire_id=1,
+        questionnaire_ils_id=1,
         answers=ils_understanding_answers
     )
     entries_beginning = len(
         uow.ils_understanding_answers.ils_understanding_answers)
     result = services.delete_ils_understanding_answers(
         uow=uow,
-        questionnaire_id=1,
+        questionnaire_ils_id=1,
     )
     entries_after = len(
         uow.ils_understanding_answers.ils_understanding_answers)
@@ -1904,22 +1919,26 @@ def test_delete_ils_understanding_answers():
     assert entries_beginning - 1 == entries_after
 
 
-def test_delete_list_k():
+def test_delete_questionnaire_list_k(full_version):
     uow = FakeUnitOfWork()
-    list_k_answers = {}
-    for key in list_k_ids:
-        list_k_answers[key] = 1
-    services.create_list_k(
+    services.create_learning_characteristics(
         uow=uow,
-        questionnaire_id=1,
-        answers=list_k_answers
+        student_id=1
     )
-    entries_beginning = len(uow.list_k.list_k)
-    result = services.delete_list_k(
+    questionnaire_list_k_answers = {}
+    for key in questionnaire_list_k_ids:
+        questionnaire_list_k_answers[key] = 1
+    services.create_questionnaire_list_k(
         uow=uow,
-        questionnaire_id=1
+        student_id=1,
+        list_k_answers=questionnaire_list_k_answers
     )
-    entries_after = len(uow.list_k.list_k)
+    entries_beginning = len(uow.questionnaire_list_k.questionnaire_list_k)
+    result = services.delete_questionnaire_list_k(
+        uow=uow,
+        questionnaire_list_k_id=1
+    )
+    entries_after = len(uow.questionnaire_list_k.questionnaire_list_k)
     assert type(result) == dict
     assert result == {}
     assert entries_beginning - 1 == entries_after
@@ -1935,34 +1954,30 @@ def test_delete_list_k():
         False
     )
 ])
-def test_delete_questionnaire(full_version):
+def test_delete_questionnaire_ils(full_version):
     uow = FakeUnitOfWork()
     services.create_learning_characteristics(
         uow=uow,
         student_id=1
     )
-    ils_answers = {}
-    list_k_answers = {}
+    questionnaire_ils_answers = {}
     if full_version:
         for key in ils_complete:
-            ils_answers[key] = "a"
+            questionnaire_ils_answers[key] = "a"
     else:
         for key in ils_short:
-            ils_answers[key] = "a"
-    for key in list_k_ids:
-        list_k_answers[key] = 1
-    services.create_questionnaire(
+            questionnaire_ils_answers[key] = "a"
+    services.create_questionnaire_ils(
         uow=uow,
         student_id=1,
-        ils_answers=ils_answers,
-        list_k_answers=list_k_answers
+        ils_answers=questionnaire_ils_answers,
     )
-    entries_beginning = len(uow.questionnaire.questionnaire)
-    result = services.delete_questionnaire(
+    entries_beginning = len(uow.questionnaire_ils.questionnaire_ils)
+    result = services.delete_questionnaire_ils(
         uow=uow,
-        questionnaire_id=1
+        questionnaire_ils_id=1
     )
-    entries_after = len(uow.questionnaire.questionnaire)
+    entries_after = len(uow.questionnaire_ils.questionnaire_ils)
     assert type(result) == dict
     assert result == {}
     assert entries_beginning - 1 == entries_after

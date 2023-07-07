@@ -1,6 +1,5 @@
 from sklearn.metrics import pairwise_distances_argmin
-from domain.tutoringModel import util
-from domain.tutoringModel import model
+from domain.tutoringModel import util ,model
 from datetime import datetime
 import errors as err
 import numpy as np
@@ -58,7 +57,7 @@ class GA_Algorithmus(object):
             n_cluster=3,
             rseed=2)
         if( with_cluster ):           
-            daten = self.get_daten_cluster(positions, labels)
+            daten = self.get_order_cluster(positions, labels)
             self.population[0:self.pop_size-1, :] = daten
 
     def valide_population(self):
@@ -179,8 +178,7 @@ class GA_Algorithmus(object):
 
         i = rng.permutation(daten.shape[0])[:n_cluster]
         centers = daten[i]
-        new_centers = np.unique(centers,axis=0)
-        
+        new_centers = np.unique(centers,axis=0)        
         if(len(new_centers)<n_cluster ):
             return False, labels
 
@@ -198,7 +196,7 @@ class GA_Algorithmus(object):
 
         return True, labels
 
-    def get_daten_cluster(self, daten, labels):
+    def get_order_cluster(self, daten, labels):
 
         labels = labels[1:len(labels)]
 
@@ -269,13 +267,13 @@ class GA_Algorithmus(object):
       
     def get_learning_path(self, input_learning_style={"act": 1, "sns": 7,
                                                       "vis": 5, "glo": 1},
-                          input_Learning_element=None):
+                          input_Learning_element = None):
 
         time1 = time.time()    
          
         if input_learning_style is not None:
             input_learning_style = util.get_learning_style(input_learning_style)  
-            #print("input_learning_style:\n",input_learning_style);
+            print("input_learning_style:\n",input_learning_style);
 
         if (len(input_learning_style) != 4):
             raise err.WrongLearningStyleNumberError()
@@ -285,8 +283,10 @@ class GA_Algorithmus(object):
 
         if util.check_name_learning_style(input_learning_style):
             raise err.WrongLearningStyleDimensionError()
-        if input_Learning_element is not None:            
+        print("---input_Learning_element",input_Learning_element)
+        if input_Learning_element is not None:
             # tranformed set Learning elements to a list LE
+            print("---input_Learning_element",input_Learning_element)
             new_Learning_element = util.add_Learning_element(input_Learning_element)
             self.learning_elements = util.get_learning_element( new_Learning_element)
             self.le_size = len ( self.learning_elements)     
@@ -301,9 +301,8 @@ class GA_Algorithmus(object):
         time_sec = time2-time1
         print ("Time_sec: ",time_sec)
         print ("\nResult_ga_LP: ",result_ga_LP)      
-        print("_________")
            
        
-        return result_ga_LP
+        return ""
             
 

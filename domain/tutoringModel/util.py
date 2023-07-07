@@ -16,8 +16,6 @@ graf = {
     "AB": (0, 0, 1, -1, 0, 0, 0, 1)  # AB
 }
 
-
-
 def get_coordinates(learning_style, learning_elements):
     coordinates = {}
     for elememnt in learning_elements:
@@ -65,7 +63,6 @@ def get_coordinates(learning_style, learning_elements):
             coordinates[elememnt] = tuple(coordinate)
     return coordinates
 
-
 def get_coordinate(learning_style, learning_elements):
 
     dict_coordinates = get_coordinates(learning_style, learning_elements)
@@ -80,7 +77,6 @@ def get_coordinate(learning_style, learning_elements):
 
     return GA_coordinates
 
-
 def check_learning_style(input_learning_style):
 
     is_correct = False
@@ -94,7 +90,6 @@ def check_learning_style(input_learning_style):
                 break
 
     return is_correct
-
 
 def check_name_learning_style(input_learning_style):
     # this function may not be necessary
@@ -122,8 +117,6 @@ def check_name_learning_style(input_learning_style):
 
     return is_correct
 
-
-
 def get_list_LPLE(learning_path, learning_elements, LP_id):
 
     # if(dict_Learning_element is None):
@@ -146,7 +139,6 @@ def get_list_LPLE(learning_path, learning_elements, LP_id):
 
     #print("List_LPLE: ",[i.position for i in List_LPLE])
     return List_LPLE
-
 
 def get_learning_style( learning_style):
    
@@ -180,53 +172,47 @@ def get_learning_style( learning_style):
 
     return result    
 
-
-
 def add_Learning_element(learning_elements):
     #added some learning element for testing
-    #Element without RQ for testing
+    #elemnt without RQ for testing
     elements = ["KÜ", "LK", "ZF", "SE",
-                "FO", "ZL", "AN", "ÜB", "BE", "AB", "LZ"]
+                "FO", "ZL", "AN", "ÜB", "AB", "LZ"]
     id = 0   
-
+    new_learning_elements = learning_elements.copy()
     for element in elements:
-        LearningElement = LE.LearningElement(lms_id=id,
-                                             activity_type=None,
-                                             classification=element,
-                                             name=element,
-                                             university=None,
-                                             created_by=None,
-                                             created_at=None,
-                                             last_updated=None,
-                                             )
-        LearningElement.id= id    
-        learning_elements.add(LearningElement)
-        #print("LE.",LearningElement.classification, " id: ", LearningElement.id, " element:",element)                       
-        #dict_Learning_element[element] = LearningElement        
+        LearningElement ={'id': id,
+                          'lms_id': 1,
+                          'activity_type': element,
+                          'classification': element,
+                          'name': 'Test LE', 
+                          'university': 'TH-AB', 
+                          'created_by': 'Max Mustermann',
+                          'created_at': '2017-01-01',
+                          'last_updated': None,
+                          'student_learning_element': None}  
+        new_learning_elements.append(LearningElement)
+
         id = id+1
-   
-    return learning_elements
 
-
-
+    return new_learning_elements
 
 def get_learning_element( learning_elements):   
-    result = []    
+    classification_learning_element = []    
     lz_is_present = True
     lz_element = ''
-    #print("OBJECT-Learning Element--",type(learning_elements))        
-    for le in learning_elements:            
-        #print("1-Learning Element--",le.classification)
-        if le.classification=='KÜ':
-            result.insert(0,le.classification)
-        elif  le.classification=='LZ':
+    
+    for le in learning_elements:   
+        
+        if le['classification']=='KÜ':
+            classification_learning_element.insert(0,le['classification'])
+        elif  le['classification']=='LZ':
             lz_is_present = True
-            lz_element = le.classification
+            lz_element = le['classification']
         else:    
-            result.append(le.classification)
+            classification_learning_element.append(le['classification'])
 
     if(lz_is_present):
-        result.append(lz_element)       
-   
-    return result   
+        classification_learning_element.append(lz_element)       
+    print("learning elements", classification_learning_element) 
+    return classification_learning_element   
 

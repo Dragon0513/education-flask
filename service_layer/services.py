@@ -621,16 +621,15 @@ def create_questionnaire_list_k(
         )
         uow.questionnaire_list_k.create_questionnaire_list_k(questionnaire_list_k)
         uow.commit()
+        questionnaire_list_k.serialize()
         characteristics = get_learning_characteristics(
             uow,
             student_id
         )
-        questionnaire_list_k.learning_strategy = get_learning_strategy(
+        return get_learning_strategy(
             uow,
             characteristics['id']
         )
-        result = questionnaire_list_k.serialize()
-        return result
 
 
 def create_questionnaire_ils(
@@ -663,6 +662,7 @@ def create_questionnaire_ils(
                 ils_processing_answers[id] = answer
             if id.startswith("sg"):
                 ils_understanding_answers[id] = answer
+        questionnaire_ils.serialize()
         create_ils_input_answers(uow,
                                  questionnaire_ils.id,
                                  ils_input_answers
@@ -683,12 +683,10 @@ def create_questionnaire_ils(
             uow,
             student_id
         )
-        questionnaire_ils.learning_style = get_learning_style(
+        return get_learning_style(
             uow,
             characteristics['id']
         )
-        result = questionnaire_ils.serialize()
-        return result
 
 
 def create_settings(

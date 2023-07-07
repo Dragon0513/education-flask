@@ -225,11 +225,13 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
-    def delete_questionnaire_list_k(self, questionnaire_list_k_id):
+    def delete_questionnaire_list_k(self,
+                                    questionnaire_list_k_id):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def delete_questionnaire_ils(self, questionnaire_ils_id):
+    def delete_questionnaire_ils(self,
+                                 questionnaire_ils_id):
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -453,7 +455,7 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
 
     @abc.abstractmethod
     def get_questionnaire_list_k_by_id(self,
-                                       questionnaire_list_k_id) \
+                                       questionnaire_list_k_id: LM.QuestionnaireListK) \
             -> LM.QuestionnaireListK:
         raise NotImplementedError
 
@@ -883,7 +885,7 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
             raise err.CreationError()
 
     def create_questionnaire_list_k(self,
-                                    questionnaire_list_k: LM.QuestionnaireListK)\
+                                    questionnaire_list_k)\
             -> LM.QuestionnaireListK:
         try:
             self.session.add(questionnaire_list_k)
@@ -893,7 +895,7 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
             raise err.CreationError()
 
     def create_questionnaire_ils(self,
-                                 questionnaire_ils: LM.QuestionnaireIls)\
+                                 questionnaire_ils)\
             -> LM.QuestionnaireIls:
         try:
             self.session.add(questionnaire_ils)
@@ -1103,7 +1105,7 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         questionnaire_list_k = self.get_questionnaire_list_k_by_id(questionnaire_list_k_id)
         if questionnaire_list_k != []:
             self.session.query(LM.QuestionnaireListK).filter_by(
-                questionnaire_list_k_id=questionnaire_list_k_id).delete()
+                id=questionnaire_list_k_id).delete()
         else:
             raise err.NoValidIdError()
 
@@ -1111,7 +1113,7 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         questionnaire_ils = self.get_questionnaire_ils_by_id(questionnaire_ils_id)
         if questionnaire_ils != []:
             self.session.query(LM.QuestionnaireIls).filter_by(
-                questionnaire_ils_id=questionnaire_ils_id).delete()
+                id=questionnaire_ils_id).delete()
         else:
             raise err.NoValidIdError()
 
@@ -1406,10 +1408,10 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         else:
             return result
 
-    def get_questionnaire_list_k_by_id(self, questionnaire_list_k) \
+    def get_questionnaire_list_k_by_id(self, questionnaire_list_k)\
             -> LM.QuestionnaireListK:
         result = self.session.query(LM.QuestionnaireListK).filter_by(
-            questionnaire_list_k=questionnaire_list_k).all()
+            id=questionnaire_list_k).all()
         if result == []:
             raise err.NoValidIdError()
         else:
@@ -1418,13 +1420,13 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
     def get_questionnaire_ils_by_id(self, questionnaire_ils)\
             -> LM.QuestionnaireIls:
         result = self.session.query(LM.QuestionnaireIls).filter_by(
-            questionnaire_ils=questionnaire_ils).all()
+            id=questionnaire_ils).all()
         if result == []:
             raise err.NoValidIdError()
         else:
             return result
 
-    def get_questionnaire_list_k_by_student_id(self, student_id) \
+    def get_questionnaire_list_k_by_student_id(self, student_id)\
             -> LM.QuestionnaireListK:
         result = self.session.query(LM.QuestionnaireListK).filter_by(
             student_id=student_id).all()

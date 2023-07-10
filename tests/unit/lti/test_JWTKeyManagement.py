@@ -36,7 +36,8 @@ def test_load_jwt():
 
 
 def test_sign_verify_jwt():
-    """Test if a payload can be signed with a private key and verified with the public key."""
+    """Test if a payload can be signed with a\
+        private key and verified with the public key."""
     # Arrange
     test_dictionary = {"a": "b"}
 

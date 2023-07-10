@@ -414,10 +414,9 @@ def create_learning_path(
                 position=1,
                 learning_element=None,
             )
-            uow.learning_path_learning_element.\
-                create_learning_path_learning_element(
-                path_element
-            )
+            uow.learning_path_learning_element\
+                .create_learning_path_learning_element(
+                    path_element)
             learning_path.path = le["classification"]
             result = learning_path.serialize()
         else:
@@ -453,10 +452,10 @@ def create_learning_path(
                             position=i + 1,
                             learning_element=None,
                         )
-                        uow.learning_path_learning_element.\
-                            create_learning_path_learning_element(
-                            path_element
-                        )
+                        uow.learning_path_learning_element\
+                            .create_learning_path_learning_element(
+                                path_element
+                            )
         uow.commit()
         return result
 
@@ -822,10 +821,10 @@ def delete_learning_path_learning_element(
     uow: unit_of_work.AbstractUnitOfWork, learning_path_id
 ):
     with uow:
-        uow.learning_path_learning_element.\
-            delete_learning_path_learning_element(
-            learning_path_id
-        )
+        uow.learning_path_learning_element\
+            .delete_learning_path_learning_element(
+                learning_path_id
+            )
         uow.commit()
 
 
@@ -988,10 +987,10 @@ def delete_student_learning_element_visit(
     uow: unit_of_work.AbstractUnitOfWork, student_id
 ):
     with uow:
-        uow.student_learning_element_visit.\
-            delete_student_learning_element_visit(
-            student_id
-        )
+        uow.student_learning_element_visit\
+            .delete_student_learning_element_visit(
+                student_id
+            )
         uow.commit()
 
 
@@ -1034,9 +1033,10 @@ def delete_topic_learning_element_by_learning_element(
     uow: unit_of_work.AbstractUnitOfWork, learning_element_id
 ):
     with uow:
-        uow.topic_learning_element.delete_topic_learning_element_by_learning_element(
-            learning_element_id
-        )
+        uow.topic_learning_element\
+            .delete_topic_learning_element_by_learning_element(
+                learning_element_id
+            )
         uow.commit()
         return {}
 
@@ -1348,9 +1348,10 @@ def get_learning_element_recommendation(
         path = get_learning_path(
             uow, user_id, lms_user_id, student_id, course_id, topic_id
         )
-        result = uow.learning_path_learning_element.get_learning_element_recommendation(
-            path["id"]
-        )
+        result = uow.learning_path_learning_element\
+            .get_learning_element_recommendation(
+                path["id"]
+            )
         return get_learning_element_by_id(
             uow,
             user_id,
@@ -1379,10 +1380,8 @@ def get_learning_path(
         if learning_path == []:
             result = {}
         else:
-            les_for_path = uow.learning_path_learning_element.\
-                get_learning_path_learning_element(
-                learning_path[0].id
-            )
+            les_for_path = uow.learning_path_learning_element\
+                .get_learning_path_learning_element(learning_path[0].id)
             les = []
             for le in les_for_path:
                 le_by_id = get_learning_element_by_id(
@@ -1600,9 +1599,10 @@ def get_topic_learning_element_by_learning_element(
     uow: unit_of_work.AbstractUnitOfWork, learning_element_id
 ) -> dict:
     with uow:
-        topic_learning_element = uow.topic_learning_element.get_topic_learning_element_by_learning_element(
-            learning_element_id
-        )
+        topic_learning_element = uow.topic_learning_element\
+            .get_topic_learning_element_by_learning_element(
+                learning_element_id
+            )
         if topic_learning_element == []:
             result = {}
         else:
@@ -1908,9 +1908,9 @@ def update_previous_learning_element_visit(
     uow: unit_of_work.AbstractUnitOfWork, student_id, visit_time
 ) -> dict:
     with uow:
-        uow.student_learning_element_visit.update_previous_learning_element_visit(
-            student_id, visit_time
-        )
+        uow.student_learning_element_visit\
+            .update_previous_learning_element_visit(
+                student_id, visit_time)
         uow.commit()
 
 
@@ -2009,7 +2009,8 @@ def get_user_info(uow: unit_of_work.AbstractUnitOfWork, user_id: str) -> str:
 
 
 def get_oidc_login(request: Request, tool_conf):
-    """Return OIDC login url or error response in case of wrong parameters, unsecure or request"""
+    """Return OIDC login url or error response\
+        in case of wrong parameters, unsecure or request"""
     oidc_login = OIDCLoginFlask(request, tool_conf)
     return oidc_login.check_params().auth_redirect()
 

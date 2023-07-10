@@ -1,6 +1,7 @@
 import os  # pragma: no cover
 
-# start the flask app in the background as long as the pytest command is running
+# start the flask app in the background as
+# long as the pytest command is running
 # flask run in the background
 # windows
 os.system("start /B flask run")  # pragma: no cover

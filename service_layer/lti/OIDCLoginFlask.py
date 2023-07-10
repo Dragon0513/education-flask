@@ -282,7 +282,8 @@ class OIDCLoginFlask(OIDCLogin):
                 e, message="Error\
                     in check_auth", status_code=400
             )
-        # redirect to tool (login url in frontend) e.g. https://haski.app/login?nonce=...
+        # redirect to tool (login url in frontend)
+        # e.g. https://haski.app/login?nonce=...
         response = redirect(
             self._platform.frontend_login_url
             + "?"

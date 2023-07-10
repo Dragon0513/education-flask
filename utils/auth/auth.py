@@ -33,8 +33,8 @@ def authorize(required_permissions: list[Permissions]):
                 for permission in required_permissions
             ):
                 raise err.UnauthorizedError(
-                    message="You do not have the necessary permissions to perform \
-                        this action",
+                    message="You do not have the necessary\
+                        permissions to perform this action",
                     status_code=401,
                 )
 

@@ -1,19 +1,21 @@
-class Platform():
-    def __init__(self, 
-                default : bool, 
-                client_id : str,
-                tool_url : str,
-                frontend_login_url : str,
-                auth_login_url : str, 
-                auth_token_url : str,
-                target_link_uri : str,
-                key_set_url : str,
-                platform_name : str,
-                key_set : object,
-                private_key_file : str,
-                public_key_file : str,
-                haski_lti_activity: str,
-                deployment_ids : list) -> None:
+class Platform:
+    def __init__(
+        self,
+        default: bool,
+        client_id: str,
+        tool_url: str,
+        frontend_login_url: str,
+        auth_login_url: str,
+        auth_token_url: str,
+        target_link_uri: str,
+        key_set_url: str,
+        platform_name: str,
+        key_set: object,
+        private_key_file: str,
+        public_key_file: str,
+        haski_lti_activity: str,
+        deployment_ids: list,
+    ) -> None:
         self.default = default
         self.client_id = client_id
         self.tool_url = tool_url
@@ -31,7 +33,9 @@ class Platform():
 
     def instance(self):
         if self.platform_name in globals():
-            return globals()[self.platform_name]().lti_launch_from_id_token() # this is secure, because platform_name comes from own config file
+            return globals()[
+                self.platform_name
+            ]().lti_launch_from_id_token()  # this is secure, because platform_name comes from own config file
         return self
 
     def launch(self):

@@ -1,4 +1,4 @@
-class JWTMessage():
+class JWTMessage:
     typ = None  # REQUIRED (JWT)
     alg = None  # REQUIRED (RS256)
     kid = None  # REQUIRED (key id)
@@ -19,19 +19,19 @@ class JWTMessage():
                 raise ValueError(f"JWTMessage: {key} is not set")
 
 
-class LTIContext():
+class LTIContext:
     id = None  # REQUIRED (context id)
     label = None  # OPTIONAL (context label)
     title = None  # OPTIONAL (context title)
     type: list[str]  # OPTIONAL (context type: potential array)
 
 
-class LTIExtension():
+class LTIExtension:
     user_username = None  # OPTIONAL (user username)
     lms = None  # OPTIONAL (lms e.g. Moodle Name)
 
 
-class LTILIS():
+class LTILIS:
     person_name_given = None  # OPTIONAL (person name given)
     person_name_family = None  # OPTIONAL (person name family)
     person_name_full = None  # OPTIONAL (person name full)
@@ -41,13 +41,13 @@ class LTILIS():
     course_section_sourcedid = None  # OPTIONAL (course section sourcedid)
 
 
-class LTIResourceLink():
+class LTIResourceLink:
     id = None  # REQUIRED (resource link id)
     title = None  # OPTIONAL (resource link title)
     description = None  # OPTIONAL (resource link description)
 
 
-class LTILISResultSourcedIdData():
+class LTILISResultSourcedIdData:
     instanceid = None  # REQUIRED (instance id)
     userid = None  # REQUIRED (user id)
     typeid = None  # REQUIRED (type id)
@@ -55,17 +55,17 @@ class LTILISResultSourcedIdData():
     hash = None  # REQUIRED (hash)
 
 
-class LTILISResultSourcedId():
+class LTILISResultSourcedId:
     data: LTILISResultSourcedIdData
 
 
-class LTIBasicOutcome():
+class LTIBasicOutcome:
     # REQUIRED (lis result sourcedid)
     lis_result_sourcedid: LTILISResultSourcedId
     lis_outcome_service_url = None  # REQUIRED (lis outcome service url)
 
 
-class LTILaunchPresentation():
+class LTILaunchPresentation:
     document_target = None  # OPTIONAL (document target)
     height = None  # OPTIONAL (height)
     width = None  # OPTIONAL (width)
@@ -74,7 +74,7 @@ class LTILaunchPresentation():
     css_url = None  # OPTIONAL (css url)
 
 
-class LTIToolPlatform():
+class LTIToolPlatform:
     guid = None  # OPTIONAL (guid)
     name = None  # OPTIONAL (name: site name)
     version = None  # OPTIONAL (version: e.g. "2022112800")
@@ -86,9 +86,10 @@ class LTIToolPlatform():
 class LTIIDToken(JWTMessage):
     """
     Holds the ID Token from the LTI 1.3 OIDC Authentication Response. The token contains LTI claims and is signed by the LMS.
-    https://www.imsglobal.org/spec/security/v1p0/#id-token 
+    https://www.imsglobal.org/spec/security/v1p0/#id-token
     https://www.imsglobal.org/spec/security/v1p0/#authentication-response-validation
     """
+
     deployment_id = None  # REQUIRED (deployment id)
     target_link_uri = None  # REQUIRED (target link uri)
     lis: LTILIS  # OPTIONAL (LIS) Learning Information Services
@@ -114,7 +115,12 @@ class LTIIDToken(JWTMessage):
         super().__init__()
 
         for key in self.__dict__:
-            if key == "deployment_id" or key == "target_link_uri" or key == "message_type" or key == "nonce":
+            if (
+                key == "deployment_id"
+                or key == "target_link_uri"
+                or key == "message_type"
+                or key == "nonce"
+            ):
                 if self.__dict__[key] is None:
                     raise ValueError(f"LTIIDToken: {key} is not set")
             else:

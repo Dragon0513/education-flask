@@ -5,7 +5,8 @@ from service_layer.lti.lms.Platform import Platform
 
 
 class OIDCLogin(ABC):
-    ''' Base class for OIDC login. Derive from this class and implement the abstract methods '''
+    """Base class for OIDC login. Derive from this class and implement the abstract methods"""
+
     _platform: Platform
 
     def __init__(self, request, tool_config: ToolConfigJson):
@@ -13,7 +14,7 @@ class OIDCLogin(ABC):
         self._tool_config = tool_config
 
     @abstractmethod
-    def check_params(self) -> 'OIDCLogin':
+    def check_params(self) -> "OIDCLogin":
         pass
 
     @abstractmethod
@@ -25,7 +26,7 @@ class OIDCLogin(ABC):
         pass
 
     @abstractmethod
-    def verify_id_token(self) -> 'OIDCLogin':
+    def verify_id_token(self) -> "OIDCLogin":
         pass
 
     @abstractmethod
@@ -38,7 +39,7 @@ class OIDCLogin(ABC):
 
     @staticmethod
     def make_url_accept_param(url):
-        if '?' in url:
-            return url + '&'
+        if "?" in url:
+            return url + "&"
         else:
-            return url + '?'
+            return url + "?"

@@ -12,7 +12,7 @@ influence = {
     "AN": (1, -1, 1, -1, 1, -1, 0, 0),
     "ÜB": (1, -1, 1, 1, 0, 0, 0, 0),
     "BE": (-1, 1, 1, -1, 0, 0, 0, 1),
-    "AB": (0, 0, 1, -1, 0, 0, 0, 1)
+    "AB": (0, 0, 1, -1, 0, 0, 0, 1),
 }
 
 
@@ -27,52 +27,60 @@ def get_coordinates(learning_style, list_of_les):
         elif elememnt == cons.abbreviation_as:
             coordinates[cons.abbreviation_as] = (-12, -12, -12, -12)
         elif elememnt == cons.abbreviation_cc:
-            if(learning_style['processing_dimension'] == 'ref'
-               and learning_style['understanding_dimension'] == 'seq'):
-                if learning_style['processing_value'] >\
-                        learning_style['understanding_value']:
+            if (
+                learning_style["processing_dimension"] == "ref"
+                and learning_style["understanding_dimension"] == "seq"
+            ):
+                if (
+                    learning_style["processing_value"]
+                    > learning_style["understanding_value"]
+                ):
                     coordinates[cons.abbreviation_cc] = (11, 11, 11, 11)
                 else:
                     coordinates[cons.abbreviation_cc] = (0, 0, 0, 0)
-            elif(learning_style['processing_dimension'] == 'ref'
-                 or learning_style['understanding_dimension'] == 'glo'):
+            elif (
+                learning_style["processing_dimension"] == "ref"
+                or learning_style["understanding_dimension"] == "glo"
+            ):
                 coordinates[cons.abbreviation_cc] = (11, 11, 11, 11)
             else:
                 coordinates[cons.abbreviation_cc] = (0, 0, 0, 0)
         else:
             coordinate = list()
-            if learning_style['processing_dimension'] == "act":
+            if learning_style["processing_dimension"] == "act":
                 coordinate.append(
-                    learning_style['processing_value']
-                    * influence[elememnt][0])
-            elif learning_style['processing_dimension'] == "ref":
+                    learning_style["processing_value"] * influence[elememnt][0]
+                )
+            elif learning_style["processing_dimension"] == "ref":
                 coordinate.append(
-                    learning_style['processing_value']
-                    * influence[elememnt][1])
-            if learning_style['perception_dimension'] == "sns":
+                    learning_style["processing_value"] * influence[elememnt][1]
+                )
+            if learning_style["perception_dimension"] == "sns":
                 coordinate.append(
-                    learning_style['perception_value']
-                    * influence[elememnt][2])
-            elif learning_style['perception_dimension'] == "int":
+                    learning_style["perception_value"] * influence[elememnt][2]
+                )
+            elif learning_style["perception_dimension"] == "int":
                 coordinate.append(
-                    learning_style['perception_value']
-                    * influence[elememnt][3])
-            if learning_style['input_dimension'] == "vis":
+                    learning_style["perception_value"] * influence[elememnt][3]
+                )
+            if learning_style["input_dimension"] == "vis":
                 coordinate.append(
-                    learning_style['input_value']
-                    * influence[elememnt][4])
-            elif learning_style['input_dimension'] == "vrb":
+                    learning_style["input_value"] * influence[elememnt][4]
+                )
+            elif learning_style["input_dimension"] == "vrb":
                 coordinate.append(
-                    learning_style['input_value']
-                    * influence[elememnt][5])
-            if learning_style['understanding_dimension'] == "seq":
+                    learning_style["input_value"] * influence[elememnt][5]
+                )
+            if learning_style["understanding_dimension"] == "seq":
                 coordinate.append(
-                    learning_style['understanding_value']
-                    * influence[elememnt][6])
-            elif learning_style['understanding_dimension'] == "glo":
+                    learning_style["understanding_value"]
+                    * influence[elememnt][6]
+                )
+            elif learning_style["understanding_dimension"] == "glo":
                 coordinate.append(
-                    learning_style['understanding_value']
-                    * influence[elememnt][7])
+                    learning_style["understanding_value"]
+                    * influence[elememnt][7]
+                )
             coordinates[elememnt] = tuple(coordinate)
     return coordinates
 

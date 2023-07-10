@@ -1,9 +1,11 @@
 import os
 from pathlib import Path
 
+
 def get_project_root() -> str:
-    """ Returns project root folder. """
+    """Returns project root folder."""
     return str(Path(__file__).absolute().parent)
+
 
 def get_postgres_uri():  # pragma: no cover
     host = os.environ.get("DB_HOST", "127.0.0.1")

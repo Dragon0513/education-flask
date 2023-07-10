@@ -1,6 +1,3 @@
-from cryptography.hazmat.primitives import (
-    serialization as crypto_serialization,
-)
 from service_layer.crypto.cryptorandom import CryptoRandom
 import service_layer.crypto.JWTKeyManagement as jwt
 from service_layer.service import SessionServiceFlask

@@ -4,10 +4,10 @@ import os
 # Establishing the connection
 conn = psycopg2.connect(
     database="postgres",
-    user='postgres',
+    user="postgres",
     password=os.environ.get("DB_PASSWORD", "postgres"),
     host=os.environ.get("DB_HOST", "localhost"),
-    port=os.environ.get("DB_PORT", 5432)
+    port=os.environ.get("DB_PORT", 5432),
 )
 conn.autocommit = True
 
@@ -15,7 +15,7 @@ conn.autocommit = True
 cursor = conn.cursor()
 
 # Preparing query to create a database
-sql = '''CREATE database haski'''
+sql = """CREATE database haski"""
 
 # Creating a database
 cursor.execute(sql)
@@ -27,10 +27,10 @@ conn.close()
 # Establishing the connection
 conn = psycopg2.connect(
     database=os.environ.get("DB_NAME", "haski"),
-    user='postgres',
+    user="postgres",
     password=os.environ.get("DB_PASSWORD", "postgres"),
     host=os.environ.get("DB_HOST", "127.0.0.1"),
-    port=os.environ.get("DB_PORT", 5432)
+    port=os.environ.get("DB_PORT", 5432),
 )
 
 conn.autocommit = True
@@ -74,7 +74,7 @@ cursor.execute("DROP TABLE IF EXISTS ils_understanding_answers")
 cursor.execute("DROP TABLE IF EXISTS list_k")
 
 # Creating table as per requirement
-sql = '''
+sql = """
     CREATE TABLE IF NOT EXISTS public."haski_user"
     (
         id integer NOT NULL GENERATED ALWAYS AS IDENTITY
@@ -90,10 +90,10 @@ sql = '''
 
     ALTER TABLE IF EXISTS public."haski_user"
         OWNER to postgres;
-'''
+"""
 cursor.execute(sql)
 
-sql = '''
+sql = """
     CREATE TABLE IF NOT EXISTS public.settings
     (
         id integer NOT NULL GENERATED ALWAYS AS IDENTITY
@@ -113,10 +113,10 @@ sql = '''
 
     ALTER TABLE IF EXISTS public.settings
         OWNER to postgres;
-'''
+"""
 cursor.execute(sql)
 
-sql = '''
+sql = """
     CREATE TABLE IF NOT EXISTS public.admin
     (
         id integer NOT NULL GENERATED ALWAYS AS IDENTITY
@@ -133,10 +133,10 @@ sql = '''
 
     ALTER TABLE IF EXISTS public.admin
         OWNER to postgres;
-'''
+"""
 cursor.execute(sql)
 
-sql = '''
+sql = """
     CREATE TABLE IF NOT EXISTS public.course_creator
     (
         id integer NOT NULL GENERATED ALWAYS AS IDENTITY
@@ -153,10 +153,10 @@ sql = '''
 
     ALTER TABLE IF EXISTS public.course_creator
         OWNER to postgres;
-'''
+"""
 cursor.execute(sql)
 
-sql = '''
+sql = """
     CREATE TABLE IF NOT EXISTS public.teacher
     (
         id integer NOT NULL GENERATED ALWAYS AS IDENTITY
@@ -173,10 +173,10 @@ sql = '''
 
     ALTER TABLE IF EXISTS public.teacher
         OWNER to postgres;
-'''
+"""
 cursor.execute(sql)
 
-sql = '''
+sql = """
     CREATE TABLE IF NOT EXISTS public.student
     (
         id integer NOT NULL GENERATED ALWAYS AS IDENTITY
@@ -193,10 +193,10 @@ sql = '''
 
     ALTER TABLE IF EXISTS public.student
         OWNER to postgres;
-'''
+"""
 cursor.execute(sql)
 
-sql = '''
+sql = """
     CREATE TABLE IF NOT EXISTS public.course
     (
         id integer NOT NULL GENERATED ALWAYS AS IDENTITY
@@ -211,10 +211,10 @@ sql = '''
 
     ALTER TABLE IF EXISTS public.course
         OWNER to postgres;
-'''
+"""
 cursor.execute(sql)
 
-sql = '''
+sql = """
     CREATE TABLE IF NOT EXISTS public.topic
     (
         id integer NOT NULL GENERATED ALWAYS AS IDENTITY
@@ -240,10 +240,10 @@ sql = '''
 
     ALTER TABLE IF EXISTS public.topic
         OWNER to postgres;
-'''
+"""
 cursor.execute(sql)
 
-sql = '''
+sql = """
     CREATE TABLE IF NOT EXISTS public.learning_element
     (
         id integer NOT NULL GENERATED ALWAYS AS IDENTITY
@@ -263,10 +263,10 @@ sql = '''
 
     ALTER TABLE IF EXISTS public.learning_element
         OWNER to postgres;
-'''
+"""
 cursor.execute(sql)
 
-sql = '''
+sql = """
     CREATE TABLE IF NOT EXISTS public.course_topic
     (
         id integer NOT NULL GENERATED ALWAYS AS IDENTITY
@@ -288,10 +288,10 @@ sql = '''
 
     ALTER TABLE IF EXISTS public.course_topic
         OWNER to postgres;
-'''
+"""
 cursor.execute(sql)
 
-sql = '''
+sql = """
     CREATE TABLE IF NOT EXISTS public.topic_learning_element
     (
         id integer NOT NULL GENERATED ALWAYS AS IDENTITY
@@ -313,10 +313,10 @@ sql = '''
 
     ALTER TABLE IF EXISTS public.topic_learning_element
         OWNER to postgres;
-'''
+"""
 cursor.execute(sql)
 
-sql = '''
+sql = """
     CREATE TABLE IF NOT EXISTS public.learning_characteristics
     (
         id integer NOT NULL GENERATED ALWAYS AS IDENTITY
@@ -333,10 +333,10 @@ sql = '''
 
     ALTER TABLE IF EXISTS public.learning_characteristics
         OWNER to postgres;
-'''
+"""
 cursor.execute(sql)
 
-sql = '''
+sql = """
     CREATE TABLE IF NOT EXISTS public.learning_style
     (
         id integer NOT NULL GENERATED ALWAYS AS IDENTITY
@@ -361,10 +361,10 @@ sql = '''
 
     ALTER TABLE IF EXISTS public.learning_style
         OWNER to postgres;
-'''
+"""
 cursor.execute(sql)
 
-sql = '''
+sql = """
     CREATE TABLE IF NOT EXISTS public.learning_strategy
     (
         id integer NOT NULL GENERATED ALWAYS AS IDENTITY
@@ -381,10 +381,10 @@ sql = '''
 
     ALTER TABLE IF EXISTS public.learning_strategy
         OWNER to postgres;
-'''
+"""
 cursor.execute(sql)
 
-sql = '''
+sql = """
     CREATE TABLE IF NOT EXISTS public.knowledge
     (
         id integer NOT NULL GENERATED ALWAYS AS IDENTITY
@@ -401,10 +401,10 @@ sql = '''
 
     ALTER TABLE IF EXISTS public.knowledge
         OWNER to postgres;
-'''
+"""
 cursor.execute(sql)
 
-sql = '''
+sql = """
     CREATE TABLE IF NOT EXISTS public.learning_analytics
     (
         id integer NOT NULL GENERATED ALWAYS AS IDENTITY
@@ -421,10 +421,10 @@ sql = '''
 
     ALTER TABLE IF EXISTS public.learning_analytics
         OWNER to postgres;
-'''
+"""
 cursor.execute(sql)
 
-sql = '''
+sql = """
     CREATE TABLE IF NOT EXISTS public.course_creator_course
     (
         id integer NOT NULL GENERATED ALWAYS AS IDENTITY
@@ -448,10 +448,10 @@ sql = '''
 
     ALTER TABLE IF EXISTS public.course_creator_course
         OWNER to postgres;
-'''
+"""
 cursor.execute(sql)
 
-sql = '''
+sql = """
     CREATE TABLE IF NOT EXISTS public.teacher_course
     (
         id integer NOT NULL GENERATED ALWAYS AS IDENTITY
@@ -473,10 +473,10 @@ sql = '''
 
     ALTER TABLE IF EXISTS public.teacher_course
         OWNER to postgres;
-'''
+"""
 cursor.execute(sql)
 
-sql = '''
+sql = """
     CREATE TABLE IF NOT EXISTS public.student_course
     (
         id integer NOT NULL GENERATED ALWAYS AS IDENTITY
@@ -506,10 +506,10 @@ sql = '''
 
     ALTER TABLE IF EXISTS public.student_course
         OWNER to postgres;
-'''
+"""
 cursor.execute(sql)
 
-sql = '''
+sql = """
     CREATE TABLE IF NOT EXISTS public.student_topic
     (
         id integer NOT NULL GENERATED ALWAYS AS IDENTITY
@@ -533,10 +533,10 @@ sql = '''
 
     ALTER TABLE IF EXISTS public.student_topic
         OWNER to postgres;
-'''
+"""
 cursor.execute(sql)
 
-sql = '''
+sql = """
     CREATE TABLE IF NOT EXISTS public.student_topic_visit
     (
         id integer NOT NULL GENERATED ALWAYS AS IDENTITY
@@ -560,10 +560,10 @@ sql = '''
 
     ALTER TABLE IF EXISTS public.student_topic_visit
         OWNER to postgres;
-'''
+"""
 cursor.execute(sql)
 
-sql = '''
+sql = """
     CREATE TABLE IF NOT EXISTS public.student_learning_element
     (
         id integer NOT NULL GENERATED ALWAYS AS IDENTITY
@@ -587,10 +587,10 @@ sql = '''
 
     ALTER TABLE IF EXISTS public.student_learning_element
         OWNER to postgres;
-'''
+"""
 cursor.execute(sql)
 
-sql = '''
+sql = """
     CREATE TABLE IF NOT EXISTS public.student_learning_element_visit
     (
         id integer NOT NULL GENERATED ALWAYS AS IDENTITY
@@ -614,10 +614,10 @@ sql = '''
 
     ALTER TABLE IF EXISTS public.student_learning_element_visit
         OWNER to postgres;
-'''
+"""
 cursor.execute(sql)
 
-sql = '''
+sql = """
     CREATE TABLE IF NOT EXISTS public.learning_element_rating
     (
         id integer NOT NULL GENERATED ALWAYS AS IDENTITY
@@ -638,10 +638,10 @@ sql = '''
 
     ALTER TABLE IF EXISTS public.learning_element_rating
         OWNER to postgres;
-'''
+"""
 cursor.execute(sql)
 
-sql = '''
+sql = """
     CREATE TABLE IF NOT EXISTS public.learning_path
     (
         id integer NOT NULL GENERATED ALWAYS AS IDENTITY
@@ -670,10 +670,10 @@ sql = '''
 
     ALTER TABLE IF EXISTS public.learning_path
         OWNER to postgres;
-'''
+"""
 cursor.execute(sql)
 
-sql = '''
+sql = """
     CREATE TABLE IF NOT EXISTS public.learning_path_topic
     (
         id integer NOT NULL GENERATED ALWAYS AS IDENTITY
@@ -697,10 +697,10 @@ sql = '''
 
     ALTER TABLE IF EXISTS public.learning_path_topic
         OWNER to postgres;
-'''
+"""
 cursor.execute(sql)
 
-sql = '''
+sql = """
     CREATE TABLE IF NOT EXISTS public.learning_path_learning_element
     (
         id integer NOT NULL GENERATED ALWAYS AS IDENTITY
@@ -724,10 +724,10 @@ sql = '''
 
     ALTER TABLE IF EXISTS public.learning_path_learning_element
         OWNER to postgres;
-'''
+"""
 cursor.execute(sql)
 
-sql = '''
+sql = """
     CREATE TABLE IF NOT EXISTS public.questionnaire
     (
         id integer NOT NULL GENERATED ALWAYS AS IDENTITY
@@ -744,10 +744,10 @@ sql = '''
 
     ALTER TABLE IF EXISTS public.questionnaire
         OWNER to postgres;
-'''
+"""
 cursor.execute(sql)
 
-sql = '''
+sql = """
     CREATE TABLE IF NOT EXISTS public.ils_input_answers
     (
         id integer NOT NULL GENERATED ALWAYS AS IDENTITY
@@ -775,10 +775,10 @@ sql = '''
 
     ALTER TABLE IF EXISTS public.ils_input_answers
         OWNER to postgres;
-'''
+"""
 cursor.execute(sql)
 
-sql = '''
+sql = """
     CREATE TABLE IF NOT EXISTS public.ils_perception_answers
     (
         id integer NOT NULL GENERATED ALWAYS AS IDENTITY
@@ -807,10 +807,10 @@ sql = '''
 
     ALTER TABLE IF EXISTS public.ils_perception_answers
         OWNER to postgres;
-'''
+"""
 cursor.execute(sql)
 
-sql = '''
+sql = """
     CREATE TABLE IF NOT EXISTS public.ils_processing_answers
     (
         id integer NOT NULL GENERATED ALWAYS AS IDENTITY
@@ -838,10 +838,10 @@ sql = '''
 
     ALTER TABLE IF EXISTS public.ils_processing_answers
         OWNER to postgres;
-'''
+"""
 cursor.execute(sql)
 
-sql = '''
+sql = """
     CREATE TABLE IF NOT EXISTS public.ils_understanding_answers
     (
         id integer NOT NULL GENERATED ALWAYS AS IDENTITY
@@ -869,10 +869,10 @@ sql = '''
 
     ALTER TABLE IF EXISTS public.ils_understanding_answers
         OWNER to postgres;
-'''
+"""
 cursor.execute(sql)
 
-sql = '''
+sql = """
     CREATE TABLE IF NOT EXISTS public.list_k
     (
         id integer NOT NULL GENERATED ALWAYS AS IDENTITY
@@ -928,7 +928,7 @@ sql = '''
 
     ALTER TABLE IF EXISTS public.list_k
         OWNER to postgres;
-'''
+"""
 cursor.execute(sql)
 
 conn.commit()

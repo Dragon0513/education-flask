@@ -1640,7 +1640,7 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
                 .all()
             )
         except Exception as e:
-            raise err.DatabaseQueryError()
+            raise err.DatabaseQueryError(e)
 
     def update_course(self, course_id, course) -> DM.Course:
         course_exist = self.get_course_by_id(course_id)
@@ -1695,14 +1695,22 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
                 .filter_by(id=learning_element_id)
                 .update(
                     {
-                        DM.LearningElement.lms_id: learning_element.lms_id,
-                        DM.LearningElement.activity_type: learning_element.activity_type,
-                        DM.LearningElement.classification: learning_element.classification,
-                        DM.LearningElement.name: learning_element.name,
-                        DM.LearningElement.created_by: learning_element.created_by,
-                        DM.LearningElement.created_at: learning_element.created_at,
-                        DM.LearningElement.last_updated: learning_element.last_updated,
-                        DM.LearningElement.university: learning_element.university,
+                        DM.LearningElement.lms_id:
+                        learning_element.lms_id,
+                        DM.LearningElement.activity_type:
+                        learning_element.activity_type,
+                        DM.LearningElement.classification:
+                        learning_element.classification,
+                        DM.LearningElement.name:
+                        learning_element.name,
+                        DM.LearningElement.created_by:
+                        learning_element.created_by,
+                        DM.LearningElement.created_at:
+                        learning_element.created_at,
+                        DM.LearningElement.last_updated:
+                        learning_element.last_updated,
+                        DM.LearningElement.university:
+                        learning_element.university,
                     }
                 )
             )
@@ -1732,15 +1740,24 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
                 .filter_by(characteristic_id=characteristic_id)
                 .update(
                     {
-                        LM.LearningStyle.characteristic_id: learning_style.characteristic_id,
-                        LM.LearningStyle.perception_dimension: learning_style.perception_dimension,
-                        LM.LearningStyle.perception_value: learning_style.perception_value,
-                        LM.LearningStyle.input_dimension: learning_style.input_dimension,
-                        LM.LearningStyle.input_value: learning_style.input_value,
-                        LM.LearningStyle.processing_dimension: learning_style.processing_dimension,
-                        LM.LearningStyle.processing_value: learning_style.processing_value,
-                        LM.LearningStyle.understanding_dimension: learning_style.understanding_dimension,
-                        LM.LearningStyle.understanding_value: learning_style.understanding_value,
+                        LM.LearningStyle.characteristic_id:
+                        learning_style.characteristic_id,
+                        LM.LearningStyle.perception_dimension:
+                        learning_style.perception_dimension,
+                        LM.LearningStyle.perception_value:
+                        learning_style.perception_value,
+                        LM.LearningStyle.input_dimension:
+                        learning_style.input_dimension,
+                        LM.LearningStyle.input_value:
+                        learning_style.input_value,
+                        LM.LearningStyle.processing_dimension:
+                        learning_style.processing_dimension,
+                        LM.LearningStyle.processing_value:
+                        learning_style.processing_value,
+                        LM.LearningStyle.understanding_dimension:
+                        learning_style.understanding_dimension,
+                        LM.LearningStyle.understanding_value:
+                        learning_style.understanding_value,
                     }
                 )
             )

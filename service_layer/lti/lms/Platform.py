@@ -35,7 +35,9 @@ class Platform:
         if self.platform_name in globals():
             return globals()[
                 self.platform_name
-            ]().lti_launch_from_id_token()  # this is secure, because platform_name comes from own config file
+                # this is secure, because platform_name
+                # comes from own config file
+            ]().lti_launch_from_id_token()
         return self
 
     def launch(self):

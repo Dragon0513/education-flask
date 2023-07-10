@@ -46,20 +46,22 @@ sessions: dict[str, Session] = {}  # key is nonce, value is session
 
 # State JWT as described in
 # https://tools.ietf.org/html/draft-bradley-oauth-jwt-encoded-state-09
-def set_state_jwt(nonce_identifier: str, auth_login_url: str, tool_url: str):
+def set_state_jwt(
+        nonce_identifier: str, auth_login_url: str, tool_url: str,
+        key="state_jwt"):
     check_expiration()
     if nonce_identifier not in sessions:
         sessions[nonce_identifier] = Session()
     sessions[nonce_identifier]["state"] = CryptoRandom().getrandomstring(32)
     sessions[nonce_identifier][
-        "state_jwt"
+        key
     ] = JWTKeyManagement.generate_state_jwt(
         nonce_identifier,
         sessions[nonce_identifier]["state"],
         auth_login_url,
         tool_url,
     )
-    return sessions[nonce_identifier]["state_jwt"]
+    return sessions[nonce_identifier][key]
 
 
 def set(nonce_identifier: str, key, value):

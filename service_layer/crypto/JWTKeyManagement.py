@@ -35,7 +35,8 @@ def load_public_key():
     if not os.path.exists(public_key_location()):
         raise err.KeyNotFoundError(
             message="Public key location:" + public_key_location() +
-            " not found. Please generate a key pair as described in the README.md.")
+            " not found. Please generate a\
+                key pair as described in the README.md.")
     with open(os.path.abspath(public_key_location()), "rb") as key_file:
         public_key = crypto_serialization.\
             load_pem_public_key(key_file.read())
@@ -53,8 +54,8 @@ def verify_jwt(
     jwt_token: str,
     key: str | bytes | Mapping[str, Any] | Key = load_public_key().decode(),
 ):
-    """Returns the payload of the JWT token if it is valid, 
-    otherwise raises an exception"""
+    """Returns the payload of the JWT token if it is valid,
+     otherwise raises an exception"""
     try:
         return json.loads(
             jws.verify(jwt_token, key, algorithms=["RS256"]).decode("UTF-8")
@@ -74,7 +75,8 @@ def sign_jwt(payload: dict):
     if not os.path.exists(private_key_location()):
         raise err.KeyNotFoundError(
             message="Private key location:" + public_key_location() +
-            " not found. Please generate a key pair as described in the README.md.")
+            " not found. Please generate a key pair as\
+                described in the README.md.")
     with open(os.path.abspath(private_key_location()), "rb") as key_file:
         private_key = crypto_serialization.load_pem_private_key(
             key_file.read(), password=None
@@ -130,7 +132,8 @@ def generate_state_jwt(
 
 
 def verify_jwt_payload(jwt_payload, verify_nonce=True) -> bool:
-    """Verifies the payload of a JWT token. Returns True if the payload is valid, otherwise False."""
+    """Verifies the payload of a JWT token. Returns\
+        True if the payload is valid, otherwise False."""
     if verify_nonce and not SessionServiceFlask.get(
         jwt_payload["nonce"], "state"
     ):
@@ -155,7 +158,7 @@ def verify_jwt_payload(jwt_payload, verify_nonce=True) -> bool:
 def verify_state_jwt_payload(
     state_jwt_payload, verify_nonce=True, session=True
 ) -> bool:
-    if verify_jwt_payload(state_jwt_payload, verify_nonce) == False:
+    if not verify_jwt_payload(state_jwt_payload, verify_nonce):
         return False
     # verify state in storage
     if session:

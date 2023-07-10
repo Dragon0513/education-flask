@@ -163,8 +163,8 @@ class OIDCLoginFlask(OIDCLogin):
 
     def verify_state(self) -> "OIDCLoginFlask":
         """Verify the state parameter
-        If the state parameter is not valid, the request 
-        is rejected with a 403 Forbidden response.
+        If the state parameter is not valid, the request
+         is rejected with a 403 Forbidden response.
         """
         # 🔑 check auth
 
@@ -188,8 +188,8 @@ class OIDCLoginFlask(OIDCLogin):
 
     def verify_id_token(self) -> "OIDCLoginFlask":
         """Verify the id_token
-        If the id_token is not valid, 
-        the request is rejected with a 403 Forbidden response.
+        If the id_token is not valid,
+         the request is rejected with a 403 Forbidden response.
         """
 
         # check if error in request
@@ -207,7 +207,8 @@ class OIDCLoginFlask(OIDCLogin):
         id_token_jwt = self._request.form.get("id_token", type=str) or ""
         if not id_token_jwt:
             raise err.ErrorException(
-                message="Invalid id_token, crypto key signature or lti config data of LMS may have changed",
+                message="Invalid id_token, crypto key\
+                    signature or lti config data of LMS may have changed",
                 status_code=400,)
 
         id_token_header_unverified = JWTKeyManagement.get_unverified_header(
@@ -248,7 +249,8 @@ class OIDCLoginFlask(OIDCLogin):
         return self
 
     def lti_launch_from_id_token(self) -> Response:
-        """Launch LTI from id_token. Redirects to Frontend with nonce jwt in URL."""
+        """Launch LTI from id_token. Redirects\
+            to Frontend with nonce jwt in URL."""
         # state from form
         state_form_jwt = self._request.form.get("state", type=str) or ""
         state_form = JWTKeyManagement.verify_jwt(state_form_jwt)
@@ -277,7 +279,8 @@ class OIDCLoginFlask(OIDCLogin):
                 )
         except Exception as e:
             raise err.ErrorException(
-                e, message="Error in check_auth", status_code=400
+                e, message="Error\
+                    in check_auth", status_code=400
             )
         # redirect to tool (login url in frontend) e.g. https://haski.app/login?nonce=...
         response = redirect(

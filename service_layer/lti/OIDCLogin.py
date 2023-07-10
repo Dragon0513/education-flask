@@ -5,7 +5,8 @@ from service_layer.lti.lms.Platform import Platform
 
 
 class OIDCLogin(ABC):
-    """Base class for OIDC login. Derive from this class and implement the abstract methods"""
+    """Base class for OIDC login. Derive from\
+        this class and implement the abstract methods"""
 
     _platform: Platform
 

@@ -4,7 +4,8 @@ class JWTMessage:
     kid = None  # REQUIRED (key id)
     iss = None  # REQUIRES (issuer)
     aud = None  # REQUIRED (audience)
-    sub = None  # REQUIRED subject identifier  It MUST NOT exceed 255 ASCII characters in length
+    sub = None  # REQUIRED subject identifier and
+    # It MUST NOT exceed 255 ASCII characters in length
     exp = None  # REQUIRED (expiration time)
     iat = None  # REQUIRED (issued at)
     nonce = None  # REQUIRED (nonce)
@@ -85,7 +86,8 @@ class LTIToolPlatform:
 
 class LTIIDToken(JWTMessage):
     """
-    Holds the ID Token from the LTI 1.3 OIDC Authentication Response. The token contains LTI claims and is signed by the LMS.
+    Holds the ID Token from the LTI 1.3 OIDC Authentication Response.\
+        The token contains LTI claims and is signed by the LMS.
     https://www.imsglobal.org/spec/security/v1p0/#id-token
     https://www.imsglobal.org/spec/security/v1p0/#authentication-response-validation
     """

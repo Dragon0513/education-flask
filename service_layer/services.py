@@ -414,7 +414,8 @@ def create_learning_path(
                 position=1,
                 learning_element=None,
             )
-            uow.learning_path_learning_element.create_learning_path_learning_element(
+            uow.learning_path_learning_element.\
+                create_learning_path_learning_element(
                 path_element
             )
             learning_path.path = le["classification"]
@@ -452,7 +453,8 @@ def create_learning_path(
                             position=i + 1,
                             learning_element=None,
                         )
-                        uow.learning_path_learning_element.create_learning_path_learning_element(
+                        uow.learning_path_learning_element.\
+                            create_learning_path_learning_element(
                             path_element
                         )
         uow.commit()
@@ -820,7 +822,8 @@ def delete_learning_path_learning_element(
     uow: unit_of_work.AbstractUnitOfWork, learning_path_id
 ):
     with uow:
-        uow.learning_path_learning_element.delete_learning_path_learning_element(
+        uow.learning_path_learning_element.\
+            delete_learning_path_learning_element(
             learning_path_id
         )
         uow.commit()
@@ -985,7 +988,8 @@ def delete_student_learning_element_visit(
     uow: unit_of_work.AbstractUnitOfWork, student_id
 ):
     with uow:
-        uow.student_learning_element_visit.delete_student_learning_element_visit(
+        uow.student_learning_element_visit.\
+            delete_student_learning_element_visit(
             student_id
         )
         uow.commit()
@@ -1375,7 +1379,8 @@ def get_learning_path(
         if learning_path == []:
             result = {}
         else:
-            les_for_path = uow.learning_path_learning_element.get_learning_path_learning_element(
+            les_for_path = uow.learning_path_learning_element.\
+                get_learning_path_learning_element(
                 learning_path[0].id
             )
             les = []
@@ -1394,61 +1399,6 @@ def get_learning_path(
             learning_path[0].path = les
             result = learning_path[0].serialize()
         return result
-
-
-# def get_topic_learning_path(
-#     uow: unit_of_work.AbstractUnitOfWork,
-#     user_id,
-#     course_lms_id,
-#     topic_lms_id
-# ):
-#     # get user
-#     # get <string>university of user
-#     # get course where university = user university and lms_id = course_lms_id
-#     # ## User to Student
-#     # get student where user_id = user.id
-#     # if no student, throw error
-#     # get topic where lms_id = topic_lms_id and university = user university and parent_id = null
-#     # get topic learning path where student_id = student.id and course_id = course.id and topic_id = topic.id
-#     user: UA.User=get_user_by_id(uow, user_id)[0]
-#     university_string = user.university
-#     course: DM.Course = uow.get_course_by_lms_id_and_university(uow, course_lms_id, university_string)[0]
-#     student: UA.Student = uow.get_student_by_user_id(uow, user_id)[0]
-#     if student is None:
-#         err.DatabaseQueryError(message="No student found for user id: " + str(user_id))
-#     topic: DM.Topic = uow.get_topic_by_lms_id_and_university_and_parent_id(uow, topic_lms_id, university_string, None)[0]
-#     topic_learning_path: TM.LearningPath = uow.get_topic_learning_path_by_student_id_and_course_id_and_topic_id(uow, student.id, course.id, topic.id)[0]
-
-
-#         get_course_by_id(uow, user_id, lms_user_id, course_id)
-#         learning_path = uow.learning_path.get_learning_path(
-#             student_id,
-#             course_id,
-#             topic_id
-#         )
-#         if learning_path == []:
-#             result = {}
-#         else:
-#             les_for_path = uow.learning_path_learning_element\
-#                 .get_learning_path_learning_element(
-#                     learning_path[0].id
-#                 )
-#             les = []
-#             for le in les_for_path:
-#                 le_by_id = get_learning_element_by_id(
-#                     uow,
-#                     user_id,
-#                     lms_user_id,
-#                     student_id,
-#                     course_id,
-#                     topic_id,
-#                     le.learning_element_id
-#                 )
-#                 le.learning_element = le_by_id
-#                 les.append(le.serialize())
-#             learning_path[0].path = les
-#             result = learning_path[0].serialize()
-#         return result
 
 
 def get_learning_paths(

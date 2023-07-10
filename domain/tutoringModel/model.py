@@ -61,11 +61,11 @@ class LearningPath:
             gaAlgo = ga.GA_Algorithmus(student_id=student_id, 
                                     learning_style=learning_style, 
                                     learning_elements=list_of_les)
-            gaAlgo.get_learning_path(input_learning_style=learning_style,
+            self.path = gaAlgo.get_learning_path(input_learning_style=learning_style,
                                               input_Learning_element=list_of_les)
                                                                
         else:
-            raise err.NoValidAlgorithmError()
+            raise err.NoValidAlgorithmError()        
         
 
     def prepare_le_for_aco(self, list_of_les):

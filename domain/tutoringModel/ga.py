@@ -1,5 +1,5 @@
 from sklearn.metrics import pairwise_distances_argmin
-from domain.tutoringModel import util ,model
+from domain.tutoringModel import util, utils,model
 from datetime import datetime
 import errors as err
 import numpy as np
@@ -29,21 +29,22 @@ class GA_Algorithmus(object):
             self.id = id
         
         if(learning_elements is not None):
-
             self.learning_elements = learning_elements
-
-        self.le_size = len(self.learning_elements)
+            self.le_size = len(self.learning_elements)
 
         if learning_path is None:
-
             self.learning_path = None 
         else:
             self.learning_path = learning_path
-
         self.student_id = student_id
 
-    def create_random_population(self):
-
+    def create_random_population(self,dict_coordinates):
+            
+          
+        self.le_coordinate = np.array([dict_coordinates[key] for key in dict_coordinates])
+        self.le_coordinate.reshape((len(dict_coordinates), 4))      
+      
+        
         # generate population with random position 
         positions = np.arange(1, self.le_size)
         self.population = np.vstack(
@@ -53,13 +54,12 @@ class GA_Algorithmus(object):
         # initialize some populations with Clustering
         with_cluster = False
         with_cluster, labels = self.find_cluster(
-            self.le_coordinate,
-            n_cluster=3,
-            rseed=2)
+                self.le_coordinate, n_cluster=3, rseed=2)
         if( with_cluster ):           
             daten = self.get_order_cluster(positions, labels)
-            self.population[0:self.pop_size-1, :] = daten
+            self.population[0:-2, :] = daten
 
+   
     def valide_population(self):
 
         # first Learning Element is fixed in the Learning path
@@ -113,7 +113,6 @@ class GA_Algorithmus(object):
     def crossover(self, parent, pop):
 
         if np.random.rand() < self.cross_rate:
-
             samples = 2
             i_ = np.random.randint(0, samples, size=1)
             # choose crossover learning elements
@@ -214,11 +213,11 @@ class GA_Algorithmus(object):
 
         euclidean_distance = 0
         best_total_score = 300
-        self.le_coordinate = util.get_coordinate(
-            learning_style, self.learning_elements)
-
-        self.create_random_population()
-
+        le_coordinate = utils.get_coordinates(
+            learning_style, self.learning_elements)        
+       
+        self.create_random_population(le_coordinate)
+        
         for generatiion in range(self.n_generation):
 
             new_pop = self.valide_population()
@@ -272,37 +271,36 @@ class GA_Algorithmus(object):
         time1 = time.time()    
          
         if input_learning_style is not None:
-            input_learning_style = util.get_learning_style(input_learning_style)  
-            print("input_learning_style:\n",input_learning_style);
+            learning_style = util.get_learning_style(input_learning_style)  
+            print("input_learning_style:\n",learning_style);
 
-        if (len(input_learning_style) != 4):
+        if (len(learning_style) != 4):
             raise err.WrongLearningStyleNumberError()
 
-        if util.check_learning_style(input_learning_style):
+        if util.check_learning_style(learning_style):
             raise err.WrongLearningStyleDimensionError()         
 
-        if util.check_name_learning_style(input_learning_style):
+        if util.check_name_learning_style(learning_style):
             raise err.WrongLearningStyleDimensionError()
-        print("---input_Learning_element",input_Learning_element)
+       
         if input_Learning_element is not None:
-            # tranformed set Learning elements to a list LE
-            print("---input_Learning_element",input_Learning_element)
+            
+           #print("---input_Learning_element",input_Learning_element)
             new_Learning_element = util.add_Learning_element(input_Learning_element)
             self.learning_elements = util.get_learning_element( new_Learning_element)
-            self.le_size = len ( self.learning_elements)     
+            self.le_size = len ( self.learning_elements)
+            print ("\n\n\ninput_Learning_element",input_Learning_element) 
 
-        else:
-           print ("Error Input_learning_element is None")
+        else:           
            raise err.WrongLearningStyleDimensionError()
 
         result_ga_LP = self.calculate_learning_path(input_learning_style)  
                 
-        time2 = time.time()
-        time_sec = time2-time1
-        print ("Time_sec: ",time_sec)
-        print ("\nResult_ga_LP: ",result_ga_LP)      
-           
+        #time2 = time.time()
+        #time_sec = time2-time1
+        #print ("Time_sec: ",time_sec)
+        #print ("\nResult_ga_LP: ",result_ga_LP)       
        
-        return ""
+        return result_ga_LP
             
 

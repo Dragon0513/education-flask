@@ -61,14 +61,14 @@ def get_coordinates(learning_style, learning_elements):
                     coordinate.append(
                         learning_style['glo'] * graf[elememnt][7])
             coordinates[elememnt] = tuple(coordinate)
+            print("coordinate//*****", coordinate)
     return coordinates
 
 def get_coordinate(learning_style, learning_elements):
 
     dict_coordinates = get_coordinates(learning_style, learning_elements)
-    #ele = ["KÜ", "LK", "ZF", "RQ", "SE", "FO", "ZL", "AN", "ÜB", "BE", "AB", "LZ"]
-
-    ele = len(learning_elements)
+   
+    ele = len(dict_coordinates)
     GA_coordinates = np.zeros((ele, 4))
     idx = 0
     for key in dict_coordinates.keys():
@@ -175,9 +175,10 @@ def get_learning_style( learning_style):
 def add_Learning_element(learning_elements):
     #added some learning element for testing
     #elemnt without RQ for testing
-    elements = ["KÜ", "LK", "ZF", "SE",
+    elements = ["KÜ", "EK", "ZF", "SE",
                 "FO", "ZL", "AN", "ÜB", "AB", "LZ"]
-    id = 0   
+    id = 0
+    
     new_learning_elements = learning_elements.copy()
     for element in elements:
         LearningElement ={'id': id,
@@ -193,12 +194,12 @@ def add_Learning_element(learning_elements):
         new_learning_elements.append(LearningElement)
 
         id = id+1
-
+    #print ("new_learning_elements",new_learning_elements)
     return new_learning_elements
 
 def get_learning_element( learning_elements):   
     classification_learning_element = []    
-    lz_is_present = True
+    lz_is_present = False
     lz_element = ''
     
     for le in learning_elements:   
@@ -213,6 +214,6 @@ def get_learning_element( learning_elements):
 
     if(lz_is_present):
         classification_learning_element.append(lz_element)       
-    print("learning elements", classification_learning_element) 
+    #print("learning elements", classification_learning_element) 
     return classification_learning_element   
 

@@ -1660,23 +1660,6 @@ def test_create_contact_form():
     assert type(result) == dict
     assert result != {}
 
-'''
-def test_delete_contact_form():
-    uow = FakeUnitOfWork()
-    create_student_for_tests(uow)
-    services.create_contact_form(uow, 1, 1,
-                                 "Lernelement",
-                                 "Funktionalität",
-                                 "Test",
-                                 datetime.datetime.now()
-                                 )
-    entries_beginning = len(uow.contact_form.contact_form)
-    result = services.delete_contact_form(uow, 1)
-    assert type(result) is dict
-    assert result == {}
-    entries_after = len(uow.contact_form.contact_form)
-    assert entries_beginning - 1 == entries_after
-'''
 
 def test_get_learning_characteristics():
     uow = FakeUnitOfWork()

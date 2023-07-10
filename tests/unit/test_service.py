@@ -1,11 +1,19 @@
+from unittest.mock import MagicMock, patch
 import pytest
 import repositories.repository as repository
 from service_layer import services, unit_of_work
 from domain.userAdministartion import model as UA
 import time
 import errors.errors as err
+import service_layer.crypto.JWTKeyManagement as JWTKeyManagement
 
 
+@patch.multiple(
+    JWTKeyManagement,
+    verify_jwt=MagicMock(return_value={"state": "state"}),
+    verify_jwt_payload=MagicMock(return_value=True),
+    load_public_key=MagicMock(return_value="public_key"),
+)
 class FakeRepository(repository.AbstractRepository):  # pragma: no cover
     def __init__(
         self,

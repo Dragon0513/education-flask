@@ -1,7 +1,6 @@
 import json
 import unittest
 from unittest.mock import patch, MagicMock
-from flask import Flask
 import errors.errors as err
 from utils.auth.permissions import Permissions
 from utils.auth.auth import authorize
@@ -10,6 +9,7 @@ import service_layer.crypto.JWTKeyManagement as JWTKeyManagement
 
 class TestAuthorizeDecorator(unittest.TestCase):
     def setUp(self):
+        from flask import Flask
         self.app = Flask(__name__)
 
     def test_authorized_user(self):
@@ -20,6 +20,7 @@ class TestAuthorizeDecorator(unittest.TestCase):
                 JWTKeyManagement,
                 verify_jwt=MagicMock(return_value=state),
                 verify_jwt_payload=MagicMock(return_value=True),
+                load_public_key=MagicMock(return_value="public_key"),
             ):
                 # Define a test route that requires READ permission
                 @self.app.route("/test")
@@ -43,6 +44,7 @@ class TestAuthorizeDecorator(unittest.TestCase):
                 JWTKeyManagement,
                 verify_jwt=MagicMock(return_value=state),
                 verify_jwt_payload=MagicMock(return_value=True),
+                load_public_key=MagicMock(return_value="public_key"),
             ):
                 # Define a test route that requires READ permission
                 @self.app.route("/test")

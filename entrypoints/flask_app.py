@@ -245,25 +245,24 @@ def course_management(course_id, lms_course_id):
 
 
 # ##### LTI ENDPOINTS #####
-# 1. LTI login is the first step of the OIDC Login workflow initiated by the platform
+# 1. LTI login is the first step of the
+# OIDC Login workflow initiated by the platform
 @app.route("/lti_login", methods=["POST"])
 @cross_origin(supports_credentials=True)
 def lti_login():
     return services.get_oidc_login(request, tool_conf)
 
 
-# 2. After the platform has verified the LTI launch request, it uses this endpoint to which we redirected
-
-
+# 2. After the platform has verified the LTI launch request,
+# it uses this endpoint to which we redirected
 @app.route("/lti_launch", methods=["POST"])
 @cross_origin(supports_credentials=True)
 def lti_launch():
     return services.get_lti_launch(request, tool_conf)
 
 
-# 3. Get cookie for frontend if end of OIDC Login workflow by using a short living valid nonce
-
-
+# 3. Get cookie for frontend if end of OIDC Login workflow
+# by using a short living valid nonce
 @app.route("/login", methods=["POST"])
 @cross_origin(supports_credentials=True)
 def login():
@@ -271,8 +270,6 @@ def login():
 
 
 # 4. Logout by deleting cookie
-
-
 @app.route("/logout", methods=["GET"])
 @cross_origin(supports_credentials=True)
 def logout():
@@ -280,8 +277,6 @@ def logout():
 
 
 # Send the enpoint which launches the LTI tool to the frontend
-
-
 @app.route("/lti_launch_view", methods=["GET"])
 @cross_origin(supports_credentials=True)
 def lti_launch_view():
@@ -293,8 +288,6 @@ def lti_launch_view():
 
 
 # Get user info from cookie
-
-
 @app.route("/lms/user_from_cookie", methods=["GET"])
 @cross_origin(supports_credentials=True)
 def get_user_info():
@@ -1317,25 +1310,6 @@ def get_learning_path(user_id, lms_user_id, student_id, course_id, topic_id):
             )
             status_code = 200
             return jsonify(result), status_code
-
-
-# @app.route("/user/<user_id>/course/<course_lms_id>/topic/<topic_lms_id>/learningpath", methods=['GET'])
-# @cross_origin(supports_credentials=True)
-# def get_topic_learning_path(
-#     user_id,
-#     course_lms_id,
-#     topic_lms_id):
-#     method = request.method
-#     match method:
-#         case 'GET':
-#             result = services.get_topic_learning_path(
-#                 unit_of_work.SqlAlchemyUnitOfWork(),
-#                 user_id,
-#                 course_lms_id,
-#                 topic_lms_id
-#             )
-#             status_code = 200
-#             return jsonify(result), status_code
 
 # User Endpoints
 

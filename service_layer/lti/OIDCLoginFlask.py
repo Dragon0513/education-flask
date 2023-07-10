@@ -57,7 +57,8 @@ class OIDCLoginFlask(OIDCLogin):
             )
 
         # Get the platform settings (same scheme as in the tool config json)
-        # HTTP_ORIGIN is a safe way to get the origin of the request and a way to avoid CSRF attacks
+        # HTTP_ORIGIN is a safe way to get the origin of the request
+        # and a way to avoid CSRF attacks
         # when redirected from http it doesnt work anymore
         try:
             self._platform = self._tool_config.decode_platform(
@@ -85,7 +86,8 @@ class OIDCLoginFlask(OIDCLogin):
                 e, message="target_link_uri is not URL", status_code=400
             )
 
-        # Verify if the target_link_uri is valid and does not redirect to other domain than our tool
+        # Verify if the target_link_uri is valid
+        # and does not redirect to other domain than our tool
         # Verify HTTPS if in production
         try:
             if os.environ.get("FLASK_ENV") == "production":
@@ -103,7 +105,8 @@ class OIDCLoginFlask(OIDCLogin):
                 e, message="target_link_uri invalid", status_code=400
             )
 
-        # Verify if the target_link_uri is valid and does not redirect to other domain than our tool
+        # Verify if the target_link_uri is valid and
+        # does not redirect to other domain than our tool
         if (
             self._oidc_login_params_dict.get("target_link_uri")
             != self._platform.target_link_uri
@@ -119,10 +122,13 @@ class OIDCLoginFlask(OIDCLogin):
         Crafts the redirect url by adding the necessary parameters
         """
 
-        # Create a unique nonce in session for this flow to prevent replay attacks
+        # Create a unique nonce in session for this
+        # flow to prevent replay attacks
         nonce = CryptoRandom().getrandomstring(32)
-        # Create a unique state and state jwt for this flow to ensure integrity of the response
-        # Store nonce and state pair in server side storage for later verification
+        # Create a unique state and state jwt for this flow
+        # to ensure integrity of the response
+        # Store nonce and state pair in server
+        # side storage for later verification
         state_jwt = SessionServiceFlask.set_state_jwt(
             nonce,
             self._platform.auth_login_url,
@@ -157,7 +163,8 @@ class OIDCLoginFlask(OIDCLogin):
 
     def verify_state(self) -> "OIDCLoginFlask":
         """Verify the state parameter
-        If the state parameter is not valid, the request is rejected with a 403 Forbidden response.
+        If the state parameter is not valid, the request 
+        is rejected with a 403 Forbidden response.
         """
         # 🔑 check auth
 
@@ -181,7 +188,8 @@ class OIDCLoginFlask(OIDCLogin):
 
     def verify_id_token(self) -> "OIDCLoginFlask":
         """Verify the id_token
-        If the id_token is not valid, the request is rejected with a 403 Forbidden response.
+        If the id_token is not valid, 
+        the request is rejected with a 403 Forbidden response.
         """
 
         # check if error in request

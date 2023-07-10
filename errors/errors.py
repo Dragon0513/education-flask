@@ -1,6 +1,7 @@
 class AException(Exception):
     """
-    Base class for all custom exceptions. Used for returning a web response with a custom ``message`` and status ``code``.
+    Base class for all custom exceptions. Used for returning a web
+    response with a custom ``message`` and status ``code``.
     """
 
     status_code: int = 500
@@ -229,7 +230,8 @@ class KeyNotFoundError(AException):
     def __init__(
         self,
         exception: Exception | None = None,
-        message="Key not found. Please generate a key pair as described in the README.md.",
+        message="Key not found. Please generate a \
+            key pair as described in the README.md.",
         status_code=404,
     ):
         super().__init__(exception, message, status_code)

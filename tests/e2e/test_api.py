@@ -3001,7 +3001,7 @@ def test_reset_knowledge(
     # Working Example
     (
         4,
-        4, 
+        4,
         201
     )
 ])

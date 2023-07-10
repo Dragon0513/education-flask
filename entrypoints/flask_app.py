@@ -1152,7 +1152,7 @@ def contact_form(user_id, lms_user_id):
 @app.route("/user/<user_id>/<lms_user_id>/contactform", methods=["DELETE"])
 @cross_origin(supports_credentials=True)
 def delete_contact_form(user_id, lms_user_id):
-    services.delete_contact_form(unit_of_work.SqlAlchemyUnitOfWork(),\
+    services.delete_contact_form(unit_of_work.SqlAlchemyUnitOfWork(),
                                  user_id)
     return "ok", 201
 

@@ -68,6 +68,8 @@ def test_nonce_jwt():
 
     # Assert
     assert jwt.verify_jwt_payload(jwt.verify_jwt(token, key_public))
+    assert SessionServiceFlask.get(
+        nonce, "state_jwt") == state_jwt
 
 
 def test_state_jwt():

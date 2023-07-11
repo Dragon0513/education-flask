@@ -3,6 +3,16 @@ class MissingParameterError(Exception):
     description = "Missing parameters in request."
 
 
+class ContactFormError(Exception):
+    code = 400
+    description = "The Contact Form could not be sent."
+
+
+class MissingUserError(Exception):
+    code = 400
+    description = "Missing or invalid user."
+
+
 class WrongLearningStyleDimensionError(Exception):
     code = 400
     description = "The Input Learning Style is out the range [0-11]."

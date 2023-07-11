@@ -6,12 +6,14 @@ from domain.learnersModel import model as LM
 from domain.tutoringModel import model as TM
 from domain.domainModel import model as DM
 import time
+import datetime
 import errors as err
 
 
 class FakeRepository(repository.AbstractRepository):  # pragma: no cover
     def __init__(self,
                  admin=[],
+                 contact_form=[],
                  course=[],
                  course_creator=[],
                  course_creator_course=[],
@@ -46,6 +48,7 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
                  user=[],
                  ):
         self.admin = set(admin)
+        self.contact_form = set(contact_form)
         self.course = set(course)
         self.course_creator = set(course_creator)
         self.course_creator_course = set(course_creator_course)
@@ -198,6 +201,10 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
         settings.id = len(self.settings) + 1
         self.settings.add(settings)
 
+    def create_contact_form(self, contact_form):
+        contact_form.id = len(self.contact_form) + 1
+        self.contact_form.add(contact_form)
+
     def create_student(self, student):
         student.id = len(self.student) + 1
         self.student.add(student)
@@ -225,6 +232,14 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
                 to_remove.append(i)
         for remove in to_remove:
             self.admin.remove(remove)
+
+    def delete_contact_form(self, user_id):
+        to_remove = []
+        for i in self.contact_form:
+            if i.user_id == user_id:
+                to_remove.append(i)
+        for remove in to_remove:
+            self.contact_form.remove(remove)
 
     def delete_course(self, course_id):
         to_remove = []
@@ -949,6 +964,7 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
 class FakeUnitOfWork(unit_of_work.AbstractUnitOfWork):  # pragma: no cover
     def __init__(self):
         self.admin = FakeRepository()
+        self.contact_form = FakeRepository()
         self.course = FakeRepository()
         self.course_creator = FakeRepository()
         self.course_creator_course = FakeRepository()
@@ -1628,6 +1644,19 @@ def test_update_user():
     create_student_for_tests(uow)
     result = services.update_user(
         uow, 1, 1, "Maria Musterfraun", university_example)
+    assert type(result) == dict
+    assert result != {}
+
+
+def test_create_contact_form():
+    uow = FakeUnitOfWork()
+    create_student_for_tests(uow)
+    result = services.create_contact_form(uow, 1, 1,
+                                          "Lernelement",
+                                          "Funktionalität",
+                                          "Test",
+                                          datetime.datetime.now()
+                                          )
     assert type(result) == dict
     assert result != {}
 

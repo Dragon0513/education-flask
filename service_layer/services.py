@@ -797,6 +797,16 @@ def delete_admin(
         return {}
 
 
+def delete_contact_form(
+        uow: unit_of_work.AbstractUnitOfWork,
+        user_id
+):
+    with uow:
+        uow.contact_form.delete_contact_form(user_id)
+        uow.commit()
+        return {}
+
+
 def delete_course(
         uow: unit_of_work.AbstractUnitOfWork,
         course_id
@@ -2073,6 +2083,33 @@ def get_settings_for_user(
             result = {}
         else:
             result = settings[0].serialize()
+        return result
+
+
+def create_contact_form(
+        uow: unit_of_work.AbstractUnitOfWork,
+        user_id,
+        lms_user_id,
+        report_topic,
+        report_type,
+        report_description,
+        date
+) -> dict:
+    with uow:
+        user = get_user_by_id(uow, user_id, lms_user_id)
+        if user == {}:
+            raise err.MissingUserError()
+        else:
+            contact_form = UA.ContactForm(
+                user_id,
+                report_topic,
+                report_type,
+                report_description,
+                date
+            )
+            uow.contact_form.create_contact_form(contact_form)
+            uow.commit()
+            result = contact_form.serialize()
         return result
 
 

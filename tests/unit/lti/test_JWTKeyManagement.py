@@ -1,6 +1,3 @@
-from cryptography.hazmat.primitives import (
-    serialization as crypto_serialization,
-)
 from service_layer.crypto.cryptorandom import CryptoRandom
 import service_layer.crypto.JWTKeyManagement as jwt
 from service_layer.service import SessionServiceFlask
@@ -39,7 +36,8 @@ def test_load_jwt():
 
 
 def test_sign_verify_jwt():
-    """Test if a payload can be signed with a private key and verified with the public key."""
+    """Test if a payload can be signed with a\
+        private key and verified with the public key."""
     # Arrange
     test_dictionary = {"a": "b"}
 
@@ -71,6 +69,8 @@ def test_nonce_jwt():
 
     # Assert
     assert jwt.verify_jwt_payload(jwt.verify_jwt(token, key_public))
+    assert SessionServiceFlask.get(
+        nonce, "state_jwt") == state_jwt
 
 
 def test_state_jwt():

@@ -410,102 +410,36 @@ topic_learning_element = Table(
 
 
 def start_mappers():
-    mapper(
-        UA.Admin, admin
-    )
-    mapper(
-        DM.Course, course
-    )
-    mapper(
-        UA.CourseCreator, course_creator
-    )
-    mapper(
-        DM.CourseCreatorCourse, course_creator_course
-    )
-    mapper(
-        DM.CourseTopic, course_topic
-    )
-    mapper(
-        UA.User, haski_user
-    )
-    mapper(
-        LM.IlsInputAnswers, ils_input_answers
-    )
-    mapper(
-        LM.IlsPerceptionAnswers, ils_perception_answers
-    )
-    mapper(
-        LM.IlsProcessingAnswers, ils_processing_answers
-    )
-    mapper(
-        LM.IlsUnderstandingAnswers, ils_understanding_answers
-    )
-    mapper(
-        LM.Knowledge, knowledge
-    )
-    mapper(
-        LM.LearningAnalytics, learning_analytics
-    )
-    mapper(
-        LM.LearningCharacteristic, learning_charcteristics
-    )
-    mapper(
-        DM.LearningElement, learning_element
-    )
-    mapper(
-        DM.LearningElementRating, learning_element_rating
-    )
-    mapper(
-        TM.LearningPath, learning_path
-    )
-    mapper(
-        TM.LearningPathLearningElement, learning_path_learning_element
-    )
-    mapper(
-        TM.LearningPathTopic, learning_path_topic
-    )
-    mapper(
-        LM.LearningStrategy, learning_strategy
-    )
-    mapper(
-        LM.LearningStyle, learning_style
-    )
-    mapper(
-        LM.QuestionnaireListK, questionnaire_list_k
-    )
-    mapper(
-        LM.QuestionnaireIls, questionnaire_ils
-    )
-    mapper(
-        UA.Settings, settings
-    )
-    mapper(
-        UA.Student, student
-    )
-    mapper(
-        DM.StudentCourse, student_course
-    )
-    mapper(
-        DM.StudentLearningElement, student_learning_element
-    )
-    mapper(
-        DM.StudentLearningElementVisit, student_learning_element_visit
-    )
-    mapper(
-        DM.StudentTopic, student_topic
-    )
-    mapper(
-        DM.StudentTopicVisit, student_topic_visit
-    )
-    mapper(
-        UA.Teacher, teacher
-    )
-    mapper(
-        DM.TeacherCourse, teacher_course
-    )
-    mapper(
-        DM.Topic, topic
-    )
-    mapper(
-        DM.TopicLearningElement, topic_learning_element
-    )
+    mapper(UA.Admin, admin)
+    mapper(DM.Course, course)
+    mapper(UA.CourseCreator, course_creator)
+    mapper(DM.CourseCreatorCourse, course_creator_course)
+    mapper(DM.CourseTopic, course_topic)
+    mapper(UA.User, haski_user)
+    mapper(LM.IlsInputAnswers, ils_input_answers)
+    mapper(LM.IlsPerceptionAnswers, ils_perception_answers)
+    mapper(LM.IlsProcessingAnswers, ils_processing_answers)
+    mapper(LM.IlsUnderstandingAnswers, ils_understanding_answers)
+    mapper(LM.Knowledge, knowledge)
+    mapper(LM.LearningAnalytics, learning_analytics)
+    mapper(LM.LearningCharacteristic, learning_charcteristics)
+    mapper(DM.LearningElement, learning_element)
+    mapper(DM.LearningElementRating, learning_element_rating)
+    mapper(TM.LearningPath, learning_path)
+    mapper(TM.LearningPathLearningElement, learning_path_learning_element)
+    mapper(TM.LearningPathTopic, learning_path_topic)
+    mapper(LM.LearningStrategy, learning_strategy)
+    mapper(LM.LearningStyle, learning_style)
+    mapper(LM.QuestionnaireListK, questionnaire_list_k)
+    mapper(LM.QuestionnaireIls, questionnaire_ils)
+    mapper(UA.Settings, settings)
+    mapper(UA.Student, student)
+    mapper(DM.StudentCourse, student_course)
+    mapper(DM.StudentLearningElement, student_learning_element)
+    mapper(DM.StudentLearningElementVisit, student_learning_element_visit)
+    mapper(DM.StudentTopic, student_topic)
+    mapper(DM.StudentTopicVisit, student_topic_visit)
+    mapper(UA.Teacher, teacher)
+    mapper(DM.TeacherCourse, teacher_course)
+    mapper(DM.Topic, topic)
+    mapper(DM.TopicLearningElement, topic_learning_element)

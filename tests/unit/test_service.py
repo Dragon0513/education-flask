@@ -1,50 +1,56 @@
+from unittest.mock import MagicMock, patch
 import pytest
 import repositories.repository as repository
 from service_layer import services, unit_of_work
 from domain.userAdministartion import model as UA
-from domain.learnersModel import model as LM
-from domain.tutoringModel import model as TM
-from domain.domainModel import model as DM
 import time
-import errors as err
+import errors.errors as err
+import service_layer.crypto.JWTKeyManagement as JWTKeyManagement
 
 
+@patch.multiple(
+    JWTKeyManagement,
+    verify_jwt=MagicMock(return_value={"state": "state"}),
+    verify_jwt_payload=MagicMock(return_value=True),
+    load_public_key=MagicMock(return_value="public_key"),
+)
 class FakeRepository(repository.AbstractRepository):  # pragma: no cover
-    def __init__(self,
-                 admin=[],
-                 course=[],
-                 course_creator=[],
-                 course_creator_course=[],
-                 course_topic=[],
-                 ils_input_answers=[],
-                 ils_perception_answers=[],
-                 ils_processing_answers=[],
-                 ils_understanding_answers=[],
-                 knowledge=[],
-                 learning_analytics=[],
-                 learning_characteristics=[],
-                 learning_element=[],
-                 learning_element_rating=[],
-                 learning_path=[],
-                 learning_path_learning_element=[],
-                 learning_path_topic=[],
-                 learning_strategy=[],
-                 learning_style=[],
-                 questionnaire_list_k=[],
-                 questionnaire_ils=[],
-                 settings=[],
-                 student=[],
-                 student_course=[],
-                 student_learning_element=[],
-                 student_learning_element_visit=[],
-                 student_topic=[],
-                 student_topic_visit=[],
-                 teacher=[],
-                 teacher_course=[],
-                 topic=[],
-                 topic_learning_element=[],
-                 user=[],
-                 ):
+    def __init__(
+            self,
+            admin=[],
+            course=[],
+            course_creator=[],
+            course_creator_course=[],
+            course_topic=[],
+            ils_input_answers=[],
+            ils_perception_answers=[],
+            ils_processing_answers=[],
+            ils_understanding_answers=[],
+            knowledge=[],
+            learning_analytics=[],
+            learning_characteristics=[],
+            learning_element=[],
+            learning_element_rating=[],
+            learning_path=[],
+            learning_path_learning_element=[],
+            learning_path_topic=[],
+            learning_strategy=[],
+            learning_style=[],
+            questionnaire_list_k=[],
+            questionnaire_ils=[],
+            settings=[],
+            student=[],
+            student_course=[],
+            student_learning_element=[],
+            student_learning_element_visit=[],
+            student_topic=[],
+            student_topic_visit=[],
+            teacher=[],
+            teacher_course=[],
+            topic=[],
+            topic_learning_element=[],
+            user=[],
+            ):
         self.admin = set(admin)
         self.course = set(course)
         self.course_creator = set(course_creator)
@@ -61,7 +67,8 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
         self.learning_element_rating = set(learning_element_rating)
         self.learning_path = set(learning_path)
         self.learning_path_learning_element = set(
-            learning_path_learning_element)
+            learning_path_learning_element
+        )
         self.learning_path_topic = set(learning_path_topic)
         self.learning_strategy = set(learning_strategy)
         self.learning_style = set(learning_style)
@@ -72,7 +79,8 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
         self.student_course = set(student_course)
         self.student_learning_element = set(student_learning_element)
         self.student_learning_element_visit = set(
-            student_learning_element_visit)
+            student_learning_element_visit
+        )
         self.student_topic = set(student_topic)
         self.student_topic_visit = set(student_topic_visit)
         self.teacher = set(teacher)
@@ -85,25 +93,23 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
         course_creator_course.id = len(self.course_creator_course) + 1
         self.course_creator_course.add(course_creator_course)
 
-    def add_student_learning_element_visit(self,
-                                           student_learning_element_vist):
-        student_learning_element_vist.id = len(
-            self.student_learning_element_visit) + 1
-        self.student_learning_element_visit\
-            .add(student_learning_element_vist)
+    def add_student_learning_element_visit(
+        self, student_learning_element_vist
+    ):
+        student_learning_element_vist.id = (
+            len(self.student_learning_element_visit) + 1
+        )
+        self.student_learning_element_visit.add(student_learning_element_vist)
 
     def add_student_to_course(self, student_course):
         student_course.id = len(self.student_course) + 1
         self.student_course.add(student_course)
 
-    def add_student_to_learning_element(self,
-                                        student_learning_element):
-        student_learning_element.id =\
-            len(self.student_learning_element) + 1
+    def add_student_to_learning_element(self, student_learning_element):
+        student_learning_element.id = len(self.student_learning_element) + 1
         self.student_learning_element.add(student_learning_element)
 
-    def add_student_to_topic(self,
-                             student_topic):
+    def add_student_to_topic(self, student_topic):
         student_topic.id = len(self.student_topic) + 1
         self.student_topic.add(student_topic)
 
@@ -167,12 +173,13 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
         learning_path.id = len(self.learning_path) + 1
         self.learning_path.add(learning_path)
 
-    def create_learning_path_learning_element(self,
-                                              learning_path_learning_element):
-        learning_path_learning_element.id =\
+    def create_learning_path_learning_element(
+        self, learning_path_learning_element
+    ):
+        learning_path_learning_element.id = (
             len(self.learning_path_learning_element) + 1
-        self.learning_path_learning_element\
-            .add(learning_path_learning_element)
+        )
+        self.learning_path_learning_element.add(learning_path_learning_element)
 
     def create_learning_path_topic(self, learning_path_topic):
         learning_path_topic.id = len(self.learning_path_topic) + 1
@@ -466,8 +473,7 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
         for remove in to_remove:
             self.topic.remove(remove)
 
-    def delete_topic_learning_element_by_topic(self,
-                                               topic_id):
+    def delete_topic_learning_element_by_topic(self, topic_id):
         to_remove = []
         for i in self.topic_learning_element:
             if i.topic_id == topic_id:
@@ -475,8 +481,9 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
         for remove in to_remove:
             self.topic_learning_element.remove(remove)
 
-    def delete_topic_learning_element_by_learning_element(self,
-                                                          learning_element_id):
+    def delete_topic_learning_element_by_learning_element(
+        self, learning_element_id
+    ):
         to_remove = []
         for i in self.topic_learning_element:
             if i.learning_element_id == learning_element_id:
@@ -487,8 +494,7 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
     def delete_user(self, user_id, lms_user_id):
         to_remove = []
         for i in self.user:
-            if i.id == user_id and\
-                    i.lms_user_id == lms_user_id:
+            if i.id == user_id and i.lms_user_id == lms_user_id:
                 to_remove.append(i)
         for remove in to_remove:
             self.user.remove(remove)
@@ -528,8 +534,7 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
                 result.append(i)
         return result
 
-    def get_course_creator_by_id(self,
-                                 user_id):
+    def get_course_creator_by_id(self, user_id):
         result = []
         for i in self.course_creator:
             if i.user_id == user_id:
@@ -637,9 +642,11 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
     def get_learning_path(self, student_id, course_id, topic_id):
         result = []
         for i in self.learning_path:
-            if i.student_id == student_id and\
-                i.course_id == course_id and\
-                    i.topic_id == topic_id:
+            if (
+                i.student_id == student_id
+                and i.course_id == course_id
+                and i.topic_id == topic_id
+            ):
                 result.append(i)
         return result
 
@@ -727,29 +734,27 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
                 result.append(i)
         return result
 
-    def get_student_learning_element(self,
-                                     student_id,
-                                     learning_element_id):
+    def get_student_learning_element(self, student_id, learning_element_id):
         result = []
         for i in self.student_learning_element:
-            if i.student_id == student_id and\
-                    i.learning_element_id == learning_element_id:
+            if (
+                i.student_id == student_id
+                and i.learning_element_id == learning_element_id
+            ):
                 result.append(i)
         return result
 
     def get_student_course(self, student_id, course_id):
         result = []
         for i in self.student_course:
-            if i.student_id == student_id and\
-                    i.course_id == course_id:
+            if i.student_id == student_id and i.course_id == course_id:
                 result.append(i)
         return result
 
     def get_student_topic(self, student_id, topic_id):
         result = []
         for i in self.student_topic:
-            if i.student_id == student_id and\
-                    i.topic_id == topic_id:
+            if i.student_id == student_id and i.topic_id == topic_id:
                 result.append(i)
         return result
 
@@ -763,8 +768,7 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
     def get_student_topic_visit(self, student_id, topic_id):
         result = []
         for i in self.student_topic_visit:
-            if i.student_id == student_id and\
-                    i.topic_id == topic_id:
+            if i.student_id == student_id and i.topic_id == topic_id:
                 result.append(i)
         return result
 
@@ -810,8 +814,9 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
                 result.append(i)
         return result
 
-    def get_topic_learning_element_by_learning_element(self,
-                                                       learning_element_id):
+    def get_topic_learning_element_by_learning_element(
+        self, learning_element_id
+    ):
         result = []
         for i in self.topic_learning_element:
             if i.learning_element_id == learning_element_id:
@@ -821,15 +826,28 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
     def get_user_by_id(self, user_id, lms_user_id):
         result = []
         for i in self.user:
-            if i.id == user_id and\
-                    i.lms_user_id == lms_user_id:
+            if i.id == user_id and i.lms_user_id == lms_user_id:
                 result.append(i)
         return result
-    
+
     def get_user_by_lms_user_id(self, lms_user_id):
         result = []
         for i in self.user:
             if i.lms_user_id == lms_user_id:
+                result.append(i)
+        return result
+
+    def get_user_by_lms_id(self, lms_id):
+        result = []
+        for i in self.user:
+            if i.lms_id == lms_id:
+                result.append(i)
+        return result
+
+    def get_student_by_user_id(self, user_id):
+        result = []
+        for i in self.student:
+            if i.user_id == user_id:
                 result.append(i)
         return result
 
@@ -841,8 +859,7 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
         return result
 
     def update_course(self, course_id, course):
-        to_remove = next(
-            (p for p in self.course if p.id == course_id), None)
+        to_remove = next((p for p in self.course if p.id == course_id), None)
         if to_remove is not None:
             self.course.remove(to_remove)
         course.id = len(self.course)
@@ -850,8 +867,13 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
 
     def update_knowledge(self, characteristic_id, knowledge):
         to_remove = next(
-            (p for p in self.knowledge
-             if p.characteristic_id == characteristic_id), None)
+            (
+                p
+                for p in self.knowledge
+                if p.characteristic_id == characteristic_id
+            ),
+            None,
+        )
         if to_remove is not None:
             self.knowledge.remove(to_remove)
         knowledge.id = len(self.knowledge)
@@ -859,8 +881,13 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
 
     def update_learning_analytics(self, characteristic_id, learning_analytics):
         to_remove = next(
-            (p for p in self.learning_analytics
-             if p.characteristic_id == characteristic_id), None)
+            (
+                p
+                for p in self.learning_analytics
+                if p.characteristic_id == characteristic_id
+            ),
+            None,
+        )
         if to_remove is not None:
             self.learning_analytics.remove(to_remove)
         learning_analytics.id = len(self.learning_analytics)
@@ -868,8 +895,9 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
 
     def update_learning_element(self, learning_element_id, learning_element):
         to_remove = next(
-            (p for p in self.learning_element
-             if p.id == learning_element_id), None)
+            (p for p in self.learning_element if p.id == learning_element_id),
+            None,
+        )
         if to_remove is not None:
             self.learning_element.remove(to_remove)
         learning_element.id = len(self.learning_element)
@@ -877,8 +905,13 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
 
     def update_learning_strategy(self, characteristic_id, learning_strategy):
         to_remove = next(
-            (p for p in self.learning_strategy
-             if p.characteristic_id == characteristic_id), None)
+            (
+                p
+                for p in self.learning_strategy
+                if p.characteristic_id == characteristic_id
+            ),
+            None,
+        )
         if to_remove is not None:
             self.learning_strategy.remove(to_remove)
         learning_strategy.id = len(self.learning_strategy)
@@ -886,33 +919,42 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
 
     def update_learning_style(self, characteristic_id, learning_style):
         to_remove = next(
-            (p for p in self.learning_style
-             if p.characteristic_id == characteristic_id), None)
+            (
+                p
+                for p in self.learning_style
+                if p.characteristic_id == characteristic_id
+            ),
+            None,
+        )
         if to_remove is not None:
             self.learning_style.remove(to_remove)
         learning_style.id = len(self.learning_style)
         self.learning_style.add(learning_style)
 
-    def update_previous_learning_element_visit(self,
-                                               student_id,
-                                               visit_time):
+    def update_previous_learning_element_visit(self, student_id, visit_time):
         to_update = next(
-            (p for p in self.student_learning_element_visit
-             if p.student_id == student_id and
-                p.visit_start is None), None)
+            (
+                p
+                for p in self.student_learning_element_visit
+                if p.student_id == student_id and p.visit_start is None
+            ),
+            None,
+        )
         if to_update is not None:
             self.student_learning_element_visit.remove(to_update)
             to_update.id = len(self.student_learning_element_visit)
             to_update.visit_end = visit_time
             self.student_learning_element_visit.add(to_update)
 
-    def update_previous_topic_visit(self,
-                                    student_id,
-                                    visit_time):
+    def update_previous_topic_visit(self, student_id, visit_time):
         to_update = next(
-            (p for p in self.student_topic_visit
-             if p.student_id == student_id and
-                p.visit_start is None), None)
+            (
+                p
+                for p in self.student_topic_visit
+                if p.student_id == student_id and p.visit_start is None
+            ),
+            None,
+        )
         if to_update is not None:
             self.student_topic_visit.remove(to_update)
             to_update.id = len(self.student_topic_visit)
@@ -921,21 +963,26 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
 
     def update_settings(self, user_id, settings):
         to_remove = next(
-            (p for p in self.settings if p.user_id == user_id), None)
+            (p for p in self.settings if p.user_id == user_id), None
+        )
         if to_remove is not None:
             self.settings.remove(to_remove)
         settings.id = len(self.settings)
         self.settings.add(settings)
 
-    def update_student_learning_element(self,
-                                        student_id,
-                                        learning_element_id,
-                                        visit_time):
+    def update_student_learning_element(
+        self, student_id, learning_element_id, visit_time
+    ):
         to_update = next(
-            (p for p in self.student_learning_element
-             if p.student_id == student_id and
-                p.learning_element_id == learning_element_id and
-                p.visit_start is None), None)
+            (
+                p
+                for p in self.student_learning_element
+                if p.student_id == student_id
+                and p.learning_element_id == learning_element_id
+                and p.visit_start is None
+            ),
+            None,
+        )
         if to_update is not None:
             self.student_learning_element.remove(to_update)
             to_update.id = len(self.student_learning_element)
@@ -944,16 +991,21 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
             self.student_learning_element.add(to_update)
 
     def update_topic(self, topic_id, topic):
-        to_remove = next(
-            (p for p in self.topic if p.id == topic_id), None)
+        to_remove = next((p for p in self.topic if p.id == topic_id), None)
         if to_remove is not None:
             self.topic.remove(to_remove)
         topic.id = len(self.topic)
         self.topic.add(topic)
 
     def update_user(self, user_id, lms_user_id, user):
-        to_remove = next((p for p in self.user if p.id == user_id
-                          and p.lms_user_id == lms_user_id), None)
+        to_remove = next(
+            (
+                p
+                for p in self.user
+                if p.id == user_id and p.lms_user_id == lms_user_id
+            ),
+            None,
+        )
         if to_remove is not None:
             self.user.remove(to_remove)
         user.id = len(self.user)
@@ -1232,18 +1284,12 @@ def create_learning_element_for_tests_2(uow):
 
 
 def create_course_topic_for_tests(uow):
-    services.create_course_topic(
-        uow=uow,
-        course_id=1,
-        topic_id=1
-    )
+    services.create_course_topic(uow=uow, course_id=1, topic_id=1)
 
 
 def create_topic_learning_element_for_tests(uow):
     services.create_topic_learning_element(
-        uow=uow,
-        topic_id=1,
-        learning_element_id=1
+        uow=uow, topic_id=1, learning_element_id=1
     )
 
 
@@ -1260,11 +1306,7 @@ def create_learning_path_for_tests(uow):
 
 
 def add_student_to_course_for_tests(uow):
-    services.add_student_to_course(
-        uow=uow,
-        student_id=1,
-        course_id=1
-    )
+    services.add_student_to_course(uow=uow, student_id=1, course_id=1)
 
 
 def add_student_topic_visit_for_tests(uow):
@@ -1291,16 +1333,8 @@ def add_student_sub_topic_visit_for_tests(uow):
 def test_create_admin():
     uow = FakeUnitOfWork()
     entries_beginning = len(uow.admin.admin)
-    user = UA.User(
-        user_name_example,
-        university_example,
-        1,
-        "admin"
-    )
-    result = services.create_admin(
-        uow=uow,
-        user=user
-    )
+    user = UA.User(user_name_example, university_example, 1, "admin")
+    result = services.create_admin(uow=uow, user=user)
     assert type(result) is dict
     assert result != {}
     entries_after = len(uow.admin.admin)
@@ -1310,16 +1344,8 @@ def test_create_admin():
 def test_create_course_creator():
     uow = FakeUnitOfWork()
     entries_beginning = len(uow.course_creator.course_creator)
-    user = UA.User(
-        user_name_example,
-        university_example,
-        1,
-        "course creator"
-    )
-    result = services.create_course_creator(
-        uow=uow,
-        user=user
-    )
+    user = UA.User(user_name_example, university_example, 1, "course creator")
+    result = services.create_course_creator(uow=uow, user=user)
     assert type(result) is dict
     assert result != {}
     entries_after = len(uow.course_creator.course_creator)
@@ -1329,10 +1355,7 @@ def test_create_course_creator():
 def test_create_settings():
     uow = FakeUnitOfWork()
     entries_beginning = len(uow.settings.settings)
-    result = services.create_settings(
-        uow=uow,
-        user_id=1
-    )
+    result = services.create_settings(uow=uow, user_id=1)
     assert type(result) is dict
     assert result != {}
     entries_after = len(uow.settings.settings)
@@ -1343,23 +1366,17 @@ def test_create_student():
     uow = FakeUnitOfWork()
     student_entries_beginning = len(uow.student.student)
     characteristic_entries_beginning = len(
-        uow.learning_characteristics.learning_characteristics)
+        uow.learning_characteristics.learning_characteristics
+    )
     style_entries_beginning = len(uow.learning_style.learning_style)
-    user = UA.User(
-        user_name_example,
-        university_example,
-        1,
-        "student"
-    )
-    result = services.create_student(
-        uow=uow,
-        user=user
-    )
+    user = UA.User(user_name_example, university_example, 1, "student")
+    result = services.create_student(uow=uow, user=user)
     assert type(result) is dict
     assert result != {}
     student_entries_after = len(uow.student.student)
     characteristic_entries_after = len(
-        uow.learning_characteristics.learning_characteristics)
+        uow.learning_characteristics.learning_characteristics
+    )
     style_entries_after = len(uow.learning_style.learning_style)
     assert student_entries_beginning + 1 == student_entries_after
     assert characteristic_entries_beginning + 1 == characteristic_entries_after
@@ -1369,52 +1386,27 @@ def test_create_student():
 def test_create_teacher():
     uow = FakeUnitOfWork()
     entries_beginning = len(uow.teacher.teacher)
-    user = UA.User(
-        user_name_example,
-        university_example,
-        1,
-        "teacher"
-    )
-    result = services.create_teacher(
-        uow=uow,
-        user=user
-    )
+    user = UA.User(user_name_example, university_example, 1, "teacher")
+    result = services.create_teacher(uow=uow, user=user)
     assert type(result) is dict
     assert result != {}
     entries_after = len(uow.teacher.teacher)
     assert entries_beginning + 1 == entries_after
 
 
-@pytest.mark.parametrize("name, university, lms_user_id, role", [
-    # Working Example Admin
-    (
-        user_name_example,
-        university_example,
-        1,
-        "admin"
-    ),
-    # Working Example Course Creator
-    (
-        user_name_example,
-        university_example,
-        1,
-        "course creator"
-    ),
-    # Working Example Student
-    (
-        user_name_example,
-        university_example,
-        1,
-        "student"
-    ),
-    # Working Example Teacher
-    (
-        user_name_example,
-        university_example,
-        1,
-        "teacher"
-    )
-])
+@pytest.mark.parametrize(
+    "name, university, lms_user_id, role",
+    [
+        # Working Example Admin
+        (user_name_example, university_example, 1, "admin"),
+        # Working Example Course Creator
+        (user_name_example, university_example, 1, "course creator"),
+        # Working Example Student
+        (user_name_example, university_example, 1, "student"),
+        # Working Example Teacher
+        (user_name_example, university_example, 1, "teacher"),
+    ],
+)
 def test_create_user(name, university, lms_user_id, role):
     uow = FakeUnitOfWork()
     user_entries_beginning = len(uow.user.user)
@@ -1437,11 +1429,9 @@ def test_create_user(name, university, lms_user_id, role):
 def test_create_learning_characteristics():
     uow = FakeUnitOfWork()
     entries_beginning = len(
-        uow.learning_characteristics.learning_characteristics)
-    result = services.create_learning_characteristics(
-        uow=uow,
-        student_id=1
+        uow.learning_characteristics.learning_characteristics
     )
+    result = services.create_learning_characteristics(uow=uow, student_id=1)
     assert type(result) is dict
     assert result != {}
     entries_after = len(uow.learning_characteristics.learning_characteristics)
@@ -1451,10 +1441,7 @@ def test_create_learning_characteristics():
 def test_create_learning_style():
     uow = FakeUnitOfWork()
     entries_beginning = len(uow.learning_style.learning_style)
-    result = services.create_learning_style(
-        uow=uow,
-        characteristic_id=1
-    )
+    result = services.create_learning_style(uow=uow, characteristic_id=1)
     assert type(result) is dict
     assert result != {}
     entries_after = len(uow.learning_style.learning_style)
@@ -1464,10 +1451,7 @@ def test_create_learning_style():
 def test_create_learning_strategy():
     uow = FakeUnitOfWork()
     entries_beginning = len(uow.learning_strategy.learning_strategy)
-    result = services.create_learning_strategy(
-        uow=uow,
-        characteristic_id=1
-    )
+    result = services.create_learning_strategy(uow=uow, characteristic_id=1)
     assert type(result) is dict
     assert result != {}
     entries_after = len(uow.learning_strategy.learning_strategy)
@@ -1477,10 +1461,7 @@ def test_create_learning_strategy():
 def test_create_knowledge():
     uow = FakeUnitOfWork()
     entries_beginning = len(uow.knowledge.knowledge)
-    result = services.create_knowledge(
-        uow=uow,
-        characteristic_id=1
-    )
+    result = services.create_knowledge(uow=uow, characteristic_id=1)
     assert type(result) is dict
     assert result != {}
     entries_after = len(uow.knowledge.knowledge)
@@ -1490,10 +1471,7 @@ def test_create_knowledge():
 def test_create_learning_analytics():
     uow = FakeUnitOfWork()
     entries_beginning = len(uow.learning_analytics.learning_analytics)
-    result = services.create_learning_analytics(
-        uow=uow,
-        characteristic_id=1
-    )
+    result = services.create_learning_analytics(uow=uow, characteristic_id=1)
     assert type(result) is dict
     assert result != {}
     entries_after = len(uow.learning_analytics.learning_analytics)
@@ -1544,28 +1522,19 @@ def test_delete_teacher():
     assert entries_beginning - 1 == entries_after
 
 
-@pytest.mark.parametrize("role, lms_id", [
-    # Working Example Admin
-    (
-        "admin",
-        4
-    ),
-    # Working Example Course Creator
-    (
-        "course creator",
-        3
-    ),
-    # Working Example Student
-    (
-        "student",
-        1
-    ),
-    # Working Example Teacher
-    (
-        "teacher",
-        2
-    )
-])
+@pytest.mark.parametrize(
+    "role, lms_id",
+    [
+        # Working Example Admin
+        ("admin", 4),
+        # Working Example Course Creator
+        ("course creator", 3),
+        # Working Example Student
+        ("student", 1),
+        # Working Example Teacher
+        ("teacher", 2),
+    ],
+)
 def test_delete_user(role, lms_id):
     uow = FakeUnitOfWork()
     match role:
@@ -1580,53 +1549,44 @@ def test_delete_user(role, lms_id):
     entries_beginning = len(uow.user.user)
     settings_entries_beginning = len(uow.settings.settings)
     characteristics_entries_beginning = len(
-        uow.learning_characteristics.learning_characteristics)
-    result = services.delete_user(
-        uow=uow,
-        user_id=1,
-        lms_user_id=lms_id
+        uow.learning_characteristics.learning_characteristics
     )
+    result = services.delete_user(uow=uow, user_id=1, lms_user_id=lms_id)
     assert type(result) is dict
     assert result == {}
     entries_after = len(uow.user.user)
     settings_entries_end = len(uow.settings.settings)
     characteristics_entries_after = len(
-        uow.learning_characteristics.learning_characteristics)
+        uow.learning_characteristics.learning_characteristics
+    )
     assert settings_entries_beginning - 1 == settings_entries_end
     assert entries_beginning - 1 == entries_after
-    if role == 'student':
-        assert characteristics_entries_beginning - 1\
+    if role == "student":
+        assert (
+            characteristics_entries_beginning - 1
             == characteristics_entries_after
+        )
 
 
 def test_update_settings():
     uow = FakeUnitOfWork()
     create_student_for_tests(uow)
     result = services.update_settings_for_user(
-        uow=uow,
-        user_id=1,
-        theme="dark"
+        uow=uow, user_id=1, theme="dark"
     )
     assert type(result) is dict
     assert result != {}
-    assert result['theme'] == "dark"
+    assert result["theme"] == "dark"
 
 
 def test_reset_settings():
     uow = FakeUnitOfWork()
     create_student_for_tests(uow)
-    services.update_settings_for_user(
-        uow=uow,
-        user_id=1,
-        theme="dark"
-    )
-    result = services.reset_settings(
-        uow=uow,
-        user_id=1
-    )
+    services.update_settings_for_user(uow=uow, user_id=1, theme="dark")
+    result = services.reset_settings(uow=uow, user_id=1)
     assert type(result) is dict
     assert result != {}
-    assert result['theme'] == "Standard"
+    assert result["theme"] == "Standard"
 
 
 def test_get_settings_for_user():
@@ -1641,7 +1601,8 @@ def test_update_user():
     uow = FakeUnitOfWork()
     create_student_for_tests(uow)
     result = services.update_user(
-        uow, 1, 1, "Maria Musterfraun", university_example)
+        uow, 1, 1, "Maria Musterfraun", university_example
+    )
     assert type(result) == dict
     assert result != {}
 
@@ -1649,14 +1610,15 @@ def test_update_user():
 def test_get_learning_characteristics():
     uow = FakeUnitOfWork()
     create_student_for_tests(uow)
-    result = services.get_learning_characteristics(
-        uow,
-        1
-    )
+    result = services.get_learning_characteristics(uow, 1)
     assert type(result) == dict
     assert result != {}
-    keys_expected = ['knowledge', 'learning_analytics',
-                     'learning_strategy', 'learning_style']
+    keys_expected = [
+        "knowledge",
+        "learning_analytics",
+        "learning_strategy",
+        "learning_style",
+    ]
     for key in keys_expected:
         assert key in result.keys()
         assert result[key] is not None
@@ -1666,19 +1628,16 @@ def test_reset_learning_characteristics():
     uow = FakeUnitOfWork()
     create_student_for_tests(uow)
     entries_beginning = len(
-        uow.learning_characteristics.learning_characteristics)
-    result = services.reset_learning_characteristics(
-        uow=uow,
-        user_id=1,
-        lms_user_id=1,
-        student_id=1
+        uow.learning_characteristics.learning_characteristics
     )
-    entries_after = len(
-        uow.learning_characteristics.learning_characteristics)
+    result = services.reset_learning_characteristics(
+        uow=uow, user_id=1, lms_user_id=1, student_id=1
+    )
+    entries_after = len(uow.learning_characteristics.learning_characteristics)
     assert type(result) == dict
     assert result != {}
     assert entries_beginning == entries_after
-    assert result['learning_style']['perception_value'] == 0
+    assert result["learning_style"]["perception_value"] == 0
 
 
 def test_create_ils_input_answers():
@@ -1742,14 +1701,16 @@ def test_create_ils_understanding_answers():
         if key.startswith("sg"):
             ils_understanding_answers[key] = "a"
     entries_beginning = len(
-        uow.ils_understanding_answers.ils_understanding_answers)
+        uow.ils_understanding_answers.ils_understanding_answers
+    )
     result = services.create_ils_understanding_answers(
         uow=uow,
         questionnaire_ils_id=1,
         answers=ils_understanding_answers
     )
     entries_after = len(
-        uow.ils_understanding_answers.ils_understanding_answers)
+        uow.ils_understanding_answers.ils_understanding_answers
+    )
     assert type(result) == dict
     assert result != {}
     assert entries_beginning + 1 == entries_after
@@ -1907,13 +1868,15 @@ def test_delete_ils_understanding_answers():
         answers=ils_understanding_answers
     )
     entries_beginning = len(
-        uow.ils_understanding_answers.ils_understanding_answers)
+        uow.ils_understanding_answers.ils_understanding_answers
+    )
     result = services.delete_ils_understanding_answers(
         uow=uow,
         questionnaire_ils_id=1,
     )
     entries_after = len(
-        uow.ils_understanding_answers.ils_understanding_answers)
+        uow.ils_understanding_answers.ils_understanding_answers
+    )
     assert type(result) == dict
     assert result == {}
     assert entries_beginning - 1 == entries_after
@@ -1987,24 +1950,28 @@ def test_create_course():
     uow = FakeUnitOfWork()
     create_course_creator_for_tests(uow)
     entries_beginning = len(uow.course.course)
-    entries_beginning_course_creator_course =\
-        len(uow.course_creator_course.course_creator_course)
+    entries_beginning_course_creator_course = len(
+        uow.course_creator_course.course_creator_course
+    )
     result = services.create_course(
         uow=uow,
         lms_id=1,
         name="Test Course",
         university=university_example,
         created_by=1,
-        created_at="2023-01-01"
+        created_at="2023-01-01",
     )
     assert type(result) is dict
     assert result != {}
     entries_after = len(uow.course.course)
-    entries_after_course_creator_course =\
-        len(uow.course_creator_course.course_creator_course)
+    entries_after_course_creator_course = len(
+        uow.course_creator_course.course_creator_course
+    )
     assert entries_beginning + 1 == entries_after
-    assert entries_beginning_course_creator_course + 1 ==\
-        entries_after_course_creator_course
+    assert (
+        entries_beginning_course_creator_course + 1
+        == entries_after_course_creator_course
+    )
 
 
 def test_get_course_by_id():
@@ -2012,10 +1979,7 @@ def test_get_course_by_id():
     create_course_creator_for_tests(uow)
     create_course_for_tests(uow)
     result = services.get_course_by_id(
-        uow=uow,
-        user_id=1,
-        lms_user_id=3,
-        course_id=1
+        uow=uow, user_id=1, lms_user_id=3, course_id=1
     )
     assert type(result) is dict
     assert result != {}
@@ -2031,7 +1995,7 @@ def test_update_course():
         course_id=1,
         lms_id=1,
         name="Test Course 2",
-        university=university_example
+        university=university_example,
     )
     assert type(result) is dict
     entries_after = len(uow.course.course)
@@ -2043,10 +2007,7 @@ def test_delete_course():
     create_course_creator_for_tests(uow)
     create_course_for_tests(uow)
     entries_beginning = len(uow.course.course)
-    result = services.delete_course(
-        uow=uow,
-        course_id=1
-    )
+    result = services.delete_course(uow=uow, course_id=1)
     assert type(result) is dict
     assert result == {}
     entries_after = len(uow.course.course)
@@ -2056,11 +2017,7 @@ def test_delete_course():
 def test_create_course_topic():
     uow = FakeUnitOfWork()
     entries_beginning = len(uow.course_topic.course_topic)
-    result = services.create_course_topic(
-        uow=uow,
-        course_id=1,
-        topic_id=1
-    )
+    result = services.create_course_topic(uow=uow, course_id=1, topic_id=1)
     assert type(result) is dict
     assert result != {}
     entries_after = len(uow.course_topic.course_topic)
@@ -2070,10 +2027,7 @@ def test_create_course_topic():
 def test_get_course_topic_by_course():
     uow = FakeUnitOfWork()
     create_course_topic_for_tests(uow)
-    result = services.get_course_topic_by_course(
-        uow=uow,
-        course_id=1
-    )
+    result = services.get_course_topic_by_course(uow=uow, course_id=1)
     assert type(result) is dict
     assert result != {}
 
@@ -2081,10 +2035,7 @@ def test_get_course_topic_by_course():
 def test_get_course_topic_by_topic():
     uow = FakeUnitOfWork()
     create_course_topic_for_tests(uow)
-    result = services.get_course_topic_by_topic(
-        uow=uow,
-        topic_id=1
-    )
+    result = services.get_course_topic_by_topic(uow=uow, topic_id=1)
     assert type(result) is dict
     assert result != {}
 
@@ -2093,10 +2044,7 @@ def test_delete_course_topic_by_course():
     uow = FakeUnitOfWork()
     create_course_topic_for_tests(uow)
     entries_beginning = len(uow.course_topic.course_topic)
-    result = services.delete_course_topic_by_course(
-        uow=uow,
-        course_id=1
-    )
+    result = services.delete_course_topic_by_course(uow=uow, course_id=1)
     assert type(result) is dict
     assert result == {}
     entries_after = len(uow.course_topic.course_topic)
@@ -2107,45 +2055,52 @@ def test_delete_course_topic_by_topic():
     uow = FakeUnitOfWork()
     create_course_topic_for_tests(uow)
     entries_beginning = len(uow.course_topic.course_topic)
-    result = services.delete_course_topic_by_topic(
-        uow=uow,
-        topic_id=1
-    )
+    result = services.delete_course_topic_by_topic(uow=uow, topic_id=1)
     assert type(result) is dict
     assert result == {}
     entries_after = len(uow.course_topic.course_topic)
     assert entries_beginning - 1 == entries_after
 
 
-@pytest.mark.parametrize("lms_id, is_topic, parent_id, contains_le,\
+@pytest.mark.parametrize(
+    "lms_id, is_topic, parent_id, contains_le,\
                          name, university, created_by,\
-                         created_at", [
-    # Working Example Topic
-    (
-        1,
-        True,
-        None,
-        False,
-        "Test Topic",
-        university_example,
-        user_name_example,
-        time.time()
-    ),
-    # Working Example Sub-Topic
-    (
-        2,
-        False,
-        1,
-        True,
-        "Test Sub-Topic",
-        university_example,
-        user_name_example,
-        time.time()
-    ),
-])
-def test_create_topic(lms_id, is_topic, parent_id, contains_le,
-                      name, university, created_by,
-                      created_at):
+                         created_at",
+    [
+        # Working Example Topic
+        (
+            1,
+            True,
+            None,
+            False,
+            "Test Topic",
+            university_example,
+            user_name_example,
+            time.time(),
+        ),
+        # Working Example Sub-Topic
+        (
+            2,
+            False,
+            1,
+            True,
+            "Test Sub-Topic",
+            university_example,
+            user_name_example,
+            time.time(),
+        ),
+    ],
+)
+def test_create_topic(
+    lms_id,
+    is_topic,
+    parent_id,
+    contains_le,
+    name,
+    university,
+    created_by,
+    created_at,
+):
     uow = FakeUnitOfWork()
     entries_beginning = len(uow.topic.topic)
     result = services.create_topic(
@@ -2158,7 +2113,7 @@ def test_create_topic(lms_id, is_topic, parent_id, contains_le,
         name=name,
         university=university,
         created_at=created_at,
-        created_by=created_by
+        created_by=created_by,
     )
     assert type(result) is dict
     assert result != {}
@@ -2179,7 +2134,7 @@ def test_get_topic_by_id():
         lms_user_id=1,
         course_id=1,
         student_id=1,
-        topic_id=1
+        topic_id=1,
     )
     assert type(result) is dict
     assert result != {}
@@ -2189,7 +2144,7 @@ def test_get_topic_by_id():
         lms_user_id=1,
         course_id=1,
         student_id=1,
-        topic_id=2
+        topic_id=2,
     )
     assert type(result2) is dict
     assert result2 != {}
@@ -2212,13 +2167,13 @@ def test_update_topic():
         university=university_example,
         created_at=last_updated,
         created_by=1,
-        last_updated=last_updated
+        last_updated=last_updated,
     )
     assert type(result) is dict
     assert result != {}
     entries_after = len(uow.topic.topic)
     assert entries_beginning == entries_after
-    assert result['last_updated'] == last_updated
+    assert result["last_updated"] == last_updated
     last_updated2 = time.time()
     result2 = services.update_topic(
         uow=uow,
@@ -2231,13 +2186,13 @@ def test_update_topic():
         university=university_example,
         created_at=last_updated2,
         created_by=1,
-        last_updated=last_updated2
+        last_updated=last_updated2,
     )
     assert type(result2) is dict
     assert result2 != {}
     entries_after = len(uow.topic.topic)
     assert entries_beginning == entries_after
-    assert result2['last_updated'] == last_updated2
+    assert result2["last_updated"] == last_updated2
 
 
 def test_delete_topic():
@@ -2247,18 +2202,12 @@ def test_delete_topic():
     create_topic_for_tests(uow)
     create_sub_topic_for_tests(uow)
     entries_beginning = len(uow.topic.topic)
-    result = services.delete_topic(
-        uow=uow,
-        topic_id=2
-    )
+    result = services.delete_topic(uow=uow, topic_id=2)
     entries_after = len(uow.topic.topic)
     assert type(result) == dict
     assert result == {}
     assert entries_beginning - 1 == entries_after
-    result2 = services.delete_topic(
-        uow=uow,
-        topic_id=1
-    )
+    result2 = services.delete_topic(uow=uow, topic_id=1)
     entries_after2 = len(uow.topic.topic)
     assert type(result2) == dict
     assert result2 == {}
@@ -2269,9 +2218,7 @@ def test_create_topic_learning_element():
     uow = FakeUnitOfWork()
     entries_beginning = len(uow.topic_learning_element.topic_learning_element)
     result = services.create_topic_learning_element(
-        uow=uow,
-        topic_id=1,
-        learning_element_id=1
+        uow=uow, topic_id=1, learning_element_id=1
     )
     assert type(result) is dict
     assert result != {}
@@ -2282,10 +2229,7 @@ def test_create_topic_learning_element():
 def test_get_topic_learning_element_by_topic():
     uow = FakeUnitOfWork()
     create_topic_learning_element_for_tests(uow)
-    result = services.get_topic_learning_element_by_topic(
-        uow=uow,
-        topic_id=1
-    )
+    result = services.get_topic_learning_element_by_topic(uow=uow, topic_id=1)
     assert type(result) is dict
     assert result != {}
 
@@ -2294,8 +2238,7 @@ def test_get_topic_learning_element_by_le():
     uow = FakeUnitOfWork()
     create_topic_learning_element_for_tests(uow)
     result = services.get_topic_learning_element_by_learning_element(
-        uow=uow,
-        learning_element_id=1
+        uow=uow, learning_element_id=1
     )
     assert type(result) is dict
     assert result != {}
@@ -2306,8 +2249,7 @@ def test_delete_topic_learning_element_by_topic():
     create_topic_learning_element_for_tests(uow)
     entries_beginning = len(uow.topic_learning_element.topic_learning_element)
     result = services.delete_topic_learning_element_by_topic(
-        uow=uow,
-        topic_id=1
+        uow=uow, topic_id=1
     )
     assert type(result) is dict
     assert result == {}
@@ -2320,8 +2262,7 @@ def test_delete_topic_learning_element_by_le():
     create_topic_learning_element_for_tests(uow)
     entries_beginning = len(uow.topic_learning_element.topic_learning_element)
     result = services.delete_topic_learning_element_by_learning_element(
-        uow=uow,
-        learning_element_id=1
+        uow=uow, learning_element_id=1
     )
     assert type(result) is dict
     assert result == {}
@@ -2341,7 +2282,7 @@ def test_create_learning_element():
         name="Test Quiz",
         created_at=time.time(),
         created_by=user_name_example,
-        university=university_example
+        university=university_example,
     )
     assert type(result) is dict
     assert result != {}
@@ -2360,7 +2301,7 @@ def test_get_learning_element_by_id():
         student_id=1,
         course_id=1,
         topic_id=1,
-        learning_element_id=1
+        learning_element_id=1,
     )
     assert type(result) is dict
     assert result != {}
@@ -2381,13 +2322,13 @@ def test_update_learning_element():
         created_at=last_updated,
         created_by=user_name_example,
         university=university_example,
-        last_updated=last_updated
+        last_updated=last_updated,
     )
     assert type(result) is dict
     assert result != {}
     entries_after = len(uow.learning_element.learning_element)
     assert entries_beginning == entries_after
-    assert result['last_updated'] == last_updated
+    assert result["last_updated"] == last_updated
 
 
 def test_delete_learning_element():
@@ -2395,10 +2336,7 @@ def test_delete_learning_element():
     create_learning_element_for_tests_1(uow)
     entries_beginning = len(uow.learning_element.learning_element)
     result = services.delete_learning_element(
-        uow=uow,
-        course_id=1,
-        topic_id=1,
-        learning_element_id=1
+        uow=uow, course_id=1, topic_id=1, learning_element_id=1
     )
     assert type(result) is dict
     assert result == {}
@@ -2415,28 +2353,22 @@ def test_add_student_to_course():
     create_learning_element_for_tests_1(uow)
     entries_beginning_course = len(uow.student_course.student_course)
     entries_beginning_topic = len(uow.student_topic.student_topic)
-    entries_beginning_le = len(uow.student_learning_element
-                               .student_learning_element)
-    result = services.add_student_to_course(
-        uow=uow,
-        student_id=1,
-        course_id=1
+    entries_beginning_le = len(
+        uow.student_learning_element.student_learning_element
     )
+    result = services.add_student_to_course(uow=uow, student_id=1, course_id=1)
     entries_after_course = len(uow.student_course.student_course)
     entries_after_topic = len(uow.student_topic.student_topic)
-    entries_after_le = len(uow.student_learning_element
-                           .student_learning_element)
+    entries_after_le = len(
+        uow.student_learning_element.student_learning_element
+    )
     assert type(result) is dict
     assert result != {}
     assert entries_beginning_course + 1 == entries_after_course
     assert entries_after_topic > entries_beginning_topic
     assert entries_after_le > entries_beginning_le
     with pytest.raises(err.AlreadyExisting):
-        services.add_student_to_course(
-            uow=uow,
-            student_id=1,
-            course_id=1
-        )
+        services.add_student_to_course(uow=uow, student_id=1, course_id=1)
 
 
 def test_add_teacher_to_course():
@@ -2445,21 +2377,13 @@ def test_add_teacher_to_course():
     create_teacher_for_tests(uow)
     create_course_for_tests(uow)
     entries_beginning_course = len(uow.teacher_course.teacher_course)
-    result = services.add_teacher_to_course(
-        uow=uow,
-        teacher_id=1,
-        course_id=1
-    )
+    result = services.add_teacher_to_course(uow=uow, teacher_id=1, course_id=1)
     entries_after_course = len(uow.teacher_course.teacher_course)
     assert type(result) is dict
     assert result != {}
     assert entries_beginning_course + 1 == entries_after_course
     with pytest.raises(err.AlreadyExisting):
-        services.add_teacher_to_course(
-            uow=uow,
-            teacher_id=1,
-            course_id=1
-        )
+        services.add_teacher_to_course(uow=uow, teacher_id=1, course_id=1)
 
 
 def test_create_course_creator_course():
@@ -2467,10 +2391,7 @@ def test_create_course_creator_course():
     create_course_creator_for_tests(uow)
     entries_beginning = len(uow.course_creator_course.course_creator_course)
     result = services.add_course_creator_to_course(
-        uow=uow,
-        created_by=1,
-        course_id=1,
-        created_at="2023-01-01"
+        uow=uow, created_by=1, course_id=1, created_at="2023-01-01"
     )
     entries_after = len(uow.course_creator_course.course_creator_course)
     assert type(result) == dict
@@ -2482,16 +2403,15 @@ def test_student_learning_element_visit():
     uow = FakeUnitOfWork()
     create_learning_element_for_tests_1(uow)
     create_student_for_tests(uow)
-    entries_beginning = len(uow.student_learning_element_visit
-                            .student_learning_element_visit)
-    result = services.add_student_learning_element_visit(
-        uow=uow,
-        student_id=1,
-        learning_element_id=1,
-        visit_start="2023-01-01"
+    entries_beginning = len(
+        uow.student_learning_element_visit.student_learning_element_visit
     )
-    entries_after = len(uow.student_learning_element_visit
-                        .student_learning_element_visit)
+    result = services.add_student_learning_element_visit(
+        uow=uow, student_id=1, learning_element_id=1, visit_start="2023-01-01"
+    )
+    entries_after = len(
+        uow.student_learning_element_visit.student_learning_element_visit
+    )
     assert type(result) == dict
     assert result != {}
     assert entries_beginning + 1 == entries_after
@@ -2501,17 +2421,15 @@ def test_student_topic_visit():
     uow = FakeUnitOfWork()
     create_topic_for_tests(uow)
     create_student_for_tests(uow)
-    entries_beginning = len(uow.student_topic_visit
-                            .student_topic_visit)
+    entries_beginning = len(uow.student_topic_visit.student_topic_visit)
     result = services.add_student_topic_visit(
         uow=uow,
         student_id=1,
         topic_id=1,
         visit_start="2023-01-01",
-        previous_topic_id=None
+        previous_topic_id=None,
     )
-    entries_after = len(uow.student_topic_visit
-                        .student_topic_visit)
+    entries_after = len(uow.student_topic_visit.student_topic_visit)
     assert type(result) == dict
     assert result != {}
     assert entries_beginning + 1 == entries_after
@@ -2520,23 +2438,25 @@ def test_student_topic_visit():
         student_id=1,
         topic_id=1,
         visit_start="2023-01-02",
-        previous_topic_id=1
+        previous_topic_id=1,
     )
-    entries_after2 = len(uow.student_topic_visit
-                            .student_topic_visit)
+    entries_after2 = len(uow.student_topic_visit.student_topic_visit)
     assert type(result) == dict
     assert result != {}
     assert entries_beginning + 2 == entries_after2
 
 
-@pytest.mark.parametrize("number_of_les", [
-    # 0
-    (0),
-    # 1
-    (1),
-    # 2
-    (2)
-])
+@pytest.mark.parametrize(
+    "number_of_les",
+    [
+        # 0
+        (0),
+        # 1
+        (1),
+        # 2
+        (2),
+    ],
+)
 def test_create_learning_path(number_of_les):
     uow = FakeUnitOfWork()
     create_course_creator_for_tests(uow)
@@ -2547,10 +2467,10 @@ def test_create_learning_path(number_of_les):
         create_learning_element_for_tests_1(uow)
     if number_of_les > 1:
         create_learning_element_for_tests_2(uow)
-    entries_beginning_path = len(uow.learning_path
-                                 .learning_path)
-    entries_beginning_path_le = len(uow.learning_path_learning_element
-                                    .learning_path_learning_element)
+    entries_beginning_path = len(uow.learning_path.learning_path)
+    entries_beginning_path_le = len(
+        uow.learning_path_learning_element.learning_path_learning_element
+    )
     if number_of_les == 0:
         with pytest.raises(err.NoLearningElementsError):
             create_learning_path_for_tests(uow)
@@ -2558,20 +2478,21 @@ def test_create_learning_path(number_of_les):
         result = create_learning_path_for_tests(uow)
         assert type(result) == dict
         assert result != {}
-        entries_after_path = len(uow.learning_path
-                                 .learning_path)
-        entries_after_path_le = len(uow.learning_path_learning_element
-                                    .learning_path_learning_element)
+        entries_after_path = len(uow.learning_path.learning_path)
+        entries_after_path_le = len(
+            uow.learning_path_learning_element.learning_path_learning_element
+        )
         assert entries_beginning_path + 1 == entries_after_path
-        assert entries_beginning_path_le + number_of_les \
-            == entries_after_path_le
+        assert (
+            entries_beginning_path_le + number_of_les == entries_after_path_le
+        )
         result = create_learning_path_for_tests(uow)
         assert type(result) == dict
         assert result != {}
-        entries_after_path_2 = len(uow.learning_path
-                                   .learning_path)
-        entries_after_path_le_2 = len(uow.learning_path_learning_element
-                                      .learning_path_learning_element)
+        entries_after_path_2 = len(uow.learning_path.learning_path)
+        entries_after_path_le_2 = len(
+            uow.learning_path_learning_element.learning_path_learning_element
+        )
         assert entries_after_path == entries_after_path_2
         assert entries_after_path_le == entries_after_path_le_2
 
@@ -2584,19 +2505,16 @@ def test_delete_learning_paths():
     create_topic_for_tests(uow)
     create_learning_element_for_tests_1(uow)
     create_learning_path_for_tests(uow)
-    entries_beginning_path = len(uow.learning_path
-                                 .learning_path)
-    entries_beginning_path_le = len(uow.learning_path_learning_element
-                                    .learning_path_learning_element)
-    result = services.delete_learning_paths(
-        uow=uow,
-        student_id=1
+    entries_beginning_path = len(uow.learning_path.learning_path)
+    entries_beginning_path_le = len(
+        uow.learning_path_learning_element.learning_path_learning_element
     )
+    result = services.delete_learning_paths(uow=uow, student_id=1)
     assert result is None
-    entries_after_path = len(uow.learning_path
-                             .learning_path)
-    entries_after_path_le = len(uow.learning_path_learning_element
-                                .learning_path_learning_element)
+    entries_after_path = len(uow.learning_path.learning_path)
+    entries_after_path_le = len(
+        uow.learning_path_learning_element.learning_path_learning_element
+    )
     assert entries_beginning_path - 1 == entries_after_path
     assert entries_beginning_path_le - 1 == entries_after_path_le
 
@@ -2608,10 +2526,7 @@ def test_get_courses_by_student_id():
     create_course_for_tests(uow)
     add_student_to_course_for_tests(uow)
     result = services.get_courses_by_student_id(
-        uow=uow,
-        user_id=1,
-        lms_user_id=1,
-        student_id=1
+        uow=uow, user_id=1, lms_user_id=1, student_id=1
     )
     assert type(result) is dict
     assert result != {}
@@ -2620,10 +2535,7 @@ def test_get_courses_by_student_id():
 def test_get_knowledge_by_student_id():
     uow = FakeUnitOfWork()
     create_student_for_tests(uow)
-    result = services.get_knowledge_by_student_id(
-        uow=uow,
-        student_id=1
-    )
+    result = services.get_knowledge_by_student_id(uow=uow, student_id=1)
     assert type(result) is dict
     assert result != {}
 
@@ -2632,8 +2544,7 @@ def test_get_learning_analytics_by_student_id():
     uow = FakeUnitOfWork()
     create_student_for_tests(uow)
     result = services.get_learning_analytics_by_student_id(
-        uow=uow,
-        student_id=1
+        uow=uow, student_id=1
     )
     assert type(result) is dict
     assert result != {}
@@ -2642,10 +2553,7 @@ def test_get_learning_analytics_by_student_id():
 def test_get_learning_style_by_student_id():
     uow = FakeUnitOfWork()
     create_student_for_tests(uow)
-    result = services.get_learning_style_by_student_id(
-        uow=uow,
-        student_id=1
-    )
+    result = services.get_learning_style_by_student_id(uow=uow, student_id=1)
     assert type(result) is dict
     assert result != {}
 
@@ -2654,8 +2562,7 @@ def test_get_learning_strategy_by_student_id():
     uow = FakeUnitOfWork()
     create_student_for_tests(uow)
     result = services.get_learning_strategy_by_student_id(
-        uow=uow,
-        student_id=1
+        uow=uow, student_id=1
     )
     assert type(result) is dict
     assert result != {}
@@ -2670,11 +2577,7 @@ def test_get_les_for_course_id():
     create_learning_element_for_tests_1(uow)
     add_student_to_course_for_tests(uow)
     result = services.get_learning_elements_for_course_id(
-        uow=uow,
-        user_id=1,
-        lms_user_id=1,
-        student_id=1,
-        course_id=1
+        uow=uow, user_id=1, lms_user_id=1, student_id=1, course_id=1
     )
     assert type(result) is dict
     assert result != {}
@@ -2694,7 +2597,7 @@ def test_get_les_for_course_and_topic_id():
         lms_user_id=1,
         student_id=1,
         course_id=1,
-        topic_id=1
+        topic_id=1,
     )
     assert type(result) is dict
     assert result != {}
@@ -2715,7 +2618,7 @@ def test_get_learning_element_recommendation():
         lms_user_id=1,
         student_id=1,
         course_id=1,
-        topic_id=1
+        topic_id=1,
     )
     assert type(result) == dict
     assert result != {}
@@ -2736,7 +2639,7 @@ def test_get_learning_path():
         lms_user_id=1,
         student_id=1,
         course_id=1,
-        topic_id=1
+        topic_id=1,
     )
     assert type(result) == dict
     assert result != {}
@@ -2759,7 +2662,7 @@ def test_get_sub_topics():
         lms_user_id=1,
         student_id=1,
         course_id=1,
-        topic_id=1
+        topic_id=1,
     )
     assert type(result) == dict
     assert result != {}
@@ -2777,11 +2680,7 @@ def test_get_topics_by_student_and_course_id():
     add_student_topic_visit_for_tests(uow)
     add_student_sub_topic_visit_for_tests(uow)
     result = services.get_topics_by_student_and_course_id(
-        uow=uow,
-        user_id=1,
-        lms_user_id=1,
-        student_id=1,
-        course_id=1
+        uow=uow, user_id=1, lms_user_id=1, student_id=1, course_id=1
     )
     assert type(result) == dict
     assert result != {}
@@ -2791,11 +2690,7 @@ def test_get_user_by_admin():
     uow = FakeUnitOfWork()
     create_student_for_tests(uow)
     create_admin_for_tests(uow)
-    result = services.get_users_by_admin(
-        uow=uow,
-        user_id=1,
-        lms_user_id=1
-    )
+    result = services.get_users_by_admin(uow=uow, user_id=1, lms_user_id=1)
     assert type(result) == dict
     assert result != {}
 
@@ -2804,10 +2699,7 @@ def test_reset_knowledge_by_student_id():
     uow = FakeUnitOfWork()
     create_student_for_tests(uow)
     result = services.reset_knowledge_by_student_id(
-        uow=uow,
-        user_id=1,
-        lms_user_id=1,
-        student_id=1
+        uow=uow, user_id=1, lms_user_id=1, student_id=1
     )
     assert type(result) is dict
     assert result != {}
@@ -2817,10 +2709,7 @@ def test_reset_learning_analytics_by_student_id():
     uow = FakeUnitOfWork()
     create_student_for_tests(uow)
     result = services.reset_learning_analytics_by_student_id(
-        uow=uow,
-        user_id=1,
-        lms_user_id=1,
-        student_id=1
+        uow=uow, user_id=1, lms_user_id=1, student_id=1
     )
     assert type(result) is dict
     assert result != {}
@@ -2830,10 +2719,7 @@ def test_reset_learning_style_by_student_id():
     uow = FakeUnitOfWork()
     create_student_for_tests(uow)
     result = services.reset_learning_style_by_student_id(
-        uow=uow,
-        user_id=1,
-        lms_user_id=1,
-        student_id=1
+        uow=uow, user_id=1, lms_user_id=1, student_id=1
     )
     assert type(result) is dict
     assert result != {}
@@ -2843,10 +2729,7 @@ def test_reset_learning_strategy_by_student_id():
     uow = FakeUnitOfWork()
     create_student_for_tests(uow)
     result = services.reset_learning_strategy_by_student_id(
-        uow=uow,
-        user_id=1,
-        lms_user_id=1,
-        student_id=1
+        uow=uow, user_id=1, lms_user_id=1, student_id=1
     )
     assert type(result) is dict
     assert result != {}
@@ -2867,7 +2750,7 @@ def test_update_learning_style_by_student_id():
         processing_dimension="sns",
         processing_value=11,
         understanding_dimension="glo",
-        understanding_value=11
+        understanding_value=11,
     )
     assert type(result) is dict
     assert result != {}

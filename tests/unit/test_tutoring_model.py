@@ -16,14 +16,10 @@ def test_prepare_les_for_aco():
             name="Test",
             university="TH-AB",
             created_by=i,
-            created_at="2023-01-01"
+            created_at="2023-01-01",
         )
         list_of_les.append(le.serialize())
-    lp = TM.LearningPath(
-        student_id=1,
-        course_id=1,
-        based_on="aco"
-    )
+    lp = TM.LearningPath(student_id=1, course_id=1, based_on="aco")
     result = lp.prepare_le_for_aco(list_of_les=list_of_les)
     assert type(result) == list
     assert len(result) != 0
@@ -32,34 +28,21 @@ def test_prepare_les_for_aco():
 
 
 def test_distance():
-    result = utils.distance(
-        (1, 1, 1, 1),
-        (2, 2, 2, 2)
-    )
+    result = utils.distance((1, 1, 1, 1), (2, 2, 2, 2))
     assert type(result) == float
     assert result == 2
 
 
-@pytest.mark.parametrize("input_dimension, perception_dimension,\
-                         processing_dimension, understanding_dimension", [
-    (
-        "vis",
-        "sns",
-        "act",
-        "glo"
-    ),
-    (
-        "vrb",
-        "int",
-        "ref",
-        "seq"
-    )
-])
+@pytest.mark.parametrize(
+    "input_dimension, perception_dimension,\
+                         processing_dimension, understanding_dimension",
+    [("vis", "sns", "act", "glo"), ("vrb", "int", "ref", "seq")],
+)
 def test_get_coordinates(
     input_dimension,
     perception_dimension,
     processing_dimension,
-    understanding_dimension
+    understanding_dimension,
 ):
     ls = LM.LearningStyle(
         input_dimension=input_dimension,
@@ -69,15 +52,14 @@ def test_get_coordinates(
         processing_dimension=processing_dimension,
         processing_value=7,
         understanding_dimension=understanding_dimension,
-        understanding_value=7
+        understanding_value=7,
     )
     list_of_les = ["BE", "FO", "KÜ", "SE", "LZ", "EK", "ÜB", "ZF"]
     result = utils.get_coordinates(
-        learning_style=ls.serialize(),
-        list_of_les=list_of_les
+        learning_style=ls.serialize(), list_of_les=list_of_les
     )
     assert type(result) == dict
     assert result is not None
-    assert result['KÜ'] == (13, 13, 13, 13)
-    assert result['EK'] == (12, 12, 12, 12)
-    assert result['LZ'] == (-12, -12, -12, -12)
+    assert result["KÜ"] == (13, 13, 13, 13)
+    assert result["EK"] == (12, 12, 12, 12)
+    assert result["LZ"] == (-12, -12, -12, -12)

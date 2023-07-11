@@ -1,10 +1,12 @@
 class LearningCharacteristic:
-    def __init__(self,
-                 student_id,
-                 knowledge=None,
-                 learning_analytics=None,
-                 learning_strategy=None,
-                 learning_style=None) -> None:
+    def __init__(
+        self,
+        student_id,
+        knowledge=None,
+        learning_analytics=None,
+        learning_strategy=None,
+        learning_style=None,
+    ) -> None:
         self.student_id = student_id
         self.knowledge = knowledge
         self.learning_analytics = learning_analytics
@@ -13,26 +15,28 @@ class LearningCharacteristic:
 
     def serialize(self):
         return {
-            'id': self.id,
-            'student_id': self.student_id,
-            'knowledge': self.knowledge,
-            'learning_analytics': self.learning_analytics,
-            'learning_strategy': self.learning_strategy,
-            'learning_style': self.learning_style
+            "id": self.id,
+            "student_id": self.student_id,
+            "knowledge": self.knowledge,
+            "learning_analytics": self.learning_analytics,
+            "learning_strategy": self.learning_strategy,
+            "learning_style": self.learning_style,
         }
 
 
 class LearningStyle:
-    def __init__(self,
-                 characteristic_id=None,
-                 perception_dimension="sns",
-                 perception_value=0,
-                 input_dimension="vrb",
-                 input_value=0,
-                 processing_dimension="act",
-                 processing_value=0,
-                 understanding_dimension="seq",
-                 understanding_value=0) -> None:
+    def __init__(
+        self,
+        characteristic_id=None,
+        perception_dimension="sns",
+        perception_value=0,
+        input_dimension="vrb",
+        input_value=0,
+        processing_dimension="act",
+        processing_value=0,
+        understanding_dimension="seq",
+        understanding_value=0,
+    ) -> None:
         self.characteristic_id = characteristic_id
         self.perception_dimension = perception_dimension
         self.perception_value = perception_value
@@ -45,16 +49,16 @@ class LearningStyle:
 
     def serialize(self):
         return {
-            'id': self.id,
-            'characteristic_id': self.characteristic_id,
-            'perception_dimension': self.perception_dimension,
-            'perception_value': self.perception_value,
-            'input_dimension': self.input_dimension,
-            'input_value': self.input_value,
-            'processing_dimension': self.processing_dimension,
-            'processing_value': self.processing_value,
-            'understanding_dimension': self.understanding_dimension,
-            'understanding_value': self.understanding_value
+            "id": self.id,
+            "characteristic_id": self.characteristic_id,
+            "perception_dimension": self.perception_dimension,
+            "perception_value": self.perception_value,
+            "input_dimension": self.input_dimension,
+            "input_value": self.input_value,
+            "processing_dimension": self.processing_dimension,
+            "processing_value": self.processing_value,
+            "understanding_dimension": self.understanding_dimension,
+            "understanding_value": self.understanding_value,
         }
 
 
@@ -122,27 +126,19 @@ class LearningStrategy:
 
 
 class Knowledge:
-    def __init__(self,
-                 characteristic_id) -> None:
+    def __init__(self, characteristic_id) -> None:
         self.characteristic_id = characteristic_id
 
     def serialize(self):
-        return {
-            'id': self.id,
-            'characteristic_id': self.characteristic_id
-        }
+        return {"id": self.id, "characteristic_id": self.characteristic_id}
 
 
 class LearningAnalytics:
-    def __init__(self,
-                 characteristic_id) -> None:
+    def __init__(self, characteristic_id) -> None:
         self.characteristic_id = characteristic_id
 
     def serialize(self):
-        return {
-            'id': self.id,
-            'characteristic_id': self.characteristic_id
-        }
+        return {"id": self.id, "characteristic_id": self.characteristic_id}
 
 
 class QuestionnaireIls:
@@ -156,10 +152,10 @@ class QuestionnaireIls:
 
     def serialize(self):
         return {
-            'id': self.id,
-            'student_id': self.student_id,
-            'learning_style': self.learning_style,
-            'learning_strategy': self.learning_strategy
+            "id": self.id,
+            "student_id": self.student_id,
+            "learning_style": self.learning_style,
+            "learning_strategy": self.learning_strategy,
         }
 
 

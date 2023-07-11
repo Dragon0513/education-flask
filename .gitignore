@@ -12,3 +12,4 @@ keys/public.pem
 .vscode/settings.json
 .flaskenv
 configs/lti_config.json
+test_keys/

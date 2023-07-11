@@ -75,6 +75,14 @@ In order for the system to verify requests, JWTs with RS256 signed signature wil
 - keys/public.pem
 - keys/private.pem
 
+You can put them in a custom directory, but add the env varibale: JWT_KEYS_LOCATION with the path to the directory. If not set, the default is the keys directory in the root of the project.
+Make sure you have OpenSSL installed. You can use the following commands to generate the keys:
+
+```bash
+openssl genrsa -out keys/private.pem 2048
+openssl rsa -in keys/private.pem -outform PEM -pubout -out keys/public.pem
+```
+
 ### Project
 
 - Create a new conda environment using `conda create --name HASKI-Backend --file requirements.txt`

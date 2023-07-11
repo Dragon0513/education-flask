@@ -4,10 +4,10 @@ import os
 # Establishing the connection
 conn = psycopg2.connect(
     database="haski",
-    user='postgres',
+    user="postgres",
     password=os.environ.get("DB_PASSWORD", "postgres"),
     host=os.environ.get("DB_HOST", "localhost"),
-    port=os.environ.get("DB_PORT", 5432)
+    port=os.environ.get("DB_PORT", 5432),
 )
 
 conn.autocommit = True

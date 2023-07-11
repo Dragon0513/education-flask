@@ -28,20 +28,18 @@ class AntColonySolver:
 
         if self.min_round_trips and self.max_round_trips:
             self.min_round_trips = min(
-                self.min_round_trips, self.max_round_trips)
+                self.min_round_trips, self.max_round_trips
+            )
         if self.min_ants and self.max_ants:
             self.min_ants = min(self.min_ants, self.max_ants)
 
     def solve_initialize(
-            self,
-            problem_path: List[Any],
+        self,
+        problem_path: List[Any],
     ) -> None:
         # Cache of distances between nodes
         self.distances = {
-            source: {
-                dest: self.cost_fn(source, dest)
-                for dest in problem_path
-            }
+            source: {dest: self.cost_fn(source, dest) for dest in problem_path}
             for source in problem_path
         }
 
@@ -49,8 +47,8 @@ class AntColonySolver:
         # - division in a tight loop is expensive
         self.distance_cost = {
             source: {
-                dest: 1 / (1 + self.distances[source]
-                           [dest]) ** self.distance_power
+                dest: 1
+                / (1 + self.distances[source][dest]) ** self.distance_power
                 for dest in problem_path
             }
             for source in problem_path
@@ -71,9 +69,12 @@ class AntColonySolver:
         if self.ant_count <= 0:
             self.ant_count = len(problem_path)
         if self.ant_speed <= 0:
-            self.ant_speed = np.median(
-                list(chain(*[d.values()
-                             for d in self.distances.values()]))) // 5
+            self.ant_speed = (
+                np.median(
+                    list(chain(*[d.values() for d in self.distances.values()]))
+                )
+                // 5
+            )
         self.ant_speed = int(max(1, self.ant_speed))
 
         # Heuristic Exports
@@ -82,28 +83,24 @@ class AntColonySolver:
         self.round_trips = 0
         self._initalized = True
 
-    def solve(self,
-              problem_path: List[Any],
-              restart=False,
-              ) -> List[Tuple[int, int]]:
-
+    def solve(
+        self,
+        problem_path: List[Any],
+        restart=False,
+    ) -> List[Tuple[int, int]]:
         if restart or not self._initalized:
             self.solve_initialize(problem_path)
 
         # Here come the ants!
         ants = {
-            "distance":
-            np.zeros((self.ant_count,)).astype('int32'),
-            "path":
-            [[problem_path[0]] for _ in range(self.ant_count)],
-            "remaining":
-                [set(problem_path[1:-1]) for _ in range(self.ant_count)],
-            "end":
-            problem_path[-1],
-            "path_cost":
-            np.zeros((self.ant_count,)).astype('int32'),
-            "round_trips":
-            np.zeros((self.ant_count,)).astype('int32'),
+            "distance": np.zeros((self.ant_count,)).astype("int32"),
+            "path": [[problem_path[0]] for _ in range(self.ant_count)],
+            "remaining": [
+                set(problem_path[1:-1]) for _ in range(self.ant_count)
+            ],
+            "end": problem_path[-1],
+            "path_cost": np.zeros((self.ant_count,)).astype("int32"),
+            "round_trips": np.zeros((self.ant_count,)).astype("int32"),
         }
 
         best_path = None
@@ -118,8 +115,8 @@ class AntColonySolver:
             # `> self.ant_speed` rather than `> 0`
             # avoids computing ants_arriving in the main part
             # of this tight loop
-            ants_travelling = (ants['distance'] > self.ant_speed)
-            ants['distance'][ants_travelling] -= self.ant_speed
+            ants_travelling = ants["distance"] > self.ant_speed
+            ants["distance"][ants_travelling] -= self.ant_speed
             if all(ants_travelling):
                 continue  # skip termination checks until the next ant arrives
 
@@ -127,15 +124,20 @@ class AntColonySolver:
             ants_arriving = np.invert(ants_travelling)
             ants_arriving_index = np.where(ants_arriving)[0]
             for i in ants_arriving_index:
-                ants, best_path, best_path_cost, best_epochs =\
-                    self.ants_arriving(
-                        ants,
-                        i,
-                        epoch,
-                        problem_path,
-                        best_path,
-                        best_path_cost,
-                        best_epochs)
+                (
+                    ants,
+                    best_path,
+                    best_path_cost,
+                    best_epochs,
+                ) = self.ants_arriving(
+                    ants,
+                    i,
+                    epoch,
+                    problem_path,
+                    best_path,
+                    best_path_cost,
+                    best_epochs,
+                )
 
             if self.loop_termination(best_epochs, epoch):
                 break
@@ -149,14 +151,14 @@ class AntColonySolver:
         return best_path
 
     def next_node(self, ants, index):
-        this_node = ants['path'][index][-1]
+        this_node = ants["path"][index][-1]
 
         weights = []
         weights_sum = 0
-        if not ants['remaining'][index]:
+        if not ants["remaining"][index]:
             # ants return home
-            return ants['path'][index][0]
-        for next_node in ants['remaining'][index]:
+            return ants["path"][index][0]
+        for next_node in ants["remaining"][index]:
             if next_node == this_node:
                 continue
             reward = (
@@ -169,45 +171,47 @@ class AntColonySolver:
 
         # Pick a random path in proportion to the weight of the pheromone
         rand = random.random() * weights_sum
-        for (weight, next_node) in weights:
+        for weight, next_node in weights:
             if rand > weight:
                 rand -= weight
             else:
                 break
         return next_node
 
-    def ants_arriving(self,
-                      ants,
-                      i,
-                      epoch,
-                      problem_path,
-                      best_path,
-                      best_path_cost,
-                      best_epochs):
+    def ants_arriving(
+        self,
+        ants,
+        i,
+        epoch,
+        problem_path,
+        best_path,
+        best_path_cost,
+        best_epochs,
+    ):
         # ant has arrived at next_node
-        this_node = ants['path'][i][-1]
+        this_node = ants["path"][i][-1]
         next_node = self.next_node(ants, i)
-        ants['distance'][i] = self.distances[this_node][next_node]
-        ants['remaining'][i] = ants['remaining'][i] - {this_node}
-        ants['path_cost'][i] = ants['path_cost'][i] + \
-            ants['distance'][i]
-        ants['path'][i].append(next_node)
+        ants["distance"][i] = self.distances[this_node][next_node]
+        ants["remaining"][i] = ants["remaining"][i] - {this_node}
+        ants["path_cost"][i] = ants["path_cost"][i] + ants["distance"][i]
+        ants["path"][i].append(next_node)
 
         # ant has returned home to the colony
         # and ants['end'] == ants['path'][i][-1]:
-        if not ants['remaining'][i]:
-            ants['path'][i].pop(-1)
-            ants['path'][i].append(ants['end'])
+        if not ants["remaining"][i]:
+            ants["path"][i].pop(-1)
+            ants["path"][i].append(ants["end"])
             self.ants_used += 1
             self.round_trips = max(
-                self.round_trips, ants["round_trips"][i] + 1)
+                self.round_trips, ants["round_trips"][i] + 1
+            )
 
             # We have found a new best path - inform the Queen
             was_best_path = False
-            if ants['path_cost'][i] < best_path_cost:
+            if ants["path_cost"][i] < best_path_cost:
                 was_best_path = True
-                best_path_cost = ants['path_cost'][i]
-                best_path = ants['path'][i]
+                best_path_cost = ants["path_cost"][i]
+                best_path = ants["path"][i]
                 best_epochs += [epoch]
 
             # leave pheromone trail
@@ -220,22 +224,25 @@ class AntColonySolver:
             #       routes in combination with doubling pheromone for best_path
             reward = 1
             if self.reward_power:
-                reward *= ((best_path_cost /
-                            ants['path_cost'][i]) ** self.reward_power)
+                reward *= (
+                    best_path_cost / ants["path_cost"][i]
+                ) ** self.reward_power
             if self.decay_power:
-                reward *= (self.round_trips ** self.decay_power)
-            for path_index in range(len(ants['path'][i]) - 1):
-                this_node = ants['path'][i][path_index]
-                next_node = ants['path'][i][path_index+1]
+                reward *= self.round_trips**self.decay_power
+            for path_index in range(len(ants["path"][i]) - 1):
+                this_node = ants["path"][i][path_index]
+                next_node = ants["path"][i][path_index + 1]
                 self.pheromones[this_node][next_node] += reward
                 self.pheromones[next_node][this_node] += reward
                 if was_best_path:
                     # Queen orders to double the number
                     # of ants following this new best path
-                    self.pheromones[this_node][next_node]\
-                        *= self.best_path_smell
-                    self.pheromones[next_node][this_node]\
-                        *= self.best_path_smell
+                    self.pheromones[this_node][
+                        next_node
+                    ] *= self.best_path_smell
+                    self.pheromones[next_node][
+                        this_node
+                    ] *= self.best_path_smell
 
             # reset ant
             ants["distance"][i] = 0
@@ -247,9 +254,7 @@ class AntColonySolver:
 
         return ants, best_path, best_path_cost, best_epochs
 
-    def loop_termination(self,
-                         best_epochs,
-                         epoch):
+    def loop_termination(self, best_epochs, epoch):
         # Do we terminate?
 
         # Always wait for at least 1 solutions

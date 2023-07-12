@@ -11,6 +11,7 @@ class LearningElement:
         last_updated=None,
         student_learning_element=None,
     ) -> None:
+        self.id = None
         self.lms_id = lms_id
         self.activity_type = activity_type
         self.classification = classification
@@ -46,6 +47,7 @@ class Course:
         created_by=None,
         last_updated=None,
     ) -> None:
+        self.id = None
         self.lms_id = lms_id
         self.name = name
         self.university = university
@@ -79,6 +81,7 @@ class Topic:
         last_updated=None,
         student_topic=None,
     ) -> None:
+        self.id = None
         self.lms_id = lms_id
         self.is_topic = is_topic
         self.parent_id = parent_id
@@ -108,6 +111,7 @@ class Topic:
 
 class CourseTopic:
     def __init__(self, course_id, topic_id) -> None:
+        self.id = None
         self.course_id = course_id
         self.topic_id = topic_id
 
@@ -121,6 +125,7 @@ class CourseTopic:
 
 class TopicLearningElement:
     def __init__(self, topic_id, learning_element_id) -> None:
+        self.id = None
         self.topic_id = topic_id
         self.learning_element_id = learning_element_id
 
@@ -136,6 +141,7 @@ class CourseCreatorCourse:
     def __init__(
         self, course_creator_id, course_id, created_at, last_updated=None
     ) -> None:
+        self.id = None
         self.course_creator_id = course_creator_id
         self.course_id = course_id
         self.created_at = created_at
@@ -153,6 +159,7 @@ class CourseCreatorCourse:
 
 class TeacherCourse:
     def __init__(self, teacher_id, course_id) -> None:
+        self.id = None
         self.teacher_id = teacher_id
         self.course_id = course_id
 
@@ -178,6 +185,7 @@ class StudentCourse:
         understanding_dimension,
         understanding_value,
     ) -> None:
+        self.id = None
         self.student_id = student_id
         self.course_id = course_id
         self.perception_dimension = perception_dimension
@@ -209,6 +217,7 @@ class StudentTopic:
     def __init__(
         self, student_id, topic_id, done=False, done_at=None, visits=None
     ) -> None:
+        self.id = None
         self.student_id = student_id
         self.topic_id = topic_id
         self.done = done
@@ -230,6 +239,7 @@ class StudentTopicVisit:
     def __init__(
         self, student_id, topic_id, visit_start, visit_end=None
     ) -> None:
+        self.id = None
         self.student_id = student_id
         self.topic_id = topic_id
         self.visit_start = visit_start
@@ -249,6 +259,7 @@ class StudentLearningElement:
     def __init__(
         self, student_id, learning_element_id, done=False, done_at=None
     ) -> None:
+        self.id = None
         self.student_id = student_id
         self.learning_element_id = learning_element_id
         self.done = done
@@ -268,6 +279,7 @@ class StudentLearningElementVisit:
     def __init__(
         self, student_id, learning_element_id, visit_start, visit_end=None
     ) -> None:
+        self.id = None
         self.student_id = student_id
         self.learning_element_id = learning_element_id
         self.visit_start = visit_start
@@ -287,6 +299,7 @@ class LearningElementRating:
     def __init__(
         self, learning_element_id, rating, date, message=None
     ) -> None:
+        self.id = None
         self.learning_element_id = learning_element_id
         self.rating = rating
         self.date = date

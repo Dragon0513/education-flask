@@ -2,6 +2,7 @@ import json
 import os
 from errors import errors as err
 
+import datetime
 from flask import Flask, jsonify, request
 from flask_cors import CORS, cross_origin
 import re
@@ -1366,6 +1367,43 @@ def get_settings_by_user_id(user_id, lms_user_id):
             )
             status_code = 200
             return jsonify(settings), status_code
+
+
+@app.route("/user/<user_id>/<lms_user_id>/contactform",
+           methods=['POST'])
+@cross_origin(supports_credentials=True)
+def contact_form(user_id, lms_user_id):
+
+    if request.json is None:
+        raise err.MissingParameterError()
+
+    for el in ['report_type', 'report_topic', 'report_description']:
+        if el not in request.json:
+            raise err.MissingParameterError()
+
+    result = services.create_contact_form(
+        unit_of_work.SqlAlchemyUnitOfWork(),
+        user_id,
+        lms_user_id,
+        request.json['report_type'],
+        request.json['report_topic'],
+        request.json['report_description'],
+        datetime.datetime.now()
+    )
+
+    if result is None:
+        raise err.ContactFormError()
+
+    status_code = 201
+    return jsonify(result), status_code
+
+
+@app.route("/user/<user_id>/<lms_user_id>/contactform", methods=["DELETE"])
+@cross_origin(supports_credentials=True)
+def delete_contact_form(user_id, lms_user_id):
+    services.delete_contact_form(unit_of_work.SqlAlchemyUnitOfWork(),
+                                 user_id)
+    return "ok", 201
 
 
 # Log Endpoints

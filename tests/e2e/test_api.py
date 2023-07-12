@@ -14,7 +14,8 @@ course_id = 0
 topic_id = 0
 sub_topic_id = 0
 learning_element_id = 0
-questionnaire_id = 0
+questionnaire_ils_id = 0
+questionnaire_list_k_id = 0
 
 
 path_admin = "/admin"
@@ -31,7 +32,8 @@ path_learning_style = "/learningStyle"
 path_lms_course = "/lms/course"
 path_lms_student = "/lms/student"
 path_lms_user = "/lms/user"
-path_questionnaire = "/questionnaire"
+path_questionnaire_ils = "/questionnaire/ils"
+path_questionnaire_list_k = "/questionnaire/listk"
 path_recommendation = "/recommendation"
 path_settings = "/settings"
 path_student = "/student"
@@ -113,42 +115,42 @@ list_k_ids = [
     "org1_f1",
     "org2_f2",
     "org3_f3",
-    "ela1_f4",
-    "ela2_f5",
-    "ela3_f6",
-    "krp1_f7",
-    "krp2_f8",
-    "krp3_f9",
-    "wie1_f10",
-    "wie2_f11",
-    "wie3_f12",
-    "zp1_f13",
-    "zp2_f14",
-    "zp3_f15",
-    "kon1_f16",
-    "kon2_f17",
-    "kon3_f18",
+    "elab1_f4",
+    "elab2_f5",
+    "elab3_f6",
+    "crit_rev1_f7",
+    "crit_rev2_f8",
+    "crit_rev3_f9",
+    "rep1_f10",
+    "rep2_f11",
+    "rep3_f12",
+    "goal_plan1_f13",
+    "goal_plan2_f14",
+    "goal_plan3_f15",
+    "con1_f16",
+    "con2_f17",
+    "con3_f18",
     "reg1_f19",
     "reg2_f20",
     "reg3_f21",
-    "auf1_f22",
-    "auf2_f23",
-    "auf3_f24",
-    "ans1_f25",
-    "ans2_f26",
-    "ans3_f27",
-    "zei1_f28",
-    "zei2_f29",
-    "zei3_f30",
-    "lms1_f31",
-    "lms2_f32",
-    "lms3_f33",
-    "lit1_f34",
-    "lit2_f35",
-    "lit3_f36",
-    "lu1_f37",
-    "lu2_f38",
-    "lu3_f39",
+    "att1_f22",
+    "att2_f23",
+    "att3_f24",
+    "eff1_f25",
+    "eff2_f26",
+    "eff3_f27",
+    "time1_f28",
+    "time2_f29",
+    "time3_f30",
+    "lrn_w_cls1_f31",
+    "lrn_w_cls2_f32",
+    "lrn_w_cls3_f33",
+    "lit_res1_f34",
+    "lit_res2_f35",
+    "lit_res3_f36",
+    "lrn_env1_f37",
+    "lrn_env2_f38",
+    "lrn_env3_f39",
 ]
 wrong_test_id = "Test ID"
 
@@ -737,20 +739,18 @@ def test_add_student_to_course(
 
 # Post Questionnaire for Student
 @pytest.mark.parametrize(
-    "ils_long, moodle_user_id, \
+    "moodle_user_id, \
                          keys_expected, status_code_expected, \
                          save_id, error_id_missing, error_key_wrong, \
-                         error_answer_ils, error_answer_list_k, \
+                         error_answer_list_k, \
                          error_list_k_id",
     [
         # Working example
         (
-            True,
             4,
-            ["id", "student_id", "learning_style", "learning_strategy"],
+            ["id", "student_id", "learning_style"],
             201,
             True,
-            False,
             False,
             False,
             False,
@@ -758,30 +758,113 @@ def test_add_student_to_course(
         ),
         # Working example short questionnaire
         (
-            False,
             4,
-            ["id", "student_id", "learning_style", "learning_strategy"],
+            ["id", "student_id", "learning_style"],
             201,
             True,
             False,
             False,
             False,
             False,
-            False,
         ),
         # Missing mandatory answer
-        (False, 4, ["error"], 400, False, True, False, False, False, False),
+        (4, ["error"], 400, False, True, False, False, False),
         # Wrong ID for question
-        (True, 4, ["error"], 400, False, False, True, False, False, False),
+        (4, ["error"], 400, False, False, True, False, False),
         # Wrong answer type for ILS
-        (True, 4, ["error"], 400, False, False, False, True, False, False),
+        (4, ["error"], 400, False, False, False, False, False),
         # Wrong answer type LIST-K
-        (True, 4, ["error"], 400, False, False, False, False, True, False),
+        (4, ["error"], 400, False, False, False, True, False),
         # Wrong question ID for LIST-K
-        (True, 4, ["error"], 400, False, False, False, False, False, True),
+        (4, ["error"], 400, False, False, False, False, True),
     ],
 )
-def test_post_questionnaire(
+def test_post_questionnaire_list_k(
+        client,
+        moodle_user_id,
+        keys_expected,
+        status_code_expected,
+        save_id,
+        error_id_missing,
+        error_key_wrong,
+        error_answer_list_k,
+        error_list_k_id,
+):
+    global student_id
+    json_input = {}
+    list_k = []
+    for id in list_k_ids:
+        temp = {}
+        if error_list_k_id:
+            temp["question_id"] = wrong_test_id
+        else:
+            temp["question_id"] = id
+        if error_answer_list_k:
+            temp["answer"] = 7
+        else:
+            temp["answer"] = 1
+        list_k.append(temp)
+    json_input["list_k"] = list_k
+
+    url = (
+            path_lms_student
+            + "/"
+            + str(student_id)
+            + "/"
+            + str(moodle_user_id)
+            + path_questionnaire_list_k
+    )
+    r = client.post(url, json=json_input)
+    assert r.status_code == status_code_expected
+    response = json.loads(r.data.decode("utf-8").strip("\n"))
+    for key in keys_expected:
+        assert key in response.keys()
+    if save_id:
+        global questionnaire_list_k_id
+        questionnaire_list_k_id = response["id"]
+
+
+@pytest.mark.parametrize(
+    "ils_long, moodle_user_id, \
+                         keys_expected, status_code_expected, \
+                         save_id, error_id_missing, error_key_wrong, \
+                         error_answer_ils,",
+    [
+        # Working example
+        (
+                True,
+                4,
+                ["id", "student_id", "learning_style"],
+                201,
+                True,
+                False,
+                False,
+                False,
+        ),
+        # Working example short questionnaire
+        (
+                False,
+                4,
+                ["id", "student_id", "learning_style"],
+                201,
+                True,
+                False,
+                False,
+                False,
+        ),
+        # Missing mandatory answer
+        (False, 4, ["error"], 400, False, True, False, False),
+        # Wrong ID for question
+        (True, 4, ["error"], 400, False, False, True, False),
+        # Wrong answer type for ILS
+        (True, 4, ["error"], 400, False, False, False, True),
+        # Wrong answer type LIST-K
+        (True, 4, ["error"], 400, False, False, False, False),
+        # Wrong question ID for LIST-K
+        (True, 4, ["error"], 400, False, False, False, False),
+    ],
+)
+def test_post_questionnaire_ils(
     client,
     ils_long,
     moodle_user_id,
@@ -791,8 +874,6 @@ def test_post_questionnaire(
     error_id_missing,
     error_key_wrong,
     error_answer_ils,
-    error_answer_list_k,
-    error_list_k_id,
 ):
     global student_id
     json_input = {}
@@ -825,19 +906,6 @@ def test_post_questionnaire(
                 temp["answer"] = "a"
             ils.append(temp)
         json_input["ils"] = ils
-    list_k = []
-    for id in list_k_ids:
-        temp = {}
-        if error_list_k_id:
-            temp["question_id"] = wrong_test_id
-        else:
-            temp["question_id"] = id
-        if error_answer_list_k:
-            temp["answer"] = 7
-        else:
-            temp["answer"] = 1
-        list_k.append(temp)
-    json_input["list_k"] = list_k
 
     url = (
         path_lms_student
@@ -845,7 +913,7 @@ def test_post_questionnaire(
         + str(student_id)
         + "/"
         + str(moodle_user_id)
-        + path_questionnaire
+        + path_questionnaire_ils
     )
     r = client.post(url, json=json_input)
     assert r.status_code == status_code_expected
@@ -853,8 +921,8 @@ def test_post_questionnaire(
     for key in keys_expected:
         assert key in response.keys()
     if save_id:
-        global questionnaire_id
-        questionnaire_id = response["id"]
+        global questionnaire_ils_id
+        questionnaire_ils_id = response["id"]
 
 
 # Student visits Topic

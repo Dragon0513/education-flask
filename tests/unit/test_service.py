@@ -273,34 +273,34 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
         for remove in to_remove:
             self.course_topic.remove(remove)
 
-    def delete_ils_input_answers(self, questionnaire_id):
+    def delete_ils_input_answers(self, questionnaire_ils_id):
         to_remove = []
         for i in self.ils_input_answers:
-            if i.questionnaire_id == questionnaire_id:
+            if i.questionnaire_ils_id == questionnaire_ils_id:
                 to_remove.append(i)
         for remove in to_remove:
             self.ils_input_answers.remove(remove)
 
-    def delete_ils_perception_answers(self, questionnaire_id):
+    def delete_ils_perception_answers(self, questionnaire_ils_id):
         to_remove = []
         for i in self.ils_perception_answers:
-            if i.questionnaire_id == questionnaire_id:
+            if i.questionnaire_ils_id == questionnaire_ils_id:
                 to_remove.append(i)
         for remove in to_remove:
             self.ils_perception_answers.remove(remove)
 
-    def delete_ils_processing_answers(self, questionnaire_id):
+    def delete_ils_processing_answers(self, questionnaire_ils_id):
         to_remove = []
         for i in self.ils_processing_answers:
-            if i.questionnaire_id == questionnaire_id:
+            if i.questionnaire_ils_id == questionnaire_ils_id:
                 to_remove.append(i)
         for remove in to_remove:
             self.ils_processing_answers.remove(remove)
 
-    def delete_ils_understanding_answers(self, questionnaire_id):
+    def delete_ils_understanding_answers(self, questionnaire_ils_id):
         to_remove = []
         for i in self.ils_understanding_answers:
-            if i.questionnaire_id == questionnaire_id:
+            if i.questionnaire_ils_id == questionnaire_ils_id:
                 to_remove.append(i)
         for remove in to_remove:
             self.ils_understanding_answers.remove(remove)
@@ -1160,9 +1160,9 @@ questionnaire_list_k_ids = [
     "time1_f28",
     "time2_f29",
     "time3_f30",
-    "lrn_w_cls1_f3",
-    "lrn_w_cls2_f3",
-    "lrn_w_cls3_f3",
+    "lrn_w_cls1_f31",
+    "lrn_w_cls2_f32",
+    "lrn_w_cls3_f33",
     "lit_res1_f34",
     "lit_res2_f35",
     "lit_res3_f36",
@@ -1746,6 +1746,7 @@ def test_create_list_k_questionnaire():
     assert result != {}
     assert entries_after == entries_after2
 
+
 @pytest.mark.parametrize("full_version", [
     # Working Example short form
     (
@@ -1882,7 +1883,7 @@ def test_delete_ils_understanding_answers():
     assert entries_beginning - 1 == entries_after
 
 
-def test_delete_questionnaire_list_k(full_version):
+def test_delete_questionnaire_list_k():
     uow = FakeUnitOfWork()
     services.create_learning_characteristics(
         uow=uow,

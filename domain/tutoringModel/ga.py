@@ -18,9 +18,9 @@ class GA_Algorithmus(object):
                  id = None):
 
         self.pop_size = 80
-        self.cross_rate = 0.8
+        self.cross_rate = 0.9
         self.mutate_rate = 0.3
-        self.n_generation = 80
+        self.n_generation = 100
         self.best_population = None
 
         if id is None:
@@ -43,7 +43,8 @@ class GA_Algorithmus(object):
           
         self.le_coordinate = np.array([dict_coordinates[key] for key in dict_coordinates])
         self.le_coordinate.reshape((len(dict_coordinates), 4))      
-      
+        
+
         
         # generate population with random position 
         positions = np.arange(1, self.le_size)
@@ -163,6 +164,7 @@ class GA_Algorithmus(object):
             temp1 = LE_coordinate[i]
             temp2 = LE_coordinate[i+1]
             sume = sume + math.dist(temp1, temp2)
+           
 
         euclidean_distance = round(sume, 2)
         return euclidean_distance
@@ -215,7 +217,7 @@ class GA_Algorithmus(object):
         best_total_score = 300
         le_coordinate = utils.get_coordinates(
             learning_style, self.learning_elements)        
-       
+        #print ("le_coordinate",le_coordinate )
         self.create_random_population(le_coordinate)
         
         for generatiion in range(self.n_generation):
@@ -260,7 +262,7 @@ class GA_Algorithmus(object):
         if(Contain_LE):
             learning_path = learning_path[:-2] 
 
-        print("learning_path",learning_path)  
+        
 
         return learning_path
       
@@ -268,11 +270,13 @@ class GA_Algorithmus(object):
                                                       "vis": 5, "glo": 1},
                           input_Learning_element = None):
 
-        time1 = time.time()    
-         
+        time1 = time.time()
+        input_learning_style = self.get_probe_learning_style()     
+        #print("input_learning_style",input_learning_style)  
         if input_learning_style is not None:
-            learning_style = util.get_learning_style(input_learning_style)  
-            print("input_learning_style:\n",learning_style);
+            learning_style = util.get_learning_style(input_learning_style)
+            learning_style = {"act": 5, "int": 9, "vis": 9, "glo": 9}
+            #print("+++input_learning_style:\n",learning_style, " \n\n  ", len(learning_style) );
 
         if (len(learning_style) != 4):
             raise err.WrongLearningStyleNumberError()
@@ -289,18 +293,29 @@ class GA_Algorithmus(object):
             new_Learning_element = util.add_Learning_element(input_Learning_element)
             self.learning_elements = util.get_learning_element( new_Learning_element)
             self.le_size = len ( self.learning_elements)
-            print ("\n\n\ninput_Learning_element",input_Learning_element) 
+            #print ("\n\n\ninput_Learning_element",input_Learning_element) 
 
         else:           
            raise err.WrongLearningStyleDimensionError()
 
         result_ga_LP = self.calculate_learning_path(input_learning_style)  
                 
-        #time2 = time.time()
-        #time_sec = time2-time1
-        #print ("Time_sec: ",time_sec)
-        #print ("\nResult_ga_LP: ",result_ga_LP)       
+        time2 = time.time()
+        time_sec = time2-time1
+        print ("Time_sec: ",time_sec)
+        print ("\nResult_GA_LP: ",result_ga_LP)       
        
         return result_ga_LP
             
 
+    def get_probe_learning_style(self):
+
+
+        input_learning_style ={'id': 1, 'characteristic_id': 1, 
+                              'perception_dimension': 'int', 
+                              'perception_value': 9, 'input_dimension': 'vis',
+                               'input_value': 9, 'processing_dimension': 'act', 
+                               'processing_value': 5, 'understanding_dimension': 'glo', 'understanding_value': 9}
+
+        
+        return input_learning_style

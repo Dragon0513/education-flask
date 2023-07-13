@@ -60,3 +60,6 @@ wheel==0.37.1
 win-inet-pton==1.1.0
 wincertstore==0.2
 WTForms==3.0.1
+black==23.7.0
+flake8==6.0.0
+flake8-bugbear==23.7.10

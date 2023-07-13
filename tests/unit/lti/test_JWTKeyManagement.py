@@ -16,7 +16,6 @@ public_key_location: str = "keys/public.pem"
 
 
 class TestJWTKeyManagement(unittest.TestCase):
-
     def setUp(self):
         """
         Generate mock keys/private.pem and public.pem for testing.
@@ -118,8 +117,7 @@ class TestJWTKeyManagement(unittest.TestCase):
 
         # Assert
         assert jwt.verify_jwt_payload(jwt.verify_jwt(token, key_public))
-        assert SessionServiceFlask.get(
-            nonce, "state_jwt") == state_jwt
+        assert SessionServiceFlask.get(nonce, "state_jwt") == state_jwt
 
     def test_state_jwt(self):
         """Test if a state-token can be generated and verified."""
@@ -135,7 +133,8 @@ class TestJWTKeyManagement(unittest.TestCase):
         token = jwt.generate_state_jwt(
             nonce, state, audience, issuer, claims, expiration
         )
-        # When verifying the state token, we need to set the state in the session
+        # When verifying the state token,
+        # we need to set the state in the session
         SessionServiceFlask.set_state_jwt(
             nonce,
             "https://moodle.haski.app/mod/lti/auth.php",
@@ -146,4 +145,6 @@ class TestJWTKeyManagement(unittest.TestCase):
         # Assert
         assert jwt.verify_state_jwt_payload(
             jwt.verify_jwt(token, key_public),
-            verify_nonce=False, session=False)
+            verify_nonce=False,
+            session=False,
+        )

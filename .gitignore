@@ -1,8 +1,13 @@
 .pytest_cache/
 __pycache__/
 .venv/
+venv/
 .scannerwork/
 .dependencygraph/
 coverage.xml
 .env
 .coverage
+.vscode/settings.json
+.vscode/launch.json
+keys/private.pem
+keys/public.pem

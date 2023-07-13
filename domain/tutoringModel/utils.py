@@ -16,6 +16,8 @@ influence = {
 }
 
 
+
+
 # Calculate the coordinates for the LEs
 def get_coordinates(learning_style, list_of_les):
 

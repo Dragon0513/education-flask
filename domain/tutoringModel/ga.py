@@ -32,27 +32,19 @@ class GA_Algorithmus(object):
             self.learning_elements = learning_elements
             self.le_size = len(self.learning_elements)
 
-        if learning_path is None:
-            self.learning_path = None 
-        else:
-            self.learning_path = learning_path
-        self.student_id = student_id
 
-    def create_random_population(self,dict_coordinates):
-            
+    def create_random_population(self,dict_coordinates):            
           
         self.le_coordinate = np.array([dict_coordinates[key] for key in dict_coordinates])
-        self.le_coordinate.reshape((len(dict_coordinates), 4))      
-        
+        self.le_coordinate.reshape((len(dict_coordinates), 4))   
 
-        
-        # generate population with random position 
+        # Generating the population with initial random position
         positions = np.arange(1, self.le_size)
         self.population = np.vstack(
             [np.random.permutation(positions)
              for _ in range(self.pop_size)])
         
-        # initialize some populations with Clustering
+        # Initialise some populations with Clustering
         with_cluster = False
         with_cluster, labels = self.find_cluster(
                 self.le_coordinate, n_cluster=3, rseed=2)
@@ -274,9 +266,9 @@ class GA_Algorithmus(object):
         input_learning_style = self.get_probe_learning_style()     
         #print("input_learning_style",input_learning_style)  
         if input_learning_style is not None:
-            learning_style = util.get_learning_style(input_learning_style)
-            learning_style = {"act": 5, "int": 9, "vis": 9, "glo": 9}
-            #print("+++input_learning_style:\n",learning_style, " \n\n  ", len(learning_style) );
+            learning_style = utils.get_learning_style2(input_learning_style)
+            learning_style = {"act": 5, "int": 9, "vis": 9, "glo": 3}
+           
 
         if (len(learning_style) != 4):
             raise err.WrongLearningStyleNumberError()
@@ -290,8 +282,8 @@ class GA_Algorithmus(object):
         if input_Learning_element is not None:
             
            #print("---input_Learning_element",input_Learning_element)
-            new_Learning_element = util.add_Learning_element(input_Learning_element)
-            self.learning_elements = util.get_learning_element( new_Learning_element)
+            #new_Learning_element = util.add_Learning_element(input_Learning_element)
+            self.learning_elements = util.get_learning_element( input_Learning_element)
             self.le_size = len ( self.learning_elements)
             #print ("\n\n\ninput_Learning_element",input_Learning_element) 
 
@@ -311,7 +303,7 @@ class GA_Algorithmus(object):
     def get_probe_learning_style(self):
 
 
-        input_learning_style ={'id': 1, 'characteristic_id': 1, 
+        input_learning_style = {'id': 1, 'characteristic_id': 1, 
                               'perception_dimension': 'int', 
                               'perception_value': 9, 'input_dimension': 'vis',
                                'input_value': 9, 'processing_dimension': 'act', 

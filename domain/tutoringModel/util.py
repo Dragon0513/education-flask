@@ -93,7 +93,7 @@ def check_learning_style(input_learning_style):
 
 def check_name_learning_style(input_learning_style):
     # this function may not be necessary
-    is_correct = False
+   
     list_is_correct = []
 
     for iterator in input_learning_style:
@@ -102,20 +102,15 @@ def check_name_learning_style(input_learning_style):
         condition2 = (iterator == 'sns' or iterator == 'int')
         condition3 = (iterator == 'vis' or iterator == 'vrb')
         condition4 = (iterator == 'seq' or iterator == 'glo')
-        if(condition1):
-            list_is_correct.append(True)
-        if(condition2):
-            list_is_correct.append(True)
-        if(condition3):
-            list_is_correct.append(True)
-        if(condition4):
-            list_is_correct.append(True)
+        
+        if(condition1 or condition2 or condition3 or condition4):
+            list_is_correct.append(True)        
 
     temp = [True, True, True, True]
     if(list_is_correct != temp):
-        is_correct = True
+        return True
 
-    return is_correct
+    return False
 
 def get_list_LPLE(learning_path, learning_elements, LP_id):
 
@@ -140,37 +135,63 @@ def get_list_LPLE(learning_path, learning_elements, LP_id):
     #print("List_LPLE: ",[i.position for i in List_LPLE])
     return List_LPLE
 
+# def get_learning_style( learning_style):
+   
+#     result = {}
+
+#     if(learning_style.get('processing_dimension')== "act"):
+#         result["act"] = learning_style.get('processing_value')
+#     else:
+#         result["ref"] = learning_style.get('processing_value')
+  
+#     if(learning_style.get('perception_dimension') == "sns"):
+#         result["sns"] = learning_style.get('perception_value')
+#     else:
+#         result["int"] = learning_style.get('perception_value')
+
+#     if(learning_style.get('input_dimension') == "vis"):
+#         result["vis"] = learning_style.get('input_value')
+#     else:
+#         result["vrb"] = learning_style.get('input_value')   
+
+#     if(learning_style.get('understanding_dimension') == "glo"):
+#         result["glo"] = learning_style.get('understanding_value')
+#     else:
+#         result["seq"] = learning_style.get('understanding_value')
+    
+#     for key, value in dict(result).items():
+#         if value == None:
+#             del result[key]   
+#     print("\nlearning_style__LS",learning_style )        
+#     print("\nResult__LS",result )
+#     return result    
+
 def get_learning_style( learning_style):
    
     result = {}
+    str_processing = learning_style.get('processing_dimension')
+    value_processing = learning_style.get('processing_value')    
+    result[str_processing] = value_processing
 
-    if(learning_style.get('processing_dimension')== "act"):
-        result["act"] = learning_style.get('processing_value')
-    else:
-        result["ref"] = learning_style.get('processing_value')
-  
-    if(learning_style.get('perception_dimension') == "sns"):
-        result["sns"] = learning_style.get('perception_value')
-    else:
-        result["int"] = learning_style.get('perception_value')
+    str_perception = learning_style.get('perception_dimension')
+    value_perception = learning_style.get('perception_value')    
+    result[str_perception] = value_perception
 
-    if(learning_style.get('input_dimension') == "vis"):
-        result["vis"] = learning_style.get('input_value')
-    else:
-        result["vrb"] = learning_style.get('input_value')   
 
-    if(learning_style.get('understanding_dimension') == "glo"):
-        result["glo"] = learning_style.get('understanding_value')
-    else:
-        result["seq"] = learning_style.get('understanding_value')
-    
+    str_input = learning_style.get('input_dimension')
+    value_input = learning_style.get('input_value')    
+    result[str_input] = value_input
 
+    str_understanding = learning_style.get('understanding_dimension')
+    value_understanding = learning_style.get('understanding_value')    
+    result[str_understanding] = value_understanding
 
     for key, value in dict(result).items():
         if value == None:
             del result[key]   
-
-    return result    
+    print("\nnew_learning_style__LS",learning_style )        
+    print("\nnew_Result__LS",result )
+    return result       
 
 def add_Learning_element(learning_elements):
     #added some learning element for testing
@@ -214,6 +235,6 @@ def get_learning_element( learning_elements):
 
     if(lz_is_present):
         classification_learning_element.append(lz_element)       
-    #print("learning elements", classification_learning_element) 
+    print("learning elements", classification_learning_element) 
     return classification_learning_element   
 

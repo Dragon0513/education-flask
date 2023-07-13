@@ -1,0 +1,7 @@
+[tool.isort]
+atomic = true
+profile = "black"
+line_length = 88
+skip_gitignore = true
+skip_glob = ["setup", "keys", ".vscode", ".github", "tests", "configs", "venv"]
+known_first_party = ["black", "blackd", "_black_version"]

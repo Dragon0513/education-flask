@@ -240,8 +240,7 @@ sql = '''
 '''
 cursor.execute(sql)
 
-#create courses
-
+# create courses
 sql = '''
     INSERT INTO course (lms_id, name, university)
     VALUES (2, 'Software Engineering', 'HS-RE')   
@@ -269,7 +268,6 @@ sql = '''
 cursor.execute(sql)
 
 # create topics
-
 sql = '''
     INSERT INTO topic (lms_id, is_topic, contains_le, name, university,\
     created_by, created_at, last_updated)
@@ -568,7 +566,7 @@ sql = '''
 '''
 cursor.execute(sql)
 
-#Add student to course
+# Add student to course
 sql = '''
     INSERT INTO student_course (student_id, course_id, perception_dimension,\
     perception_value, input_dimension, input_value, processing_dimension,\
@@ -1829,7 +1827,7 @@ sql = '''
 '''
 cursor.execute(sql)
 
-#Create questionnaire list k
+# Create questionnaire list k
 sql = '''
     INSERT INTO list_k (questionnaire_id, org1_f1, org2_f2, org3_f3, ela1_f4,\
     ela2_f5, ela3_f6, krp1_f7, krp2_f8, krp3_f9, wie1_f10, wie2_f11, wie3_f12,\
@@ -1903,7 +1901,6 @@ sql = '''
     VALUES (3)
 '''
 cursor.execute(sql)
-
 
 
 conn.commit()

@@ -243,7 +243,7 @@ cursor.execute(sql)
 # create courses
 sql = '''
     INSERT INTO course (lms_id, name, university)
-    VALUES (2, 'Software Engineering', 'HS-RE')   
+    VALUES (2, 'Software Engineering', 'HS-RE')
 '''
 cursor.execute(sql)
 

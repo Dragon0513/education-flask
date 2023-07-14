@@ -343,68 +343,90 @@ cursor.execute(sql)
 # create learning elements
 
 sql = '''
-    INSERT INTO learning_element (lms_id, activity_type, classification, name, university, created_by, created_at, last_updated)
-    VALUES (1, 'h5pactivity', 'KÜ', 'Introduction', 'HS-KE', 'Dimitri Bigler', '2023-07-13 16:00:00', '2023-07-20 20:00:00')
+    INSERT INTO learning_element (lms_id, activity_type, classification, name, university, created_by, created_at,\
+    last_updated)
+    VALUES (1, 'h5pactivity', 'KÜ', 'Introduction', 'HS-KE', 'Dimitri Bigler', '2023-07-13 16:00:00',\
+    '2023-07-20 20:00:00')
 '''
 cursor.execute(sql)
 
 sql = '''
-    INSERT INTO learning_element (lms_id, activity_type, classification, name, university, created_by, created_at, last_updated)
-    VALUES (2, 'h5pactivity', 'EK', 'General Something', 'HS-KE', 'Dimitri Bigler', '2023-07-13 16:00:00', '2023-07-20 20:00:00')
+    INSERT INTO learning_element (lms_id, activity_type, classification, name, university, created_by, created_at,\
+    last_updated)
+    VALUES (2, 'h5pactivity', 'EK', 'General Something', 'HS-KE', 'Dimitri Bigler', '2023-07-13 16:00:00',\
+    '2023-07-20 20:00:00')
 '''
 cursor.execute(sql)
 
 sql = '''
-    INSERT INTO learning_element (lms_id, activity_type, classification, name, university, created_by, created_at, last_updated)
-    VALUES (3, 'h5pactivity', 'ÜB', 'Metric-1', 'HS-KE', 'Dimitri Bigler', '2023-07-13 16:00:00', '2023-07-20 20:00:00')
+    INSERT INTO learning_element (lms_id, activity_type, classification, name, university, created_by, created_at,\
+    last_updated)
+    VALUES (3, 'h5pactivity', 'ÜB', 'Metric-1', 'HS-KE', 'Dimitri Bigler', '2023-07-13 16:00:00',\
+    '2023-07-20 20:00:00')
 '''
 cursor.execute(sql)
 
 sql = '''
-    INSERT INTO learning_element (lms_id, activity_type, classification, name, university, created_by, created_at, last_updated)
-    VALUES (4, 'h5pactivity', 'ÜB', 'Metric-2', 'HS-KE', 'Dimitri Bigler', '2023-07-13 16:00:00', '2023-07-20 20:00:00')
+    INSERT INTO learning_element (lms_id, activity_type, classification, name, university, created_by, created_at,\
+    last_updated)
+    VALUES (4, 'h5pactivity', 'ÜB', 'Metric-2', 'HS-KE', 'Dimitri Bigler', '2023-07-13 16:00:00',\
+    '2023-07-20 20:00:00')
 '''
 cursor.execute(sql)
 
 sql = '''
-    INSERT INTO learning_element (lms_id, activity_type, classification, name, university, created_by, created_at, last_updated)
-    VALUES (5, 'h5pactivity', 'ÜB', 'Something-Else-1', 'HS-KE', 'Dimitri Bigler', '2023-07-13 16:00:00', '2023-07-20 20:00:00')
+    INSERT INTO learning_element (lms_id, activity_type, classification, name, university, created_by, created_at,\
+    last_updated)
+    VALUES (5, 'h5pactivity', 'ÜB', 'Something-Else-1', 'HS-KE', 'Dimitri Bigler', '2023-07-13 16:00:00',\
+    '2023-07-20 20:00:00')
 '''
 cursor.execute(sql)
 
 sql = '''
-    INSERT INTO learning_element (lms_id, activity_type, classification, name, university, created_by, created_at, last_updated)
-    VALUES (6, 'h5pactivity', 'ÜB', 'Something-Else-2', 'HS-KE', 'Dimitri Bigler', '2023-07-13 16:00:00', '2023-07-20 20:00:00')
+    INSERT INTO learning_element (lms_id, activity_type, classification, name, university, created_by, created_at,\
+    last_updated)
+    VALUES (6, 'h5pactivity', 'ÜB', 'Something-Else-2', 'HS-KE', 'Dimitri Bigler', '2023-07-13 16:00:00',\
+    '2023-07-20 20:00:00')
 '''
 cursor.execute(sql)
 
 sql = '''
-    INSERT INTO learning_element (lms_id, activity_type, classification, name, university, created_by, created_at, last_updated)
-    VALUES (7, 'h5pactivity', 'KÜ', 'Einführung', 'HS-KE', 'Dimitri Bigler', '2023-07-13 16:00:00', '2023-07-20 20:00:00')
+    INSERT INTO learning_element (lms_id, activity_type, classification, name, university, created_by, created_at,\
+    last_updated)
+    VALUES (7, 'h5pactivity', 'KÜ', 'Einführung', 'HS-KE', 'Dimitri Bigler', '2023-07-13 16:00:00',\
+    '2023-07-20 20:00:00')
 '''
 cursor.execute(sql)
 
 sql = '''
-    INSERT INTO learning_element (lms_id, activity_type, classification, name, university, created_by, created_at, last_updated)
-    VALUES (8, 'h5pactivity', 'ÜB', 'Design Pattern Allgemein', 'HS-KE', 'Dimitri Bigler', '2023-07-13 16:00:00', '2023-07-20 20:00:00')
+    INSERT INTO learning_element (lms_id, activity_type, classification, name, university, created_by, created_at,\
+    last_updated)
+    VALUES (8, 'h5pactivity', 'ÜB', 'Design Pattern Allgemein', 'HS-KE', 'Dimitri Bigler', '2023-07-13 16:00:00',\
+    '2023-07-20 20:00:00')
 '''
 cursor.execute(sql)
 
 sql = '''
-    INSERT INTO learning_element (lms_id, activity_type, classification, name, university, created_by, created_at, last_updated)
-    VALUES (9, 'h5pactivity', 'ÜB', 'Design Pattern Erweitert', 'HS-KE', 'Dimitri Bigler', '2023-07-13 16:00:00', '2023-07-20 20:00:00')
+    INSERT INTO learning_element (lms_id, activity_type, classification, name, university, created_by, created_at,\
+    last_updated)
+    VALUES (9, 'h5pactivity', 'ÜB', 'Design Pattern Erweitert', 'HS-KE', 'Dimitri Bigler', '2023-07-13 16:00:00',\
+    '2023-07-20 20:00:00')
 '''
 cursor.execute(sql)
 
 sql = '''
-    INSERT INTO learning_element (lms_id, activity_type, classification, name, university, created_by, created_at, last_updated)
-    VALUES (10, 'h5pactivity', 'ÜB', 'Übung - 1', 'HS-KE', 'Dimitri Bigler', '2023-07-13 16:00:00', '2023-07-20 20:00:00')
+    INSERT INTO learning_element (lms_id, activity_type, classification, name, university, created_by, created_at,\
+    last_updated)
+    VALUES (10, 'h5pactivity', 'ÜB', 'Übung - 1', 'HS-KE', 'Dimitri Bigler', '2023-07-13 16:00:00',\
+    '2023-07-20 20:00:00')
 '''
 cursor.execute(sql)
 
 sql = '''
-    INSERT INTO learning_element (lms_id, activity_type, classification, name, university, created_by, created_at, last_updated)
-    VALUES (11, 'h5pactivity', 'ÜB', 'Übung - 2', 'HS-KE', 'Dimitri Bigler', '2023-07-13 16:00:00', '2023-07-20 20:00:00')
+    INSERT INTO learning_element (lms_id, activity_type, classification, name, university, created_by, created_at,\
+    last_updated)
+    VALUES (11, 'h5pactivity', 'ÜB', 'Übung - 2', 'HS-KE', 'Dimitri Bigler', '2023-07-13 16:00:00',\
+    '2023-07-20 20:00:00')
 '''
 cursor.execute(sql)
 
@@ -526,25 +548,29 @@ cursor.execute(sql)
 
 #Add student to course
 sql = '''
-    INSERT INTO student_course (student_id, course_id, perception_dimension, perception_value, input_dimension, input_value, processing_dimension, processing_value, understanding_dimension, understanding_value)
+    INSERT INTO student_course (student_id, course_id, perception_dimension, perception_value, input_dimension,\
+    input_value, processing_dimension, processing_value, understanding_dimension, understanding_value)
     VALUES (1, 1, 'act', 7, 'Sensory', 5, 'vis', 11, 'seq', 3)
 '''
 cursor.execute(sql)
 
 sql = '''
-    INSERT INTO student_course (student_id, course_id, perception_dimension, perception_value, input_dimension, input_value, processing_dimension, processing_value, understanding_dimension, understanding_value)
+    INSERT INTO student_course (student_id, course_id, perception_dimension, perception_value, input_dimension,\
+    input_value, processing_dimension, processing_value, understanding_dimension, understanding_value)
     VALUES (2, 1, 'ref', 3, 'int', 7, 'vrb', 5, 'glb', 11)
 '''
 cursor.execute(sql)
 
 sql = '''
-    INSERT INTO student_course (student_id, course_id, perception_dimension, perception_value, input_dimension, input_value, processing_dimension, processing_value, understanding_dimension, understanding_value)
+    INSERT INTO student_course (student_id, course_id, perception_dimension, perception_value, input_dimension,\
+    input_value, processing_dimension, processing_value, understanding_dimension, understanding_value)
     VALUES (2, 2, 'ref', 9, 'int', 3, 'vrb', 11, 'glb', 11)
 '''
 cursor.execute(sql)
 
 sql = '''
-    INSERT INTO student_course (student_id, course_id, perception_dimension, perception_value, input_dimension, input_value, processing_dimension, processing_value, understanding_dimension, understanding_value)
+    INSERT INTO student_course (student_id, course_id, perception_dimension, perception_value, input_dimension,\
+    input_value, processing_dimension, processing_value, understanding_dimension, understanding_value)
     VALUES (3, 2, 'act', 7, 'int', 3, 'vis', 7, 'glb', 11)
 '''
 cursor.execute(sql)
@@ -1526,19 +1552,22 @@ cursor.execute(sql)
 
 # create learning_style
 sql = '''
-    INSERT INTO learning_style (characteristic_id, perception_dimension, perception_value, input_dimension, input_value, processing_dimension, processing_value, understanding_dimension, understanding_value)
+    INSERT INTO learning_style (characteristic_id, perception_dimension, perception_value, input_dimension,\
+    input_value, processing_dimension, processing_value, understanding_dimension, understanding_value)
     VALUES (1, 'sns', 7, 'vis', 3, 'act', 9, 'seq', 1)
 '''
 cursor.execute(sql)
 
 sql = '''
-    INSERT INTO learning_style (characteristic_id, perception_dimension, perception_value, input_dimension, input_value, processing_dimension, processing_value, understanding_dimension, understanding_value)
+    INSERT INTO learning_style (characteristic_id, perception_dimension, perception_value, input_dimension,\
+    input_value, processing_dimension, processing_value, understanding_dimension, understanding_value)
     VALUES (2, 'sns', 7, 'vis', 5, 'act', 11, 'glb', 11)
 '''
 cursor.execute(sql)
 
 sql = '''
-    INSERT INTO learning_style (characteristic_id, perception_dimension, perception_value, input_dimension, input_value, processing_dimension, processing_value, understanding_dimension, understanding_value)
+    INSERT INTO learning_style (characteristic_id, perception_dimension, perception_value, input_dimension,\
+    input_value, processing_dimension, processing_value, understanding_dimension, understanding_value)
     VALUES (3, 'sns', 1, 'vrb', 11, 'ref', 3, 'glb', 1)
 '''
 cursor.execute(sql)
@@ -1551,25 +1580,29 @@ sql = '''
 cursor.execute(sql)
 
 sql = '''
-    INSERT INTO ils_input_answers (questionnaire_id, vv_1_f3, vv_2_f7, vv_3_f11, vv_4_f15, vv_5_f19, vv_6_f23, vv_7_f27, vv_8_f31, vv_9_f35, vv_10_f39, vv_11_f43)
+    INSERT INTO ils_input_answers (questionnaire_id, vv_1_f3, vv_2_f7, vv_3_f11, vv_4_f15, vv_5_f19, vv_6_f23,\
+    vv_7_f27, vv_8_f31, vv_9_f35, vv_10_f39, vv_11_f43)
     VALUES (1, 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a')
 '''
 cursor.execute(sql)
 
 sql = '''
-    INSERT INTO ils_perception_answers (questionnaire_id, si_1_f2, si_2_f6, si_3_f10, si_4_f14, si_5_f18, si_6_f22, si_7_f26, si_8_f30, si_9_f34, si_10_f38, si_11_f42)
+    INSERT INTO ils_perception_answers (questionnaire_id, si_1_f2, si_2_f6, si_3_f10, si_4_f14, si_5_f18, si_6_f22,\
+    si_7_f26, si_8_f30, si_9_f34, si_10_f38, si_11_f42)
     VALUES (1, 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b')
 '''
 cursor.execute(sql)
 
 sql = '''
-    INSERT INTO ils_processing_answers (questionnaire_id, ar_1_f1, ar_2_f5, ar_3_f9, ar_4_f13, ar_5_f17, ar_6_f21, ar_7_f25, ar_8_f29, ar_9_f33, ar_10_f37, ar_11_f41)
+    INSERT INTO ils_processing_answers (questionnaire_id, ar_1_f1, ar_2_f5, ar_3_f9, ar_4_f13, ar_5_f17, ar_6_f21,\
+    ar_7_f25, ar_8_f29, ar_9_f33, ar_10_f37, ar_11_f41)
     VALUES (1, 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a')
 '''
 cursor.execute(sql)
 
 sql = '''
-    INSERT INTO ils_understanding_answers (questionnaire_id, sg_1_f4, sg_2_f8, sg_3_f12, sg_4_f16, sg_5_f20, sg_6_f24, sg_7_f28, sg_8_f32, sg_9_f36, sg_10_f40, sg_11_f44)
+    INSERT INTO ils_understanding_answers (questionnaire_id, sg_1_f4, sg_2_f8, sg_3_f12, sg_4_f16, sg_5_f20, sg_6_f24,\
+    sg_7_f28, sg_8_f32, sg_9_f36, sg_10_f40, sg_11_f44)
     VALUES (1, 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b')
 '''
 cursor.execute(sql)
@@ -1581,25 +1614,29 @@ sql = '''
 cursor.execute(sql)
 
 sql = '''
-    INSERT INTO ils_input_answers (questionnaire_id, vv_1_f3, vv_2_f7, vv_3_f11, vv_4_f15, vv_5_f19, vv_6_f23, vv_7_f27, vv_8_f31, vv_9_f35, vv_10_f39, vv_11_f43)
+    INSERT INTO ils_input_answers (questionnaire_id, vv_1_f3, vv_2_f7, vv_3_f11, vv_4_f15, vv_5_f19, vv_6_f23,\
+    vv_7_f27, vv_8_f31, vv_9_f35, vv_10_f39, vv_11_f43)
     VALUES (2, 'a', 'a', 'a', 'a', 'b', 'b', 'b', 'b', 'b', 'b', 'b')
 '''
 cursor.execute(sql)
 
 sql = '''
-    INSERT INTO ils_perception_answers (questionnaire_id, si_1_f2, si_2_f6, si_3_f10, si_4_f14, si_5_f18, si_6_f22, si_7_f26, si_8_f30, si_9_f34, si_10_f38, si_11_f42)
+    INSERT INTO ils_perception_answers (questionnaire_id, si_1_f2, si_2_f6, si_3_f10, si_4_f14, si_5_f18, si_6_f22,\
+    si_7_f26, si_8_f30, si_9_f34, si_10_f38, si_11_f42)
     VALUES (2, 'b', 'b', 'b', 'b', 'b', 'a', 'a', 'a', 'a', 'a', 'a')
 '''
 cursor.execute(sql)
 
 sql = '''
-    INSERT INTO ils_processing_answers (questionnaire_id, ar_1_f1, ar_2_f5, ar_3_f9, ar_4_f13, ar_5_f17, ar_6_f21, ar_7_f25, ar_8_f29, ar_9_f33, ar_10_f37, ar_11_f41)
+    INSERT INTO ils_processing_answers (questionnaire_id, ar_1_f1, ar_2_f5, ar_3_f9, ar_4_f13, ar_5_f17, ar_6_f21,\
+    ar_7_f25, ar_8_f29, ar_9_f33, ar_10_f37, ar_11_f41)
     VALUES (2, 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a')
 '''
 cursor.execute(sql)
 
 sql = '''
-    INSERT INTO ils_understanding_answers (questionnaire_id, sg_1_f4, sg_2_f8, sg_3_f12, sg_4_f16, sg_5_f20, sg_6_f24, sg_7_f28, sg_8_f32, sg_9_f36, sg_10_f40, sg_11_f44)
+    INSERT INTO ils_understanding_answers (questionnaire_id, sg_1_f4, sg_2_f8, sg_3_f12, sg_4_f16, sg_5_f20, sg_6_f24,\
+    sg_7_f28, sg_8_f32, sg_9_f36, sg_10_f40, sg_11_f44)
     VALUES (2, 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b')
 '''
 cursor.execute(sql)
@@ -1611,55 +1648,59 @@ sql = '''
 cursor.execute(sql)
 
 sql = '''
-    INSERT INTO ils_input_answers (questionnaire_id, vv_1_f3, vv_2_f7, vv_3_f11, vv_4_f15, vv_5_f19, vv_6_f23, vv_7_f27, vv_8_f31, vv_9_f35, vv_10_f39, vv_11_f43)
+    INSERT INTO ils_input_answers (questionnaire_id, vv_1_f3, vv_2_f7, vv_3_f11, vv_4_f15, vv_5_f19, vv_6_f23,\
+    vv_7_f27, vv_8_f31, vv_9_f35, vv_10_f39, vv_11_f43)
     VALUES (3, 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a')
 '''
 cursor.execute(sql)
 
 sql = '''
-    INSERT INTO ils_perception_answers (questionnaire_id, si_1_f2, si_2_f6, si_3_f10, si_4_f14, si_5_f18, si_6_f22, si_7_f26, si_8_f30, si_9_f34, si_10_f38, si_11_f42)
+    INSERT INTO ils_perception_answers (questionnaire_id, si_1_f2, si_2_f6, si_3_f10, si_4_f14, si_5_f18, si_6_f22,\
+    si_7_f26, si_8_f30, si_9_f34, si_10_f38, si_11_f42)
     VALUES (3, 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b')
 '''
 cursor.execute(sql)
 
 sql = '''
-    INSERT INTO ils_processing_answers (questionnaire_id, ar_1_f1, ar_2_f5, ar_3_f9, ar_4_f13, ar_5_f17, ar_6_f21, ar_7_f25, ar_8_f29, ar_9_f33, ar_10_f37, ar_11_f41)
+    INSERT INTO ils_processing_answers (questionnaire_id, ar_1_f1, ar_2_f5, ar_3_f9, ar_4_f13, ar_5_f17, ar_6_f21,\
+    ar_7_f25, ar_8_f29, ar_9_f33, ar_10_f37, ar_11_f41)
     VALUES (3, 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a')
 '''
 cursor.execute(sql)
 
 sql = '''
-    INSERT INTO ils_understanding_answers (questionnaire_id, sg_1_f4, sg_2_f8, sg_3_f12, sg_4_f16, sg_5_f20, sg_6_f24, sg_7_f28, sg_8_f32, sg_9_f36, sg_10_f40, sg_11_f44)
+    INSERT INTO ils_understanding_answers (questionnaire_id, sg_1_f4, sg_2_f8, sg_3_f12, sg_4_f16, sg_5_f20, sg_6_f24,\
+    sg_7_f28, sg_8_f32, sg_9_f36, sg_10_f40, sg_11_f44)
     VALUES (3, 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b')
 '''
 cursor.execute(sql)
 
 #Create questionnaire list k
 sql = '''
-    INSERT INTO list_k (questionnaire_id, org1_f1, org2_f2, org3_f3, ela1_f4, ela2_f5, ela3_f6, krp1_f7, krp2_f8, krp3_f9, \
-    wie1_f10, wie2_f11, wie3_f12, zp1_f13, zp2_f14, zp3_f15, kon1_f16, kon2_f17, kon3_f18, reg1_f19, reg2_f20, reg3_f21,\
-    auf1_f22, auf2_f23, auf3_f24, ans1_f25, ans2_f26, ans3_f27, zei1_f28, zei2_f29, zei3_f30, lms1_f31, lms2_f32, lms3_f33,\
-    lit1_f34, lit2_f35, lit3_f36, lu1_f37, lu2_f38, lu3_f39)
-    VALUES (1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, \
+    INSERT INTO list_k (questionnaire_id, org1_f1, org2_f2, org3_f3, ela1_f4, ela2_f5, ela3_f6, krp1_f7, krp2_f8,\
+    krp3_f9, wie1_f10, wie2_f11, wie3_f12, zp1_f13, zp2_f14, zp3_f15, kon1_f16, kon2_f17, kon3_f18, reg1_f19, reg2_f20,\
+    reg3_f21, auf1_f22, auf2_f23, auf3_f24, ans1_f25, ans2_f26, ans3_f27, zei1_f28, zei2_f29, zei3_f30, lms1_f31,\
+    lms2_f32, lms3_f33, lit1_f34, lit2_f35, lit3_f36, lu1_f37, lu2_f38, lu3_f39)
+    VALUES (1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,\
             3, 3, 3, 3, 3, 3, 3, 3, 3, 3)
 '''
 cursor.execute(sql)
 
 sql = '''
-    INSERT INTO list_k (questionnaire_id, org1_f1, org2_f2, org3_f3, ela1_f4, ela2_f5, ela3_f6, krp1_f7, krp2_f8, krp3_f9, \
-    wie1_f10, wie2_f11, wie3_f12, zp1_f13, zp2_f14, zp3_f15, kon1_f16, kon2_f17, kon3_f18, reg1_f19, reg2_f20, reg3_f21,\
-    auf1_f22, auf2_f23, auf3_f24, ans1_f25, ans2_f26, ans3_f27, zei1_f28, zei2_f29, zei3_f30, lms1_f31, lms2_f32, lms3_f33,\
-    lit1_f34, lit2_f35, lit3_f36, lu1_f37, lu2_f38, lu3_f39)
-    VALUES (2, 3, 5, 3, 1, 1, 2, 3, 3, 5, 3, 4, 3, 3, 1, 2, 3, 5, 3, 4, 3, 2, 3, 1, 3, 5, 3, 1, 3, 3, \
+    INSERT INTO list_k (questionnaire_id, org1_f1, org2_f2, org3_f3, ela1_f4, ela2_f5, ela3_f6, krp1_f7, krp2_f8,\
+    krp3_f9, wie1_f10, wie2_f11, wie3_f12, zp1_f13, zp2_f14, zp3_f15, kon1_f16, kon2_f17, kon3_f18, reg1_f19, reg2_f20,\
+    reg3_f21, auf1_f22, auf2_f23, auf3_f24, ans1_f25, ans2_f26, ans3_f27, zei1_f28, zei2_f29, zei3_f30, lms1_f31, \
+    lms2_f32, lms3_f33, lit1_f34, lit2_f35, lit3_f36, lu1_f37, lu2_f38, lu3_f39)
+    VALUES (2, 3, 5, 3, 1, 1, 2, 3, 3, 5, 3, 4, 3, 3, 1, 2, 3, 5, 3, 4, 3, 2, 3, 1, 3, 5, 3, 1, 3, 3,\
             3, 2, 3, 5, 3, 5, 3, 1, 3, 4)
 '''
 cursor.execute(sql)
 
 sql = '''
-    INSERT INTO list_k (questionnaire_id, org1_f1, org2_f2, org3_f3, ela1_f4, ela2_f5, ela3_f6, krp1_f7, krp2_f8, krp3_f9, \
-    wie1_f10, wie2_f11, wie3_f12, zp1_f13, zp2_f14, zp3_f15, kon1_f16, kon2_f17, kon3_f18, reg1_f19, reg2_f20, reg3_f21,\
-    auf1_f22, auf2_f23, auf3_f24, ans1_f25, ans2_f26, ans3_f27, zei1_f28, zei2_f29, zei3_f30, lms1_f31, lms2_f32, lms3_f33,\
-    lit1_f34, lit2_f35, lit3_f36, lu1_f37, lu2_f38, lu3_f39)
+    INSERT INTO list_k (questionnaire_id, org1_f1, org2_f2, org3_f3, ela1_f4, ela2_f5, ela3_f6, krp1_f7, krp2_f8,\
+    krp3_f9, wie1_f10, wie2_f11, wie3_f12, zp1_f13, zp2_f14, zp3_f15, kon1_f16, kon2_f17, kon3_f18, reg1_f19, reg2_f20,\
+    reg3_f21, auf1_f22, auf2_f23, auf3_f24, ans1_f25, ans2_f26, ans3_f27, zei1_f28, zei2_f29, zei3_f30, lms1_f31,\
+    lms2_f32, lms3_f33, lit1_f34, lit2_f35, lit3_f36, lu1_f37, lu2_f38, lu3_f39)
     VALUES (3, 1, 1, 3, 1, 1, 2, 3, 3, 5, 3, 4, 3, 3, 1, 2, 3, 5, 3, 4, 3, 2, 3, 1, 3, 5, 3, 1, 3, 3, \
             3, 2, 3, 5, 3, 5, 4, 5, 5, 1)
 '''

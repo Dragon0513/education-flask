@@ -28,7 +28,6 @@ mypy-extensions==1.0.0
 numpy==1.24.2
 packaging==23.1
 pathspec==0.11.0
-pip==22.1.2
 platformdirs==3.0.0
 pluggy==1.0.0
 port-for==0.6.3

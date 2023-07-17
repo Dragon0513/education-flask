@@ -74,7 +74,7 @@ def get_unverified_header(jwt_token: str):
 def sign_jwt(payload: dict):
     if not os.path.exists(private_key_location()):
         raise err.KeyNotFoundError(
-            message="Private key location:" + public_key_location() +
+            message="Private key location:" + private_key_location() +
             " not found. Please generate a key pair as\
                 described in the README.md.")
     with open(os.path.abspath(private_key_location()), "rb") as key_file:

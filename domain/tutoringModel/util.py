@@ -119,7 +119,7 @@ def get_list_LPLE(learning_path, learning_elements, LP_id):
     List_LPLE = []
     for element in learning_elements:
 
-        classification= element.classification
+        classification = element.classification
         condition = classification is not None
         condition2 = classification in learning_path
         

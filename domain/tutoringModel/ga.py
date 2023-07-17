@@ -1,5 +1,6 @@
 from sklearn.metrics import pairwise_distances_argmin
-from domain.tutoringModel import util, utils,model
+from domain.tutoringModel import util, utils
+from domain.tutoringModel import model
 from datetime import datetime
 import errors as err
 import numpy as np
@@ -9,13 +10,13 @@ import time
 
 class GA_Algorithmus(object):
 
-   
     def __init__(self,
-                 student_id = 0,
-                 learning_path = None,
-                 learning_style = {"ref": 1, "sns": 3, "vis": 5, "seq": 5},
-                 learning_elements = None,
-                 id = None):
+                 student_id=0,
+                 learning_path=None,
+                 learning_style={"ref": 1, "sns": 3,
+                                 "vis": 5, "seq": 5},
+                 learning_elements=None,
+                 id=None):
 
         self.pop_size = 80
         self.cross_rate = 0.9
@@ -27,32 +28,31 @@ class GA_Algorithmus(object):
             self.id = datetime.timestamp(datetime.now())
         else:
             self.id = id
-        
+
         if(learning_elements is not None):
             self.learning_elements = learning_elements
             self.le_size = len(self.learning_elements)
 
+    def create_random_population(self, dict_coordinates):
 
-    def create_random_population(self,dict_coordinates):            
-          
-        self.le_coordinate = np.array([dict_coordinates[key] for key in dict_coordinates])
-        self.le_coordinate.reshape((len(dict_coordinates), 4))   
+        self.le_coordinate = np.array(
+            [dict_coordinates[key]for key in dict_coordinates])
+        self.le_coordinate.reshape((len(dict_coordinates), 4))
 
         # Generating the population with initial random position
         positions = np.arange(1, self.le_size)
         self.population = np.vstack(
             [np.random.permutation(positions)
              for _ in range(self.pop_size)])
-        
+
         # Initialise some populations with Clustering
         with_cluster = False
         with_cluster, labels = self.find_cluster(
-                self.le_coordinate, n_cluster=3, rseed=2)
-        if( with_cluster ):           
+            self.le_coordinate, n_cluster=3, rseed=2)
+        if(with_cluster):
             daten = self.get_order_cluster(positions, labels)
             self.population[0:-2, :] = daten
 
-   
     def valide_population(self):
 
         # first Learning Element is fixed in the Learning path
@@ -70,7 +70,8 @@ class GA_Algorithmus(object):
         line_y = np.empty_like(new_pop, dtype=np.float64)
         line_z = np.empty_like(new_pop, dtype=np.float64)
         line_k = np.empty_like(new_pop, dtype=np.float64)
-        total_distance = np.empty((line_x.shape[0],), dtype=np.float64)
+        total_distance = np.empty((line_x.shape[0],),
+                                  dtype=np.float64)
 
         for i, d in enumerate(new_pop):
             LE_coord = self.le_coordinate[d]
@@ -81,14 +82,15 @@ class GA_Algorithmus(object):
         return line_x, line_y, line_z, line_k
 
     def get_fitness(self, line_x, line_y, line_z, line_k):
-        
+
         #Calculate Fitness function
         re = list(zip(line_x, line_y, line_z, line_k))
-        total_distance = np.empty((line_x.shape[0],), dtype=np.float64)
-        total_sum = (np.square(np.diff(line_x)) +
-                     np.square(np.diff(line_y)) +
-                     np.square(np.diff(line_z)) +
-                     np.square(np.diff(line_k)))
+        total_distance = np.empty((line_x.shape[0],),
+                                  dtype=np.float64)
+        total_sum = (np.square(np.diff(line_x))
+                     + np.square(np.diff(line_y))
+                     + np.square(np.diff(line_z))
+                     + np.square(np.diff(line_k)))
         fitness = np.sqrt(np.sum(total_sum, 1))
         return fitness
 
@@ -111,9 +113,10 @@ class GA_Algorithmus(object):
             # choose crossover learning elements
             temp = (self.le_size - 1)
             cross_points = np.random.randint(0, 2, temp).astype(bool)
-            
+
             keep_LE = parent[~cross_points]  # find the LE number
-            swap_LE = pop[i_, np.isin(pop[i_].ravel(), keep_LE, invert=True)]
+            swap_LE = pop[i_, np.isin(pop[i_].ravel(),
+                          keep_LE, invert=True)]
             parent[:] = np.concatenate((keep_LE, swap_LE))
         return parent
 
@@ -129,7 +132,8 @@ class GA_Algorithmus(object):
         return child
 
     def evolve(self, fitness, best_sample):
-
+        
+        best_samples = 7
         self.set_best_sample(best_sample)
         population = self.sort_population(fitness)
         pop_copy = population.copy()
@@ -139,7 +143,7 @@ class GA_Algorithmus(object):
             child = self.mutate(child)
             parent[:] = child
 
-        best_samples = 7
+        
         self.population[best_samples:] = population[best_samples:].copy()
 
     def calculate_distance(self, best_population):
@@ -156,27 +160,26 @@ class GA_Algorithmus(object):
             temp1 = LE_coordinate[i]
             temp2 = LE_coordinate[i+1]
             sume = sume + math.dist(temp1, temp2)
-           
 
         euclidean_distance = round(sume, 2)
         return euclidean_distance
 
     def find_cluster(self, coordinates, n_cluster=3, rseed=2):
 
-        labels = []       
+        labels = []
         daten = coordinates
         rng = np.random.RandomState(rseed)
-        if(len(daten)<=0 ):
+        if(len(daten) <= 0):
             return False, labels
 
         i = rng.permutation(daten.shape[0])[:n_cluster]
         centers = daten[i]
-        new_centers = np.unique(centers,axis=0)        
-        if(len(new_centers)<n_cluster ):
+        new_centers = np.unique(centers, axis=0)
+        if(len(new_centers) < n_cluster):
             return False, labels
 
         while (True):
-           
+
             labels = pairwise_distances_argmin(daten, centers)
             mean_cluster = [daten[labels == i].mean(0)
                             for i in range(n_cluster)]
@@ -208,10 +211,10 @@ class GA_Algorithmus(object):
         euclidean_distance = 0
         best_total_score = 300
         le_coordinate = utils.get_coordinates(
-            learning_style, self.learning_elements)        
+            learning_style, self.learning_elements)
         #print ("le_coordinate",le_coordinate )
         self.create_random_population(le_coordinate)
-        
+
         for generatiion in range(self.n_generation):
 
             new_pop = self.valide_population()
@@ -238,13 +241,12 @@ class GA_Algorithmus(object):
 
         euclidean_distance = self.calculate_distance(best_sample)
         print("\neuclidean_distance:", euclidean_distance)
-    
+
         ga_path = np.array(self.learning_elements)
-        population = self.valide_population()      
+        population = self.valide_population()
         idx = population[0]
         result_ga_LP = ga_path[idx]
 
-           
         learning_path = ""
         Contain_LE = False
         for ele in result_ga_LP:
@@ -252,62 +254,59 @@ class GA_Algorithmus(object):
             Contain_LE = True
 
         if(Contain_LE):
-            learning_path = learning_path[:-2] 
-
-        
+            learning_path = learning_path[:-2]
 
         return learning_path
-      
+
     def get_learning_path(self, input_learning_style={"act": 1, "sns": 7,
                                                       "vis": 5, "glo": 1},
-                          input_Learning_element = None):
+                          input_Learning_element=None):
 
         time1 = time.time()
-        input_learning_style = self.get_probe_learning_style()     
-        #print("input_learning_style",input_learning_style)  
+        input_learning_style = self.get_probe_learning_style()
+        #print("input_learning_style",input_learning_style)
         if input_learning_style is not None:
             learning_style = utils.get_learning_style2(input_learning_style)
-            learning_style = {"act": 5, "int": 9, "vis": 9, "glo": 3}
-           
+            learning_style = {"act": 5, "int": 9,
+                              "vis": 9, "glo": 3}
 
         if (len(learning_style) != 4):
             raise err.WrongLearningStyleNumberError()
 
         if util.check_learning_style(learning_style):
-            raise err.WrongLearningStyleDimensionError()         
+            raise err.WrongLearningStyleDimensionError()
 
         if util.check_name_learning_style(learning_style):
             raise err.WrongLearningStyleDimensionError()
-       
+
         if input_Learning_element is not None:
-            
+
            #print("---input_Learning_element",input_Learning_element)
             #new_Learning_element = util.add_Learning_element(input_Learning_element)
-            self.learning_elements = util.get_learning_element( input_Learning_element)
-            self.le_size = len ( self.learning_elements)
-            #print ("\n\n\ninput_Learning_element",input_Learning_element) 
+            self.learning_elements = util.get_learning_element(
+                input_Learning_element)
+            self.le_size = len(self.learning_elements)
+            #print ("\n\n\ninput_Learning_element",input_Learning_element)
 
-        else:           
+        else:
            raise err.WrongLearningStyleDimensionError()
 
-        result_ga_LP = self.calculate_learning_path(input_learning_style)  
-                
+        result_ga_LP = self.calculate_learning_path(input_learning_style)
+
         time2 = time.time()
         time_sec = time2-time1
-        print ("Time_sec: ",time_sec)
-        print ("\nResult_GA_LP: ",result_ga_LP)       
-       
+        print("Time_sec: ", time_sec)
+        print("\nResult_GA_LP: ", result_ga_LP)
+
         return result_ga_LP
-            
 
     def get_probe_learning_style(self):
 
+        input_learning_style = {'id': 1, 'characteristic_id': 1,
+                                'perception_dimension': 'int',
+                                'perception_value': 9, 'input_dimension': 'vis',
+                                'input_value': 9, 'processing_dimension': 'act',
+                                'processing_value': 5, 'understanding_dimension': 'glo',
+                                'understanding_value': 9}
 
-        input_learning_style = {'id': 1, 'characteristic_id': 1, 
-                              'perception_dimension': 'int', 
-                              'perception_value': 9, 'input_dimension': 'vis',
-                               'input_value': 9, 'processing_dimension': 'act', 
-                               'processing_value': 5, 'understanding_dimension': 'glo', 'understanding_value': 9}
-
-        
         return input_learning_style

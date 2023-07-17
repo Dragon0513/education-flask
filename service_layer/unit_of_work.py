@@ -54,6 +54,8 @@ class AbstractUnitOfWork(abc.ABC):
         repository.AbstractRepository
     settings:\
         repository.AbstractRepository
+    contact_form:\
+        repository.AbstractRepository
     student:\
         repository.AbstractRepository
     student_course:\
@@ -149,6 +151,8 @@ class SqlAlchemyUnitOfWork(AbstractUnitOfWork):  # pragma: no cover
         self.questionnaire =\
             repository.SqlAlchemyRepository(self.session)
         self.settings =\
+            repository.SqlAlchemyRepository(self.session)
+        self.contact_form =\
             repository.SqlAlchemyRepository(self.session)
         self.student =\
             repository.SqlAlchemyRepository(self.session)

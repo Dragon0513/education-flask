@@ -152,6 +152,11 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
+    def create_contact_form(self, contact_form: UA.ContactForm)\
+            -> UA.ContactForm:
+        raise NotImplementedError
+
+    @abc.abstractmethod
     def create_student(self,
                        student: UA.Student) -> UA.Student:
         raise NotImplementedError
@@ -179,6 +184,10 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
 
     @abc.abstractmethod
     def delete_admin(self, user_id):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def delete_contact_form(self, user_id):
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -894,6 +903,14 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         except Exception:
             raise err.CreationError()
 
+    def create_contact_form(self,
+                            contact_form: UA.ContactForm)\
+            -> UA.ContactForm:
+        try:
+            self.session.add(contact_form)
+        except Exception:
+            raise err.CreationError()
+
     def create_student(self, student: UA.Student) -> UA.Student:
         try:
             self.session.add(student)
@@ -946,6 +963,10 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
                 user_id=user_id).delete()
         else:
             raise err.NoValidIdError()
+
+    def delete_contact_form(self, user_id):
+        self.session.query(UA.ContactForm).filter_by(
+                user_id=user_id).delete()
 
     def delete_course(self, course_id):
         course = self.get_course_by_id(course_id)

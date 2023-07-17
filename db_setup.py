@@ -41,6 +41,7 @@ cursor = conn.cursor()
 # Droping table if already exists.
 cursor.execute("DROP TABLE IF EXISTS haski_user")
 cursor.execute("DROP TABLE IF EXISTS settings")
+cursor.execute("DROP TABLE IF EXISTS contact_form")
 cursor.execute("DROP TABLE IF EXISTS admin")
 cursor.execute("DROP TABLE IF EXISTS course_creator")
 cursor.execute("DROP TABLE IF EXISTS teacher")
@@ -112,6 +113,31 @@ sql = '''
     TABLESPACE pg_default;
 
     ALTER TABLE IF EXISTS public.settings
+        OWNER to postgres;
+'''
+cursor.execute(sql)
+
+sql = '''
+    CREATE TABLE IF NOT EXISTS public.contact_form
+    (
+        id integer NOT NULL GENERATED ALWAYS AS IDENTITY
+        ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+        user_id integer NOT NULL,
+        report_topic text COLLATE pg_catalog."default",
+        report_type text COLLATE pg_catalog."default",
+        report_description text COLLATE pg_catalog."default",
+        date timestamp without time zone NOT NULL,
+        CONSTRAINT contact_form_pkey PRIMARY KEY (id),
+        CONSTRAINT user_id FOREIGN KEY (user_id)
+            REFERENCES public."haski_user" (id) MATCH SIMPLE
+            ON UPDATE NO ACTION
+            ON DELETE NO ACTION
+            NOT VALID
+    )
+
+    TABLESPACE pg_default;
+
+    ALTER TABLE IF EXISTS public.contact_form
         OWNER to postgres;
 '''
 cursor.execute(sql)

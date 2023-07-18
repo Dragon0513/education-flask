@@ -79,10 +79,7 @@ def add_student_to_topics(uow: unit_of_work.AbstractUnitOfWork, student_id, cour
 
 
 def add_student_learning_element_visit(
-    uow: unit_of_work.AbstractUnitOfWork,
-    student_id,
-    learning_element_id,
-    visit_start,
+    uow: unit_of_work.AbstractUnitOfWork, student_id, learning_element_id, visit_start
 ) -> dict:
     with uow:
         update_previous_learning_element_visit(uow, student_id, visit_start)
@@ -510,10 +507,7 @@ def create_list_k(
 
 
 def create_questionnaire(
-    uow: unit_of_work.AbstractUnitOfWork,
-    student_id,
-    ils_answers,
-    list_k_answers,
+    uow: unit_of_work.AbstractUnitOfWork, student_id, ils_answers, list_k_answers
 ) -> dict:
     with uow:
         exist = uow.questionnaire.get_questionnaire_by_student_id(student_id)
@@ -640,18 +634,7 @@ def create_user(
                 user.role_id = role["id"]
             case "teacher":
                 role = create_teacher(uow, user)
-                user.role_id = role["id"]
-            case "learner":
-                role = create_student(uow, user)
-                user.role_id = role["id"]
-            case "instructor":
-                role = create_teacher(uow, user)
-                user.role_id = role["id"]
-            case "administrator":
-                role = create_admin(uow, user)
-                user.role_id = role["id"]
-            case "unknown":
-                raise ValueError("Unknown role")
+                user.role_id = role['id']
         result = user.serialize()
     return result
 
@@ -659,6 +642,13 @@ def create_user(
 def delete_admin(uow: unit_of_work.AbstractUnitOfWork, user_id):
     with uow:
         uow.admin.delete_admin(user_id)
+        uow.commit()
+        return {}
+
+
+def delete_contact_form(uow: unit_of_work.AbstractUnitOfWork, user_id):
+    with uow:
+        uow.contact_form.delete_contact_form(user_id)
         uow.commit()
         return {}
 
@@ -738,10 +728,7 @@ def delete_ils_understanding_answers(
 
 
 def delete_learning_element(
-    uow: unit_of_work.AbstractUnitOfWork,
-    course_id,
-    topic_id,
-    learning_element_id,
+    uow: unit_of_work.AbstractUnitOfWork, course_id, topic_id, learning_element_id
 ):
     with uow:
         get_course_by_id(uow, None, None, course_id)
@@ -1079,10 +1066,7 @@ def get_learning_analytics_by_student_id(
 
 
 def get_learning_characteristics(
-    uow: unit_of_work.AbstractUnitOfWork,
-    student_id,
-    user_id=None,
-    lms_user_id=None,
+    uow: unit_of_work.AbstractUnitOfWork, student_id, user_id=None, lms_user_id=None
 ) -> dict:
     with uow:
         uow.student.get_student_by_student_id(student_id)
@@ -1142,11 +1126,7 @@ def get_learning_element_by_id(
 
 
 def get_learning_elements_for_course_id(
-    uow: unit_of_work.AbstractUnitOfWork,
-    user_id,
-    lms_user_id,
-    student_id,
-    course_id,
+    uow: unit_of_work.AbstractUnitOfWork, user_id, lms_user_id, student_id, course_id
 ) -> dict:
     with uow:
         get_user_by_id(uow, user_id, lms_user_id)
@@ -1410,11 +1390,7 @@ def get_topic_by_id(
 
 
 def get_topics_by_student_and_course_id(
-    uow: unit_of_work.AbstractUnitOfWork,
-    user_id,
-    lms_user_id,
-    student_id,
-    course_id,
+    uow: unit_of_work.AbstractUnitOfWork, user_id, lms_user_id, student_id, course_id
 ) -> dict:
     with uow:
         get_user_by_id(uow, user_id, lms_user_id)
@@ -1433,12 +1409,7 @@ def get_topics_by_student_and_course_id(
             )
             student_topic[0].visits = visits
             topic_details = get_topic_by_id(
-                uow,
-                user_id,
-                lms_user_id,
-                course_id,
-                student_id,
-                topic["topic_id"],
+                uow, user_id, lms_user_id, course_id, student_id, topic['topic_id']
             )
             topic_details["student_topic"] = student_topic[0].serialize()
             result_topics.append(topic_details)
@@ -1507,10 +1478,7 @@ def get_users_by_admin(
 
 
 def reset_knowledge(
-    uow: unit_of_work.AbstractUnitOfWork,
-    user_id,
-    lms_user_id,
-    characteristic_id,
+    uow: unit_of_work.AbstractUnitOfWork, user_id, lms_user_id, characteristic_id
 ) -> dict:
     with uow:
         get_user_by_id(uow, user_id, lms_user_id)
@@ -1531,10 +1499,7 @@ def reset_knowledge_by_student_id(
 
 
 def reset_learning_analytics(
-    uow: unit_of_work.AbstractUnitOfWork,
-    user_id,
-    lms_user_id,
-    characteristic_id,
+    uow: unit_of_work.AbstractUnitOfWork, user_id, lms_user_id, characteristic_id
 ) -> dict:
     with uow:
         get_user_by_id(uow, user_id, lms_user_id)
@@ -1580,10 +1545,7 @@ def reset_learning_characteristics(
 
 
 def reset_learning_strategy(
-    uow: unit_of_work.AbstractUnitOfWork,
-    user_id,
-    lms_user_id,
-    characteristic_id,
+    uow: unit_of_work.AbstractUnitOfWork, user_id, lms_user_id, characteristic_id
 ) -> dict:
     with uow:
         get_user_by_id(uow, user_id, lms_user_id)
@@ -1606,10 +1568,7 @@ def reset_learning_strategy_by_student_id(
 
 
 def reset_learning_style(
-    uow: unit_of_work.AbstractUnitOfWork,
-    user_id,
-    lms_user_id,
-    characteristic_id,
+    uow: unit_of_work.AbstractUnitOfWork, user_id, lms_user_id, characteristic_id
 ) -> dict:
     with uow:
         get_user_by_id(uow, user_id, lms_user_id)
@@ -1647,9 +1606,30 @@ def get_settings_for_user(uow: unit_of_work.AbstractUnitOfWork, user_id) -> dict
         return result
 
 
-def get_user_by_id(
-    uow: unit_of_work.AbstractUnitOfWork, user_id, lms_user_id=None
+def create_contact_form(
+    uow: unit_of_work.AbstractUnitOfWork,
+    user_id,
+    lms_user_id,
+    report_topic,
+    report_type,
+    report_description,
+    date,
 ) -> dict:
+    with uow:
+        user = get_user_by_id(uow, user_id, lms_user_id)
+        if user == {}:
+            raise err.MissingUserError()
+        else:
+            contact_form = UA.ContactForm(
+                user_id, report_topic, report_type, report_description, date
+            )
+            uow.contact_form.create_contact_form(contact_form)
+            uow.commit()
+            result = contact_form.serialize()
+        return result
+
+
+def get_user_by_id(uow: unit_of_work.AbstractUnitOfWork, user_id, lms_user_id) -> dict:
     with uow:
         user = uow.user.get_user_by_id(user_id, lms_user_id)
         settings = uow.settings.get_settings(user_id)
@@ -1794,10 +1774,7 @@ def update_settings_for_user(
 
 
 def update_student_learning_element(
-    uow: unit_of_work.AbstractUnitOfWork,
-    student_id,
-    learning_element_id,
-    visit_time,
+    uow: unit_of_work.AbstractUnitOfWork, student_id, learning_element_id, visit_time
 ):
     with uow:
         uow.student_learning_element.update_student_learning_element(
@@ -1837,11 +1814,7 @@ def update_topic(
 
 
 def update_user(
-    uow: unit_of_work.AbstractUnitOfWork,
-    user_id,
-    lms_user_id,
-    name,
-    university,
+    uow: unit_of_work.AbstractUnitOfWork, user_id, lms_user_id, name, university
 ) -> dict:
     with uow:
         user = UA.User(name, university, lms_user_id)

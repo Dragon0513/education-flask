@@ -8,11 +8,8 @@ venv/
 coverage.xml
 .env
 .coverage
-.vscode/settings.json
-.vscode/launch.json
-keys/private.pem
-keys/public.pem
-.vscode/settings.json
+.vscode/
+keys/
 .flaskenv
 configs/lti_config.json
 test_keys/

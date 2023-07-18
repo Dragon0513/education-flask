@@ -116,11 +116,7 @@ class CourseTopic:
         self.topic_id = topic_id
 
     def serialize(self):
-        return {
-            "id": self.id,
-            "course_id": self.course_id,
-            "topic_id": self.topic_id,
-        }
+        return {"id": self.id, "course_id": self.course_id, "topic_id": self.topic_id}
 
 
 class TopicLearningElement:

@@ -40,10 +40,7 @@ def test_distance():
     [("vis", "sns", "act", "glo"), ("vrb", "int", "ref", "seq")],
 )
 def test_get_coordinates(
-    input_dimension,
-    perception_dimension,
-    processing_dimension,
-    understanding_dimension,
+    input_dimension, perception_dimension, processing_dimension, understanding_dimension
 ):
     ls = LM.LearningStyle(
         input_dimension=input_dimension,

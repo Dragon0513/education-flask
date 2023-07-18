@@ -8,22 +8,8 @@ class GrafAlgorithm:
     learning_style_rq = {"AKT": 0, "REF": 1, "INT": 1}
     learning_style_se = {"AKT": 1, "REF": 0, "SNS": 1}
     learning_style_fo = {"AKT": 1, "REF": 0, "INT": 0, "VIS": 0, "VRB": 1}
-    learning_style_zl = {
-        "AKT": 0,
-        "REF": 1,
-        "SNS": 0,
-        "INT": 1,
-        "VIS": 0,
-        "VRB": 1,
-    }
-    learning_style_an = {
-        "AKT": 1,
-        "REF": 0,
-        "SNS": 1,
-        "INT": 0,
-        "VIS": 1,
-        "VRB": 0,
-    }
+    learning_style_zl = {"AKT": 0, "REF": 1, "SNS": 0, "INT": 1, "VIS": 0, "VRB": 1}
+    learning_style_an = {"AKT": 1, "REF": 0, "SNS": 1, "INT": 0, "VIS": 1, "VRB": 0}
     learning_style_ub = {"AKT": 1, "REF": 0, "SNS": 1, "INT": 1}
     learning_style_be = {"AKT": 0, "REF": 1, "SNS": 1, "INT": 0, "GLO": 1}
     learning_style_ab = {"SNS": 1, "INT": 0, "GLO": 1}

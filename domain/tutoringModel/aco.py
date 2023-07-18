@@ -119,19 +119,8 @@ class AntColonySolver:
             ants_arriving = np.invert(ants_travelling)
             ants_arriving_index = np.where(ants_arriving)[0]
             for i in ants_arriving_index:
-                (
-                    ants,
-                    best_path,
-                    best_path_cost,
-                    best_epochs,
-                ) = self.ants_arriving(
-                    ants,
-                    i,
-                    epoch,
-                    problem_path,
-                    best_path,
-                    best_path_cost,
-                    best_epochs,
+                ants, best_path, best_path_cost, best_epochs = self.ants_arriving(
+                    ants, i, epoch, problem_path, best_path, best_path_cost, best_epochs
                 )
 
             if self.loop_termination(best_epochs, epoch):
@@ -174,14 +163,7 @@ class AntColonySolver:
         return _next_node
 
     def ants_arriving(
-        self,
-        ants,
-        i,
-        epoch,
-        problem_path,
-        best_path,
-        best_path_cost,
-        best_epochs,
+        self, ants, i, epoch, problem_path, best_path, best_path_cost, best_epochs
     ):
         # ant has arrived at next_node
         this_node = ants["path"][i][-1]

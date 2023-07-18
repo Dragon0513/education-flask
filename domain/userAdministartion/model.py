@@ -78,3 +78,24 @@ class Settings:
             "theme": self.theme,
             "pswd": self.pswd,
         }
+
+
+class ContactForm:
+    def __init__(
+        self, user_id, report_topic, report_type, report_description, date
+    ) -> None:
+        self.user_id = (user_id,)
+        self.report_topic = (report_topic,)
+        self.report_type = (report_type,)
+        self.report_description = (report_description,)
+        self.date = date
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "report_topic": self.report_topic,
+            "report_type": self.report_type,
+            "report_description": self.report_description,
+            "date": self.date,
+        }

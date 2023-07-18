@@ -87,6 +87,8 @@ openssl rsa -in keys/private.pem -outform PEM -pubout -out keys/public.pem
 
 - Create a new conda environment using `conda create --name HASKI-Backend --file requirements.txt`
 - Activate the environment: `conda activate HASKI-Backend`
+- Rename .flaskenv_template to .flaskenv and fill in the necessary information
+- Create the database as explained in the DB Setup section
 - Run the app using `flask run`
 
 To create a new requirements file after installing a new library, please run the following command: `pip list --format=freeze > requirements.txt`
@@ -101,7 +103,7 @@ https://www.postgresqltutorial.com/postgresql-getting-started/install-postgresql
 https://www.postgresqltutorial.com/postgresql-getting-started/connect-to-postgresql-database/
 
 After the installation, you can run it on the CMD or the pgAdmin 4 application.
-You first have to create a database Called HASKI.
+You first have to create a database.
 Afterwards, you can use the `setup\Table_Setup.sql` Script for creating the table within your DB.
 
 For the last step, you should check the `db_config.py` file and change the password for your set password.
@@ -119,8 +121,8 @@ Start the Docker image as container with the following command:
 ## Contribution
 
 For contributing to the project, please work on the Issues and fulfill the requested tasks.
-After completing, please run `python validate_script.py` in the root folder and check, that all is working fine.
-The test coverage should be as good as possible and there shouldn't be any information displayed by pycodestyle.
+Before commiting, always run `python validate_script.py` in the root folder and check the output.
+The test coverage should be as good as possible and there shouldn't be any information displayed by flake8, isort and black.
 For checking the code quality, you can use Sonarqube (https://docs.sonarqube.org/latest/setup-and-upgrade/install-the-server/).
 There shouldn't be any code smells left, when contributing to the project.
 

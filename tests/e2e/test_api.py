@@ -19,6 +19,7 @@ questionnaire_id = 0
 
 path_admin = "/admin"
 path_course = "/course"
+path_contactform = "/contactform"
 path_knowledge = "/knowledge"
 path_logs = "/logs"
 path_frontend_logs = "/logs/frontend"
@@ -168,15 +169,7 @@ wrong_test_id = "Test ID"
                 "university": "TH-AB",
                 "password": "password",
             },
-            [
-                "id",
-                "name",
-                "university",
-                "lms_user_id",
-                "role",
-                "role_id",
-                "settings",
-            ],
+            ["id", "name", "university", "lms_user_id", "role", "role_id", "settings"],
             201,
             True,
         ),
@@ -189,15 +182,7 @@ wrong_test_id = "Test ID"
                 "university": "TH-AB",
                 "password": "password",
             },
-            [
-                "id",
-                "name",
-                "university",
-                "lms_user_id",
-                "role",
-                "role_id",
-                "settings",
-            ],
+            ["id", "name", "university", "lms_user_id", "role", "role_id", "settings"],
             201,
             True,
         ),
@@ -210,15 +195,7 @@ wrong_test_id = "Test ID"
                 "university": "TH-AB",
                 "password": "password",
             },
-            [
-                "id",
-                "name",
-                "university",
-                "lms_user_id",
-                "role",
-                "role_id",
-                "settings",
-            ],
+            ["id", "name", "university", "lms_user_id", "role", "role_id", "settings"],
             201,
             True,
         ),
@@ -231,15 +208,7 @@ wrong_test_id = "Test ID"
                 "university": "TH-AB",
                 "password": "password",
             },
-            [
-                "id",
-                "name",
-                "university",
-                "lms_user_id",
-                "role",
-                "role_id",
-                "settings",
-            ],
+            ["id", "name", "university", "lms_user_id", "role", "role_id", "settings"],
             201,
             True,
         ),
@@ -330,12 +299,7 @@ def test_api_create_user_from_moodle(
             True,
         ),
         # Missing Parameter
-        (
-            {"name": "Test Course", "university": "TH-AB"},
-            ["error"],
-            400,
-            False,
-        ),
+        ({"name": "Test Course", "university": "TH-AB"}, ["error"], 400, False),
         # Parameter with wrong data type
         (
             {
@@ -486,12 +450,7 @@ def test_api_create_course_from_moodle(
     ],
 )
 def test_api_create_topic_from_moodle(
-    client,
-    input,
-    moodle_course_id,
-    keys_expected,
-    status_code_expected,
-    save_id,
+    client, input, moodle_course_id, keys_expected, status_code_expected, save_id
 ):
     global course_id, topic_id, sub_topic_id
     url = (
@@ -987,6 +946,51 @@ def test_post_learning_path(
         assert key in response.keys()
 
 
+# Post a Contact Form
+@pytest.mark.parametrize(
+    "input, lms_user_id, keys_expected,\
+                         status_code_expected",
+    [
+        # Working Example
+        (
+            {
+                "report_topic": "Lernelement",
+                "report_type": "Funktionalität",
+                "report_description": "Test",
+            },
+            4,
+            [
+                "id",
+                "user_id",
+                "report_topic",
+                "report_type",
+                "report_description",
+            ],
+            201,
+        ),
+        # Missing Parameter
+        ({}, 4, ["error"], 400),
+    ],
+)
+def test_post_contact_form(
+    client, input, lms_user_id, keys_expected, status_code_expected
+):
+    user_id_student = 4
+    url = (
+        path_user
+        + "/"
+        + str(user_id_student)
+        + "/"
+        + str(lms_user_id)
+        + path_contactform
+    )
+    r = client.post(url, json=input)
+    assert r.status_code == status_code_expected
+    response = json.loads(r.data.decode("utf-8").strip("\n"))
+    for key in keys_expected:
+        assert key in response.keys()
+
+
 # Post Frontend Logs
 @pytest.mark.parametrize(
     "input, keys_expected, status_code_expected",
@@ -1059,15 +1063,7 @@ def test_post_learning_path(
                 "id": "v3-1665068191217-4248786867866",
                 "navigationType": "navigate",
             },
-            [
-                "name",
-                "value",
-                "rating",
-                "delta",
-                "entries",
-                "id",
-                "navigationType",
-            ],
+            ["name", "value", "rating", "delta", "entries", "id", "navigationType"],
             201,
         )
     ],
@@ -1091,12 +1087,7 @@ def test_api_post_frontend_logs(client, input, keys_expected, status_code_expect
         (
             4,
             200,
-            [
-                "learning_style",
-                "learning_strategy",
-                "learning_analytics",
-                "knowledge",
-            ],
+            ["learning_style", "learning_strategy", "learning_analytics", "knowledge"],
             False,
         ),
         # Student not found
@@ -1303,12 +1294,7 @@ def test_get_students_knowledge(
     ],
 )
 def test_get_student_courses(
-    client,
-    lms_user_id,
-    status_code_expected,
-    keys_expected_1,
-    keys_expected_2,
-    error,
+    client, lms_user_id, status_code_expected, keys_expected_1, keys_expected_2, error
 ):
     global user_id_student, student_id
     if error:
@@ -2229,13 +2215,7 @@ def test_get_user_settings_by_id(
                          error",
     [
         # Working Example
-        (
-            4,
-            {"theme": "dark", "pswd": "password"},
-            ["theme", "pswd"],
-            201,
-            False,
-        ),
+        (4, {"theme": "dark", "pswd": "password"}, ['theme', 'pswd'], 201, False),
         # User not found
         (
             1,
@@ -2250,19 +2230,14 @@ def test_get_user_settings_by_id(
                 ],
                 "password": "password",
             },
-            ["error"],
+            ['error'],
             404,
             True,
         ),
     ],
 )
 def test_update_user_settings_by_id(
-    client,
-    lms_user_id,
-    request_body,
-    keys_expected,
-    status_code_expected,
-    error,
+    client, lms_user_id, request_body, keys_expected, status_code_expected, error
 ):
     global user_id_student
     if error:
@@ -2362,12 +2337,7 @@ def test_update_user_settings_by_id(
     ],
 )
 def test_update_learning_style_by_student_id(
-    client,
-    lms_user_id,
-    request_body,
-    keys_expected,
-    status_code_expected,
-    error,
+    client, lms_user_id, request_body, keys_expected, status_code_expected, error
 ):
     global user_id_student, student_id
     if error:
@@ -2748,277 +2718,285 @@ def test_update_le_from_moodle(
         assert key in response.keys()
 
 
-"""
 # DELETE METHODS
 # Reset User Settings
-@pytest.mark.parametrize("lms_user_id, keys_expected,\
-                         status_code_expected, error", [
-    # Working Example
-    (
-        4,
-        ['theme', 'pswd'],
-        200,
-        False
-    ),
-    # User not found
-    (
-        1,
-        ['error'],
-        404,
-        True
-    )
-])
+@pytest.mark.parametrize(
+    "lms_user_id, keys_expected,\
+                         status_code_expected, error",
+    [
+        # Working Example
+        (4, ["theme", "pswd"], 200, False),
+        # User not found
+        (1, ["error"], 404, True),
+    ],
+)
 def test_reset_user_settings(
-    client,
-    lms_user_id,
-    keys_expected,
-    status_code_expected,
-    error
+    client, lms_user_id, keys_expected, status_code_expected, error
 ):
     global user_id_student
     if error:
         user_id_use = 99999
     else:
         user_id_use = user_id_student
-    url = path_user + "/" + str(user_id_use) + "/" + \
-        str(lms_user_id) + path_settings
+    url = path_user + "/" + str(user_id_use) + "/" + str(lms_user_id) + path_settings
     r = client.delete(url)
     assert r.status_code == status_code_expected
-    response = json.loads(r.data.decode("utf-8").strip('\n'))
+    response = json.loads(r.data.decode("utf-8").strip("\n"))
     for key in keys_expected:
         assert key in response.keys()
 
 
 # Reset Learning Characteristics
-@pytest.mark.parametrize("lms_user_id, keys_expected,\
-                         status_code_expected, error", [
-    # Working Example
-    (
-        4,
-        ['id', 'knowledge', 'learning_analytics',\
-         'learning_strategy', 'learning_style', 'student_id'],
-        200,
-        False
-    ),
-    # User not found
-    (
-        1,
-        ['error'],
-        404,
-        True
-    )
-])
+@pytest.mark.parametrize(
+    "lms_user_id, keys_expected,\
+                         status_code_expected, error",
+    [
+        # Working Example
+        (
+            4,
+            [
+                "id",
+                "knowledge",
+                "learning_analytics",
+                "learning_strategy",
+                "learning_style",
+                "student_id",
+            ],
+            200,
+            False,
+        ),
+        # User not found
+        (1, ["error"], 404, True),
+    ],
+)
 def test_reset_learning_characteristics(
-    client,
-    lms_user_id,
-    keys_expected,
-    status_code_expected,
-    error
+    client, lms_user_id, keys_expected, status_code_expected, error
 ):
     global user_id_student, student_id
     if error:
         user_id_use = 99999
     else:
         user_id_use = user_id_student
-    url = path_user + "/" + str(user_id_use) + "/" + str(lms_user_id) + \
-        path_student + "/" + str(student_id) + path_learning_characteristics
+    url = (
+        path_user
+        + "/"
+        + str(user_id_use)
+        + "/"
+        + str(lms_user_id)
+        + path_student
+        + "/"
+        + str(student_id)
+        + path_learning_characteristics
+    )
     r = client.delete(url)
     assert r.status_code == status_code_expected
-    response = json.loads(r.data.decode("utf-8").strip('\n'))
+    response = json.loads(r.data.decode("utf-8").strip("\n"))
     for key in keys_expected:
         assert key in response.keys()
 
 
 # Reset Learning Analytics
-@pytest.mark.parametrize("lms_user_id, keys_expected,\
-                         status_code_expected, error", [
-    # Working Example
-    (
-        4,
-        ['id', 'characteristic_id'],
-        200,
-        False
-    ),
-    # User not found
-    (
-        1,
-        ['error'],
-        404,
-        True
-    )
-])
+@pytest.mark.parametrize(
+    "lms_user_id, keys_expected,\
+                         status_code_expected, error",
+    [
+        # Working Example
+        (4, ["id", "characteristic_id"], 200, False),
+        # User not found
+        (1, ["error"], 404, True),
+    ],
+)
 def test_reset_learning_analytics(
-    client,
-    lms_user_id,
-    keys_expected,
-    status_code_expected,
-    error
+    client, lms_user_id, keys_expected, status_code_expected, error
 ):
     global user_id_student, student_id
     if error:
         user_id_use = 99999
     else:
         user_id_use = user_id_student
-    url = path_user + "/" + str(user_id_use) + "/" + str(lms_user_id) + \
-        path_student + "/" + str(student_id) + path_learning_analytics
+    url = (
+        path_user
+        + "/"
+        + str(user_id_use)
+        + "/"
+        + str(lms_user_id)
+        + path_student
+        + "/"
+        + str(student_id)
+        + path_learning_analytics
+    )
     r = client.delete(url)
     assert r.status_code == status_code_expected
-    response = json.loads(r.data.decode("utf-8").strip('\n'))
+    response = json.loads(r.data.decode("utf-8").strip("\n"))
     for key in response.keys():
         assert key in keys_expected
 
 
 # Reset Learning Style
-@pytest.mark.parametrize("lms_user_id, keys_expected,\
-                         status_code_expected, error", [
-    # Working Example
-    (
-        4,
-        ['id', 'characteristic_id', 'perception_dimension',\
-         'perception_value', 'input_dimension', 'input_value',\
-         'processing_dimension', 'processing_value',\
-         'understanding_dimension', 'understanding_value'],
-        200,
-        False
-    ),
-    # User not found
-    (
-        1,
-        ['error'],
-        404,
-        True
-    )
-])
+@pytest.mark.parametrize(
+    "lms_user_id, keys_expected,\
+                         status_code_expected, error",
+    [
+        # Working Example
+        (
+            4,
+            [
+                "id",
+                "characteristic_id",
+                "perception_dimension",
+                "perception_value",
+                "input_dimension",
+                "input_value",
+                "processing_dimension",
+                "processing_value",
+                "understanding_dimension",
+                "understanding_value",
+            ],
+            200,
+            False,
+        ),
+        # User not found
+        (1, ["error"], 404, True),
+    ],
+)
 def test_reset_learning_style(
-    client,
-    lms_user_id,
-    keys_expected,
-    status_code_expected,
-    error
+    client, lms_user_id, keys_expected, status_code_expected, error
 ):
     global user_id_student, student_id
     if error:
         user_id_use = 99999
     else:
         user_id_use = user_id_student
-    url = path_user + "/" + str(user_id_use) + "/" + str(lms_user_id) + \
-        path_student + "/" + str(student_id) + path_learning_style
+    url = (
+        path_user
+        + "/"
+        + str(user_id_use)
+        + "/"
+        + str(lms_user_id)
+        + path_student
+        + "/"
+        + str(student_id)
+        + path_learning_style
+    )
     r = client.delete(url)
     assert r.status_code == status_code_expected
-    response = json.loads(r.data.decode("utf-8").strip('\n'))
+    response = json.loads(r.data.decode("utf-8").strip("\n"))
     for key in response.keys():
         assert key in keys_expected
 
 
 # Reset Learning Strategy
-@pytest.mark.parametrize("lms_user_id, keys_expected,\
-                         status_code_expected, error", [
-    # Working Example
-    (
-        4,
-        ['id', 'characteristic_id'],
-        200,
-        False
-    ),
-    # User not found
-    (
-        1,
-        ['error'],
-        404,
-        True
-    )
-])
+@pytest.mark.parametrize(
+    "lms_user_id, keys_expected,\
+                         status_code_expected, error",
+    [
+        # Working Example
+        (4, ["id", "characteristic_id"], 200, False),
+        # User not found
+        (1, ["error"], 404, True),
+    ],
+)
 def test_reset_learning_strategy(
-    client,
-    lms_user_id,
-    keys_expected,
-    status_code_expected,
-    error
+    client, lms_user_id, keys_expected, status_code_expected, error
 ):
     global user_id_student, student_id
     if error:
         user_id_use = 99999
     else:
         user_id_use = user_id_student
-    url = path_user + "/" + str(user_id_use) + "/" + str(lms_user_id) + \
-        path_student + "/" + str(student_id) + path_learning_strategy
+    url = (
+        path_user
+        + "/"
+        + str(user_id_use)
+        + "/"
+        + str(lms_user_id)
+        + path_student
+        + "/"
+        + str(student_id)
+        + path_learning_strategy
+    )
     r = client.delete(url)
     assert r.status_code == status_code_expected
-    response = json.loads(r.data.decode("utf-8").strip('\n'))
+    response = json.loads(r.data.decode("utf-8").strip("\n"))
     for key in response.keys():
         assert key in keys_expected
 
 
 # Reset Knowledge
-@pytest.mark.parametrize("lms_user_id, keys_expected,\
-                         status_code_expected, error", [
-    # Working Example
-    (
-        4,
-        ['id', 'characteristic_id'],
-        200,
-        False
-    ),
-    # User not found
-    (
-        1,
-        ['error'],
-        404,
-        True
-    )
-])
+@pytest.mark.parametrize(
+    "lms_user_id, keys_expected,\
+                         status_code_expected, error",
+    [
+        # Working Example
+        (4, ["id", "characteristic_id"], 200, False),
+        # User not found
+        (1, ["error"], 404, True),
+    ],
+)
 def test_reset_knowledge(
-    client,
-    lms_user_id,
-    keys_expected,
-    status_code_expected,
-    error
+    client, lms_user_id, keys_expected, status_code_expected, error
 ):
     global user_id_student, student_id
     if error:
         user_id_use = 99999
     else:
         user_id_use = user_id_student
-    url = path_user + "/" + str(user_id_use) + "/" + str(lms_user_id) + \
-        path_student + "/" + str(student_id) + path_knowledge
+    url = (
+        path_user
+        + "/"
+        + str(user_id_use)
+        + "/"
+        + str(lms_user_id)
+        + path_student
+        + "/"
+        + str(student_id)
+        + path_knowledge
+    )
     r = client.delete(url)
     assert r.status_code == status_code_expected
-    response = json.loads(r.data.decode("utf-8").strip('\n'))
+    response = json.loads(r.data.decode("utf-8").strip("\n"))
     for key in response.keys():
         assert key in keys_expected
 
 
-# Delete User
-@pytest.mark.parametrize("moodle_user_id, keys_expected,\
-                         status_code_expected, student", [
-    # Working Example Student
-    (
-        4,
-        ['message'],
-        200,
-        True
-    ),
-    # Working Example Teacher
-    (
-        3,
-        ['message'],
-        200,
-        False
-    ),
-    # User not found
-    (
-        4,
-        ['error'],
-        404,
-        True
+# Delete a Contact Form
+@pytest.mark.parametrize(
+    "lms_user_id, user_id,\
+                         status_code_expected",
+    [
+        # Working Example
+        (4, 4, 201)
+    ],
+)
+def test_delete_contact_form(client, lms_user_id, user_id, status_code_expected):
+    user_id_student = user_id
+    url = (
+        path_user
+        + "/"
+        + str(user_id_student)
+        + "/"
+        + str(lms_user_id)
+        + path_contactform
     )
-])
+    r = client.delete(url)
+    assert r.status_code == status_code_expected
+
+
+# Delete User
+@pytest.mark.parametrize(
+    "moodle_user_id, keys_expected,\
+                         status_code_expected, student",
+    [
+        # Working Example Student
+        (4, ["message"], 200, True),
+        # Working Example Teacher
+        (3, ["message"], 200, False),
+        # User not found
+        (4, ["error"], 404, True),
+    ],
+)
 def test_delete_user(
-    client,
-    moodle_user_id,
-    keys_expected,
-    status_code_expected,
-    student
+    client, moodle_user_id, keys_expected, status_code_expected, student
 ):
     global user_id_student, user_id_teacher
     if student:
@@ -3028,61 +3006,28 @@ def test_delete_user(
     url = path_lms_user + "/" + str(user_id_use) + "/" + str(moodle_user_id)
     r = client.delete(url)
     assert r.status_code == status_code_expected
-    response = json.loads(r.data.decode("utf-8").strip('\n'))
+    response = json.loads(r.data.decode("utf-8").strip("\n"))
     for key in response.keys():
         assert key in keys_expected
 
 
 # Delete Learning Element
-@pytest.mark.parametrize("moodle_course_id, moodle_topic_id,\
+@pytest.mark.parametrize(
+    "moodle_course_id, moodle_topic_id,\
                          moodle_learning_element_id, keys_expected,\
                          status_code_expected, error_course,\
-                         error_topic, error_le", [
-    # Working Example
-    (
-        1,
-        1,
-        1,
-        ['message'],
-        200,
-        False,
-        False,
-        False
-    ),
-    # Course not found
-    (
-        1,
-        1,
-        1,
-        ['error'],
-        404,
-        True,
-        False,
-        False
-    ),
-    # Topic not found
-    (
-        1,
-        1,
-        1,
-        ['error'],
-        404,
-        False,
-        True,
-        False
-    ),
-    # Learning Element not found
-    (
-        1,
-        1,
-        1,
-        ['error'],
-        404,
-        False,
-        False,
-        True
-    )
-])
+                         error_topic, error_le",
+    [
+        # Working Example
+        (1, 1, 1, ["message"], 200, False, False, False),
+        # Course not found
+        (1, 1, 1, ["error"], 404, True, False, False),
+        # Topic not found
+        (1, 1, 1, ["error"], 404, False, True, False),
+        # Learning Element not found
+        (1, 1, 1, ["error"], 404, False, False, True),
+    ],
+)
 def test_api_delete_le_from_moodle(
     client,
     moodle_course_id,
@@ -3092,7 +3037,7 @@ def test_api_delete_le_from_moodle(
     status_code_expected,
     error_course,
     error_topic,
-    error_le
+    error_le,
 ):
     global course_id, sub_topic_id, learning_element_id
     if error_course:
@@ -3107,49 +3052,44 @@ def test_api_delete_le_from_moodle(
         learning_element_id_use = 99999
     else:
         learning_element_id_use = learning_element_id
-    url = path_lms_course + "/" + str(course_id_use) + "/" +\
-        str(moodle_course_id) + path_topic + "/" + str(topic_id_use) +\
-        "/" + str(moodle_topic_id) + path_learning_element + "/" +\
-        str(learning_element_id_use) + "/" + str(moodle_learning_element_id)
+    url = (
+        path_lms_course
+        + "/"
+        + str(course_id_use)
+        + "/"
+        + str(moodle_course_id)
+        + path_topic
+        + "/"
+        + str(topic_id_use)
+        + "/"
+        + str(moodle_topic_id)
+        + path_learning_element
+        + "/"
+        + str(learning_element_id_use)
+        + "/"
+        + str(moodle_learning_element_id)
+    )
     r = client.delete(url)
     assert r.status_code == status_code_expected
-    response = json.loads(r.data.decode("utf-8").strip('\n'))
+    response = json.loads(r.data.decode("utf-8").strip("\n"))
     for key in response.keys():
         assert key in keys_expected
 
 
 # Delete Topic
-@pytest.mark.parametrize("moodle_course_id, moodle_topic_id,\
+@pytest.mark.parametrize(
+    "moodle_course_id, moodle_topic_id,\
                          keys_expected, status_code_expected,\
-                         error_course, error_topic", [
-    # Working Example
-    (
-        1,
-        1,
-        ['message'],
-        200,
-        False,
-        False
-    ),
-    # Course not found
-    (
-        1,
-        1,
-        ['error'],
-        404,
-        True,
-        False
-    ),
-    # Topic not found
-    (
-        1,
-        1,
-        ['error'],
-        404,
-        False,
-        True
-    )
-])
+                         error_course, error_topic",
+    [
+        # Working Example
+        (1, 1, ["message"], 200, False, False),
+        # Course not found
+        (1, 1, ["error"], 404, True, False),
+        # Topic not found
+        (1, 1, ["error"], 404, False, True),
+    ],
+)
 def test_api_delete_topic_from_moodle(
     client,
     moodle_course_id,
@@ -3157,7 +3097,7 @@ def test_api_delete_topic_from_moodle(
     keys_expected,
     status_code_expected,
     error_course,
-    error_topic
+    error_topic,
 ):
     global course_id, sub_topic_id
     if error_course:
@@ -3168,51 +3108,47 @@ def test_api_delete_topic_from_moodle(
         topic_id_use = 99999
     else:
         topic_id_use = sub_topic_id
-    url = path_lms_course + "/" + str(course_id_use) + \
-        "/" + str(moodle_course_id) + path_topic + "/" + \
-        str(topic_id_use) + "/" + str(moodle_topic_id)
+    url = (
+        path_lms_course
+        + "/"
+        + str(course_id_use)
+        + "/"
+        + str(moodle_course_id)
+        + path_topic
+        + "/"
+        + str(topic_id_use)
+        + "/"
+        + str(moodle_topic_id)
+    )
     r = client.delete(url)
     assert r.status_code == status_code_expected
-    response = json.loads(r.data.decode("utf-8").strip('\n'))
+    response = json.loads(r.data.decode("utf-8").strip("\n"))
     for key in response.keys():
         assert key in keys_expected
 
 
 # Delete Course
-@pytest.mark.parametrize("moodle_course_id, keys_expected,\
-                         status_code_expected, error", [
-    # Working Example
-    (
-        1,
-        ['message'],
-        200,
-        False
-    ),
-    # Course not found
-    (
-        1,
-        ['error'],
-        404,
-        True
-    )
-])
+@pytest.mark.parametrize(
+    "moodle_course_id, keys_expected,\
+                         status_code_expected, error",
+    [
+        # Working Example
+        (1, ["message"], 200, False),
+        # Course not found
+        (1, ["error"], 404, True),
+    ],
+)
 def test_api_delete_course_from_moodle(
-    client,
-    moodle_course_id,
-    keys_expected,
-    status_code_expected,
-    error
+    client, moodle_course_id, keys_expected, status_code_expected, error
 ):
     global course_id
     if error:
         course_id_use = 99999
     else:
         course_id_use = course_id
-    url = path_lms_course + "/" + \
-        str(course_id_use) + "/" + str(moodle_course_id)
+    url = path_lms_course + "/" + str(course_id_use) + "/" + str(moodle_course_id)
     r = client.delete(url)
     assert r.status_code == status_code_expected
-    response = json.loads(r.data.decode("utf-8").strip('\n'))
+    response = json.loads(r.data.decode("utf-8").strip("\n"))
     for key in response.keys():
         assert key in keys_expected
-"""

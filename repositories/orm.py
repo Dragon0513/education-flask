@@ -291,6 +291,17 @@ settings = Table(
     Column("pswd", String, nullable=True),
 )
 
+contact_form = Table(
+    "contact_form",
+    metadata,
+    Column("id", Integer, primary_key=True, autoincrement=True),
+    Column("user_id", Integer, nullable=False),
+    Column("report_topic", String, nullable=False),
+    Column("report_type", String, nullable=False),
+    Column("report_description", String, nullable=False),
+    Column("date", Date, nullable=False),
+)
+
 student = Table(
     "student",
     metadata,
@@ -417,6 +428,7 @@ def start_mappers():
     mapper(LM.ListK, list_k)
     mapper(LM.Questionnaire, questionnaire)
     mapper(UA.Settings, settings)
+    mapper(UA.ContactForm, contact_form)
     mapper(UA.Student, student)
     mapper(DM.StudentCourse, student_course)
     mapper(DM.StudentLearningElement, student_learning_element)

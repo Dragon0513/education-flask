@@ -131,6 +131,10 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
+    def create_contact_form(self, contact_form: UA.ContactForm) -> UA.ContactForm:
+        raise NotImplementedError
+
+    @abc.abstractmethod
     def create_student(self, student: UA.Student) -> UA.Student:
         raise NotImplementedError
 
@@ -477,15 +481,7 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_user_by_id(self, user_id, lms_user_id=None) -> UA.User:
-        raise NotImplementedError
-
-    @abc.abstractmethod
-    def get_user_by_lms_id(self, lms_user_id) -> UA.User:
-        raise NotImplementedError
-
-    @abc.abstractmethod
-    def get_student_by_user_id(self, user_id) -> UA.Student:
+    def get_user_by_id(self, user_id, lms_user_id) -> UA.User:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -789,6 +785,12 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         except Exception:
             raise err.CreationError()
 
+    def create_contact_form(self, contact_form: UA.ContactForm) -> UA.ContactForm:
+        try:
+            self.session.add(contact_form)
+        except Exception:
+            raise err.CreationError()
+
     def create_student(self, student: UA.Student) -> UA.Student:
         try:
             self.session.add(student)
@@ -839,6 +841,9 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
             self.session.query(UA.Admin).filter_by(user_id=user_id).delete()
         else:
             raise err.NoValidIdError()
+
+    def delete_contact_form(self, user_id):
+        self.session.query(UA.ContactForm).filter_by(user_id=user_id).delete()
 
     def delete_course(self, course_id):
         course = self.get_course_by_id(course_id)
@@ -1476,32 +1481,13 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         else:
             return result
 
-    def get_user_by_id(self, user_id, lms_user_id=None) -> UA.User:
-        if lms_user_id:
-            result = (
-                self.session.query(UA.User)
-                .filter_by(id=user_id)
-                .filter_by(lms_user_id=lms_user_id)
-                .all()
-            )
-        else:
-            result = self.session.query(UA.User).filter_by(id=user_id).all()
-        if result == []:
-            raise err.NoValidIdError()
-        else:
-            return result
-
-    def get_user_by_lms_id(self, lms_user_id) -> UA.User:
-        result = self.session.query(UA.User).filter_by(lms_user_id=lms_user_id).all()
-        # TODO handle multiple users with same lms_user_id
-        if result == []:
-            raise err.NoValidIdError()
-        else:
-            return result
-
-    def get_student_by_user_id(self, user_id) -> UA.Student:
-        result = self.session.query(UA.Student).filter_by(user_id=user_id).all()
-        # TODO handle multiple users with same lms_user_id
+    def get_user_by_id(self, user_id, lms_user_id) -> UA.Admin:
+        result = (
+            self.session.query(UA.User)
+            .filter_by(id=user_id)
+            .filter_by(lms_user_id=lms_user_id)
+            .all()
+        )
         if result == []:
             raise err.NoValidIdError()
         else:
@@ -1510,8 +1496,8 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
     def get_users_by_uni(self, university):
         try:
             return self.session.query(UA.User).filter_by(university=university).all()
-        except Exception as e:
-            raise err.DatabaseQueryError(e)
+        except Exception:
+            raise err.DatabaseQueryError()
 
     def update_course(self, course_id, course) -> DM.Course:
         course_exist = self.get_course_by_id(course_id)
@@ -1559,20 +1545,21 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         learning_element_exist = self.get_learning_element_by_id(learning_element_id)
         if learning_element_exist != []:
             learning_element.id = learning_element_exist[0].id
-            updated_learning_element = {
-                DM.LearningElement.lms_id: learning_element.lms_id,
-                DM.LearningElement.activity_type: learning_element.activity_type,
-                DM.LearningElement.classification: learning_element.classification,
-                DM.LearningElement.name: learning_element.name,
-                DM.LearningElement.created_by: learning_element.created_by,
-                DM.LearningElement.created_at: learning_element.created_at,
-                DM.LearningElement.last_updated: learning_element.last_updated,
-                DM.LearningElement.university: learning_element.university,
-            }
             return (
                 self.session.query(DM.LearningElement)
                 .filter_by(id=learning_element_id)
-                .update(updated_learning_element)
+                .update(
+                    {
+                        DM.LearningElement.lms_id: learning_element.lms_id,
+                        DM.LearningElement.activity_type: learning_element.activity_type,
+                        DM.LearningElement.classification: learning_element.classification,
+                        DM.LearningElement.name: learning_element.name,
+                        DM.LearningElement.created_by: learning_element.created_by,
+                        DM.LearningElement.created_at: learning_element.created_at,
+                        DM.LearningElement.last_updated: learning_element.last_updated,
+                        DM.LearningElement.university: learning_element.university,
+                    }
+                )
             )
         else:
             raise err.NoValidIdError
@@ -1593,23 +1580,22 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         style_exist = self.get_learning_analytics(characteristic_id)
         if style_exist != []:
             learning_style.id = style_exist[0].id
-            # ignore E501 line too long flake8 error since there is
-            # no way to make this shorter without making it unreadable
-            updated_learning_style = {
-                LM.LearningStyle.characteristic_id: learning_style.characteristic_id,  # noqa
-                LM.LearningStyle.perception_dimension: learning_style.perception_dimension,  # noqa
-                LM.LearningStyle.perception_value: learning_style.perception_value,  # noqa
-                LM.LearningStyle.input_dimension: learning_style.input_dimension,  # noqa
-                LM.LearningStyle.input_value: learning_style.input_value,  # noqa
-                LM.LearningStyle.processing_dimension: learning_style.processing_dimension,  # noqa
-                LM.LearningStyle.processing_value: learning_style.processing_value,  # noqa
-                LM.LearningStyle.understanding_dimension: learning_style.understanding_dimension,  # noqa
-                LM.LearningStyle.understanding_value: learning_style.understanding_value,  # noqa
-            }
             return (
                 self.session.query(LM.LearningStyle)
                 .filter_by(characteristic_id=characteristic_id)
-                .update(updated_learning_style)
+                .update(
+                    {
+                        LM.LearningStyle.characteristic_id: learning_style.characteristic_id,
+                        LM.LearningStyle.perception_dimension: learning_style.perception_dimension,
+                        LM.LearningStyle.perception_value: learning_style.perception_value,
+                        LM.LearningStyle.input_dimension: learning_style.input_dimension,
+                        LM.LearningStyle.input_value: learning_style.input_value,
+                        LM.LearningStyle.processing_dimension: learning_style.processing_dimension,
+                        LM.LearningStyle.processing_value: learning_style.processing_value,
+                        LM.LearningStyle.understanding_dimension: learning_style.understanding_dimension,
+                        LM.LearningStyle.understanding_value: learning_style.understanding_value,
+                    }
+                )
             )
         else:
             raise err.NoValidIdError

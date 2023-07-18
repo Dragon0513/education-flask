@@ -3,7 +3,6 @@ import os
 import re
 
 from flask import Flask, jsonify, request
-from flask_caching import Cache
 from flask_cors import CORS, cross_origin
 
 import service_layer.crypto.JWTKeyManagement as JWTKeyManagement
@@ -16,11 +15,9 @@ from utils import constants as cons
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
 orm.start_mappers()
-cache = Cache(app)
 tool_conf = ToolConfigJson(
     os.path.abspath(os.path.join(app.root_path, "../configs/lti_config.json"))
 )
-
 
 mocked_frontend_log = {
     "logs": [
@@ -60,48 +57,38 @@ def handle_custom_exception(ex: err.AException):
 
 
 # User Administration via LMS
-
-
-@app.route("/lms/user", methods=["POST"])
+@app.route("/lms/user", methods=['POST'])
 @cross_origin(supports_credentials=True)
 def create_user():
     method = request.method
     match method:
-        case "POST":
-            if request.json:
-                condition1 = "name" in request.json
-                condition2 = "university" in request.json
-                condition3 = "lms_user_id" in request.json
-                condition4 = "role" in request.json
-                if condition1 and condition2 and condition3 and condition4:
-                    condition5 = type(request.json["name"]) is str
-                    condition6 = type(request.json["university"]) is str
-                    condition7 = type(request.json["lms_user_id"]) is int
-                    condition8 = type(request.json["role"]) is str
-                    if condition5 and condition6 and condition7 and condition8:
-                        role = request.json["role"].lower()
-                        available_roles = [
-                            "admin",
-                            "course creator",
-                            "student",
-                            "teacher",
-                        ]
-                        if role not in available_roles:
-                            raise err.NoValidRoleError()
-                        else:
-                            user = services.create_user(
-                                unit_of_work.SqlAlchemyUnitOfWork(),
-                                request.json["name"],
-                                request.json["university"],
-                                request.json["lms_user_id"],
-                                role,
-                            )
-                            status_code = 201
-                            return jsonify(user), status_code
+        case 'POST':
+            condition1 = 'name' in request.json
+            condition2 = 'university' in request.json
+            condition3 = 'lms_user_id' in request.json
+            condition4 = 'role' in request.json
+            if condition1 and condition2 and condition3 and condition4:
+                condition5 = type(request.json['name']) is str
+                condition6 = type(request.json['university']) is str
+                condition7 = type(request.json['lms_user_id']) is int
+                condition8 = type(request.json['role']) is str
+                if condition5 and condition6 and condition7 and condition8:
+                    role = request.json["role"].lower()
+                    available_roles = ['admin', 'course creator', 'student', 'teacher']
+                    if role not in available_roles:
+                        raise err.NoValidRoleError()
                     else:
-                        raise err.WrongParameterValueError()
+                        user = services.create_user(
+                            unit_of_work.SqlAlchemyUnitOfWork(),
+                            request.json["name"],
+                            request.json["university"],
+                            request.json["lms_user_id"],
+                            role,
+                        )
+                        status_code = 201
+                        return jsonify(user), status_code
                 else:
-                    raise err.MissingParameterError()
+                    raise err.WrongParameterValueError()
             else:
                 raise err.MissingParameterError()
 
@@ -565,10 +552,7 @@ def learning_element_administration(
             return jsonify(result), status_code
 
 
-# ##### HASKI ENDPOINTS #####
-
-
-@app.route("/lms/course/<course_id>/student/<student_id>", methods=["POST"])
+@app.route("/lms/course/<course_id>/student/<student_id>", methods=['POST'])
 @cross_origin(supports_credentials=True)
 def post_student_course(course_id, student_id):
     method = request.method
@@ -594,10 +578,7 @@ def post_teacher_course(course_id, teacher_id):
             return jsonify(teacher_course), status_code
 
 
-@app.route(
-    "/lms/student/<student_id>/<lms_user_id>/topic/<topic_id>",
-    methods=["POST"],
-)
+@app.route("/lms/student/<student_id>/<lms_user_id>/topic/<topic_id>", methods=['POST'])
 @cross_origin(supports_credentials=True)
 def post_student_topic_visit(student_id, lms_user_id, topic_id):
     method = request.method
@@ -690,10 +671,7 @@ def delete_learning_characteristics(user_id, lms_user_id, student_id):
     match method:
         case "DELETE":
             characteristic = services.reset_learning_characteristics(
-                unit_of_work.SqlAlchemyUnitOfWork(),
-                user_id,
-                lms_user_id,
-                student_id,
+                unit_of_work.SqlAlchemyUnitOfWork(), user_id, lms_user_id, student_id
             )
             status_code = 200
             return jsonify(characteristic), status_code
@@ -709,10 +687,7 @@ def get_learning_characteristics(user_id, lms_user_id, student_id):
     match method:
         case "GET":
             characteristic = services.get_learning_characteristics(
-                unit_of_work.SqlAlchemyUnitOfWork(),
-                student_id,
-                user_id,
-                lms_user_id,
+                unit_of_work.SqlAlchemyUnitOfWork(), student_id, user_id, lms_user_id
             )
             status_code = 200
             return jsonify(characteristic), status_code
@@ -902,10 +877,7 @@ def learning_style_administration(user_id, lms_user_id, student_id):
                 raise err.MissingParameterError()
         case "DELETE":
             result = services.reset_learning_style_by_student_id(
-                unit_of_work.SqlAlchemyUnitOfWork(),
-                user_id,
-                lms_user_id,
-                student_id,
+                unit_of_work.SqlAlchemyUnitOfWork(), user_id, lms_user_id, student_id
             )
             status_code = 200
             return jsonify(result), status_code
@@ -937,10 +909,7 @@ def delete_learning_strategy(user_id, lms_user_id, student_id):
     match method:
         case "DELETE":
             result = services.reset_learning_strategy_by_student_id(
-                unit_of_work.SqlAlchemyUnitOfWork(),
-                user_id,
-                lms_user_id,
-                student_id,
+                unit_of_work.SqlAlchemyUnitOfWork(), user_id, lms_user_id, student_id
             )
             status_code = 200
             return jsonify(result), status_code
@@ -972,10 +941,7 @@ def delete_learning_analytics(user_id, lms_user_id, student_id):
     match method:
         case "DELETE":
             result = services.reset_learning_analytics_by_student_id(
-                unit_of_work.SqlAlchemyUnitOfWork(),
-                user_id,
-                lms_user_id,
-                student_id,
+                unit_of_work.SqlAlchemyUnitOfWork(), user_id, lms_user_id, student_id
             )
             status_code = 200
             return jsonify(result), status_code
@@ -1007,18 +973,14 @@ def delete_knowledge(user_id, lms_user_id, student_id):
     match method:
         case "DELETE":
             result = services.reset_knowledge_by_student_id(
-                unit_of_work.SqlAlchemyUnitOfWork(),
-                user_id,
-                lms_user_id,
-                student_id,
+                unit_of_work.SqlAlchemyUnitOfWork(), user_id, lms_user_id, student_id
             )
             status_code = 200
             return jsonify(result), status_code
 
 
 @app.route(
-    "/user/<user_id>/<lms_user_id>/student/<student_id>/" + "knowledge",
-    methods=["GET"],
+    "/user/<user_id>/<lms_user_id>/student/<student_id>/" + "knowledge", methods=['GET']
 )
 @cross_origin(supports_credentials=True)
 def get_knowledge(user_id, lms_user_id, student_id):
@@ -1032,20 +994,14 @@ def get_knowledge(user_id, lms_user_id, student_id):
             return jsonify(result), status_code
 
 
-@app.route(
-    "/user/<user_id>/<lms_user_id>/student/<student_id>/course",
-    methods=["GET"],
-)
+@app.route("/user/<user_id>/<lms_user_id>/student/<student_id>/course", methods=['GET'])
 @cross_origin(supports_credentials=True)
 def get_courses_by_student_id(user_id, lms_user_id, student_id):
     method = request.method
     match method:
         case "GET":
             result = services.get_courses_by_student_id(
-                unit_of_work.SqlAlchemyUnitOfWork(),
-                user_id,
-                lms_user_id,
-                student_id,
+                unit_of_work.SqlAlchemyUnitOfWork(), user_id, lms_user_id, student_id
             )
             status_code = 200
             return jsonify(result), status_code
@@ -1061,10 +1017,7 @@ def get_course_by_course_id(user_id, lms_user_id, student_id, course_id):
     match method:
         case "GET":
             result = services.get_course_by_id(
-                unit_of_work.SqlAlchemyUnitOfWork(),
-                user_id,
-                lms_user_id,
-                course_id,
+                unit_of_work.SqlAlchemyUnitOfWork(), user_id, lms_user_id, course_id
             )
             status_code = 200
             return jsonify(result), status_code
@@ -1268,9 +1221,7 @@ def get_learning_path(user_id, lms_user_id, student_id, course_id, topic_id):
 
 
 # User Endpoints
-
-
-@app.route("/user/<user_id>/<lms_user_id>", methods=["GET"])
+@app.route("/user/<user_id>/<lms_user_id>", methods=['GET'])
 @cross_origin(supports_credentials=True)
 def user_by_user_id(user_id, lms_user_id):
     method = request.method
@@ -1322,6 +1273,40 @@ def get_settings_by_user_id(user_id, lms_user_id):
             )
             status_code = 200
             return jsonify(settings), status_code
+
+
+@app.route("/user/<user_id>/<lms_user_id>/contactform", methods=['POST'])
+@cross_origin(supports_credentials=True)
+def contact_form(user_id, lms_user_id):
+    if request.json is None:
+        raise err.MissingParameterError()
+
+    for el in ['report_type', 'report_topic', 'report_description']:
+        if el not in request.json:
+            raise err.MissingParameterError()
+
+    result = services.create_contact_form(
+        unit_of_work.SqlAlchemyUnitOfWork(),
+        user_id,
+        lms_user_id,
+        request.json['report_type'],
+        request.json['report_topic'],
+        request.json['report_description'],
+        datetime.datetime.now(),
+    )
+
+    if result is None:
+        raise err.ContactFormError()
+
+    status_code = 201
+    return jsonify(result), status_code
+
+
+@app.route("/user/<user_id>/<lms_user_id>/contactform", methods=["DELETE"])
+@cross_origin(supports_credentials=True)
+def delete_contact_form(user_id, lms_user_id):
+    services.delete_contact_form(unit_of_work.SqlAlchemyUnitOfWork(), user_id)
+    return "ok", 201
 
 
 # Log Endpoints
@@ -1394,10 +1379,7 @@ def get_admin_logs(user_id, lms_user_id, admin_id):
 
 
 # Teacher Endpoints
-@app.route(
-    "/user/<user_id>/<lms_user_id>/teacher/<teacher_id>/course",
-    methods=["GET"],
-)
+@app.route("/user/<user_id>/<lms_user_id>/teacher/<teacher_id>/course", methods=['GET'])
 @cross_origin(supports_credentials=True)
 def get_teacher_courses(user_id, lms_user_id, teacher_id):
     method = request.method

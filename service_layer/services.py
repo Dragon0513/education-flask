@@ -1,12 +1,12 @@
 from flask.wrappers import Request
 
+import errors.errors as err
+from domain.domainModel import model as DM
+from domain.learnersModel import model as LM
+from domain.tutoringModel import model as TM
+from domain.userAdministartion import model as UA
 from service_layer import unit_of_work
 from service_layer.lti.OIDCLoginFlask import OIDCLoginFlask
-from domain.userAdministartion import model as UA
-from domain.learnersModel import model as LM
-from domain.domainModel import model as DM
-from domain.tutoringModel import model as TM
-import errors.errors as err
 
 
 def add_course_creator_to_course(
@@ -428,9 +428,9 @@ def create_learning_path(
                             position=i + 1,
                             learning_element=None,
                         )
-                        uow.learning_path_learning_element.create_learning_path_learning_element(
-                            path_element
-                        )
+                        # fmt: off
+                        uow.learning_path_learning_element.\
+                            create_learning_path_learning_element(path_element)
         uow.commit()
         return result
 

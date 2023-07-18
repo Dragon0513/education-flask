@@ -1,18 +1,17 @@
 import json
 import os
-from errors import errors as err
+import re
 
 from flask import Flask, jsonify, request
-from flask_cors import CORS, cross_origin
-import re
-from utils import constants as cons
 from flask_caching import Cache
+from flask_cors import CORS, cross_origin
 
+import service_layer.crypto.JWTKeyManagement as JWTKeyManagement
+from errors import errors as err
 from repositories import orm
 from service_layer import services, unit_of_work
 from service_layer.lti.config.ToolConfigJson import ToolConfigJson
-import service_layer.crypto.JWTKeyManagement as JWTKeyManagement
-
+from utils import constants as cons
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)

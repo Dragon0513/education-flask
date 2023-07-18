@@ -1,10 +1,12 @@
 from __future__ import annotations
+
 import abc
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from repositories import repository
 import config
+from repositories import repository
 
 
 class AbstractUnitOfWork(abc.ABC):

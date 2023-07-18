@@ -1,6 +1,8 @@
 from functools import wraps
-import errors.errors as err
+
 from flask import request
+
+import errors.errors as err
 import service_layer.crypto.JWTKeyManagement as JWTKeyManagement
 from utils.auth.permissions import Permissions
 

@@ -1,6 +1,6 @@
 import datetime
-import service_layer.crypto.JWTKeyManagement as JWTKeyManagement
 
+import service_layer.crypto.JWTKeyManagement as JWTKeyManagement
 from service_layer.crypto.cryptorandom import CryptoRandom
 
 

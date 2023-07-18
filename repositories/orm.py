@@ -1,5 +1,6 @@
-from sqlalchemy import MetaData, Column, Integer, String, Table, Date, Boolean
+from sqlalchemy import Boolean, Column, Date, Integer, MetaData, String, Table
 from sqlalchemy.orm import mapper
+
 from domain.domainModel import model as DM
 from domain.learnersModel import model as LM
 from domain.tutoringModel import model as TM

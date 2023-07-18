@@ -1,7 +1,8 @@
 import pytest
-from domain.tutoringModel import model as TM
+
 from domain.domainModel import model as DM
 from domain.learnersModel import model as LM
+from domain.tutoringModel import model as TM
 from domain.tutoringModel import utils
 
 

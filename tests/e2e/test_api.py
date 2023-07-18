@@ -1,6 +1,6 @@
-import pytest
 import json
 
+import pytest
 
 user_id_admin = 0
 admin_id = 0

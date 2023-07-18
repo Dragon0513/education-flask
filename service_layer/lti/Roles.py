@@ -1,6 +1,5 @@
 from utils.auth.permissions import Permissions
 
-
 # This file contains the mapping of IMS roles to LTI / LMS roles
 lti_roles = {
     "http://purl.imsglobal.org/vocab/lis/v2/membership#Instructor": "Instructor",

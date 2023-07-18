@@ -1,7 +1,7 @@
-import random
 import base64
-from string import ascii_letters, digits
+import random
 import time
+from string import ascii_letters, digits
 
 
 class CryptoRandom(object):

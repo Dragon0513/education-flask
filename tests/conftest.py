@@ -1,8 +1,10 @@
-from repositories.orm import metadata, start_mappers
 import types
+
 import pytest
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, clear_mappers
+from sqlalchemy.orm import clear_mappers, sessionmaker
+
+from repositories.orm import metadata, start_mappers
 
 
 @pytest.fixture(autouse=True)

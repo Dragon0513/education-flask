@@ -1,7 +1,7 @@
-from service_layer.lti.OIDCLoginFlask import OIDCLoginFlask
-from service_layer.lti.config.ToolConfigJson import ToolConfigJson
 from flask import request
 
+from service_layer.lti.config.ToolConfigJson import ToolConfigJson
+from service_layer.lti.OIDCLoginFlask import OIDCLoginFlask
 
 tool_config = ToolConfigJson()
 oidc_login = OIDCLoginFlask(request, tool_config)

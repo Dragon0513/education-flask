@@ -2,15 +2,15 @@ import datetime
 import json
 import os
 from typing import Any, Mapping
-from jose import JWSError, jws, jwk
+
+from cryptography.hazmat.primitives import serialization as crypto_serialization
+from jose import JWSError, jwk, jws
 from jose.backends.base import Key
-from cryptography.hazmat.primitives import (
-    serialization as crypto_serialization,
-)
+
 import errors.errors as err
-from errors.errors import InvalidJWTError
-from config import get_project_root
 import service_layer.service.SessionServiceFlask as SessionServiceFlask
+from config import get_project_root
+from errors.errors import InvalidJWTError
 
 
 def private_key_location():

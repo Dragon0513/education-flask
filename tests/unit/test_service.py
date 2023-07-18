@@ -1,11 +1,13 @@
-from unittest.mock import MagicMock, patch
-import pytest
-import repositories.repository as repository
-from service_layer import services, unit_of_work
-from domain.userAdministartion import model as UA
 import time
+from unittest.mock import MagicMock, patch
+
+import pytest
+
 import errors.errors as err
+import repositories.repository as repository
 import service_layer.crypto.JWTKeyManagement as JWTKeyManagement
+from domain.userAdministartion import model as UA
+from service_layer import services, unit_of_work
 
 
 @patch.multiple(

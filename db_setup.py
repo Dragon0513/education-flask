@@ -1,5 +1,6 @@
-import psycopg2
 import os
+
+import psycopg2
 
 # Establishing the connection
 conn = psycopg2.connect(

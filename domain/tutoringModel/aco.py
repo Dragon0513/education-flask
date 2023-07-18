@@ -1,7 +1,9 @@
+import random
 from itertools import chain
 from typing import Any, List, Tuple
-import random
+
 import numpy as np
+
 from domain.tutoringModel import utils
 
 
@@ -151,25 +153,25 @@ class AntColonySolver:
         if not ants["remaining"][index]:
             # ants return home
             return ants["path"][index][0]
-        for next_node in ants["remaining"][index]:
-            if next_node == this_node:
+        for _next_node in ants["remaining"][index]:
+            if _next_node == this_node:
                 continue
             reward = (
-                self.pheromones[this_node][next_node] ** self.pheromone_power
+                self.pheromones[this_node][_next_node] ** self.pheromone_power
                 # Prefer shorter paths
-                * self.distance_cost[this_node][next_node]
+                * self.distance_cost[this_node][_next_node]
             )
-            weights.append((reward, next_node))
+            weights.append((reward, _next_node))
             weights_sum += reward
 
         # Pick a random path in proportion to the weight of the pheromone
         rand = random.random() * weights_sum
-        for weight, next_node in weights:
+        for weight, _next_node in weights:
             if rand > weight:
                 rand -= weight
             else:
                 break
-        return next_node
+        return _next_node
 
     def ants_arriving(
         self,

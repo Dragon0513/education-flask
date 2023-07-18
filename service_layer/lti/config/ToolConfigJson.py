@@ -1,8 +1,9 @@
 import json
 import os
+
+from config import get_project_root
 from errors import errors as err
 from service_layer.lti.lms.Platform import Platform
-from config import get_project_root
 
 
 # Parses LTI Config file and returns a dictionary of the contents

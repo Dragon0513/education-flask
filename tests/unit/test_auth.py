@@ -1,10 +1,11 @@
 import json
 import unittest
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
+
 import errors.errors as err
-from utils.auth.permissions import Permissions
-from utils.auth.auth import authorize
 import service_layer.crypto.JWTKeyManagement as JWTKeyManagement
+from utils.auth.auth import authorize
+from utils.auth.permissions import Permissions
 
 
 class TestAuthorizeDecorator(unittest.TestCase):

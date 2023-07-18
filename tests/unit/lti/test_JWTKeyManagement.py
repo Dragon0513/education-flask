@@ -1,15 +1,14 @@
 import os
 import shutil
 import unittest
-from unittest.mock import MagicMock, patch
+
+from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
-from cryptography.hazmat.backends import default_backend
-from pytest import fixture
-from service_layer.crypto.cryptorandom import CryptoRandom
-import service_layer.crypto.JWTKeyManagement as jwt
-from service_layer.service import SessionServiceFlask
 
+import service_layer.crypto.JWTKeyManagement as jwt
+from service_layer.crypto.cryptorandom import CryptoRandom
+from service_layer.service import SessionServiceFlask
 
 private_key_location: str = "keys/private.pem"
 public_key_location: str = "keys/public.pem"

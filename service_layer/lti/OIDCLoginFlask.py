@@ -2,19 +2,21 @@ import json
 import os
 import time
 import urllib.parse
-from service_layer import services, unit_of_work
-import service_layer.crypto.JWTKeyManagement as JWTKeyManagement
-from errors import errors as err
+
 from flask import redirect
 from flask.wrappers import Request
 from werkzeug.wrappers.response import Response
+
+import service_layer.crypto.JWTKeyManagement as JWTKeyManagement
+import service_layer.service.SessionServiceFlask as SessionServiceFlask
+from errors import errors as err
+from service_layer import services, unit_of_work
 from service_layer.crypto.cryptorandom import CryptoRandom
+from service_layer.lti.config.ToolConfigJson import ToolConfigJson
 from service_layer.lti.Messages import LTIIDToken
 from service_layer.lti.OIDCLogin import OIDCLogin
 from service_layer.lti.Roles import RoleMapper
 from service_layer.service.CookieServiceFlask import CookieServiceFlask
-from service_layer.lti.config.ToolConfigJson import ToolConfigJson
-import service_layer.service.SessionServiceFlask as SessionServiceFlask
 
 
 class OIDCLoginFlask(OIDCLogin):

@@ -1,11 +1,12 @@
 import abc
 
+from sqlalchemy.exc import IntegrityError
+
 from domain.domainModel import model as DM
 from domain.learnersModel import model as LM
 from domain.tutoringModel import model as TM
 from domain.userAdministartion import model as UA
 from errors import errors as err
-from sqlalchemy.exc import IntegrityError
 
 
 class AbstractRepository(abc.ABC):  # pragma: no cover
@@ -1558,21 +1559,20 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         learning_element_exist = self.get_learning_element_by_id(learning_element_id)
         if learning_element_exist != []:
             learning_element.id = learning_element_exist[0].id
+            updated_learning_element = {
+                DM.LearningElement.lms_id: learning_element.lms_id,
+                DM.LearningElement.activity_type: learning_element.activity_type,
+                DM.LearningElement.classification: learning_element.classification,
+                DM.LearningElement.name: learning_element.name,
+                DM.LearningElement.created_by: learning_element.created_by,
+                DM.LearningElement.created_at: learning_element.created_at,
+                DM.LearningElement.last_updated: learning_element.last_updated,
+                DM.LearningElement.university: learning_element.university,
+            }
             return (
                 self.session.query(DM.LearningElement)
                 .filter_by(id=learning_element_id)
-                .update(
-                    {
-                        DM.LearningElement.lms_id: learning_element.lms_id,
-                        DM.LearningElement.activity_type: learning_element.activity_type,
-                        DM.LearningElement.classification: learning_element.classification,
-                        DM.LearningElement.name: learning_element.name,
-                        DM.LearningElement.created_by: learning_element.created_by,
-                        DM.LearningElement.created_at: learning_element.created_at,
-                        DM.LearningElement.last_updated: learning_element.last_updated,
-                        DM.LearningElement.university: learning_element.university,
-                    }
-                )
+                .update(updated_learning_element)
             )
         else:
             raise err.NoValidIdError
@@ -1593,22 +1593,23 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         style_exist = self.get_learning_analytics(characteristic_id)
         if style_exist != []:
             learning_style.id = style_exist[0].id
+            # ignore E501 line too long flake8 error since there is
+            # no way to make this shorter without making it unreadable
+            updated_learning_style = {
+                LM.LearningStyle.characteristic_id: learning_style.characteristic_id,  # noqa
+                LM.LearningStyle.perception_dimension: learning_style.perception_dimension,  # noqa
+                LM.LearningStyle.perception_value: learning_style.perception_value,  # noqa
+                LM.LearningStyle.input_dimension: learning_style.input_dimension,  # noqa
+                LM.LearningStyle.input_value: learning_style.input_value,  # noqa
+                LM.LearningStyle.processing_dimension: learning_style.processing_dimension,  # noqa
+                LM.LearningStyle.processing_value: learning_style.processing_value,  # noqa
+                LM.LearningStyle.understanding_dimension: learning_style.understanding_dimension,  # noqa
+                LM.LearningStyle.understanding_value: learning_style.understanding_value,  # noqa
+            }
             return (
                 self.session.query(LM.LearningStyle)
                 .filter_by(characteristic_id=characteristic_id)
-                .update(
-                    {
-                        LM.LearningStyle.characteristic_id: learning_style.characteristic_id,
-                        LM.LearningStyle.perception_dimension: learning_style.perception_dimension,
-                        LM.LearningStyle.perception_value: learning_style.perception_value,
-                        LM.LearningStyle.input_dimension: learning_style.input_dimension,
-                        LM.LearningStyle.input_value: learning_style.input_value,
-                        LM.LearningStyle.processing_dimension: learning_style.processing_dimension,
-                        LM.LearningStyle.processing_value: learning_style.processing_value,
-                        LM.LearningStyle.understanding_dimension: learning_style.understanding_dimension,
-                        LM.LearningStyle.understanding_value: learning_style.understanding_value,
-                    }
-                )
+                .update(updated_learning_style)
             )
         else:
             raise err.NoValidIdError

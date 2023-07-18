@@ -1,8 +1,9 @@
-from domain.tutoringModel import graf, aco
-from errors import errors as err
-from domain.tutoringModel.utils import get_coordinates
-from utils import constants as cons
 import time
+
+from domain.tutoringModel import aco, graf
+from domain.tutoringModel.utils import get_coordinates
+from errors import errors as err
+from utils import constants as cons
 
 
 class LearningPath:

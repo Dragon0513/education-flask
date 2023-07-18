@@ -1,8 +1,10 @@
 import os  # pragma: no cover
 from datetime import datetime  # pragma: no cover
+
 from dotenv import load_dotenv  # pragma: no cover
-from db_setup import setup_db  # pragma: no cover
+
 from db_clean_up import clean_up_db  # pragma: no cover
+from db_setup import setup_db  # pragma: no cover
 
 load_dotenv(".flaskenv")  # pragma: no cover
 load_dotenv()  # pragma: no cover

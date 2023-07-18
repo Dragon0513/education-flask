@@ -1,4 +1,8 @@
 import os
+from dotenv import load_dotenv
+
+load_dotenv(".flaskenv")
+load_dotenv()  # If we have a .env file, load it
 
 
 def get_postgres_uri():  # pragma: no cover
@@ -7,6 +11,11 @@ def get_postgres_uri():  # pragma: no cover
     password = os.environ.get("DB_PASSWORD", "postgres")
     user = os.environ.get("DB_USER", "postgres")
     db_name = os.environ.get("DB_NAME", "haski")
+    print(
+        "Returning postgres uri: {}".format(
+            f"postgresql://{user}:{password}@{host}:{port}/{db_name}"
+        )
+    )
     return f"postgresql://{user}:{password}@{host}:{port}/{db_name}"
 
 

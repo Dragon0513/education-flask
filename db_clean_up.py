@@ -1,12 +1,14 @@
 import argparse
+
 import psycopg2
+
 from db_setup import (
-    parse_args,
     DEFAULT_DB_HOST,
+    DEFAULT_DB_NAME,
+    DEFAULT_DB_PASSWORD,
     DEFAULT_DB_PORT,
     DEFAULT_DB_USER,
-    DEFAULT_DB_PASSWORD,
-    DEFAULT_DB_NAME,
+    parse_args,
 )
 
 

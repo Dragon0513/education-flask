@@ -2,7 +2,6 @@ import argparse
 import os
 
 import psycopg2
-
 from dotenv import load_dotenv
 
 load_dotenv(".flaskenv")
@@ -985,23 +984,34 @@ def setup_db(
 
 def parse_args(parser=argparse.ArgumentParser()):
     parser.add_argument(
-        "--host", type=str, default=os.environ.get("DB_HOST", DEFAULT_DB_HOST)
+        "--host",
+        type=str,
+        default=os.environ.get("DB_HOST", DEFAULT_DB_HOST),
+        help="Database host address",
     )
     parser.add_argument(
-        "--port", type=int, default=os.environ.get("DB_PORT", DEFAULT_DB_PORT)
+        "--port",
+        type=int,
+        default=os.environ.get("DB_PORT", DEFAULT_DB_PORT),
+        help="Database port",
     )
     parser.add_argument(
-        "--user", type=str, default=os.environ.get("DB_USER", DEFAULT_DB_USER)
+        "--user",
+        type=str,
+        default=os.environ.get("DB_USER", DEFAULT_DB_USER),
+        help="Database user. Not pgadmin user",
     )
     parser.add_argument(
         "--password",
         type=str,
         default=os.environ.get("DB_PASSWORD", DEFAULT_DB_PASSWORD),
+        help="Database password. Not pgadmin password",
     )
     parser.add_argument(
         "--dbname",
         type=str,
         default=os.environ.get("DB_NAME", DEFAULT_DB_NAME),
+        help="Database name. Will be used across the project",
     )
     args = parser.parse_args()
     return args

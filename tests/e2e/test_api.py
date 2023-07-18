@@ -2215,7 +2215,7 @@ def test_get_user_settings_by_id(
                          error",
     [
         # Working Example
-        (4, {"theme": "dark", "pswd": "password"}, ['theme', 'pswd'], 201, False),
+        (4, {"theme": "dark", "pswd": "password"}, ["theme", "pswd"], 201, False),
         # User not found
         (
             1,
@@ -2230,7 +2230,7 @@ def test_get_user_settings_by_id(
                 ],
                 "password": "password",
             },
-            ['error'],
+            ["error"],
             404,
             True,
         ),

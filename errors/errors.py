@@ -231,3 +231,13 @@ class KeyNotFoundError(AException):
         status_code=404,
     ):
         super().__init__(exception, message, status_code)
+
+
+class ContactFormError(AException):
+    def __init__(
+        self,
+        exception: Exception | None = None,
+        message="The contact form could not be sent.",
+        status_code=400,
+    ):
+        super().__init__(exception, message, status_code)

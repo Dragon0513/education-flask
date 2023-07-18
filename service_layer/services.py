@@ -634,7 +634,7 @@ def create_user(
                 user.role_id = role["id"]
             case "teacher":
                 role = create_teacher(uow, user)
-                user.role_id = role['id']
+                user.role_id = role["id"]
         result = user.serialize()
     return result
 
@@ -1409,7 +1409,7 @@ def get_topics_by_student_and_course_id(
             )
             student_topic[0].visits = visits
             topic_details = get_topic_by_id(
-                uow, user_id, lms_user_id, course_id, student_id, topic['topic_id']
+                uow, user_id, lms_user_id, course_id, student_id, topic["topic_id"]
             )
             topic_details["student_topic"] = student_topic[0].serialize()
             result_topics.append(topic_details)

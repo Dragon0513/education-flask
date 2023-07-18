@@ -1,5 +1,5 @@
-import time
 import datetime
+import time
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -823,7 +823,7 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
             if i.id == user_id and i.lms_user_id == lms_user_id:
                 result.append(i)
         return result
-    
+
     def get_user_by_lms_user_id(self, lms_user_id):
         result = []
         for i in self.user:

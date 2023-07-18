@@ -11,10 +11,7 @@ load_dotenv()  # pragma: no cover
 # Generate unique DB_NAME for testing:
 db_name = os.environ.get("DB_NAME", "haski")
 db_name = (
-    db_name
-    + "_test"
-    + datetime.now().strftime("%Y%m%d%H%M%S")
-    + str(os.getpid())
+    db_name + "_test" + datetime.now().strftime("%Y%m%d%H%M%S") + str(os.getpid())
 )  # pragma: no cover
 os.environ.update(
     {

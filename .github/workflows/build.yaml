@@ -8,7 +8,7 @@ on:
 jobs:
 
   Tests:
-    name: Software Tests
+    name: Software Tests using tox
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -55,9 +55,8 @@ jobs:
       run: |
         python db_setup.py
 
-    - name: Test with pytest
-      run: |
-        pytest --cov=. --cov-report term-missing
+    - name: Run tox
+      run: tox
 
   Style:
     name: Code Style
@@ -130,9 +129,6 @@ jobs:
 
       - name: Create Database Tables
         run: python db_setup.py
-
-      - name: Run tox
-        run: tox
         
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master

@@ -10,7 +10,9 @@ jobs:
   Tests:
     name: Software Tests
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        python: [3.10.4] # Python version to use
     # Service containers to run with `runner-job`
     services:
       # Label used to access the service container
@@ -38,10 +40,10 @@ jobs:
       with:
         timezone: UTC
 
-    - name: Set up Python 3.10
+    - name: Set up Python ${{ matrix.python }}
       uses: actions/setup-python@v3
       with:
-        python-version: 3.10.4
+        python-version: ${{ matrix.python }}
 
     - name: Install Python dependencies
       run: |
@@ -68,10 +70,10 @@ jobs:
       with:
         timezone: UTC
 
-    - name: Set up Python 3.8
+    - name: Set up Python ${{ matrix.python }}
       uses: actions/setup-python@v3
       with:
-        python-version: 3.8
+        python-version: ${{ matrix.python }}
 
     - name: Install Python dependencies
       run: |
@@ -122,7 +124,7 @@ jobs:
         run: python db_setup.py
 
       - name: Run tox
-        run: tox -e py
+        run: tox
         
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master

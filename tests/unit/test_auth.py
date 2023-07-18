@@ -2,7 +2,6 @@ import unittest
 from unittest.mock import MagicMock, patch
 
 from flask import Flask
-from werkzeug.exceptions import Unauthorized
 
 from service_layer.crypto.JWTKeyManagement import JWTKeyManagement
 from utils.auth.auth import authorize

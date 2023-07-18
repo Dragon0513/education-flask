@@ -5,9 +5,6 @@ import pytest
 
 import errors as err
 import repositories.repository as repository
-from domain.domainModel import model as DM
-from domain.learnersModel import model as LM
-from domain.tutoringModel import model as TM
 from domain.userAdministartion import model as UA
 from service_layer import services, unit_of_work
 

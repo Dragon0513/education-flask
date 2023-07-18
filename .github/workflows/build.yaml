@@ -83,7 +83,7 @@ jobs:
 
     - name: Run isort
       run: |
-        isort --check .
+        isort --check-only .
 
     - name: Run black
       run: |

@@ -11,13 +11,9 @@ class AException(Exception):
     ):
         super().__init__(exception, message, status_code)
         conditional_message = (
-            (message + " Inner Exception: ")
-            if message
-            else "" + str(exception)
+            (message + " Inner Exception: ") if message else "" + str(exception)
         )
-        self.message = (
-            conditional_message if exception is not None else message
-        )
+        self.message = conditional_message if exception is not None else message
         self.status_code = status_code
 
 

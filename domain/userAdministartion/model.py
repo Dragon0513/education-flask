@@ -31,9 +31,7 @@ class User:
 
 class Admin(User):
     def __init__(self, user: User) -> None:
-        super().__init__(
-            user.name, user.university, user.lms_user_id, role=user.role
-        )
+        super().__init__(user.name, user.university, user.lms_user_id, role=user.role)
         self.user_id = user.id
 
     def serialize(self):
@@ -42,9 +40,7 @@ class Admin(User):
 
 class CourseCreator(User):
     def __init__(self, user: User) -> None:
-        super().__init__(
-            user.name, user.university, user.lms_user_id, role=user.role
-        )
+        super().__init__(user.name, user.university, user.lms_user_id, role=user.role)
         self.user_id = user.id
 
     def serialize(self):
@@ -53,9 +49,7 @@ class CourseCreator(User):
 
 class Teacher(User):
     def __init__(self, user: User) -> None:
-        super().__init__(
-            user.name, user.university, user.lms_user_id, role=user.role
-        )
+        super().__init__(user.name, user.university, user.lms_user_id, role=user.role)
         self.user_id = user.id
 
     def serialize(self):
@@ -64,9 +58,7 @@ class Teacher(User):
 
 class Student(User):
     def __init__(self, user: User) -> None:
-        super().__init__(
-            user.name, user.university, user.lms_user_id, role=user.role
-        )
+        super().__init__(user.name, user.university, user.lms_user_id, role=user.role)
         self.user_id = user.id
 
     def serialize(self):

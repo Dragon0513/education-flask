@@ -28,9 +28,7 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
-    def add_student_learning_element_visit(
-        self, student_learning_element_visit
-    ):
+    def add_student_learning_element_visit(self, student_learning_element_visit):
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -88,9 +86,7 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
-    def create_learning_analytics(
-        self, learning_analytics
-    ) -> LM.LearningAnalytics:
+    def create_learning_analytics(self, learning_analytics) -> LM.LearningAnalytics:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -114,9 +110,7 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
-    def create_learning_strategy(
-        self, learning_strategy
-    ) -> LM.LearningStrategy:
+    def create_learning_strategy(self, learning_strategy) -> LM.LearningStrategy:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -128,9 +122,7 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
-    def create_questionnaire(
-        self, questionnaire: LM.Questionnaire
-    ) -> LM.Questionnaire:
+    def create_questionnaire(self, questionnaire: LM.Questionnaire) -> LM.Questionnaire:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -288,9 +280,7 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
-    def delete_topic_learning_element_by_learning_element(
-        self, learning_element_id
-    ):
+    def delete_topic_learning_element_by_learning_element(self, learning_element_id):
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -338,9 +328,7 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_ils_input_answers_by_id(
-        self, questionnaire_id
-    ) -> LM.IlsInputAnswers:
+    def get_ils_input_answers_by_id(self, questionnaire_id) -> LM.IlsInputAnswers:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -366,21 +354,15 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_learning_analytics(
-        self, characteristic_id
-    ) -> LM.LearningAnalytics:
+    def get_learning_analytics(self, characteristic_id) -> LM.LearningAnalytics:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_learning_characteristics(
-        self, student_id
-    ) -> LM.LearningCharacteristic:
+    def get_learning_characteristics(self, student_id) -> LM.LearningCharacteristic:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_learning_element_by_id(
-        self, learning_element_id
-    ) -> DM.LearningElement:
+    def get_learning_element_by_id(self, learning_element_id) -> DM.LearningElement:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -392,9 +374,7 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_learning_path(
-        self, student_id, course_id, topic_id
-    ) -> TM.LearningPath:
+    def get_learning_path(self, student_id, course_id, topic_id) -> TM.LearningPath:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -458,9 +438,7 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_student_topic_visit(
-        self, student_id, topic_id
-    ) -> DM.StudentTopicVisit:
+    def get_student_topic_visit(self, student_id, topic_id) -> DM.StudentTopicVisit:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -488,9 +466,7 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_topic_learning_element_by_topic(
-        self, topic_id
-    ) -> DM.TopicLearningElement:
+    def get_topic_learning_element_by_topic(self, topic_id) -> DM.TopicLearningElement:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -589,9 +565,7 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
             raise err.CreationError()
 
     def add_student_to_course(self, student_course) -> DM.StudentCourse:
-        course_exist = self.get_courses_by_student_id(
-            student_course.student_id
-        )
+        course_exist = self.get_courses_by_student_id(student_course.student_id)
         for c in course_exist:
             if c.course_id == student_course.course_id:
                 raise err.AlreadyExisting()
@@ -618,9 +592,7 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         except Exception:
             raise err.CreationError()
 
-    def add_student_learning_element_visit(
-        self, student_learning_element_visit
-    ):
+    def add_student_learning_element_visit(self, student_learning_element_visit):
         try:
             self.session.add(student_learning_element_visit)
         except IntegrityError:
@@ -676,9 +648,7 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         except Exception:
             raise err.CreationError()
 
-    def create_course_topic(
-        self, course_topic: DM.CourseTopic
-    ) -> DM.CourseTopic:
+    def create_course_topic(self, course_topic: DM.CourseTopic) -> DM.CourseTopic:
         try:
             self.session.add(course_topic)
         except Exception:
@@ -732,9 +702,7 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         except Exception:
             raise err.CreationError()
 
-    def create_learning_analytics(
-        self, learning_analytics
-    ) -> LM.LearningAnalytics:
+    def create_learning_analytics(self, learning_analytics) -> LM.LearningAnalytics:
         try:
             self.session.add(learning_analytics)
         except IntegrityError:
@@ -782,9 +750,7 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         except Exception:
             raise err.CreationError()
 
-    def create_learning_strategy(
-        self, learning_strategy
-    ) -> LM.LearningStrategy:
+    def create_learning_strategy(self, learning_strategy) -> LM.LearningStrategy:
         try:
             self.session.add(learning_strategy)
         except IntegrityError:
@@ -808,9 +774,7 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         except Exception:
             raise err.CreationError()
 
-    def create_questionnaire(
-        self, questionnaire: LM.Questionnaire
-    ) -> LM.Questionnaire:
+    def create_questionnaire(self, questionnaire: LM.Questionnaire) -> LM.Questionnaire:
         try:
             self.session.add(questionnaire)
         except IntegrityError:
@@ -885,9 +849,7 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
     def delete_course_creator(self, user_id):
         course_creator = self.get_course_creator_by_id(user_id)
         if course_creator != []:
-            self.session.query(UA.CourseCreator).filter_by(
-                user_id=user_id
-            ).delete()
+            self.session.query(UA.CourseCreator).filter_by(user_id=user_id).delete()
         else:
             raise err.NoValidIdError()
 
@@ -899,18 +861,14 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
     def delete_course_topic_by_course(self, course_id):
         course_topic = self.get_course_topic_by_course(course_id)
         if course_topic != []:
-            self.session.query(DM.CourseTopic).filter_by(
-                course_id=course_id
-            ).delete()
+            self.session.query(DM.CourseTopic).filter_by(course_id=course_id).delete()
         else:
             raise err.NoValidIdError()
 
     def delete_course_topic_by_topic(self, topic_id):
         course_topic = self.get_course_topic_by_topic(topic_id)
         if course_topic != []:
-            self.session.query(DM.CourseTopic).filter_by(
-                id=course_topic[0].id
-            ).delete()
+            self.session.query(DM.CourseTopic).filter_by(id=course_topic[0].id).delete()
         else:
             raise err.NoValidIdError()
 
@@ -924,9 +882,7 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
             raise err.NoValidIdError()
 
     def delete_ils_perception_answers(self, questionnaire_id):
-        ils_perception_answers = self.get_ils_perception_answers_by_id(
-            questionnaire_id
-        )
+        ils_perception_answers = self.get_ils_perception_answers_by_id(questionnaire_id)
         if ils_perception_answers != []:
             self.session.query(LM.IlsPerceptionAnswers).filter_by(
                 questionnaire_id=questionnaire_id
@@ -935,9 +891,7 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
             raise err.NoValidIdError()
 
     def delete_ils_processing_answers(self, questionnaire_id):
-        ils_processing_answers = self.get_ils_processing_answers_by_id(
-            questionnaire_id
-        )
+        ils_processing_answers = self.get_ils_processing_answers_by_id(questionnaire_id)
         if ils_processing_answers != []:
             self.session.query(LM.IlsProcessingAnswers).filter_by(
                 questionnaire_id=questionnaire_id
@@ -993,9 +947,7 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
             raise err.NoValidIdError()
 
     def delete_learning_path(self, learning_path_id):
-        self.session.query(TM.LearningPath).filter_by(
-            id=learning_path_id
-        ).delete()
+        self.session.query(TM.LearningPath).filter_by(id=learning_path_id).delete()
 
     def delete_learning_path_learning_element(self, learning_path_id):
         self.session.query(TM.LearningPathLearningElement).filter_by(
@@ -1056,9 +1008,7 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
             raise err.NoValidIdError()
 
     def delete_student_course(self, student_id):
-        self.session.query(DM.StudentCourse).filter_by(
-            student_id=student_id
-        ).delete()
+        self.session.query(DM.StudentCourse).filter_by(student_id=student_id).delete()
 
     def delete_student_learning_element(self, student_id):
         self.session.query(DM.StudentLearningElement).filter_by(
@@ -1071,9 +1021,7 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         ).delete()
 
     def delete_student_topic(self, student_id):
-        self.session.query(DM.StudentTopic).filter_by(
-            student_id=student_id
-        ).delete()
+        self.session.query(DM.StudentTopic).filter_by(student_id=student_id).delete()
 
     def delete_student_topic_visit(self, student_id):
         self.session.query(DM.StudentTopicVisit).filter_by(
@@ -1088,9 +1036,7 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
             raise err.NoValidIdError()
 
     def delete_teacher_course(self, teacher_id):
-        self.session.query(DM.TeacherCourse).filter_by(
-            teacher_id=teacher_id
-        ).delete()
+        self.session.query(DM.TeacherCourse).filter_by(teacher_id=teacher_id).delete()
 
     def delete_topic(self, topic_id):
         topic = self.get_topic_by_id(topic_id)
@@ -1100,9 +1046,7 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
             raise err.NoValidIdError()
 
     def delete_topic_learning_element_by_topic(self, topic_id):
-        topic_learning_element = self.get_topic_learning_element_by_topic(
-            topic_id
-        )
+        topic_learning_element = self.get_topic_learning_element_by_topic(topic_id)
         if topic_learning_element != []:
             self.session.query(DM.TopicLearningElement).filter_by(
                 topic_id=topic_id
@@ -1110,13 +1054,9 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         else:
             raise err.NoValidIdError()
 
-    def delete_topic_learning_element_by_learning_element(
-        self, learning_elememt_id
-    ):
-        topic_learning_element = (
-            self.get_topic_learning_element_by_learning_element(
-                learning_elememt_id
-            )
+    def delete_topic_learning_element_by_learning_element(self, learning_elememt_id):
+        topic_learning_element = self.get_topic_learning_element_by_learning_element(
+            learning_elememt_id
         )
         if topic_learning_element != []:
             self.session.query(DM.TopicLearningElement).filter_by(
@@ -1146,21 +1086,13 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
 
     def get_admins_by_uni(self, university):
         try:
-            return (
-                self.session.query(UA.Admin)
-                .filter_by(university=university)
-                .all()
-            )
+            return self.session.query(UA.Admin).filter_by(university=university).all()
         except Exception:
             raise err.DatabaseQueryError()
 
     def get_courses_by_uni(self, university):
         try:
-            return (
-                self.session.query(DM.Course)
-                .filter_by(university=university)
-                .all()
-            )
+            return self.session.query(DM.Course).filter_by(university=university).all()
         except Exception:
             raise err.DatabaseQueryError()
 
@@ -1182,11 +1114,7 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
             raise err.DatabaseQueryError()
 
     def get_course_creator_by_id(self, user_id) -> UA.CourseCreator:
-        result = (
-            self.session.query(UA.CourseCreator)
-            .filter_by(user_id=user_id)
-            .all()
-        )
+        result = self.session.query(UA.CourseCreator).filter_by(user_id=user_id).all()
         if result == []:
             raise err.NoValidIdError()
         else:
@@ -1203,22 +1131,14 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
             raise err.DatabaseQueryError()
 
     def get_course_topic_by_course(self, course_id) -> DM.CourseTopic:
-        result = (
-            self.session.query(DM.CourseTopic)
-            .filter_by(course_id=course_id)
-            .all()
-        )
+        result = self.session.query(DM.CourseTopic).filter_by(course_id=course_id).all()
         if result == []:
             raise err.NoValidIdError()
         else:
             return result
 
     def get_course_topic_by_topic(self, topic_id) -> DM.CourseTopic:
-        result = (
-            self.session.query(DM.CourseTopic)
-            .filter_by(topic_id=topic_id)
-            .all()
-        )
+        result = self.session.query(DM.CourseTopic).filter_by(topic_id=topic_id).all()
         if result == []:
             raise err.NoValidIdError()
         else:
@@ -1235,9 +1155,7 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         else:
             return result
 
-    def get_learning_analytics(
-        self, characteristic_id
-    ) -> LM.LearningAnalytics:
+    def get_learning_analytics(self, characteristic_id) -> LM.LearningAnalytics:
         result = (
             self.session.query(LM.LearningAnalytics)
             .filter_by(characteristic_id=characteristic_id)
@@ -1248,9 +1166,7 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         else:
             return result
 
-    def get_learning_characteristics(
-        self, student_id
-    ) -> LM.LearningCharacteristic:
+    def get_learning_characteristics(self, student_id) -> LM.LearningCharacteristic:
         result = (
             self.session.query(LM.LearningCharacteristic)
             .filter_by(student_id=student_id)
@@ -1258,9 +1174,7 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         )
         return result
 
-    def get_learning_element_by_id(
-        self, learning_element_id
-    ) -> DM.LearningElement:
+    def get_learning_element_by_id(self, learning_element_id) -> DM.LearningElement:
         result = (
             self.session.query(DM.LearningElement)
             .filter_by(id=learning_element_id)
@@ -1290,9 +1204,7 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         )
         return result
 
-    def get_learning_path(
-        self, student_id, course_id, topic_id
-    ) -> TM.LearningPath:
+    def get_learning_path(self, student_id, course_id, topic_id) -> TM.LearningPath:
         result = (
             self.session.query(TM.LearningPath)
             .filter_by(student_id=student_id)
@@ -1307,9 +1219,7 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
 
     def get_learning_paths(self, student_id):
         result = (
-            self.session.query(TM.LearningPath)
-            .filter_by(student_id=student_id)
-            .all()
+            self.session.query(TM.LearningPath).filter_by(student_id=student_id).all()
         )
         return result
 
@@ -1355,9 +1265,7 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         except Exception:
             raise err.DatabaseQueryError()
 
-    def get_ils_input_answers_by_id(
-        self, questionnaire_id
-    ) -> LM.IlsInputAnswers:
+    def get_ils_input_answers_by_id(self, questionnaire_id) -> LM.IlsInputAnswers:
         result = (
             self.session.query(LM.IlsInputAnswers)
             .filter_by(questionnaire_id=questionnaire_id)
@@ -1427,25 +1335,19 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
 
     def get_questionnaire_by_student_id(self, student_id) -> LM.Questionnaire:
         result = (
-            self.session.query(LM.Questionnaire)
-            .filter_by(student_id=student_id)
-            .all()
+            self.session.query(LM.Questionnaire).filter_by(student_id=student_id).all()
         )
         return result
 
     def get_settings(self, user_id) -> UA.Settings:
-        result = (
-            self.session.query(UA.Settings).filter_by(user_id=user_id).all()
-        )
+        result = self.session.query(UA.Settings).filter_by(user_id=user_id).all()
         if result == []:
             raise err.NoValidIdError()
         else:
             return result
 
     def get_student_by_id(self, user_id) -> UA.Student:
-        result = (
-            self.session.query(UA.Student).filter_by(user_id=user_id).all()
-        )
+        result = self.session.query(UA.Student).filter_by(user_id=user_id).all()
         if result == []:
             raise err.NoValidIdError()
         else:
@@ -1460,11 +1362,7 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
 
     def get_students_by_uni(self, university):
         try:
-            return (
-                self.session.query(UA.Student)
-                .filter_by(university=university)
-                .all()
-            )
+            return self.session.query(UA.Student).filter_by(university=university).all()
         except Exception:
             raise err.DatabaseQueryError()
 
@@ -1503,9 +1401,7 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         except Exception:
             raise err.DatabaseQueryError()
 
-    def get_student_topic_visit(
-        self, student_id, topic_id
-    ) -> DM.StudentTopicVisit:
+    def get_student_topic_visit(self, student_id, topic_id) -> DM.StudentTopicVisit:
         try:
             return (
                 self.session.query(DM.StudentTopicVisit)
@@ -1518,18 +1414,12 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
 
     def get_sub_topics_for_topic_id(self, topic_id):
         try:
-            return (
-                self.session.query(DM.Topic)
-                .filter_by(parent_id=topic_id)
-                .all()
-            )
+            return self.session.query(DM.Topic).filter_by(parent_id=topic_id).all()
         except Exception:
             raise err.DatabaseQueryError()
 
     def get_teacher_by_id(self, user_id) -> UA.Teacher:
-        result = (
-            self.session.query(UA.Teacher).filter_by(user_id=user_id).all()
-        )
+        result = self.session.query(UA.Teacher).filter_by(user_id=user_id).all()
         if result == []:
             raise err.NoValidIdError()
         else:
@@ -1544,21 +1434,13 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
 
     def get_teacher_by_uni(self, university):
         try:
-            return (
-                self.session.query(UA.Teacher)
-                .filter_by(university=university)
-                .all()
-            )
+            return self.session.query(UA.Teacher).filter_by(university=university).all()
         except Exception:
             raise err.DatabaseQueryError()
 
     def get_topics_by_uni(self, university):
         try:
-            return (
-                self.session.query(DM.Topic)
-                .filter_by(university=university)
-                .all()
-            )
+            return self.session.query(DM.Topic).filter_by(university=university).all()
         except Exception:
             raise err.DatabaseQueryError()
 
@@ -1569,9 +1451,7 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         else:
             return result
 
-    def get_topic_learning_element_by_topic(
-        self, topic_id
-    ) -> DM.TopicLearningElement:
+    def get_topic_learning_element_by_topic(self, topic_id) -> DM.TopicLearningElement:
         result = (
             self.session.query(DM.TopicLearningElement)
             .filter_by(topic_id=topic_id)
@@ -1611,11 +1491,7 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
             return result
 
     def get_user_by_lms_id(self, lms_user_id) -> UA.User:
-        result = (
-            self.session.query(UA.User)
-            .filter_by(lms_user_id=lms_user_id)
-            .all()
-        )
+        result = self.session.query(UA.User).filter_by(lms_user_id=lms_user_id).all()
         # TODO handle multiple users with same lms_user_id
         if result == []:
             raise err.NoValidIdError()
@@ -1623,9 +1499,7 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
             return result
 
     def get_student_by_user_id(self, user_id) -> UA.Student:
-        result = (
-            self.session.query(UA.Student).filter_by(user_id=user_id).all()
-        )
+        result = self.session.query(UA.Student).filter_by(user_id=user_id).all()
         # TODO handle multiple users with same lms_user_id
         if result == []:
             raise err.NoValidIdError()
@@ -1634,11 +1508,7 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
 
     def get_users_by_uni(self, university):
         try:
-            return (
-                self.session.query(UA.User)
-                .filter_by(university=university)
-                .all()
-            )
+            return self.session.query(UA.User).filter_by(university=university).all()
         except Exception as e:
             raise err.DatabaseQueryError(e)
 
@@ -1685,9 +1555,7 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
     def update_learning_element(
         self, learning_element_id, learning_element
     ) -> DM.LearningElement:
-        learning_element_exist = self.get_learning_element_by_id(
-            learning_element_id
-        )
+        learning_element_exist = self.get_learning_element_by_id(learning_element_id)
         if learning_element_exist != []:
             learning_element.id = learning_element_exist[0].id
             return (
@@ -1695,22 +1563,14 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
                 .filter_by(id=learning_element_id)
                 .update(
                     {
-                        DM.LearningElement.lms_id:
-                        learning_element.lms_id,
-                        DM.LearningElement.activity_type:
-                        learning_element.activity_type,
-                        DM.LearningElement.classification:
-                        learning_element.classification,
-                        DM.LearningElement.name:
-                        learning_element.name,
-                        DM.LearningElement.created_by:
-                        learning_element.created_by,
-                        DM.LearningElement.created_at:
-                        learning_element.created_at,
-                        DM.LearningElement.last_updated:
-                        learning_element.last_updated,
-                        DM.LearningElement.university:
-                        learning_element.university,
+                        DM.LearningElement.lms_id: learning_element.lms_id,
+                        DM.LearningElement.activity_type: learning_element.activity_type,
+                        DM.LearningElement.classification: learning_element.classification,
+                        DM.LearningElement.name: learning_element.name,
+                        DM.LearningElement.created_by: learning_element.created_by,
+                        DM.LearningElement.created_at: learning_element.created_at,
+                        DM.LearningElement.last_updated: learning_element.last_updated,
+                        DM.LearningElement.university: learning_element.university,
                     }
                 )
             )
@@ -1729,9 +1589,7 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         else:
             raise err.NoValidIdError
 
-    def update_learning_style(
-        self, characteristic_id, learning_style
-    ) -> LM.Knowledge:
+    def update_learning_style(self, characteristic_id, learning_style) -> LM.Knowledge:
         style_exist = self.get_learning_analytics(characteristic_id)
         if style_exist != []:
             learning_style.id = style_exist[0].id
@@ -1740,24 +1598,15 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
                 .filter_by(characteristic_id=characteristic_id)
                 .update(
                     {
-                        LM.LearningStyle.characteristic_id:
-                        learning_style.characteristic_id,
-                        LM.LearningStyle.perception_dimension:
-                        learning_style.perception_dimension,
-                        LM.LearningStyle.perception_value:
-                        learning_style.perception_value,
-                        LM.LearningStyle.input_dimension:
-                        learning_style.input_dimension,
-                        LM.LearningStyle.input_value:
-                        learning_style.input_value,
-                        LM.LearningStyle.processing_dimension:
-                        learning_style.processing_dimension,
-                        LM.LearningStyle.processing_value:
-                        learning_style.processing_value,
-                        LM.LearningStyle.understanding_dimension:
-                        learning_style.understanding_dimension,
-                        LM.LearningStyle.understanding_value:
-                        learning_style.understanding_value,
+                        LM.LearningStyle.characteristic_id: learning_style.characteristic_id,
+                        LM.LearningStyle.perception_dimension: learning_style.perception_dimension,
+                        LM.LearningStyle.perception_value: learning_style.perception_value,
+                        LM.LearningStyle.input_dimension: learning_style.input_dimension,
+                        LM.LearningStyle.input_value: learning_style.input_value,
+                        LM.LearningStyle.processing_dimension: learning_style.processing_dimension,
+                        LM.LearningStyle.processing_value: learning_style.processing_value,
+                        LM.LearningStyle.understanding_dimension: learning_style.understanding_dimension,
+                        LM.LearningStyle.understanding_value: learning_style.understanding_value,
                     }
                 )
             )

@@ -48,8 +48,7 @@ class OIDCLoginFlask(OIDCLogin):
             # store subset with values from request form in object
             else:
                 self._oidc_login_params_dict = {
-                    key: self._request.form.get(key)
-                    for key in self.oidc_login_params
+                    key: self._request.form.get(key) for key in self.oidc_login_params
                 }
         except Exception as e:
             raise err.ErrorException(
@@ -67,13 +66,9 @@ class OIDCLoginFlask(OIDCLogin):
                 )
             )
             if not self._platform:
-                raise err.ErrorException(
-                    message="No platform found", status_code=400
-                )
+                raise err.ErrorException(message="No platform found", status_code=400)
         except Exception as e:
-            raise err.ErrorException(
-                e, message="Error in check_auth", status_code=400
-            )
+            raise err.ErrorException(e, message="Error in check_auth", status_code=400)
         try:
             parsed_target_link_url = (
                 urllib.parse.urlparse(
@@ -144,18 +139,14 @@ class OIDCLoginFlask(OIDCLogin):
         params = {
             "client_id": platform["client_id"],
             "response_mode": "form_post",
-            "redirect_uri": self._oidc_login_params_dict.get(
-                "target_link_uri"
-            ),
+            "redirect_uri": self._oidc_login_params_dict.get("target_link_uri"),
             "response_type": "id_token",
             "scope": "openid",
             "nonce": nonce,
             "state": state_jwt,
             "login_hint": self._oidc_login_params_dict.get("login_hint"),
             # resource link id or deep link idc
-            "lti_message_hint": self._oidc_login_params_dict.get(
-                "lti_message_hint"
-            ),
+            "lti_message_hint": self._oidc_login_params_dict.get("lti_message_hint"),
         }
         print(ru + urllib.parse.urlencode(params))
         response = redirect(ru + urllib.parse.urlencode(params))
@@ -176,13 +167,9 @@ class OIDCLoginFlask(OIDCLogin):
         state_form_jwt = self._request.form.get("state", type=str) or ""
         state_form = JWTKeyManagement.verify_jwt(state_form_jwt)
         if not state_form:
-            raise err.ErrorException(
-                message="Invalid state signature", status_code=403
-            )
+            raise err.ErrorException(message="Invalid state signature", status_code=403)
         if not JWTKeyManagement.verify_state_jwt_payload(state_form):
-            raise err.ErrorException(
-                message="Invalid state payload", status_code=403
-            )
+            raise err.ErrorException(message="Invalid state payload", status_code=403)
 
         return self
 
@@ -199,9 +186,7 @@ class OIDCLoginFlask(OIDCLogin):
                 status_code=400,
             )
         if not self._request.form.get("id_token"):
-            raise err.ErrorException(
-                message="No id_token found", status_code=400
-            )
+            raise err.ErrorException(message="No id_token found", status_code=400)
 
         # Decode the id_token
         id_token_jwt = self._request.form.get("id_token", type=str) or ""
@@ -209,7 +194,8 @@ class OIDCLoginFlask(OIDCLogin):
             raise err.ErrorException(
                 message="Invalid id_token, crypto key\
                     signature or lti config data of LMS may have changed",
-                status_code=400,)
+                status_code=400,
+            )
 
         id_token_header_unverified = JWTKeyManagement.get_unverified_header(
             id_token_jwt
@@ -226,9 +212,7 @@ class OIDCLoginFlask(OIDCLogin):
             "",
         )
         if not hmac_key:
-            raise err.ErrorException(
-                message="Invalid decryption key", status_code=400
-            )
+            raise err.ErrorException(message="Invalid decryption key", status_code=400)
         self.id_token = JWTKeyManagement.verify_jwt(
             id_token_jwt, JWTKeyManagement.construct_key(hmac_key)
         )
@@ -238,13 +222,9 @@ class OIDCLoginFlask(OIDCLogin):
             )
         try:
             self.id_token = LTIIDToken(**self.id_token)
-            SessionServiceFlask.set(
-                self.id_token.nonce, "id_token", self.id_token
-            )
+            SessionServiceFlask.set(self.id_token.nonce, "id_token", self.id_token)
         except Exception as e:
-            raise err.ErrorException(
-                e, message="Invalid id_token", status_code=403
-            )
+            raise err.ErrorException(e, message="Invalid id_token", status_code=403)
 
         return self
 
@@ -255,9 +235,7 @@ class OIDCLoginFlask(OIDCLogin):
         state_form_jwt = self._request.form.get("state", type=str) or ""
         state_form = JWTKeyManagement.verify_jwt(state_form_jwt)
         if not JWTKeyManagement.verify_state_jwt_payload(state_form):
-            raise err.ErrorException(
-                message="Invalid state payload", status_code=403
-            )
+            raise err.ErrorException(message="Invalid state payload", status_code=403)
 
         # generate nonce to obtain cookie in next request
         nonce_jwt = JWTKeyManagement.generate_nonce_jwt(
@@ -274,13 +252,13 @@ class OIDCLoginFlask(OIDCLogin):
                 )
             )
             if not self._platform:
-                raise err.ErrorException(
-                    message="No platform found", status_code=400
-                )
+                raise err.ErrorException(message="No platform found", status_code=400)
         except Exception as e:
             raise err.ErrorException(
-                e, message="Error\
-                    in check_auth", status_code=400
+                e,
+                message="Error\
+                    in check_auth",
+                status_code=400,
             )
         # redirect to tool (login url in frontend)
         # e.g. https://haski.app/login?nonce=...
@@ -297,14 +275,15 @@ class OIDCLoginFlask(OIDCLogin):
             if not user:
                 user = services.create_user(
                     unit_of_work.SqlAlchemyUnitOfWork(),
-                    name=self.id_token.name, university=self.id_token
-                    ["https://purl.imsglobal.org/spec/lti/claim/tool_platform"]
-                    ["name"],
+                    name=self.id_token.name,
+                    university=self.id_token[
+                        "https://purl.imsglobal.org/spec/lti/claim/tool_platform"
+                    ]["name"],
                     lms_user_id=self.id_token.sub,
                     role=RoleMapper(
-                        self.id_token
-                        ["https://purl.imsglobal.org/spec/lti/claim/roles"]).
-                    get_role(),)
+                        self.id_token["https://purl.imsglobal.org/spec/lti/claim/roles"]
+                    ).get_role(),
+                )
             if user["role"] == "student":
                 # Type student, has to work cause of Substitution Principle
                 user = services.get_student_by_user_id(
@@ -326,14 +305,10 @@ class OIDCLoginFlask(OIDCLogin):
         nonce_jwt = json_data["nonce"] or ""
         nonce_payload = JWTKeyManagement.verify_jwt(nonce_jwt)
         if not nonce_payload:
-            raise err.ErrorException(
-                message="Invalid nonce signature", status_code=403
-            )
+            raise err.ErrorException(message="Invalid nonce signature", status_code=403)
 
         if not JWTKeyManagement.verify_jwt_payload(nonce_payload):
-            raise err.ErrorException(
-                message="Invalid nonce payload", status_code=403
-            )
+            raise err.ErrorException(message="Invalid nonce payload", status_code=403)
 
         # get user based on id_token
         token = SessionServiceFlask.get(nonce_payload["nonce"], "id_token")
@@ -364,9 +339,7 @@ class OIDCLoginFlask(OIDCLogin):
                 "role": role,
                 "role_id": user["role_id"],
                 "session_nonce": nonce_payload["nonce"],
-                "permissions": [
-                    permission.value for permission in permissions
-                ],
+                "permissions": [permission.value for permission in permissions],
             },
         )
         # response object to attach a cookie

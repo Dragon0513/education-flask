@@ -11,14 +11,10 @@ class ToolConfigJson:
 
     def __init__(
         self,
-        config_file=os.path.join(
-            get_project_root(), "configs\\lti_config.json"
-        ),
+        config_file=os.path.join(get_project_root(), "configs\\lti_config.json"),
     ):
         if not os.path.isfile(config_file):
-            raise FileNotFoundError(
-                "LTI tool config file not found: " + config_file
-            )
+            raise FileNotFoundError("LTI tool config file not found: " + config_file)
 
         with open(config_file, "r") as cfg:
             self._iss_conf_dict = json.loads(cfg.read())

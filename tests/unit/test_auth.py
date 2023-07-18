@@ -10,6 +10,7 @@ import service_layer.crypto.JWTKeyManagement as JWTKeyManagement
 class TestAuthorizeDecorator(unittest.TestCase):
     def setUp(self):
         from flask import Flask
+
         self.app = Flask(__name__)
 
     def test_authorized_user(self):
@@ -54,9 +55,7 @@ class TestAuthorizeDecorator(unittest.TestCase):
 
                 @self.app.errorhandler(err.AException)
                 def handle_custom_exception(ex: err.AException):
-                    response = json.dumps(
-                        {"error": str(ex), "message": ex.message}
-                    )
+                    response = json.dumps({"error": str(ex), "message": ex.message})
                     return response, ex.status_code
 
                 # Make a request with an invalid JWT

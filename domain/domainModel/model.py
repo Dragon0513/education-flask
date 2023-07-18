@@ -236,9 +236,7 @@ class StudentTopic:
 
 
 class StudentTopicVisit:
-    def __init__(
-        self, student_id, topic_id, visit_start, visit_end=None
-    ) -> None:
+    def __init__(self, student_id, topic_id, visit_start, visit_end=None) -> None:
         self.id = None
         self.student_id = student_id
         self.topic_id = topic_id
@@ -296,9 +294,7 @@ class StudentLearningElementVisit:
 
 
 class LearningElementRating:
-    def __init__(
-        self, learning_element_id, rating, date, message=None
-    ) -> None:
+    def __init__(self, learning_element_id, rating, date, message=None) -> None:
         self.id = None
         self.learning_element_id = learning_element_id
         self.rating = rating

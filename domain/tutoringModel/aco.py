@@ -27,9 +27,7 @@ class AntColonySolver:
         self._initalized = False
 
         if self.min_round_trips and self.max_round_trips:
-            self.min_round_trips = min(
-                self.min_round_trips, self.max_round_trips
-            )
+            self.min_round_trips = min(self.min_round_trips, self.max_round_trips)
         if self.min_ants and self.max_ants:
             self.min_ants = min(self.min_ants, self.max_ants)
 
@@ -47,8 +45,7 @@ class AntColonySolver:
         # - division in a tight loop is expensive
         self.distance_cost = {
             source: {
-                dest: 1
-                / (1 + self.distances[source][dest]) ** self.distance_power
+                dest: 1 / (1 + self.distances[source][dest]) ** self.distance_power
                 for dest in problem_path
             }
             for source in problem_path
@@ -70,9 +67,7 @@ class AntColonySolver:
             self.ant_count = len(problem_path)
         if self.ant_speed <= 0:
             self.ant_speed = (
-                np.median(
-                    list(chain(*[d.values() for d in self.distances.values()]))
-                )
+                np.median(list(chain(*[d.values() for d in self.distances.values()])))
                 // 5
             )
         self.ant_speed = int(max(1, self.ant_speed))
@@ -95,9 +90,7 @@ class AntColonySolver:
         ants = {
             "distance": np.zeros((self.ant_count,)).astype("int32"),
             "path": [[problem_path[0]] for _ in range(self.ant_count)],
-            "remaining": [
-                set(problem_path[1:-1]) for _ in range(self.ant_count)
-            ],
+            "remaining": [set(problem_path[1:-1]) for _ in range(self.ant_count)],
             "end": problem_path[-1],
             "path_cost": np.zeros((self.ant_count,)).astype("int32"),
             "round_trips": np.zeros((self.ant_count,)).astype("int32"),
@@ -202,9 +195,7 @@ class AntColonySolver:
             ants["path"][i].pop(-1)
             ants["path"][i].append(ants["end"])
             self.ants_used += 1
-            self.round_trips = max(
-                self.round_trips, ants["round_trips"][i] + 1
-            )
+            self.round_trips = max(self.round_trips, ants["round_trips"][i] + 1)
 
             # We have found a new best path - inform the Queen
             was_best_path = False
@@ -224,9 +215,7 @@ class AntColonySolver:
             #       routes in combination with doubling pheromone for best_path
             reward = 1
             if self.reward_power:
-                reward *= (
-                    best_path_cost / ants["path_cost"][i]
-                ) ** self.reward_power
+                reward *= (best_path_cost / ants["path_cost"][i]) ** self.reward_power
             if self.decay_power:
                 reward *= self.round_trips**self.decay_power
             for path_index in range(len(ants["path"][i]) - 1):
@@ -237,12 +226,8 @@ class AntColonySolver:
                 if was_best_path:
                     # Queen orders to double the number
                     # of ants following this new best path
-                    self.pheromones[this_node][
-                        next_node
-                    ] *= self.best_path_smell
-                    self.pheromones[next_node][
-                        this_node
-                    ] *= self.best_path_smell
+                    self.pheromones[this_node][next_node] *= self.best_path_smell
+                    self.pheromones[next_node][this_node] *= self.best_path_smell
 
             # reset ant
             ants["distance"][i] = 0

@@ -21,9 +21,7 @@ def authorize(required_permissions: list[Permissions]):
                 raise err.StateNotMatchingError()
 
             state = JWTKeyManagement.verify_jwt(state_jwt)
-            if not JWTKeyManagement.verify_jwt_payload(
-                state, verify_nonce=False
-            ):
+            if not JWTKeyManagement.verify_jwt_payload(state, verify_nonce=False):
                 raise err.UnauthorizedError()
 
             # Check if user has any of the required permissions

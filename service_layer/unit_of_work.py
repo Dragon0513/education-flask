@@ -74,37 +74,23 @@ class SqlAlchemyUnitOfWork(AbstractUnitOfWork):  # pragma: no cover
         self.admin = repository.SqlAlchemyRepository(self.session)
         self.course = repository.SqlAlchemyRepository(self.session)
         self.course_creator = repository.SqlAlchemyRepository(self.session)
-        self.course_creator_course = repository.SqlAlchemyRepository(
-            self.session
-        )
+        self.course_creator_course = repository.SqlAlchemyRepository(self.session)
         self.course_topic = repository.SqlAlchemyRepository(self.session)
         self.user = repository.SqlAlchemyRepository(self.session)
         self.ils_input_answers = repository.SqlAlchemyRepository(self.session)
-        self.ils_perception_answers = repository.SqlAlchemyRepository(
-            self.session
-        )
-        self.ils_processing_answers = repository.SqlAlchemyRepository(
-            self.session
-        )
-        self.ils_understanding_answers = repository.SqlAlchemyRepository(
-            self.session
-        )
+        self.ils_perception_answers = repository.SqlAlchemyRepository(self.session)
+        self.ils_processing_answers = repository.SqlAlchemyRepository(self.session)
+        self.ils_understanding_answers = repository.SqlAlchemyRepository(self.session)
         self.knowledge = repository.SqlAlchemyRepository(self.session)
         self.learning_analytics = repository.SqlAlchemyRepository(self.session)
-        self.learning_characteristics = repository.SqlAlchemyRepository(
-            self.session
-        )
+        self.learning_characteristics = repository.SqlAlchemyRepository(self.session)
         self.learning_element = repository.SqlAlchemyRepository(self.session)
-        self.learning_element_rating = repository.SqlAlchemyRepository(
-            self.session
-        )
+        self.learning_element_rating = repository.SqlAlchemyRepository(self.session)
         self.learning_path = repository.SqlAlchemyRepository(self.session)
         self.learning_path_learning_element = repository.SqlAlchemyRepository(
             self.session
         )
-        self.learning_path_topic = repository.SqlAlchemyRepository(
-            self.session
-        )
+        self.learning_path_topic = repository.SqlAlchemyRepository(self.session)
         self.learning_strategy = repository.SqlAlchemyRepository(self.session)
         self.learning_style = repository.SqlAlchemyRepository(self.session)
         self.list_k = repository.SqlAlchemyRepository(self.session)
@@ -112,22 +98,16 @@ class SqlAlchemyUnitOfWork(AbstractUnitOfWork):  # pragma: no cover
         self.settings = repository.SqlAlchemyRepository(self.session)
         self.student = repository.SqlAlchemyRepository(self.session)
         self.student_course = repository.SqlAlchemyRepository(self.session)
-        self.student_learning_element = repository.SqlAlchemyRepository(
-            self.session
-        )
+        self.student_learning_element = repository.SqlAlchemyRepository(self.session)
         self.student_learning_element_visit = repository.SqlAlchemyRepository(
             self.session
         )
         self.student_topic = repository.SqlAlchemyRepository(self.session)
-        self.student_topic_visit = repository.SqlAlchemyRepository(
-            self.session
-        )
+        self.student_topic_visit = repository.SqlAlchemyRepository(self.session)
         self.teacher = repository.SqlAlchemyRepository(self.session)
         self.teacher_course = repository.SqlAlchemyRepository(self.session)
         self.topic = repository.SqlAlchemyRepository(self.session)
-        self.topic_learning_element = repository.SqlAlchemyRepository(
-            self.session
-        )
+        self.topic_learning_element = repository.SqlAlchemyRepository(self.session)
         return super().__enter__()
 
     def __exit__(self, *args):

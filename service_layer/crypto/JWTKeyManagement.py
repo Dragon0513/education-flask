@@ -34,12 +34,13 @@ def public_key_location():
 def load_public_key():
     if not os.path.exists(public_key_location()):
         raise err.KeyNotFoundError(
-            message="Public key location:" + public_key_location() +
-            " not found. Please generate a\
-                key pair as described in the README.md.")
+            message="Public key location:"
+            + public_key_location()
+            + " not found. Please generate a\
+                key pair as described in the README.md."
+        )
     with open(os.path.abspath(public_key_location()), "rb") as key_file:
-        public_key = crypto_serialization.\
-            load_pem_public_key(key_file.read())
+        public_key = crypto_serialization.load_pem_public_key(key_file.read())
         return public_key.public_bytes(
             crypto_serialization.Encoding.PEM,
             crypto_serialization.PublicFormat.SubjectPublicKeyInfo,
@@ -55,7 +56,7 @@ def verify_jwt(
     key: str | bytes | Mapping[str, Any] | Key = load_public_key().decode(),
 ):
     """Returns the payload of the JWT token if it is valid,
-     otherwise raises an exception"""
+    otherwise raises an exception"""
     try:
         return json.loads(
             jws.verify(jwt_token, key, algorithms=["RS256"]).decode("UTF-8")
@@ -74,9 +75,11 @@ def get_unverified_header(jwt_token: str):
 def sign_jwt(payload: dict):
     if not os.path.exists(private_key_location()):
         raise err.KeyNotFoundError(
-            message="Private key location:" + private_key_location() +
-            " not found. Please generate a key pair as\
-                described in the README.md.")
+            message="Private key location:"
+            + private_key_location()
+            + " not found. Please generate a key pair as\
+                described in the README.md."
+        )
     with open(os.path.abspath(private_key_location()), "rb") as key_file:
         private_key = crypto_serialization.load_pem_private_key(
             key_file.read(), password=None
@@ -134,9 +137,7 @@ def generate_state_jwt(
 def verify_jwt_payload(jwt_payload, verify_nonce=True) -> bool:
     """Verifies the payload of a JWT token. Returns\
         True if the payload is valid, otherwise False."""
-    if verify_nonce and not SessionServiceFlask.get(
-        jwt_payload["nonce"], "state"
-    ):
+    if verify_nonce and not SessionServiceFlask.get(jwt_payload["nonce"], "state"):
         return False
     # verify issued at
     if jwt_payload["iat"] > datetime.datetime.utcnow().timestamp():
@@ -145,9 +146,7 @@ def verify_jwt_payload(jwt_payload, verify_nonce=True) -> bool:
     if jwt_payload["exp"] < datetime.datetime.utcnow().timestamp():
         return False
     # verify issuer
-    if jwt_payload["iss"] != os.environ.get(
-        "BACKEND_URL", "https://backend.haski.app"
-    ):
+    if jwt_payload["iss"] != os.environ.get("BACKEND_URL", "https://backend.haski.app"):
         return False
     # verify kid
     if jwt_payload["kid"] != "backendprivatekey":

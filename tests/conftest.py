@@ -29,6 +29,7 @@ def session_factory(in_memory_db):  # pragma: no cover
 @pytest.fixture
 def client():  # pragma: no cover
     from entrypoints.flask_app import app
+
     app.config["TESTING"] = True
 
     with app.app_context():

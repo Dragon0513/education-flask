@@ -1072,9 +1072,7 @@ def test_post_learning_path(
         )
     ],
 )
-def test_api_post_frontend_logs(
-    client, input, keys_expected, status_code_expected
-):
+def test_api_post_frontend_logs(client, input, keys_expected, status_code_expected):
     url = path_frontend_logs
     r = client.post(url, json=input)
     assert r.status_code == status_code_expected
@@ -2215,14 +2213,7 @@ def test_get_user_settings_by_id(
         user_id_use = 99999
     else:
         user_id_use = user_id_student
-    url = (
-        path_user
-        + "/"
-        + str(user_id_use)
-        + "/"
-        + str(lms_user_id)
-        + path_settings
-    )
+    url = path_user + "/" + str(user_id_use) + "/" + str(lms_user_id) + path_settings
     r = client.get(url)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip("\n"))
@@ -2278,14 +2269,7 @@ def test_update_user_settings_by_id(
         user_id_use = 99999
     else:
         user_id_use = user_id_student
-    url = (
-        path_user
-        + "/"
-        + str(user_id_use)
-        + "/"
-        + str(lms_user_id)
-        + path_settings
-    )
+    url = path_user + "/" + str(user_id_use) + "/" + str(lms_user_id) + path_settings
     r = client.put(url, json=request_body)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip("\n"))
@@ -2466,9 +2450,7 @@ def test_update_user_from_moodle(
     client, input, moodle_user_id, keys_expected, status_code_expected
 ):
     global user_id_student
-    url = (
-        path_lms_user + "/" + str(user_id_student) + "/" + str(moodle_user_id)
-    )
+    url = path_lms_user + "/" + str(user_id_student) + "/" + str(moodle_user_id)
     r = client.put(url, json=input)
     assert r.status_code == status_code_expected
     response = json.loads(r.data.decode("utf-8").strip("\n"))

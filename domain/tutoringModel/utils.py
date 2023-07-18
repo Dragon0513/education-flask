@@ -73,13 +73,11 @@ def get_coordinates(learning_style, list_of_les):
                 )
             if learning_style["understanding_dimension"] == "seq":
                 coordinate.append(
-                    learning_style["understanding_value"]
-                    * influence[elememnt][6]
+                    learning_style["understanding_value"] * influence[elememnt][6]
                 )
             elif learning_style["understanding_dimension"] == "glo":
                 coordinate.append(
-                    learning_style["understanding_value"]
-                    * influence[elememnt][7]
+                    learning_style["understanding_value"] * influence[elememnt][7]
                 )
             coordinates[elememnt] = tuple(coordinate)
     return coordinates

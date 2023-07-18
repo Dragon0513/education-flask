@@ -56,9 +56,7 @@ def handle_general_exception(ex):
 
 @app.errorhandler(err.AException)
 def handle_custom_exception(ex: err.AException):
-    response = json.dumps(
-        {"error": ex.__class__.__name__, "message": ex.message}
-    )
+    response = json.dumps({"error": ex.__class__.__name__, "message": ex.message})
     return response, ex.status_code
 
 
@@ -205,9 +203,7 @@ def post_course():
                 raise err.MissingParameterError()
 
 
-@app.route(
-    "/lms/course/<course_id>/<lms_course_id>", methods=["PUT", "DELETE"]
-)
+@app.route("/lms/course/<course_id>/<lms_course_id>", methods=["PUT", "DELETE"])
 @cross_origin(supports_credentials=True)
 def course_management(course_id, lms_course_id):
     method = request.method
@@ -218,9 +214,7 @@ def course_management(course_id, lms_course_id):
             condition3 = "university" in request.json
             condition4 = "last_updated" in request.json
             if condition1 and condition2 and condition3 and condition4:
-                condition5 = re.search(
-                    cons.date_format, request.json["last_updated"]
-                )
+                condition5 = re.search(cons.date_format, request.json["last_updated"])
                 if condition5:
                     course = services.update_course(
                         unit_of_work.SqlAlchemyUnitOfWork(),
@@ -236,9 +230,7 @@ def course_management(course_id, lms_course_id):
             else:
                 raise err.MissingParameterError()
         case "DELETE":
-            services.delete_course(
-                unit_of_work.SqlAlchemyUnitOfWork(), course_id
-            )
+            services.delete_course(unit_of_work.SqlAlchemyUnitOfWork(), course_id)
             result = {"message": cons.deletion_message}
             status_code = 200
             return jsonify(result), status_code
@@ -373,8 +365,7 @@ def post_topic(course_id, lms_course_id):
 
 
 @app.route(
-    "/lms/course/<course_id>/<lms_course_id>/topic/<topic_id>/"
-    + "<lms_topic_id>",
+    "/lms/course/<course_id>/<lms_course_id>/topic/<topic_id>/" + "<lms_topic_id>",
     methods=["PUT", "DELETE"],
 )
 @cross_origin(supports_credentials=True)
@@ -400,9 +391,7 @@ def topic_administration(course_id, lms_course_id, topic_id, lms_topic_id):
                 and condition7
                 and condition8
             ):
-                condition9 = re.search(
-                    cons.date_format, request.json["last_updated"]
-                )
+                condition9 = re.search(cons.date_format, request.json["last_updated"])
                 if condition9:
                     topic = services.update_topic(
                         unit_of_work.SqlAlchemyUnitOfWork(),
@@ -424,9 +413,7 @@ def topic_administration(course_id, lms_course_id, topic_id, lms_topic_id):
             else:
                 raise err.MissingParameterError()
         case "DELETE":
-            services.delete_topic(
-                unit_of_work.SqlAlchemyUnitOfWork(), topic_id
-            )
+            services.delete_topic(unit_of_work.SqlAlchemyUnitOfWork(), topic_id)
             result = {"message": cons.deletion_message}
             status_code = 200
             return jsonify(result), status_code
@@ -531,9 +518,7 @@ def learning_element_administration(
                 and condition7
                 and condition8
             ):
-                condition9 = re.search(
-                    cons.date_format, request.json["last_updated"]
-                )
+                condition9 = re.search(cons.date_format, request.json["last_updated"])
                 condition10 = type(request.json["activity_type"]) == str
                 condition11 = type(request.json["classification"]) == str
                 condition12 = type(request.json["name"]) == str
@@ -622,9 +607,7 @@ def post_student_topic_visit(student_id, lms_user_id, topic_id):
             condition1 = request.json is not None
             condition2 = "visit_start" in request.json
             if condition1 and condition2:
-                condition3 = re.search(
-                    cons.date_format, request.json["visit_start"]
-                )
+                condition3 = re.search(cons.date_format, request.json["visit_start"])
                 condition4 = type(request.json["visit_start"]) is str
                 if condition3 and condition4:
                     result = services.add_student_topic_visit(
@@ -660,9 +643,7 @@ def post_student_learning_element_id_visit(
             condition2 = "visit_start" in request.json
             if condition1 and condition2:
                 condition3 = type(request.json["visit_start"]) is str
-                condition4 = re.search(
-                    cons.date_format, request.json["visit_start"]
-                )
+                condition4 = re.search(cons.date_format, request.json["visit_start"])
                 if condition3 and condition4:
                     result = services.add_student_learning_element_visit(
                         unit_of_work.SqlAlchemyUnitOfWork(),
@@ -684,9 +665,7 @@ def post_student_learning_element_id_visit(
     methods=["GET"],
 )
 @cross_origin(supports_credentials=True)
-def get_learning_elements_for_course(
-    user_id, lms_user_id, student_id, course_id
-):
+def get_learning_elements_for_course(user_id, lms_user_id, student_id, course_id):
     method = request.method
     match method:
         case "GET":
@@ -703,8 +682,7 @@ def get_learning_elements_for_course(
 
 # Student Endpoints
 @app.route(
-    "/user/<user_id>/<lms_user_id>/student/<student_id>/"
-    + "learningCharacteristics",
+    "/user/<user_id>/<lms_user_id>/student/<student_id>/" + "learningCharacteristics",
     methods=["DELETE"],
 )
 @cross_origin(supports_credentials=True)
@@ -723,8 +701,7 @@ def delete_learning_characteristics(user_id, lms_user_id, student_id):
 
 
 @app.route(
-    "/user/<user_id>/<lms_user_id>/student/<student_id>"
-    + "/learningCharacteristics",
+    "/user/<user_id>/<lms_user_id>/student/<student_id>" + "/learningCharacteristics",
     methods=["GET"],
 )
 @cross_origin(supports_credentials=True)
@@ -742,9 +719,7 @@ def get_learning_characteristics(user_id, lms_user_id, student_id):
             return jsonify(characteristic), status_code
 
 
-@app.route(
-    "/lms/student/<student_id>/<lms_user_id>/questionnaire", methods=["POST"]
-)
+@app.route("/lms/student/<student_id>/<lms_user_id>/questionnaire", methods=["POST"])
 @cross_origin(supports_credentials=True)
 def questionnaire(student_id, lms_user_id):
     method = request.method
@@ -887,9 +862,7 @@ def learning_style_administration(user_id, lms_user_id, student_id):
                 condition13 = type(request.json["input_value"]) is int
                 condition14 = type(request.json["processing_dimension"]) is str
                 condition15 = type(request.json["processing_value"]) is int
-                condition16 = (
-                    type(request.json["understanding_dimension"]) is str
-                )
+                condition16 = type(request.json["understanding_dimension"]) is str
                 condition17 = type(request.json["understanding_value"]) is int
                 if (
                     condition10
@@ -905,12 +878,7 @@ def learning_style_administration(user_id, lms_user_id, student_id):
                     condition19 = 0 < request.json["input_value"] < 12
                     condition20 = 0 < request.json["processing_value"] < 12
                     condition21 = 0 < request.json["understanding_value"] < 12
-                    if (
-                        condition18
-                        and condition19
-                        and condition20
-                        and condition21
-                    ):
+                    if condition18 and condition19 and condition20 and condition21:
                         result = services.update_learning_style_by_student_id(
                             unit_of_work.SqlAlchemyUnitOfWork(),
                             user_id,
@@ -996,8 +964,7 @@ def get_learning_strategy(user_id, lms_user_id, student_id):
 
 
 @app.route(
-    "/user/<user_id>/<lms_user_id>/student/<student_id>/"
-    + "learningAnalytics",
+    "/user/<user_id>/<lms_user_id>/student/<student_id>/" + "learningAnalytics",
     methods=["DELETE"],
 )
 @cross_origin(supports_credentials=True)
@@ -1016,8 +983,7 @@ def delete_learning_analytics(user_id, lms_user_id, student_id):
 
 
 @app.route(
-    "/user/<user_id>/<lms_user_id>/student/<student_id>/"
-    + "learningAnalytics",
+    "/user/<user_id>/<lms_user_id>/student/<student_id>/" + "learningAnalytics",
     methods=["GET"],
 )
 @cross_origin(supports_credentials=True)
@@ -1087,8 +1053,7 @@ def get_courses_by_student_id(user_id, lms_user_id, student_id):
 
 
 @app.route(
-    "/user/<user_id>/<lms_user_id>/student/<student_id>/course"
-    + "/<course_id>",
+    "/user/<user_id>/<lms_user_id>/student/<student_id>/course" + "/<course_id>",
     methods=["GET"],
 )
 @cross_origin(supports_credentials=True)
@@ -1107,14 +1072,11 @@ def get_course_by_course_id(user_id, lms_user_id, student_id, course_id):
 
 
 @app.route(
-    "/user/<user_id>/<lms_user_id>/student/<student_id>/course"
-    + "/<course_id>/topic",
+    "/user/<user_id>/<lms_user_id>/student/<student_id>/course" + "/<course_id>/topic",
     methods=["GET"],
 )
 @cross_origin(supports_credentials=True)
-def get_topics_by_student_and_course_id(
-    user_id, lms_user_id, student_id, course_id
-):
+def get_topics_by_student_and_course_id(user_id, lms_user_id, student_id, course_id):
     method = request.method
     match method:
         case "GET":
@@ -1159,9 +1121,7 @@ def get_topics_by_student_course_and_topic_id(
     methods=["GET"],
 )
 @cross_origin(supports_credentials=True)
-def get_sub_topics_by_topic_id(
-    user_id, lms_user_id, student_id, course_id, topic_id
-):
+def get_sub_topics_by_topic_id(user_id, lms_user_id, student_id, course_id, topic_id):
     method = request.method
     match method:
         case "GET":
@@ -1258,9 +1218,7 @@ def get_learning_element_recommendation(
     methods=["POST"],
 )
 @cross_origin(supports_credentials=True)
-def learning_path_administration(
-    user_id, lms_user_id, student_id, course_id, topic_id
-):
+def learning_path_administration(user_id, lms_user_id, student_id, course_id, topic_id):
     method = request.method
     match method:
         case "POST":
@@ -1269,9 +1227,7 @@ def learning_path_administration(
             if condition1 and condition2:
                 available_algorithms = ["graf", "aco", "ga"]
                 condition3 = type(request.json["algorithm"]) is str
-                condition4 = (
-                    request.json["algorithm"].lower() in available_algorithms
-                )
+                condition4 = request.json["algorithm"].lower() in available_algorithms
                 if condition3 and condition4:
                     result = services.create_learning_path(
                         unit_of_work.SqlAlchemyUnitOfWork(),
@@ -1310,6 +1266,7 @@ def get_learning_path(user_id, lms_user_id, student_id, course_id, topic_id):
             )
             status_code = 200
             return jsonify(result), status_code
+
 
 # User Endpoints
 
@@ -1410,9 +1367,7 @@ def logging_frontend():
 
 
 # Admin Endpoints
-@app.route(
-    "/user/<user_id>/<lms_user_id>/admin/<admin_id>/user", methods=["GET"]
-)
+@app.route("/user/<user_id>/<lms_user_id>/admin/<admin_id>/user", methods=["GET"])
 @cross_origin(supports_credentials=True)
 def get_users_by_admin(user_id, lms_user_id, admin_id):
     method = request.method
@@ -1425,9 +1380,7 @@ def get_users_by_admin(user_id, lms_user_id, admin_id):
             return jsonify(users), status_code
 
 
-@app.route(
-    "/user/<user_id>/<lms_user_id>/admin/<admin_id>/logs", methods=["GET"]
-)
+@app.route("/user/<user_id>/<lms_user_id>/admin/<admin_id>/logs", methods=["GET"])
 @cross_origin(supports_credentials=True)
 def get_admin_logs(user_id, lms_user_id, admin_id):
     method = request.method

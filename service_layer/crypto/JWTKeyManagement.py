@@ -160,10 +160,10 @@ def verify_state_jwt_payload(
     if not verify_jwt_payload(state_jwt_payload, verify_nonce):
         return False
     # verify state in storage
-    if session:
-        if (
-            SessionServiceFlask.get(state_jwt_payload["nonce"], "state")
-            != state_jwt_payload["state"]
-        ):
-            return False
+    if (
+        session
+        and SessionServiceFlask.get(state_jwt_payload["nonce"], "state")
+        != state_jwt_payload["state"]
+    ):
+        return False
     return True

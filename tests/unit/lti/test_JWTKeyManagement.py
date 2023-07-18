@@ -10,8 +10,11 @@ import service_layer.crypto.JWTKeyManagement as jwt
 from service_layer.crypto.cryptorandom import CryptoRandom
 from service_layer.service import SessionServiceFlask
 
-private_key_location: str = "keys/private.pem"
-public_key_location: str = "keys/public.pem"
+PRIVATE_KEY_LOCATION: str = "keys/private.pem"
+PUBLIC_KEY_LOCATION: str = "keys/public.pem"
+
+BACKEND_URL = "https://backend.haski.app"
+LMS_URL = "https://moodle.haski.app"
 
 
 class TestJWTKeyManagement(unittest.TestCase):
@@ -48,6 +51,9 @@ class TestJWTKeyManagement(unittest.TestCase):
                 )
         # set the environment variables for the keys/ path
         os.environ["JWT_KEYS_LOCATION"] = "test_keys"
+
+        os.environ["BACKEND_URL"] = BACKEND_URL
+        os.environ["LMS_URL"] = LMS_URL
 
     def tearDown(self) -> None:
         """
@@ -101,7 +107,7 @@ class TestJWTKeyManagement(unittest.TestCase):
         # Arrange
         nonce = CryptoRandom().getrandomstring(32)
         state = CryptoRandom().getrandomstring(32)
-        issuer = "https://backend.haski.app"
+        issuer = BACKEND_URL
         audience = "http://localhost"
 
         # Act
@@ -109,8 +115,8 @@ class TestJWTKeyManagement(unittest.TestCase):
         state = jwt.generate_state_jwt(nonce, state, audience, issuer)
         state_jwt = SessionServiceFlask.set_state_jwt(
             nonce,
-            "https://moodle.haski.app/mod/lti/auth.php",
-            "https://backend.haski.app",
+            LMS_URL + "/mod/lti/auth.php",
+            BACKEND_URL,
         )
         key_public = jwt.load_public_key()
 
@@ -123,7 +129,7 @@ class TestJWTKeyManagement(unittest.TestCase):
         # Arrange
         state = CryptoRandom().getrandomstring(32)
         nonce = CryptoRandom().getrandomstring(32)
-        issuer = "https://backend.haski.app"
+        issuer = BACKEND_URL
         audience = "http://localhost:2000"
         expiration = 60
         claims = {"a": "b"}
@@ -136,8 +142,8 @@ class TestJWTKeyManagement(unittest.TestCase):
         # we need to set the state in the session
         SessionServiceFlask.set_state_jwt(
             nonce,
-            "https://moodle.haski.app/mod/lti/auth.php",
-            "https://backend.haski.app",
+            LMS_URL + "/mod/lti/auth.php",
+            BACKEND_URL,
         )
         key_public = jwt.load_public_key()
 

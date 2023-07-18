@@ -35,22 +35,23 @@ class GA_Algorithmus(object):
 
     def create_random_population(self, dict_coordinates):
 
+    # Generating the population with initial random position
+    # Initialise some populations with Clustering
         self.le_coordinate = np.array(
             [dict_coordinates[key]for key in dict_coordinates])
         self.le_coordinate.reshape((len(dict_coordinates), 4))
-
-        # Generating the population with initial random position
-        positions = np.arange(1, self.le_size)
+   
+        positions = np.arange(1, self.le_size)       
         self.population = np.vstack(
             [np.random.permutation(positions)
              for _ in range(self.pop_size)])
-
-        # Initialise some populations with Clustering
+        
         with_cluster = False
         with_cluster, labels = self.find_cluster(
             self.le_coordinate, n_cluster=3, rseed=2)
+
         if(with_cluster):
-            daten = self.get_order_cluster(positions, labels)
+            daten = self.get_clustering_order(positions, labels)
             self.population[0:-2, :] = daten
 
     def valide_population(self):
@@ -114,7 +115,7 @@ class GA_Algorithmus(object):
             temp = (self.le_size - 1)
             cross_points = np.random.randint(0, 2, temp).astype(bool)
 
-            keep_LE = parent[~cross_points]  # find the LE number
+            keep_LE = parent[~cross_points] 
             swap_LE = pop[i_, np.isin(pop[i_].ravel(),
                           keep_LE, invert=True)]
             parent[:] = np.concatenate((keep_LE, swap_LE))
@@ -191,8 +192,8 @@ class GA_Algorithmus(object):
                 centers = new_centers
 
         return True, labels
-
-    def get_order_cluster(self, daten, labels):
+    
+    def get_clustering_order(self, daten, labels):
 
         labels = labels[1:len(labels)]
 
@@ -201,9 +202,17 @@ class GA_Algorithmus(object):
         label_0 = positions[labels == 0]
         label_1 = positions[labels == 1]
         label_2 = positions[labels == 2]
-        daten = np.concatenate((label_2, label_1), axis=None)
-        daten = np.concatenate((daten, label_0), axis=None)
-
+    
+        daten = np.concatenate((label_2, label_0), axis=None)
+        daten = np.concatenate((daten, label_1), axis=None)
+       
+        #daten = np.concatenate((0,daten), axis=None)
+        ga_path = np.array(self.learning_elements)        
+        result_ga_LP = ga_path[daten]
+        
+        print("daten:",daten)
+        self.daten_compare = daten
+        print("result_ga_LP***",result_ga_LP)
         return daten
 
     def calculate_learning_path(self, learning_style):
@@ -256,6 +265,10 @@ class GA_Algorithmus(object):
         if(Contain_LE):
             learning_path = learning_path[:-2]
 
+
+        print("daten_compare:",self.daten_compare)
+        print("idx:",idx)
+
         return learning_path
 
     def get_learning_path(self, input_learning_style={"act": 1, "sns": 7,
@@ -266,7 +279,7 @@ class GA_Algorithmus(object):
         input_learning_style = self.get_probe_learning_style()
         #print("input_learning_style",input_learning_style)
         if input_learning_style is not None:
-            learning_style = utils.get_learning_style2(input_learning_style)
+            learning_style = utils.get_learning_style(input_learning_style)
             learning_style = {"act": 5, "int": 9,
                               "vis": 9, "glo": 3}
 
@@ -282,7 +295,7 @@ class GA_Algorithmus(object):
         if input_Learning_element is not None:
 
            #print("---input_Learning_element",input_Learning_element)
-            #new_Learning_element = util.add_Learning_element(input_Learning_element)
+            input_Learning_element = util.add_Learning_element(input_Learning_element)
             self.learning_elements = util.get_learning_element(
                 input_Learning_element)
             self.le_size = len(self.learning_elements)
@@ -297,6 +310,9 @@ class GA_Algorithmus(object):
         time_sec = time2-time1
         print("Time_sec: ", time_sec)
         print("\nResult_GA_LP: ", result_ga_LP)
+        print("\n\n")
+        
+        
 
         return result_ga_LP
 

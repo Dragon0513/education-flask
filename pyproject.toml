@@ -3,7 +3,7 @@ atomic = true
 profile = "black"
 line_length = 88
 skip_gitignore = true
-skip_glob = [".tox", ".git", ".venv", "venv", "venv_hooks", "build", "dist", "docs", "keys", "configs", "tests", "__pycache__", ".vscode", ".github"]
+skip_glob = [".tox", ".git", ".venv", "venv", "venv_hooks", "build", "dist", "docs", "keys", "configs", "__pycache__", ".vscode", ".github"]
 known_first_party = ["black", "blackd", "_black_version"]
 
 [tool.pytest]

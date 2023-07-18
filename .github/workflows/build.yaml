@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.10.4", "3.11"]
+        python-version: ["3.10.4"]
     steps:
     - uses: actions/checkout@v3
 
@@ -48,7 +48,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.10.4", "3.11"]
+        python-version: ["3.10.4"]
 
     # Service containers to run with `runner-job`
     services:
@@ -78,8 +78,13 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
 
-      - name: Install tox
-        run: pip install tox
+      - name: Install tox, dotenv and psycopg2
+        run: |
+          sudo apt install -y $(grep -o ^[^#][[:alnum:]-]* "packages.list")
+          python3 -m pip install --upgrade pip
+          pip3 install tox
+          pip3 install python-dotenv
+          pip3 install psycopg2-binary
 
       - name: Create Database Tables
         run: python db_setup.py

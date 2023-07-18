@@ -3,8 +3,25 @@ import os
 
 import psycopg2
 
+from dotenv import load_dotenv
 
-def setup_db(db_database, db_user, db_password, db_host, db_port):
+load_dotenv(".flaskenv")
+load_dotenv()
+
+DEFAULT_DB_HOST = "localhost"
+DEFAULT_DB_PORT = 5432
+DEFAULT_DB_PASSWORD = "postgres"  # Does not matter for local development
+DEFAULT_DB_USER = "postgres"
+DEFAULT_DB_NAME = "haski"
+
+
+def setup_db(
+    db_database=DEFAULT_DB_NAME,
+    db_user=DEFAULT_DB_USER,
+    db_password=DEFAULT_DB_PASSWORD,
+    db_host=DEFAULT_DB_HOST,
+    db_port=DEFAULT_DB_PORT,
+):
     # Establishing the connection to postgres
     conn = psycopg2.connect(
         database="postgres",
@@ -966,20 +983,25 @@ def setup_db(db_database, db_user, db_password, db_host, db_port):
     conn.close()
 
 
-def parse_args():
-    parser = argparse.ArgumentParser()
+def parse_args(parser=argparse.ArgumentParser()):
     parser.add_argument(
-        "--host", type=str, default=os.environ.get("DB_HOST", "localhost")
-    )
-    parser.add_argument("--port", type=int, default=os.environ.get("DB_PORT", 5432))
-    parser.add_argument(
-        "--user", type=str, default=os.environ.get("DB_USER", "postgres")
+        "--host", type=str, default=os.environ.get("DB_HOST", DEFAULT_DB_HOST)
     )
     parser.add_argument(
-        "--password", type=str, default=os.environ.get("DB_PASSWORD", "postgres")
+        "--port", type=int, default=os.environ.get("DB_PORT", DEFAULT_DB_PORT)
     )
     parser.add_argument(
-        "--database", type=str, default=os.environ.get("DB_NAME", "haski")
+        "--user", type=str, default=os.environ.get("DB_USER", DEFAULT_DB_USER)
+    )
+    parser.add_argument(
+        "--password",
+        type=str,
+        default=os.environ.get("DB_PASSWORD", DEFAULT_DB_PASSWORD),
+    )
+    parser.add_argument(
+        "--dbname",
+        type=str,
+        default=os.environ.get("DB_NAME", DEFAULT_DB_NAME),
     )
     args = parser.parse_args()
     return args
@@ -987,4 +1009,4 @@ def parse_args():
 
 if __name__ == "__main__":
     args = parse_args()
-    setup_db(args.database, args.user, args.password, args.host, args.port)
+    setup_db(args.dbname, args.user, args.password, args.host, args.port)

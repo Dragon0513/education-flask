@@ -1,5 +1,10 @@
 import os
 
+from dotenv import load_dotenv
+
+load_dotenv(".flaskenv")
+load_dotenv()  # If we have a .env file, load it
+
 
 def get_postgres_uri():  # pragma: no cover
     host = os.environ.get("DB_HOST", "127.0.0.1")

@@ -1,8 +1,4 @@
-from abc import ABC, abstractmethod
-
-
-class JWTKeyManagement(ABC):
-
+class JWTKeyManagement:
     @staticmethod
     def verify_jwt(jwt: str) -> dict:
         raise NotImplementedError

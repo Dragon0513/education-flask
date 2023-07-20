@@ -1,6 +1,7 @@
 import pytest
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, clear_mappers
+from sqlalchemy.orm import clear_mappers, sessionmaker
+
 from entrypoints.flask_app import app
 from repositories.orm import metadata, start_mappers
 
@@ -21,7 +22,7 @@ def session_factory(in_memory_db):  # pragma: no cover
 
 @pytest.fixture
 def client():  # pragma: no cover
-    app.config['TESTING'] = True
+    app.config["TESTING"] = True
 
     with app.app_context():
         with app.test_client() as client:

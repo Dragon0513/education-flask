@@ -12,6 +12,7 @@ from repositories import orm
 from service_layer import services, unit_of_work
 from service_layer.lti.config.ToolConfigJson import ToolConfigJson
 from utils import constants as cons
+from utils.debug_only import debug_only
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
@@ -287,6 +288,30 @@ def get_user_info():
             )
             status_code = 200
             return jsonify(user), status_code
+
+
+# Test Endpoint to post a user login by id and get a user by id
+@app.route("/login_credentials", methods=["POST"])
+@cross_origin(supports_credentials=True)
+@debug_only
+def login_credentials():
+    method = request.method
+    match method:
+        case "POST":
+            condition1 = request.json is not None
+            condition2 = "lms_user_id" in request.json
+            if condition1 and condition2:
+                condition3 = type(request.json["lms_user_id"]) is int
+                if condition3:
+                    user = services.get_student_by_user_id(
+                        unit_of_work.SqlAlchemyUnitOfWork(), request.json["lms_user_id"]
+                    )
+                    status_code = 201
+                    return jsonify(user), status_code
+                else:
+                    raise err.WrongParameterValueError()
+            else:
+                raise err.MissingParameterError()
 
 
 @app.route("/lms/course/<course_id>/<lms_course_id>/topic", methods=["POST"])

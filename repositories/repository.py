@@ -1,6 +1,7 @@
 import abc
 
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import Session
 
 from domain.domainModel import model as DM
 from domain.learnersModel import model as LM
@@ -485,7 +486,7 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_user_by_id(self, user_id, lms_user_id) -> UA.User:
+    def get_user_by_id(self, user_id, lms_user_id) -> list[UA.User]:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -552,7 +553,7 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
 
 
 class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
-    def __init__(self, session):
+    def __init__(self, session: Session):
         self.session = session
 
     def add_course_creator_to_course(
@@ -1485,13 +1486,16 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         else:
             return result
 
-    def get_user_by_id(self, user_id, lms_user_id) -> UA.Admin:
-        result = (
-            self.session.query(UA.User)
-            .filter_by(id=user_id)
-            .filter_by(lms_user_id=lms_user_id)
-            .all()
-        )
+    def get_user_by_id(self, user_id, lms_user_id=None):
+        if lms_user_id is None:
+            result = self.session.query(UA.User).filter_by(id=user_id).all()
+        else:
+            result = (
+                self.session.query(UA.User)
+                .filter_by(id=user_id)
+                .filter_by(lms_user_id=lms_user_id)
+                .all()
+            )
         if result == []:
             raise err.NoValidIdError()
         else:
@@ -1500,8 +1504,8 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
     def get_users_by_uni(self, university):
         try:
             return self.session.query(UA.User).filter_by(university=university).all()
-        except Exception:
-            raise err.DatabaseQueryError()
+        except Exception as e:
+            raise err.DatabaseQueryError(exception=e)
 
     def update_course(self, course_id, course) -> DM.Course:
         course_exist = self.get_course_by_id(course_id)

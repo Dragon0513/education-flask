@@ -1657,8 +1657,8 @@ def get_user_by_lms_id(uow: unit_of_work.AbstractUnitOfWork, lms_user_id) -> dic
 
 def get_student_by_user_id(uow: unit_of_work.AbstractUnitOfWork, user_id) -> dict:
     with uow:
-        student = uow.student.get_student_by_user_id(user_id)
-        user = uow.user.get_user_by_id(user_id)
+        student = uow.student.get_student_by_id(user_id)
+        user = uow.user.get_user_by_id(user_id, None)
         student[0].__init__(user[0])
         settings = uow.settings.get_settings(user_id)
         if student[0] == []:

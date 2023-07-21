@@ -1,5 +1,6 @@
 from functools import wraps
-from flask import current_app, abort
+
+from flask import abort, current_app
 
 
 def debug_only(f):

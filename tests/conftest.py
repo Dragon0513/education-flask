@@ -1,14 +1,9 @@
-import os
-import tempfile
-from unittest.mock import patch
 import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import clear_mappers, sessionmaker
-from pytest_postgresql import factories
 
-from repositories.orm import start_mappers, start_mappers, mapper_registry
-from service_layer import unit_of_work
 from entrypoints.flask_app import app
+from repositories.orm import mapper_registry, start_mappers
 
 engine = create_engine("sqlite+pysqlite:///:memory:", future=True)
 mapper_registry.metadata.create_all(engine)
@@ -48,7 +43,8 @@ def session_factory():  # pragma: no cover
 
 @pytest.fixture
 def client(session_factory):  # pragma: no cover
-    # Mock unit_of_work.SqlAlchemyUnitOfWork DEFAULT_SESSION_FACTORY to use in-memory database
+    # Mock unit_of_work.SqlAlchemyUnitOfWork
+    # DEFAULT_SESSION_FACTORY to use in-memory database
     # instead of the real database
     import service_layer.unit_of_work as unit_of_work
 

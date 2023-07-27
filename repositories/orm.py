@@ -1,5 +1,5 @@
 # from typing_extensions import deprecated
-from sqlalchemy import Boolean, Column, Date, Integer, MetaData, String, Table
+from sqlalchemy import Boolean, Column, Date, Integer, String, Table
 from sqlalchemy.orm import mapper, registry
 
 from domain.domainModel import model as DM

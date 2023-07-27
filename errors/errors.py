@@ -46,7 +46,7 @@ class MissingParameterError(AException):
         self,
         exception: Exception | None = None,
         message="Missing parameters in request.",
-        status_code=404,
+        status_code=400,
     ):
         super().__init__(exception, message, status_code)
 
@@ -76,7 +76,7 @@ class WrongParameterValueError(AException):
         self,
         exception: Exception | None = None,
         message="The passed parameter values are invalid.",
-        status_code=404,
+        status_code=400,
     ):
         super().__init__(exception, message, status_code)
 

@@ -57,12 +57,14 @@ class LearningPath:
                 le_path = le_path + ele[0] + ', '
             self.path = le_path[:-2]
              
-        elif _algorithm == "ga":                  
+        #elif _algorithm == "ga":
+            print("==============")
+            print("Initialize GA")                  
             gaAlgo = ga.GA_Algorithmus(student_id=student_id, 
-                                    learning_style=learning_style, 
-                                    learning_elements=list_of_les)
-            self.path = gaAlgo.get_learning_path(input_learning_style=learning_style,
-                                              input_Learning_element=list_of_les)
+                                     learning_style=learning_style, 
+                                     learning_elements=list_of_les)
+            gaAlgo.get_learning_path(input_learning_style=learning_style,
+                                               input_Learning_element=list_of_les)
                                                                
         else:
             raise err.NoValidAlgorithmError()        

@@ -1,5 +1,5 @@
 from sklearn.metrics import pairwise_distances_argmin
-from domain.tutoringModel import util, utils
+from domain.tutoringModel import utils
 from domain.tutoringModel import model
 from datetime import datetime
 import errors as err
@@ -30,8 +30,10 @@ class GA_Algorithmus(object):
             self.id = id
 
         if(learning_elements is not None):
-            self.learning_elements = learning_elements
-            self.le_size = len(self.learning_elements)
+            self.learning_elements = utils.get_list_learning_element(
+                 learning_elements)
+            self.le_size = len(self.learning_elements)    
+            
 
     def create_random_population(self, dict_coordinates):
 
@@ -47,7 +49,7 @@ class GA_Algorithmus(object):
              for _ in range(self.pop_size)])
         
         with_cluster = False
-        with_cluster, labels = self.find_cluster(
+        with_cluster, labels = self.find_cluster_between_LE(
             self.le_coordinate, n_cluster=3, rseed=2)
 
         if(with_cluster):
@@ -73,7 +75,6 @@ class GA_Algorithmus(object):
         line_k = np.empty_like(new_pop, dtype=np.float64)
         total_distance = np.empty((line_x.shape[0],),
                                   dtype=np.float64)
-
         for i, d in enumerate(new_pop):
             LE_coord = self.le_coordinate[d]
             line_x[i, :] = LE_coord[:, 0]
@@ -84,7 +85,10 @@ class GA_Algorithmus(object):
 
     def get_fitness(self, line_x, line_y, line_z, line_k):
 
-        #Calculate Fitness function
+        # Calculate Fitness function. the fitness score 
+        # is evaluated for each individual, which is 
+        # calculated using the fitness function.
+
         re = list(zip(line_x, line_y, line_z, line_k))
         total_distance = np.empty((line_x.shape[0],),
                                   dtype=np.float64)
@@ -94,18 +98,7 @@ class GA_Algorithmus(object):
                      + np.square(np.diff(line_k)))
         fitness = np.sqrt(np.sum(total_sum, 1))
         return fitness
-
-    def set_best_sample(self, sample):
-
-        if (self.pop_size > 50):
-            temp = self.pop_size-3
-            self.population[20:temp, :] = sample
-
-    def sort_population(self, fitness):
-
-        idx = np.argsort(fitness)
-        return self.population[idx]
-
+  
     def crossover(self, parent, pop):
 
         if np.random.rand() < self.cross_rate:
@@ -114,7 +107,6 @@ class GA_Algorithmus(object):
             # choose crossover learning elements
             temp = (self.le_size - 1)
             cross_points = np.random.randint(0, 2, temp).astype(bool)
-
             keep_LE = parent[~cross_points] 
             swap_LE = pop[i_, np.isin(pop[i_].ravel(),
                           keep_LE, invert=True)]
@@ -134,9 +126,17 @@ class GA_Algorithmus(object):
 
     def evolve(self, fitness, best_sample):
         
+        # In the selection phase, after knowing the fitness 
+        # of each individual, those that will be crossed and 
+        # modified in the next generation will be selected.
         best_samples = 7
-        self.set_best_sample(best_sample)
-        population = self.sort_population(fitness)
+        
+        if (self.pop_size > 50):
+            self.population[20:-3, :] = best_sample
+        
+        idx = np.argsort(fitness)
+        population = self.population[idx]
+        
         pop_copy = population.copy()
 
         for parent in population:
@@ -165,14 +165,16 @@ class GA_Algorithmus(object):
         euclidean_distance = round(sume, 2)
         return euclidean_distance
 
-    def find_cluster(self, coordinates, n_cluster=3, rseed=2):
 
-        labels = []
-        daten = coordinates
-        rng = np.random.RandomState(rseed)
+    #finding clusters between learning elements
+    def find_cluster_between_LE(self, daten, n_cluster=3, rseed=2):
+
+        labels = []       
+  
         if(len(daten) <= 0):
             return False, labels
 
+        rng = np.random.RandomState(rseed)
         i = rng.permutation(daten.shape[0])[:n_cluster]
         centers = daten[i]
         new_centers = np.unique(centers, axis=0)
@@ -188,17 +190,14 @@ class GA_Algorithmus(object):
 
             if (np.all(centers == new_centers)):
                 break
-            else:
-                centers = new_centers
+            else: centers = new_centers
 
         return True, labels
     
-    def get_clustering_order(self, daten, labels):
-
-        labels = labels[1:len(labels)]
-
-        temp = self.le_size
-        positions = np.arange(1, temp)
+    def get_clustering_order(self, daten, labels):        
+        
+        labels = labels[1:]        
+        positions = np.arange(1, self.le_size)
         label_0 = positions[labels == 0]
         label_1 = positions[labels == 1]
         label_2 = positions[labels == 2]
@@ -210,9 +209,7 @@ class GA_Algorithmus(object):
         ga_path = np.array(self.learning_elements)        
         result_ga_LP = ga_path[daten]
         
-        print("daten:",daten)
-        self.daten_compare = daten
-        print("result_ga_LP***",result_ga_LP)
+        self.daten_compare = daten       
         return daten
 
     def calculate_learning_path(self, learning_style):
@@ -221,7 +218,7 @@ class GA_Algorithmus(object):
         best_total_score = 300
         le_coordinate = utils.get_coordinates(
             learning_style, self.learning_elements)
-        #print ("le_coordinate",le_coordinate )
+       
         self.create_random_population(le_coordinate)
 
         for generatiion in range(self.n_generation):
@@ -249,8 +246,7 @@ class GA_Algorithmus(object):
             self.evolve(fitness, best_sample)
 
         euclidean_distance = self.calculate_distance(best_sample)
-        print("\neuclidean_distance:", euclidean_distance)
-
+       
         ga_path = np.array(self.learning_elements)
         population = self.valide_population()
         idx = population[0]
@@ -263,66 +259,41 @@ class GA_Algorithmus(object):
             Contain_LE = True
 
         if(Contain_LE):
-            learning_path = learning_path[:-2]
-
-
-        print("daten_compare:",self.daten_compare)
-        print("idx:",idx)
-
+            learning_path = learning_path[:-2]     
+       
         return learning_path
 
-    def get_learning_path(self, input_learning_style={"act": 1, "sns": 7,
-                                                      "vis": 5, "glo": 1},
+    def get_learning_path(self, input_learning_style=None,
                           input_Learning_element=None):
-
+                
+        result_ga = []
         time1 = time.time()
-        input_learning_style = self.get_probe_learning_style()
-        #print("input_learning_style",input_learning_style)
+          
         if input_learning_style is not None:
-            learning_style = utils.get_learning_style(input_learning_style)
-            learning_style = {"act": 5, "int": 9,
-                              "vis": 9, "glo": 3}
-
+             learning_style = utils.get_learning_style(input_learning_style)
+                         
         if (len(learning_style) != 4):
             raise err.WrongLearningStyleNumberError()
 
-        if util.check_learning_style(learning_style):
+        if utils.check_learning_style(learning_style):
             raise err.WrongLearningStyleDimensionError()
 
-        if util.check_name_learning_style(learning_style):
+        if utils.check_name_learning_style(learning_style):
             raise err.WrongLearningStyleDimensionError()
 
-        if input_Learning_element is not None:
-
-           #print("---input_Learning_element",input_Learning_element)
-            input_Learning_element = util.add_Learning_element(input_Learning_element)
-            self.learning_elements = util.get_learning_element(
-                input_Learning_element)
-            self.le_size = len(self.learning_elements)
-            #print ("\n\n\ninput_Learning_element",input_Learning_element)
-
+        if input_Learning_element is not None:      
+           self.learning_elements = utils.get_list_learning_element(
+                 input_Learning_element)
+           self.le_size = len(self.learning_elements)           
         else:
-           raise err.WrongLearningStyleDimensionError()
-
-        result_ga_LP = self.calculate_learning_path(input_learning_style)
+           raise err.WrongLearningStyleDimensionError()        
+       
+        result_ga = self.calculate_learning_path(input_learning_style)
 
         time2 = time.time()
         time_sec = time2-time1
-        print("Time_sec: ", time_sec)
-        print("\nResult_GA_LP: ", result_ga_LP)
-        print("\n\n")
-        
-        
+        #print("Time_sec: ", time_sec)
+        print("\nResult_GA_Learning path: ", result_ga)
+        #print("\n\n")
 
-        return result_ga_LP
-
-    def get_probe_learning_style(self):
-
-        input_learning_style = {'id': 1, 'characteristic_id': 1,
-                                'perception_dimension': 'int',
-                                'perception_value': 9, 'input_dimension': 'vis',
-                                'input_value': 9, 'processing_dimension': 'act',
-                                'processing_value': 5, 'understanding_dimension': 'glo',
-                                'understanding_value': 9}
-
-        return input_learning_style
+        return result_ga

@@ -114,11 +114,9 @@ def get_learning_style( learning_style):
         if value == None:
             del result[key]
 
-    print("\nnew_learning_style__LS",learning_style )        
-    print("\nnew_Result__LS",result )
+    #print("\nnew_learning_style__LS",learning_style )        
+    #print("\nnew_Result__LS",result )
     return result     
-
-
 
 def get_list_learning_element(learning_elements):
 
@@ -138,5 +136,41 @@ def get_list_learning_element(learning_elements):
 
     if(lz_is_present):
         classification_learning_element.append(lz_element)       
-    print("learning elements", classification_learning_element) 
+    
     return classification_learning_element   
+
+
+def check_learning_style(input_learning_style):
+
+    is_correct = False
+    for iterator in input_learning_style:
+
+        if (input_learning_style.get(iterator)):
+
+            dimension_number = input_learning_style.get(iterator)
+            if (dimension_number < 0 or dimension_number > 11):
+                is_correct = True
+                break
+
+    return is_correct
+
+def check_name_learning_style(input_learning_style):
+    # this function may not be necessary
+   
+    list_is_correct = []
+
+    for iterator in input_learning_style:
+
+        condition1 = (iterator == 'act' or iterator == 'ref')
+        condition2 = (iterator == 'sns' or iterator == 'int')
+        condition3 = (iterator == 'vis' or iterator == 'vrb')
+        condition4 = (iterator == 'seq' or iterator == 'glo')
+        
+        if(condition1 or condition2 or condition3 or condition4):
+            list_is_correct.append(True)        
+
+    temp = [True, True, True, True]
+    if(list_is_correct != temp):
+        return True
+
+    return False

@@ -5,7 +5,7 @@ from sqlalchemy.orm import clear_mappers, sessionmaker
 from entrypoints.flask_app import app
 from repositories.orm import mapper_registry, start_mappers
 
-engine = create_engine("sqlite+pysqlite:///:memory:", future=True)
+engine = create_engine("sqlite+pysqlite:///:memory:", future=True, echo=True)
 mapper_registry.metadata.create_all(engine)
 # here, we set up postgresql in-memory:
 # socket_dir = tempfile.TemporaryDirectory(dir=os.environ.get("TEST_TEMP_DIR", "./tmp"))
@@ -14,7 +14,6 @@ mapper_registry.metadata.create_all(engine)
 #     unixsocketdir=socket_dir.name,
 # )
 # postgresql_my = factories.postgresql("postgresql_my_proc")
-
 
 # @pytest.fixture
 # def in_memory_db():  # pragma: no cover
@@ -33,7 +32,7 @@ mapper_registry.metadata.create_all(engine)
 #     return engine
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def session_factory():  # pragma: no cover
     clear_mappers()
     start_mappers()
@@ -41,7 +40,7 @@ def session_factory():  # pragma: no cover
     clear_mappers()
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def client(session_factory):  # pragma: no cover
     # Mock unit_of_work.SqlAlchemyUnitOfWork
     # DEFAULT_SESSION_FACTORY to use in-memory database

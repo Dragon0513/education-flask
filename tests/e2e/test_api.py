@@ -153,6 +153,75 @@ list_k_ids = [
 ]
 wrong_test_id = "Test ID"
 
+# fixtures
+
+
+# def predefined_users(client):
+#     client_class.post(
+#         path_lms_user,
+#         json={
+#             "name": "Achim Admin",
+#             "lms_user_id": 1,
+#             "role": "Admin",
+#             "university": "TH-AB",
+#             "password": "password",
+#         },
+#     )
+#     client_class.post(
+#         path_lms_user,
+#         json={
+#             "name": "Claus Creator",
+#             "lms_user_id": 2,
+#             "role": "Course Creator",
+#             "university": "TH-AB",
+#             "password": "password",
+#         },
+#     )
+#     client_class.post(
+#         path_lms_user,
+#         json={
+#             "name": "Tim Teacher",
+#             "lms_user_id": 3,
+#             "role": "Teacher",
+#             "university": "TH-AB",
+#             "password": "password",
+#         },
+#     )
+#     client_class.post(
+#         path_lms_user,
+#         json={
+#             "name": "Sonja Studentin",
+#             "lms_user_id": 4,
+#             "role": "Student",
+#             "university": "TH-AB",
+#             "password": "password",
+#         },
+#     )
+
+
+# def fill_globals(r):
+#     response = json.loads(r.data.decode("utf-8").strip("\n"))
+#     user_id = response["id"]
+#     role_id = response["role_id"]
+#     return user_id, role_id
+# Class setup
+@pytest.mark.usefixtures("client")
+@pytest.fixture(scope="session", name="client_class")
+def client(client):
+    return client
+
+
+global_client_class = None
+
+
+@pytest.fixture(scope="session")
+@pytest.mark.usefixtures("client_class")
+def client_class(client_class):
+    global global_client_class
+    if global_client_class is None:
+        global_client_class = client_class
+    return global_client_class
+
 
 class TestApi:
     # POST METHODS
@@ -286,10 +355,10 @@ class TestApi:
         ],
     )
     def test_api_create_user_from_moodle(
-        self, client, input, keys_expected, status_code_expected, save_id
+        self, client_class, input, keys_expected, status_code_expected, save_id
     ):
         url = path_lms_user
-        r = client.post(url, json=input)
+        r = client_class.post(url, json=input)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))
         for key in keys_expected:
@@ -323,7 +392,7 @@ class TestApi:
                 {
                     "name": "Test Course",
                     "lms_id": 1,
-                    "created_at": "2017-07-21T17:32:28Z",
+                    "created_at": "2023-08-01T13:37:42Z",
                     "university": "TH-AB",
                 },
                 ["id", "name", "lms_id", "created_at", "created_by", "university"],
@@ -342,7 +411,7 @@ class TestApi:
                 {
                     "name": "Test Course",
                     "lms_id": "1",
-                    "created_at": "2017-07-21T17:32:28Z",
+                    "created_at": "2023-08-01T13:37:42Z",
                     "university": "TH-AB",
                 },
                 ["error", "message"],
@@ -354,7 +423,7 @@ class TestApi:
                 {
                     "name": "Test Course",
                     "lms_id": 1,
-                    "created_at": "2017-07-21T17:32:28Z",
+                    "created_at": "2023-08-01T13:37:42Z",
                     "university": "TH-AB",
                 },
                 ["error", "message"],
@@ -364,12 +433,12 @@ class TestApi:
         ],
     )
     def test_api_create_course_from_moodle(
-        self, client, input, keys_expected, status_code_expected, save_id
+        self, client_class, input, keys_expected, status_code_expected, save_id
     ):
         global user_id_course_creator
         input["created_by"] = user_id_course_creator
         url = path_lms_course
-        r = client.post(url, json=input)
+        r = client_class.post(url, json=input)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))
         for key in keys_expected:
@@ -391,7 +460,7 @@ class TestApi:
                     "is_topic": True,
                     "contains_le": False,
                     "created_by": "Maria Musterfrau",
-                    "created_at": "2017-07-21T17:32:28Z",
+                    "created_at": "2023-08-01T13:37:42Z",
                     "university": "TH-AB",
                 },
                 1,
@@ -418,7 +487,7 @@ class TestApi:
                     "parent_id": 1,
                     "contains_le": True,
                     "created_by": "Maria Musterfrau",
-                    "created_at": "2017-07-21T17:32:28Z",
+                    "created_at": "2023-08-01T13:37:42Z",
                     "university": "TH-AB",
                 },
                 1,
@@ -443,7 +512,7 @@ class TestApi:
                     "is_topic": True,
                     "contains_le": False,
                     "created_by": "Maria Musterfrau",
-                    "created_at": "2017-07-21T17:32:28Z",
+                    "created_at": "2023-08-01T13:37:42Z",
                     "university": "TH-AB",
                 },
                 1,
@@ -459,7 +528,7 @@ class TestApi:
                     "is_topic": True,
                     "contains_le": False,
                     "created_by": "Maria Musterfrau",
-                    "created_at": "2017-07-21T17:32:28Z",
+                    "created_at": "2023-08-01T13:37:42Z",
                     "university": "TH-AB",
                 },
                 1,
@@ -475,7 +544,7 @@ class TestApi:
                     "is_topic": True,
                     "contains_le": False,
                     "created_by": "Maria Musterfrau",
-                    "created_at": "2017-07-21T17:32:28Z",
+                    "created_at": "2023-08-01T13:37:42Z",
                     "university": "TH-AB",
                 },
                 1,
@@ -487,7 +556,7 @@ class TestApi:
     )
     def test_api_create_topic_from_moodle(
         self,
-        client,
+        client_class,
         input,
         moodle_course_id,
         keys_expected,
@@ -505,7 +574,7 @@ class TestApi:
         )
         if topic_id != 0:
             input["parent_id"] = topic_id
-        r = client.post(url, json=input)
+        r = client_class.post(url, json=input)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))
         for key in keys_expected:
@@ -530,7 +599,7 @@ class TestApi:
                     "classification": "RQ",
                     "name": "Test Learning Element",
                     "created_by": "Maria Musterfrau",
-                    "created_at": "2017-07-21T17:32:28Z",
+                    "created_at": "2023-08-01T13:37:42Z",
                     "university": "TH-AB",
                 },
                 1,
@@ -555,7 +624,7 @@ class TestApi:
                     "classification": "RQ",
                     "name": "Test Learning Element",
                     "created_by": "Maria Musterfrau",
-                    "created_at": "2017-07-21T17:32:28Z",
+                    "created_at": "2023-08-01T13:37:42Z",
                     "university": "TH-AB",
                 },
                 1,
@@ -572,7 +641,7 @@ class TestApi:
                     "classification": "RQ",
                     "name": "Test Learning Element",
                     "created_by": "Maria Musterfrau",
-                    "created_at": "2017-07-21T17:32:28Z",
+                    "created_at": "2023-08-01T13:37:42Z",
                     "university": "TH-AB",
                 },
                 1,
@@ -589,7 +658,7 @@ class TestApi:
                     "classification": "RQ",
                     "name": "Test Learning Element",
                     "created_by": "Maria Musterfrau",
-                    "created_at": "2017-07-21T17:32:28Z",
+                    "created_at": "2023-08-01T13:37:42Z",
                     "university": "TH-AB",
                 },
                 1,
@@ -602,7 +671,7 @@ class TestApi:
     )
     def test_api_create_le_from_moodle(
         self,
-        client,
+        client_class,
         input,
         moodle_course_id,
         moodle_topic_id,
@@ -625,7 +694,7 @@ class TestApi:
             + str(moodle_topic_id)
             + path_learning_element
         )
-        r = client.post(url, json=input)
+        r = client_class.post(url, json=input)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))
         for key in keys_expected:
@@ -650,7 +719,12 @@ class TestApi:
         ],
     )
     def test_add_teacher_to_course(
-        self, client, error_teacher, error_course, keys_expected, status_code_expected
+        self,
+        client_class,
+        error_teacher,
+        error_course,
+        keys_expected,
+        status_code_expected,
     ):
         global course_id, teacher_id
         if error_teacher:
@@ -669,7 +743,7 @@ class TestApi:
             + "/"
             + str(teacher_id_use)
         )
-        r = client.post(url)
+        r = client_class.post(url)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))
         for key in keys_expected:
@@ -708,7 +782,12 @@ class TestApi:
         ],
     )
     def test_add_student_to_course(
-        self, client, error_student, error_course, keys_expected, status_code_expected
+        self,
+        client_class,
+        error_student,
+        error_course,
+        keys_expected,
+        status_code_expected,
     ):
         global course_id, student_id
         if error_student:
@@ -727,7 +806,7 @@ class TestApi:
             + "/"
             + str(student_id_use)
         )
-        r = client.post(url)
+        r = client_class.post(url)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))
         for key in keys_expected:
@@ -836,7 +915,7 @@ class TestApi:
     )
     def test_post_questionnaire(
         self,
-        client,
+        client_class,
         ils_long,
         moodle_user_id,
         keys_expected,
@@ -901,7 +980,7 @@ class TestApi:
             + str(moodle_user_id)
             + path_questionnaire
         )
-        r = client.post(url, json=json_input)
+        r = client_class.post(url, json=json_input)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))
         for key in keys_expected:
@@ -917,7 +996,7 @@ class TestApi:
         [
             # Working Example
             (
-                {"visit_start": "2017-07-21T17:32:28Z"},
+                {"visit_start": "2023-08-01T13:37:42Z"},
                 4,
                 ["id", "student_id", "topic_id", "visit_start", "visit_end"],
                 201,
@@ -929,7 +1008,7 @@ class TestApi:
         ],
     )
     def test_post_topic_visit(
-        self, client, input, moodle_user_id, keys_expected, status_code_expected
+        self, client_class, input, moodle_user_id, keys_expected, status_code_expected
     ):
         global student_id, topic_id
         url = (
@@ -942,7 +1021,7 @@ class TestApi:
             + "/"
             + str(topic_id)
         )
-        r = client.post(url, json=input)
+        r = client_class.post(url, json=input)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))
         for key in keys_expected:
@@ -955,7 +1034,7 @@ class TestApi:
         [
             # Working Example
             (
-                {"visit_start": "2017-07-21T17:32:28Z"},
+                {"visit_start": "2023-08-01T13:37:42Z"},
                 4,
                 ["student_id", "learning_element_id", "visit_start", "visit_end"],
                 201,
@@ -967,7 +1046,7 @@ class TestApi:
         ],
     )
     def test_post_learning_element_visit(
-        self, client, input, moodle_user_id, keys_expected, status_code_expected
+        self, client_class, input, moodle_user_id, keys_expected, status_code_expected
     ):
         global student_id, learning_element_id
         url = (
@@ -980,7 +1059,7 @@ class TestApi:
             + "/"
             + str(learning_element_id)
         )
-        r = client.post(url, json=input)
+        r = client_class.post(url, json=input)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))
         for key in keys_expected:
@@ -1011,7 +1090,7 @@ class TestApi:
         ],
     )
     def test_post_learning_path(
-        self, client, input, moodle_user_id, keys_expected, status_code_expected
+        self, client_class, input, moodle_user_id, keys_expected, status_code_expected
     ):
         global user_id_student, student_id, course_id, sub_topic_id
         url = (
@@ -1031,7 +1110,7 @@ class TestApi:
             + str(sub_topic_id)
             + path_learning_path
         )
-        r = client.post(url, json=input)
+        r = client_class.post(url, json=input)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))
         for key in keys_expected:
@@ -1064,7 +1143,7 @@ class TestApi:
         ],
     )
     def test_post_contact_form(
-        self, client, input, lms_user_id, keys_expected, status_code_expected
+        self, client_class, input, lms_user_id, keys_expected, status_code_expected
     ):
         user_id_student = 4
         url = (
@@ -1075,7 +1154,7 @@ class TestApi:
             + str(lms_user_id)
             + path_contactform
         )
-        r = client.post(url, json=input)
+        r = client_class.post(url, json=input)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))
         for key in keys_expected:
@@ -1159,10 +1238,10 @@ class TestApi:
         ],
     )
     def test_api_post_frontend_logs(
-        self, client, input, keys_expected, status_code_expected
+        self, client_class, input, keys_expected, status_code_expected
     ):
         url = path_frontend_logs
-        r = client.post(url, json=input)
+        r = client_class.post(url, json=input)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))
         for key in keys_expected:
@@ -1191,7 +1270,7 @@ class TestApi:
         ],
     )
     def test_get_students_learning_characteristics(
-        self, client, lms_user_id, status_code_expected, keys_expected, error
+        self, client_class, lms_user_id, status_code_expected, keys_expected, error
     ):
         global user_id_student, student_id
         if error:
@@ -1209,7 +1288,7 @@ class TestApi:
             + str(student_id_use)
             + path_learning_characteristics
         )
-        r = client.get(url)
+        r = client_class.get(url)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))
         for key in keys_expected:
@@ -1227,7 +1306,7 @@ class TestApi:
         ],
     )
     def test_get_students_learning_analytics(
-        self, client, lms_user_id, status_code_expected, keys_expected, error
+        self, client_class, lms_user_id, status_code_expected, keys_expected, error
     ):
         global user_id_student, student_id
         if error:
@@ -1245,7 +1324,7 @@ class TestApi:
             + str(student_id_use)
             + path_learning_analytics
         )
-        r = client.get(url)
+        r = client_class.get(url)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))
         for key in keys_expected:
@@ -1277,7 +1356,7 @@ class TestApi:
         ],
     )
     def test_get_students_learning_style(
-        self, client, lms_user_id, status_code_expected, keys_expected, error
+        self, client_class, lms_user_id, status_code_expected, keys_expected, error
     ):
         global user_id_student, student_id
         if error:
@@ -1295,7 +1374,7 @@ class TestApi:
             + str(student_id_use)
             + path_learning_style
         )
-        r = client.get(url)
+        r = client_class.get(url)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))
         for key in keys_expected:
@@ -1313,7 +1392,7 @@ class TestApi:
         ],
     )
     def test_get_students_learning_strategy(
-        self, client, lms_user_id, status_code_expected, keys_expected, error
+        self, client_class, lms_user_id, status_code_expected, keys_expected, error
     ):
         global user_id_student, student_id
         if error:
@@ -1331,7 +1410,7 @@ class TestApi:
             + str(student_id_use)
             + path_learning_strategy
         )
-        r = client.get(url)
+        r = client_class.get(url)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))
         for key in keys_expected:
@@ -1349,7 +1428,7 @@ class TestApi:
         ],
     )
     def test_get_students_knowledge(
-        self, client, lms_user_id, status_code_expected, keys_expected, error
+        self, client_class, lms_user_id, status_code_expected, keys_expected, error
     ):
         global user_id_student, student_id
         if error:
@@ -1367,7 +1446,7 @@ class TestApi:
             + str(student_id_use)
             + path_knowledge
         )
-        r = client.get(url)
+        r = client_class.get(url)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))
         for key in keys_expected:
@@ -1386,7 +1465,7 @@ class TestApi:
     )
     def test_get_student_courses(
         self,
-        client,
+        client_class,
         lms_user_id,
         status_code_expected,
         keys_expected_1,
@@ -1409,7 +1488,7 @@ class TestApi:
             + str(student_id_use)
             + path_course
         )
-        r = client.get(url)
+        r = client_class.get(url)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))
         if "courses" in keys_expected_1:
@@ -1437,7 +1516,7 @@ class TestApi:
     )
     def test_get_student_course(
         self,
-        client,
+        client_class,
         lms_user_id,
         status_code_expected,
         keys_expected,
@@ -1466,7 +1545,7 @@ class TestApi:
             + "/"
             + str(course_id_use)
         )
-        r = client.get(url)
+        r = client_class.get(url)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))
         for key in keys_expected:
@@ -1504,7 +1583,7 @@ class TestApi:
     )
     def test_get_student_course_topics(
         self,
-        client,
+        client_class,
         lms_user_id,
         status_code_expected,
         keys_expected_1,
@@ -1535,7 +1614,7 @@ class TestApi:
             + str(course_id_use)
             + path_topic
         )
-        r = client.get(url)
+        r = client_class.get(url)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))
         if "topics" in keys_expected_1:
@@ -1578,7 +1657,7 @@ class TestApi:
     )
     def test_get_les_in_course_for_student(
         self,
-        client,
+        client_class,
         lms_user_id,
         status_code_expected,
         keys_expected_1,
@@ -1609,7 +1688,7 @@ class TestApi:
             + str(course_id_use)
             + path_learning_element
         )
-        r = client.get(url)
+        r = client_class.get(url)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))
         if "topics" in keys_expected_1:
@@ -1655,7 +1734,7 @@ class TestApi:
     )
     def test_get_topic_by_id_for_student(
         self,
-        client,
+        client_class,
         lms_user_id,
         status_code_expected,
         keys_expected,
@@ -1692,7 +1771,7 @@ class TestApi:
             + "/"
             + str(topic_id_use)
         )
-        r = client.get(url)
+        r = client_class.get(url)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))
         for key in keys_expected:
@@ -1731,7 +1810,7 @@ class TestApi:
     )
     def test_get_topic_recommendation_for_student(
         self,
-        client,
+        client_class,
         lms_user_id,
         keys_expected,
         status_code_expected,
@@ -1769,7 +1848,7 @@ class TestApi:
             + str(topic_id_use)
             + path_recommendation
         )
-        r = client.get(url)
+        r = client_class.get(url)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))
         for key in keys_expected:
@@ -1808,7 +1887,7 @@ class TestApi:
     )
     def test_get_learning_path_for_student(
         self,
-        client,
+        client_class,
         lms_user_id,
         status_code_expected,
         keys_expected,
@@ -1846,7 +1925,7 @@ class TestApi:
             + str(topic_id_use)
             + path_learning_path
         )
-        r = client.get(url)
+        r = client_class.get(url)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))
         for key in keys_expected:
@@ -1887,7 +1966,7 @@ class TestApi:
     )
     def test_get_sub_topics_for_topic(
         self,
-        client,
+        client_class,
         lms_user_id,
         status_code_expected,
         keys_expected_1,
@@ -1926,7 +2005,7 @@ class TestApi:
             + str(topic_id_use)
             + path_subtopic
         )
-        r = client.get(url)
+        r = client_class.get(url)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))
         if "topics" in keys_expected_1:
@@ -1973,7 +2052,7 @@ class TestApi:
     )
     def test_get_les_for_topic_for_student(
         self,
-        client,
+        client_class,
         lms_user_id,
         status_code_expected,
         keys_expected_1,
@@ -2012,7 +2091,7 @@ class TestApi:
             + str(topic_id_use)
             + path_learning_element
         )
-        r = client.get(url)
+        r = client_class.get(url)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))
         if "learning_elements" in keys_expected_1:
@@ -2061,7 +2140,7 @@ class TestApi:
     )
     def test_get_le_by_id_for_student(
         self,
-        client,
+        client_class,
         lms_user_id,
         status_code_expected,
         keys_expected,
@@ -2107,7 +2186,7 @@ class TestApi:
             + "/"
             + str(learning_element_id_use)
         )
-        r = client.get(url)
+        r = client_class.get(url)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))
         for key in keys_expected:
@@ -2127,7 +2206,7 @@ class TestApi:
     )
     def test_get_users_by_admin_id(
         self,
-        client,
+        client_class,
         lms_user_id,
         keys_expected_1,
         keys_expected_2,
@@ -2150,7 +2229,7 @@ class TestApi:
             + str(admin_id)
             + path_user
         )
-        r = client.get(url)
+        r = client_class.get(url)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))
         if "users" in keys_expected_1:
@@ -2172,7 +2251,12 @@ class TestApi:
         ],
     )
     def test_get_logs_by_admin_id(
-        self, client, lms_user_id, keys_expected, status_code_expected, error_admin
+        self,
+        client_class,
+        lms_user_id,
+        keys_expected,
+        status_code_expected,
+        error_admin,
     ):
         global user_id_admin, admin_id
         if error_admin:
@@ -2190,7 +2274,7 @@ class TestApi:
             + str(admin_id)
             + path_logs
         )
-        r = client.get(url)
+        r = client_class.get(url)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))
         for key in keys_expected:
@@ -2210,7 +2294,7 @@ class TestApi:
     )
     def test_get_courses_by_teacher_id(
         self,
-        client,
+        client_class,
         lms_user_id,
         keys_expected_1,
         keys_expected_2,
@@ -2233,7 +2317,7 @@ class TestApi:
             + str(teacher_id)
             + path_course
         )
-        r = client.get(url)
+        r = client_class.get(url)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))
         if "courses" in keys_expected_1:
@@ -2260,7 +2344,7 @@ class TestApi:
         ],
     )
     def test_get_user_by_id(
-        self, client, lms_user_id, keys_expected, status_code_expected, error
+        self, client_class, lms_user_id, keys_expected, status_code_expected, error
     ):
         global user_id_student
         if error:
@@ -2268,7 +2352,7 @@ class TestApi:
         else:
             user_id_use = user_id_student
         url = path_user + "/" + str(user_id_use) + "/" + str(lms_user_id)
-        r = client.get(url)
+        r = client_class.get(url)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))
         for key in keys_expected:
@@ -2286,7 +2370,7 @@ class TestApi:
         ],
     )
     def test_get_user_settings_by_id(
-        self, client, lms_user_id, keys_expected, status_code_expected, error
+        self, client_class, lms_user_id, keys_expected, status_code_expected, error
     ):
         global user_id_student
         if error:
@@ -2296,7 +2380,7 @@ class TestApi:
         url = (
             path_user + "/" + str(user_id_use) + "/" + str(lms_user_id) + path_settings
         )
-        r = client.get(url)
+        r = client_class.get(url)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))
         for key in keys_expected:
@@ -2333,7 +2417,7 @@ class TestApi:
     )
     def test_update_user_settings_by_id(
         self,
-        client,
+        client_class,
         lms_user_id,
         request_body,
         keys_expected,
@@ -2348,7 +2432,7 @@ class TestApi:
         url = (
             path_user + "/" + str(user_id_use) + "/" + str(lms_user_id) + path_settings
         )
-        r = client.put(url, json=request_body)
+        r = client_class.put(url, json=request_body)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))
         for key in keys_expected:
@@ -2440,7 +2524,7 @@ class TestApi:
     )
     def test_update_learning_style_by_student_id(
         self,
-        client,
+        client_class,
         lms_user_id,
         request_body,
         keys_expected,
@@ -2463,7 +2547,7 @@ class TestApi:
             + str(student_id)
             + path_learning_style
         )
-        r = client.put(url, json=request_body)
+        r = client_class.put(url, json=request_body)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))
         for key in keys_expected:
@@ -2524,11 +2608,11 @@ class TestApi:
         ],
     )
     def test_update_user_from_moodle(
-        self, client, input, moodle_user_id, keys_expected, status_code_expected
+        self, client_class, input, moodle_user_id, keys_expected, status_code_expected
     ):
         global user_id_student
         url = path_lms_user + "/" + str(user_id_student) + "/" + str(moodle_user_id)
-        r = client.put(url, json=input)
+        r = client_class.put(url, json=input)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))
         for key in keys_expected:
@@ -2544,7 +2628,7 @@ class TestApi:
                 {
                     "name": "Test Course Updated",
                     "created_by": "Maria Musterfrau",
-                    "created_at": "2017-07-21T17:32:28Z",
+                    "created_at": "2023-08-01T13:37:42Z",
                     "last_updated": "2018-07-21T17:32:28Z",
                     "university": "TH-AB",
                 },
@@ -2556,7 +2640,7 @@ class TestApi:
             (
                 {
                     "created_by": "Maria Musterfrau",
-                    "created_at": "2017-07-21T17:32:28Z",
+                    "created_at": "2023-08-01T13:37:42Z",
                     "last_updated": "2018-07-21T17:32:28Z",
                     "university": "TH-AB",
                 },
@@ -2569,7 +2653,7 @@ class TestApi:
                 {
                     "name": "Test Course Updated",
                     "created_by": "Maria Musterfrau",
-                    "created_at": "2017-07-21T17:32:28Z",
+                    "created_at": "2023-08-01T13:37:42Z",
                     "last_updated": "01.01.2023",
                     "university": "TH-AB",
                 },
@@ -2580,11 +2664,11 @@ class TestApi:
         ],
     )
     def test_update_course_from_moodle(
-        self, client, input, moodle_course_id, keys_expected, status_code_expected
+        self, client_class, input, moodle_course_id, keys_expected, status_code_expected
     ):
         global course_id
         url = path_lms_course + "/" + str(course_id) + "/" + str(moodle_course_id)
-        r = client.put(url, json=input)
+        r = client_class.put(url, json=input)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))
         for key in keys_expected:
@@ -2603,7 +2687,7 @@ class TestApi:
                     "parent_id": None,
                     "contains_le": False,
                     "created_by": "Maria Musterfrau",
-                    "created_at": "2017-07-21T17:32:28Z",
+                    "created_at": "2023-08-01T13:37:42Z",
                     "last_updated": "2018-07-21T17:32:28Z",
                     "university": "TH-AB",
                 },
@@ -2631,7 +2715,7 @@ class TestApi:
                     "parent_id": None,
                     "contains_le": True,
                     "created_by": "Maria Musterfrau",
-                    "created_at": "2017-07-21T17:32:28Z",
+                    "created_at": "2023-08-01T13:37:42Z",
                     "last_updated": "2018-07-21T17:32:28Z",
                     "university": "TH-AB",
                 },
@@ -2658,7 +2742,7 @@ class TestApi:
                     "parent_id": 1,
                     "contains_le": False,
                     "created_by": "Maria Musterfrau",
-                    "created_at": "2017-07-21T17:32:28Z",
+                    "created_at": "2023-08-01T13:37:42Z",
                     "last_updated": "2018-07-21T17:32:28Z",
                     "university": "TH-AB",
                 },
@@ -2676,7 +2760,7 @@ class TestApi:
                     "parent_id": None,
                     "contains_le": False,
                     "created_by": "Maria Musterfrau",
-                    "created_at": "2017-07-21T17:32:28Z",
+                    "created_at": "2023-08-01T13:37:42Z",
                     "last_updated": "01-01-2023",
                     "university": "TH-AB",
                 },
@@ -2690,7 +2774,7 @@ class TestApi:
     )
     def test_update_topic_from_moodle(
         self,
-        client,
+        client_class,
         input,
         moodle_course_id,
         moodle_topic_id,
@@ -2716,7 +2800,7 @@ class TestApi:
             + "/"
             + str(moodle_topic_id)
         )
-        r = client.put(url, json=input)
+        r = client_class.put(url, json=input)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))
         for key in keys_expected:
@@ -2735,7 +2819,7 @@ class TestApi:
                     "classification": "RQ",
                     "name": "Test Learning Element Updated",
                     "created_by": "Maria Musterfrau",
-                    "created_at": "2017-07-21T17:32:28Z",
+                    "created_at": "2023-08-01T13:37:42Z",
                     "last_updated": "2018-07-21T17:32:28Z",
                     "university": "TH-AB",
                 },
@@ -2760,7 +2844,7 @@ class TestApi:
                     "classification": "RQ",
                     "name": "Test Learning Element Updated",
                     "created_by": "Maria Musterfrau",
-                    "created_at": "2017-07-21T17:32:28Z",
+                    "created_at": "2023-08-01T13:37:42Z",
                     "last_updated": "2018-07-21T17:32:28Z",
                     "university": "TH-AB",
                 },
@@ -2777,7 +2861,7 @@ class TestApi:
                     "classification": "RQ",
                     "name": "Test Learning Element Updated",
                     "created_by": "Maria Musterfrau",
-                    "created_at": "2017-07-21T17:32:28Z",
+                    "created_at": "2023-08-01T13:37:42Z",
                     "last_updated": "01.01.2023",
                     "university": "TH-AB",
                 },
@@ -2791,7 +2875,7 @@ class TestApi:
     )
     def test_update_le_from_moodle(
         self,
-        client,
+        client_class,
         input,
         moodle_course_id,
         moodle_topic_id,
@@ -2817,7 +2901,7 @@ class TestApi:
             + "/"
             + str(moodle_learning_element_id)
         )
-        r = client.put(url, json=input)
+        r = client_class.put(url, json=input)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))
         for key in keys_expected:
@@ -2836,7 +2920,7 @@ class TestApi:
         ],
     )
     def test_reset_user_settings(
-        self, client, lms_user_id, keys_expected, status_code_expected, error
+        self, client_class, lms_user_id, keys_expected, status_code_expected, error
     ):
         global user_id_student
         if error:
@@ -2846,7 +2930,7 @@ class TestApi:
         url = (
             path_user + "/" + str(user_id_use) + "/" + str(lms_user_id) + path_settings
         )
-        r = client.delete(url)
+        r = client_class.delete(url)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))
         for key in keys_expected:
@@ -2876,7 +2960,7 @@ class TestApi:
         ],
     )
     def test_reset_learning_characteristics(
-        self, client, lms_user_id, keys_expected, status_code_expected, error
+        self, client_class, lms_user_id, keys_expected, status_code_expected, error
     ):
         global user_id_student, student_id
         if error:
@@ -2894,7 +2978,7 @@ class TestApi:
             + str(student_id)
             + path_learning_characteristics
         )
-        r = client.delete(url)
+        r = client_class.delete(url)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))
         for key in keys_expected:
@@ -2912,7 +2996,7 @@ class TestApi:
         ],
     )
     def test_reset_learning_analytics(
-        self, client, lms_user_id, keys_expected, status_code_expected, error
+        self, client_class, lms_user_id, keys_expected, status_code_expected, error
     ):
         global user_id_student, student_id
         if error:
@@ -2930,7 +3014,7 @@ class TestApi:
             + str(student_id)
             + path_learning_analytics
         )
-        r = client.delete(url)
+        r = client_class.delete(url)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))
         for key in response.keys():
@@ -2964,7 +3048,7 @@ class TestApi:
         ],
     )
     def test_reset_learning_style(
-        self, client, lms_user_id, keys_expected, status_code_expected, error
+        self, client_class, lms_user_id, keys_expected, status_code_expected, error
     ):
         global user_id_student, student_id
         if error:
@@ -2982,7 +3066,7 @@ class TestApi:
             + str(student_id)
             + path_learning_style
         )
-        r = client.delete(url)
+        r = client_class.delete(url)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))
         for key in response.keys():
@@ -3000,7 +3084,7 @@ class TestApi:
         ],
     )
     def test_reset_learning_strategy(
-        self, client, lms_user_id, keys_expected, status_code_expected, error
+        self, client_class, lms_user_id, keys_expected, status_code_expected, error
     ):
         global user_id_student, student_id
         if error:
@@ -3018,7 +3102,7 @@ class TestApi:
             + str(student_id)
             + path_learning_strategy
         )
-        r = client.delete(url)
+        r = client_class.delete(url)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))
         for key in response.keys():
@@ -3036,7 +3120,7 @@ class TestApi:
         ],
     )
     def test_reset_knowledge(
-        self, client, lms_user_id, keys_expected, status_code_expected, error
+        self, client_class, lms_user_id, keys_expected, status_code_expected, error
     ):
         global user_id_student, student_id
         if error:
@@ -3054,7 +3138,7 @@ class TestApi:
             + str(student_id)
             + path_knowledge
         )
-        r = client.delete(url)
+        r = client_class.delete(url)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))
         for key in response.keys():
@@ -3070,7 +3154,7 @@ class TestApi:
         ],
     )
     def test_delete_contact_form(
-        self, client, lms_user_id, user_id, status_code_expected
+        self, client_class, lms_user_id, user_id, status_code_expected
     ):
         user_id_student = user_id
         url = (
@@ -3081,7 +3165,7 @@ class TestApi:
             + str(lms_user_id)
             + path_contactform
         )
-        r = client.delete(url)
+        r = client_class.delete(url)
         assert r.status_code == status_code_expected
 
     # Delete User
@@ -3098,7 +3182,7 @@ class TestApi:
         ],
     )
     def test_delete_user(
-        self, client, moodle_user_id, keys_expected, status_code_expected, student
+        self, client_class, moodle_user_id, keys_expected, status_code_expected, student
     ):
         global user_id_student, user_id_teacher
         if student:
@@ -3106,7 +3190,7 @@ class TestApi:
         else:
             user_id_use = user_id_teacher
         url = path_lms_user + "/" + str(user_id_use) + "/" + str(moodle_user_id)
-        r = client.delete(url)
+        r = client_class.delete(url)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))
         for key in response.keys():
@@ -3131,7 +3215,7 @@ class TestApi:
     )
     def test_api_delete_le_from_moodle(
         self,
-        client,
+        client_class,
         moodle_course_id,
         moodle_topic_id,
         moodle_learning_element_id,
@@ -3171,7 +3255,7 @@ class TestApi:
             + "/"
             + str(moodle_learning_element_id)
         )
-        r = client.delete(url)
+        r = client_class.delete(url)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))
         for key in response.keys():
@@ -3193,7 +3277,7 @@ class TestApi:
     )
     def test_api_delete_topic_from_moodle(
         self,
-        client,
+        client_class,
         moodle_course_id,
         moodle_topic_id,
         keys_expected,
@@ -3222,7 +3306,7 @@ class TestApi:
             + "/"
             + str(moodle_topic_id)
         )
-        r = client.delete(url)
+        r = client_class.delete(url)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))
         for key in response.keys():
@@ -3240,7 +3324,7 @@ class TestApi:
         ],
     )
     def test_api_delete_course_from_moodle(
-        self, client, moodle_course_id, keys_expected, status_code_expected, error
+        self, client_class, moodle_course_id, keys_expected, status_code_expected, error
     ):
         global course_id
         if error:
@@ -3248,7 +3332,7 @@ class TestApi:
         else:
             course_id_use = course_id
         url = path_lms_course + "/" + str(course_id_use) + "/" + str(moodle_course_id)
-        r = client.delete(url)
+        r = client_class.delete(url)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))
         for key in response.keys():

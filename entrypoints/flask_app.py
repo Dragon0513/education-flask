@@ -175,16 +175,27 @@ def post_course():
                     and condition10
                     and condition11
                 ):
-                    course = services.create_course(
-                        unit_of_work.SqlAlchemyUnitOfWork(),
-                        request.json["lms_id"],
-                        request.json["name"],
-                        request.json["university"],
-                        request.json["created_by"],
-                        request.json["created_at"],
+                    condition12 = re.search(
+                        cons.date_format_search, request.json["created_at"]
                     )
-                    status_code = 201
-                    return jsonify(course), status_code
+                    if condition12:
+                        created_at = datetime.strptime(
+                            request.json["created_at"], cons.date_format
+                        ).date()
+                        course = services.create_course(
+                            unit_of_work.SqlAlchemyUnitOfWork(),
+                            request.json["lms_id"],
+                            request.json["name"],
+                            request.json["university"],
+                            request.json["created_by"],
+                            created_at,
+                        )
+                        status_code = 201
+                        return jsonify(course), status_code
+                    else:
+                        raise err.WrongParameterValueError(
+                            message=cons.date_format_message
+                        )
                 else:
                     raise err.WrongParameterValueError()
             else:
@@ -202,7 +213,9 @@ def course_management(course_id, lms_course_id):
             condition3 = "university" in request.json
             condition4 = "last_updated" in request.json
             if condition1 and condition2 and condition3 and condition4:
-                condition5 = re.search(cons.date_format, request.json["last_updated"])
+                condition5 = re.search(
+                    cons.date_format_search, request.json["last_updated"]
+                )
                 if condition5:
                     course = services.update_course(
                         unit_of_work.SqlAlchemyUnitOfWork(),
@@ -354,22 +367,33 @@ def post_topic(course_id, lms_course_id):
                     and condition14
                     and condition15
                 ):
-                    topic = services.create_topic(
-                        unit_of_work.SqlAlchemyUnitOfWork(),
-                        course_id,
-                        request.json["lms_id"],
-                        request.json["is_topic"],
-                        request.json["parent_id"]
-                        if "parent_id" in request.json
-                        else None,
-                        request.json["contains_le"],
-                        request.json["name"],
-                        request.json["university"],
-                        request.json["created_by"],
-                        request.json["created_at"],
+                    condition16 = re.search(
+                        cons.date_format_search, request.json["created_at"]
                     )
-                    status_code = 201
-                    return jsonify(topic), status_code
+                    if condition16:
+                        created_at = datetime.strptime(
+                            request.json["created_at"], cons.date_format
+                        ).date()
+                        topic = services.create_topic(
+                            unit_of_work.SqlAlchemyUnitOfWork(),
+                            course_id,
+                            request.json["lms_id"],
+                            request.json["is_topic"],
+                            request.json["parent_id"]
+                            if "parent_id" in request.json
+                            else None,
+                            request.json["contains_le"],
+                            request.json["name"],
+                            request.json["university"],
+                            request.json["created_by"],
+                            created_at,
+                        )
+                        status_code = 201
+                        return jsonify(topic), status_code
+                    else:
+                        raise err.WrongParameterValueError(
+                            message=cons.date_format_message
+                        )
                 else:
                     raise err.WrongParameterValueError()
             else:
@@ -403,8 +427,20 @@ def topic_administration(course_id, lms_course_id, topic_id, lms_topic_id):
                 and condition7
                 and condition8
             ):
-                condition9 = re.search(cons.date_format, request.json["last_updated"])
-                if condition9:
+                condition9 = re.search(
+                    cons.date_format_search, request.json["last_updated"]
+                )
+                condition10 = re.search(
+                    cons.date_format_search, request.json["created_at"]
+                )
+                if condition9 and condition10:
+                    created_at = datetime.strptime(
+                        request.json["created_at"], cons.date_format
+                    ).date()
+                    last_updated = datetime.strptime(
+                        request.json["last_updated"], cons.date_format
+                    ).date()
+
                     topic = services.update_topic(
                         unit_of_work.SqlAlchemyUnitOfWork(),
                         topic_id,
@@ -415,8 +451,8 @@ def topic_administration(course_id, lms_course_id, topic_id, lms_topic_id):
                         request.json["name"],
                         request.json["university"],
                         request.json["created_by"],
-                        request.json["created_at"],
-                        request.json["last_updated"],
+                        created_at,
+                        last_updated,
                     )
                     status_code = 201
                     return jsonify(topic), status_code
@@ -475,19 +511,30 @@ def create_learning_element(course_id, lms_course_id, topic_id, lms_topic_id):
                     and condition14
                     and condition15
                 ):
-                    learning_element = services.create_learning_element(
-                        unit_of_work.SqlAlchemyUnitOfWork(),
-                        topic_id,
-                        request.json["lms_id"],
-                        request.json["activity_type"],
-                        request.json["classification"],
-                        request.json["name"],
-                        request.json["created_by"],
-                        request.json["created_at"],
-                        request.json["university"],
+                    condition16 = re.search(
+                        cons.date_format_search, request.json["created_at"]
                     )
-                    status_code = 201
-                    return jsonify(learning_element), status_code
+                    if condition16:
+                        created_at = datetime.strptime(
+                            request.json["created_at"], cons.date_format
+                        ).date()
+                        learning_element = services.create_learning_element(
+                            unit_of_work.SqlAlchemyUnitOfWork(),
+                            topic_id,
+                            request.json["lms_id"],
+                            request.json["activity_type"],
+                            request.json["classification"],
+                            request.json["name"],
+                            request.json["created_by"],
+                            created_at,
+                            request.json["university"],
+                        )
+                        status_code = 201
+                        return jsonify(learning_element), status_code
+                    else:
+                        raise err.WrongParameterValueError(
+                            message=cons.date_format_message
+                        )
                 else:
                     raise err.WrongParameterValueError()
             else:
@@ -530,7 +577,6 @@ def learning_element_administration(
                 and condition7
                 and condition8
             ):
-                condition9 = re.search(cons.date_format, request.json["last_updated"])
                 condition10 = type(request.json["activity_type"]) == str
                 condition11 = type(request.json["classification"]) == str
                 condition12 = type(request.json["name"]) == str
@@ -539,8 +585,7 @@ def learning_element_administration(
                 condition15 = type(request.json["university"]) == str
                 condition16 = type(request.json["last_updated"]) == str
                 if (
-                    condition9
-                    and condition10
+                    condition10
                     and condition11
                     and condition12
                     and condition13
@@ -548,20 +593,37 @@ def learning_element_administration(
                     and condition15
                     and condition16
                 ):
-                    learning_element = services.update_learning_element(
-                        unit_of_work.SqlAlchemyUnitOfWork(),
-                        learning_element_id,
-                        lms_learning_element_id,
-                        request.json["activity_type"],
-                        request.json["classification"],
-                        request.json["name"],
-                        request.json["created_by"],
-                        request.json["created_at"],
-                        request.json["last_updated"],
-                        request.json["university"],
+                    condition17 = re.search(
+                        cons.date_format_search, request.json["created_at"]
                     )
-                    status_code = 201
-                    return jsonify(learning_element), status_code
+                    condition18 = re.search(
+                        cons.date_format_search, request.json["last_updated"]
+                    )
+                    if condition17 and condition18:
+                        created_at = datetime.strptime(
+                            request.json["created_at"], cons.date_format
+                        ).date()
+                        last_updated = datetime.strptime(
+                            request.json["last_updated"], cons.date_format
+                        ).date()
+                        learning_element = services.update_learning_element(
+                            unit_of_work.SqlAlchemyUnitOfWork(),
+                            learning_element_id,
+                            lms_learning_element_id,
+                            request.json["activity_type"],
+                            request.json["classification"],
+                            request.json["name"],
+                            request.json["created_by"],
+                            created_at,
+                            last_updated,
+                            request.json["university"],
+                        )
+                        status_code = 201
+                        return jsonify(learning_element), status_code
+                    else:
+                        raise err.WrongParameterValueError(
+                            message=cons.date_format_message
+                        )
                 else:
                     raise err.WrongParameterValueError()
             else:
@@ -613,14 +675,19 @@ def post_student_topic_visit(student_id, lms_user_id, topic_id):
             condition1 = request.json is not None
             condition2 = "visit_start" in request.json
             if condition1 and condition2:
-                condition3 = re.search(cons.date_format, request.json["visit_start"])
+                condition3 = re.search(
+                    cons.date_format_search, request.json["visit_start"]
+                )
                 condition4 = type(request.json["visit_start"]) is str
                 if condition3 and condition4:
+                    visit_start = datetime.strptime(
+                        request.json["visit_start"], cons.date_format
+                    ).date()
                     result = services.add_student_topic_visit(
                         unit_of_work.SqlAlchemyUnitOfWork(),
                         student_id,
                         topic_id,
-                        request.json["visit_start"],
+                        visit_start,
                         request.json["previous_topic_id"]
                         if "previous_topic_id" in request.json
                         else None,
@@ -649,13 +716,18 @@ def post_student_learning_element_id_visit(
             condition2 = "visit_start" in request.json
             if condition1 and condition2:
                 condition3 = type(request.json["visit_start"]) is str
-                condition4 = re.search(cons.date_format, request.json["visit_start"])
+                condition4 = re.search(
+                    cons.date_format_search, request.json["visit_start"]
+                )
                 if condition3 and condition4:
+                    visit_start = datetime.strptime(
+                        request.json["visit_start"], cons.date_format
+                    ).date()
                     result = services.add_student_learning_element_visit(
                         unit_of_work.SqlAlchemyUnitOfWork(),
                         student_id,
                         learning_element_id,
-                        request.json["visit_start"],
+                        visit_start,
                     )
                     status_code = 201
                     return jsonify(result), status_code
@@ -1318,7 +1390,7 @@ def contact_form(user_id, lms_user_id):
         request.json["report_type"],
         request.json["report_topic"],
         request.json["report_description"],
-        datetime.now(),
+        datetime.today(),
     )
 
     if result is None:

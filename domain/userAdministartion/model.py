@@ -67,6 +67,7 @@ class Student(User):
 
 class Settings:
     def __init__(self, user_id, theme="Standard", pswd=None) -> None:
+        self.id = None
         self.user_id = user_id
         self.theme = theme
         self.pswd = pswd
@@ -84,10 +85,11 @@ class ContactForm:
     def __init__(
         self, user_id, report_topic, report_type, report_description, date
     ) -> None:
-        self.user_id = (user_id,)
-        self.report_topic = (report_topic,)
-        self.report_type = (report_type,)
-        self.report_description = (report_description,)
+        self.id = None
+        self.user_id = user_id
+        self.report_topic = report_topic
+        self.report_type = report_type
+        self.report_description = report_description
         self.date = date
 
     def serialize(self):

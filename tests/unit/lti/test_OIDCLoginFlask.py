@@ -38,13 +38,6 @@ config_file = {
 }
 
 
-# self._platform = self._tool_config.decode_platform(
-#     self._tool_config.get_platform(
-#         os.environ.get("LMS_URL", "https://moodle.haski.app")
-#     )
-# )
-
-
 class ToolConfigJsonMock(ToolConfigJson):
     def __init__(self):
         self._iss_conf_dict = config_file

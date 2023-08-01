@@ -86,9 +86,6 @@ jobs:
           pip3 install python-dotenv
           pip3 install psycopg2-binary
 
-      - name: Create Database Tables
-        run: python db_setup.py
-
       - name: Run tox
         run: tox
         

@@ -1,5 +1,7 @@
 # HASKI Backend System
 
+[![Build](https://github.com/HASKI-RAK/HASKI-Backend/actions/workflows/build.yaml/badge.svg)](https://github.com/HASKI-RAK/HASKI-Backend/actions/workflows/build.yaml)
+
 This is the offical Repository for the HASKI (Hochschullehre: Adaptiv, selbstgesteuert, KI-gestützt) Backend.
 It will provide all necessary tools for creating and recommending learning paths and learning elements for the students, who will use the system.
 This is a joint project from three bavarian universities:

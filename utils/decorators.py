@@ -8,7 +8,8 @@ from errors import errors as err
 
 def debug_only(f):
     """
-    A decorator that only allows the decorated function to be called if the Flask app is in debug mode.
+    A decorator that only allows the decorated function to
+    be called if the Flask app is in debug mode.
 
     If the app is not in debug mode, a 404 error will be raised.
     """
@@ -25,13 +26,16 @@ def debug_only(f):
 
 def json_only(ignore: list[str] = []):
     """
-    A decorator that checks if the request contains JSON data and passes it to the decorated function.
+    A decorator that checks if the request contains
+    JSON data and passes it to the decorated function.
 
     Args:
-        ignore (list[str], optional): A list of HTTP methods to ignore the JSON check for. Defaults to [].
+        ignore (list[str], optional): A list of HTTP
+        methods to ignore the JSON check for. Defaults to [].
 
     Returns:
-        Callable[..., Union[Dict[str, Any], Any]]: The decorated function.
+        Callable[..., Union[Dict[str, Any], Any]]:
+        The decorated function.
     """
 
     def json(f: Callable[..., Union[Dict[str, Any], Any]]):

@@ -252,6 +252,7 @@ class MissingUserError(AException):
     ):
         super().__init__(exception, message, status_code)
 
+
 class NoJsonError(AException):
     def __init__(
         self,

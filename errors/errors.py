@@ -251,3 +251,12 @@ class MissingUserError(AException):
         status_code=400,
     ):
         super().__init__(exception, message, status_code)
+
+class NoJsonError(AException):
+    def __init__(
+        self,
+        exception: Exception | None = None,
+        message="The request body is not a valid json.",
+        status_code=400,
+    ):
+        super().__init__(exception, message, status_code)

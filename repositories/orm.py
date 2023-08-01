@@ -1,13 +1,11 @@
-# from typing_extensions import deprecated
 from sqlalchemy import Boolean, Column, Date, Integer, String, Table
-from sqlalchemy.orm import mapper, registry
+from sqlalchemy.orm import registry
 
 from domain.domainModel import model as DM
 from domain.learnersModel import model as LM
 from domain.tutoringModel import model as TM
 from domain.userAdministartion import model as UA
 
-# metadata = MetaData()
 mapper_registry = registry()
 
 admin = Table(
@@ -557,41 +555,3 @@ def start_mappers():
         DM.TopicLearningElement,
         topic_learning_element,
     )
-
-
-# @deprecated("start_mappers() is deprecated. Use start_mappers_registry() instead.")
-def start_mappers1():
-    mapper(UA.Admin, admin)
-    mapper(DM.Course, course)
-    mapper(UA.CourseCreator, course_creator)
-    mapper(DM.CourseCreatorCourse, course_creator_course)
-    mapper(DM.CourseTopic, course_topic)
-    mapper(UA.User, haski_user)
-    mapper(LM.IlsInputAnswers, ils_input_answers)
-    mapper(LM.IlsPerceptionAnswers, ils_perception_answers)
-    mapper(LM.IlsProcessingAnswers, ils_processing_answers)
-    mapper(LM.IlsUnderstandingAnswers, ils_understanding_answers)
-    mapper(LM.Knowledge, knowledge)
-    mapper(LM.LearningAnalytics, learning_analytics)
-    mapper(LM.LearningCharacteristic, learning_charcteristics)
-    mapper(DM.LearningElement, learning_element)
-    mapper(DM.LearningElementRating, learning_element_rating)
-    mapper(TM.LearningPath, learning_path)
-    mapper(TM.LearningPathLearningElement, learning_path_learning_element)
-    mapper(TM.LearningPathTopic, learning_path_topic)
-    mapper(LM.LearningStrategy, learning_strategy)
-    mapper(LM.LearningStyle, learning_style)
-    mapper(LM.ListK, list_k)
-    mapper(LM.Questionnaire, questionnaire)
-    mapper(UA.Settings, settings)
-    mapper(UA.ContactForm, contact_form)
-    mapper(UA.Student, student)
-    mapper(DM.StudentCourse, student_course)
-    mapper(DM.StudentLearningElement, student_learning_element)
-    mapper(DM.StudentLearningElementVisit, student_learning_element_visit)
-    mapper(DM.StudentTopic, student_topic)
-    mapper(DM.StudentTopicVisit, student_topic_visit)
-    mapper(UA.Teacher, teacher)
-    mapper(DM.TeacherCourse, teacher_course)
-    mapper(DM.Topic, topic)
-    mapper(DM.TopicLearningElement, topic_learning_element)

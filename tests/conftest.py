@@ -1,6 +1,7 @@
 import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import clear_mappers, sessionmaker
+from entrypoints.flask_app import app
 
 from repositories.orm import mapper_registry, start_mappers
 
@@ -45,7 +46,6 @@ def client(session_factory):  # pragma: no cover
     # DEFAULT_SESSION_FACTORY to use in-memory database
     # instead of the real database
     import service_layer.unit_of_work as unit_of_work
-    from entrypoints.flask_app import app
 
     app.testing = True
 

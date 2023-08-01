@@ -12,6 +12,9 @@ import service_layer.service.SessionServiceFlask as SessionServiceFlask
 from config import get_project_root
 from errors.errors import InvalidJWTError
 
+public_key = None
+private_key = None
+
 
 def private_key_location():
     return os.path.abspath(
@@ -53,10 +56,15 @@ def construct_key(key: str | bytes | dict[str, Any] | Key):
 
 def verify_jwt(
     jwt_token: str,
-    key: str | bytes | Mapping[str, Any] | Key = load_public_key().decode(),
+    key: str | bytes | Mapping[str, Any] | Key | None = None,
 ):
     """Returns the payload of the JWT token if it is valid,
     otherwise raises an exception"""
+    if key is None:
+        global public_key
+        if public_key is None:
+            public_key = load_public_key().decode()
+        key = public_key
     try:
         return json.loads(
             jws.verify(jwt_token, key, algorithms=["RS256"]).decode("UTF-8")

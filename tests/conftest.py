@@ -1,8 +1,8 @@
 import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import clear_mappers, sessionmaker
-from entrypoints.flask_app import app
 
+from entrypoints.flask_app import app
 from repositories.orm import mapper_registry, start_mappers
 
 engine = create_engine("sqlite+pysqlite:///:memory:", future=True, echo=True)

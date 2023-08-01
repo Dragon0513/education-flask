@@ -241,3 +241,13 @@ class ContactFormError(AException):
         status_code=400,
     ):
         super().__init__(exception, message, status_code)
+
+
+class MissingUserError(AException):
+    def __init__(
+        self,
+        exception: Exception | None = None,
+        message="The user does not exist.",
+        status_code=400,
+    ):
+        super().__init__(exception, message, status_code)

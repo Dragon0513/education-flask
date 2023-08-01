@@ -1,10 +1,10 @@
 import json
 import os
 import re
+from datetime import datetime
 
 from flask import Flask, jsonify, request
 from flask_cors import CORS, cross_origin
-from datetime import datetime
 
 import service_layer.crypto.JWTKeyManagement as JWTKeyManagement
 from errors import errors as err
@@ -204,7 +204,6 @@ def course_management(course_id, lms_course_id):
             if condition1 and condition2 and condition3 and condition4:
                 condition5 = re.search(cons.date_format, request.json["last_updated"])
                 if condition5:
-                    last_updated = datetime.strptime(request.json["last_updated"], cons.date_format).date()
                     course = services.update_course(
                         unit_of_work.SqlAlchemyUnitOfWork(),
                         course_id,

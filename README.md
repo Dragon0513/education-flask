@@ -15,7 +15,6 @@ Hochschule Kempten
 The HASKI-Project is supported by the German Federal Ministry of Education and Research (BMBF), grant number 16DHBKI036, and the Bavarian State Ministry of Scie
 The responsibility for the content of this publication remains with the authors.
 
-
 ## Purpose of the Project
 
 The overall HASKI concept is designed to provide learners with adaptive self-directed learning.
@@ -87,10 +86,21 @@ openssl rsa -in keys/private.pem -outform PEM -pubout -out keys/public.pem
 
 ### Project
 
+Either create a new conda environment or use venv. The following steps are for conda:
+
 - Create a new conda environment using `conda create --name HASKI-Backend --file requirements.txt`
 - Activate the environment: `conda activate HASKI-Backend`
-- Rename .flaskenv_template to .flaskenv and fill in the necessary information
-- Create the database as explained in the DB Setup section
+
+Using venv:
+
+- Create a new venv using `python -m venv venv`
+- Activate the environment: `source venv/bin/activate` or `venv\Scripts\activate` on Windows
+- Install the requirements using `pip install -r requirements.txt`
+
+Then:
+
+- Fill the .env file with the necessary information. Note that `DB_PASSWORD` is the password for the database user, not pgAdmin.
+- Create the database as explained in [DB Setup](#db-setup)
 - Run the app using `flask run`
 
 To create a new requirements file after installing a new library, please run the following command: `pip list --format=freeze > requirements.txt`
@@ -105,14 +115,12 @@ https://www.postgresqltutorial.com/postgresql-getting-started/install-postgresql
 https://www.postgresqltutorial.com/postgresql-getting-started/connect-to-postgresql-database/
 
 After the installation, you can run it on the CMD or the pgAdmin 4 application.
-You first have to create a database.
-Afterwards, you can use the `setup\Table_Setup.sql` Script for creating the table within your DB.
-
-For the last step, you should check the `db_config.py` file and change the password for your set password.
-Caution, there are two passwords set during the setup of PostgreSQL!
-This is not the Masterpassword to unlock the pgAdmin 4, but the password for the superuser postgres!
+You first have to create a database by using `python db_setup.py`.
+Then run `python db_fill.py` to fill the database with mock data if applicable.
+Run `python db_clean_up.py` to clean up the database if necessary. Use arg `--dropdatabase` to drop the database.
 
 ## Running in Docker
+
 This project includes a Pipeline, that will automatically create a Docker image in the repository when merging into the main branch.
 This Docker image should always be the latest running version.
 Please create a .env file first locally, so that it can be passed with docker run.

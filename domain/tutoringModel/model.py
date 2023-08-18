@@ -38,8 +38,8 @@ class LearningPath:
                           student_id,
                           learning_style,
                           _algorithm,
-                          list_of_les):       
-        
+                          list_of_les):
+
         algorithm = _algorithm.lower()
         if algorithm == "graf":
             path = graf.GrafAlgorithm(
@@ -56,19 +56,16 @@ class LearningPath:
             for ele in result:
                 le_path = le_path + ele[0] + ', '
             self.path = le_path[:-2]
-             
         elif _algorithm == "ga":
-            print("==============")
-            print("Initialize GA")                  
-            gaAlgo = ga.GA_Algorithmus(student_id=student_id, 
-                                     learning_style=learning_style, 
-                                     learning_elements=list_of_les)
-            le_path = gaAlgo.get_learning_path(input_learning_style=learning_style,
-                                               input_Learning_element=list_of_les)
-                                                               
+            # print("==============")
+            # print("Initialize GA")
+            ga_algorithmus = ga.GaAlgorithmus(learning_style=learning_style,
+                                              learning_elements=list_of_les)
+            le_path = ga_algorithmus.get_learning_path(input_learning_style=learning_style,
+                                                       input_learning_element=list_of_les)
+            self.path = le_path
         else:
-            raise err.NoValidAlgorithmError()        
-        
+            raise err.NoValidAlgorithmError()
 
     def prepare_le_for_aco(self, list_of_les):
         lz_in_list = False

@@ -206,13 +206,13 @@ cursor.execute(sql)
 
 sql = '''
     INSERT INTO haski_user (name, university, lms_user_id, role)
-    VALUES ('Liam Smith', 'HS-KE', 11, 'student')
+    VALUES ('Liam Smith', 'HS-KE', 11, 'teacher')
 '''
 cursor.execute(sql)
 
 sql = '''
     INSERT INTO settings (user_id, theme, pswd)
-    VALUES (11, 'dark', 'student')
+    VALUES (11, 'dark', 'teacher')
 '''
 cursor.execute(sql)
 
@@ -224,13 +224,13 @@ cursor.execute(sql)
 
 sql = '''
     INSERT INTO haski_user (name, university, lms_user_id, role)
-    VALUES ('Sophia Martinez', 'HS-RE', 12, 'student')
+    VALUES ('Sophia Martinez', 'HS-RE', 12, 'teacher')
 '''
 cursor.execute(sql)
 
 sql = '''
     INSERT INTO settings (user_id, theme, pswd)
-    VALUES (12, 'Standard', 'student')
+    VALUES (12, 'Standard', 'teacher')
 '''
 cursor.execute(sql)
 

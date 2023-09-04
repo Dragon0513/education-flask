@@ -1249,7 +1249,7 @@ def create_topic_learning_element_for_tests(uow):
     )
 
 
-def create_learning_path_for_tests(uow):
+def create_learning_path_for_tests(uow,algo="aco"):
     return services.create_learning_path(
         uow=uow,
         user_id=1,
@@ -1257,7 +1257,7 @@ def create_learning_path_for_tests(uow):
         student_id=1,
         course_id=1,
         topic_id=1,
-        algorithm="ga"
+        algorithm=algo
     )
 
 
@@ -2546,6 +2546,7 @@ def test_student_topic_visit():
 ])
 def test_create_learning_path(number_of_les):
     uow = FakeUnitOfWork()
+    algo = 'aco'
     create_course_creator_for_tests(uow)
     create_student_for_tests(uow)
     create_course_for_tests(uow)
@@ -2560,9 +2561,10 @@ def test_create_learning_path(number_of_les):
                                     .learning_path_learning_element)
     if number_of_les == 0:
         with pytest.raises(err.NoLearningElementsError):
-            create_learning_path_for_tests(uow)
-    else:
-        result = create_learning_path_for_tests(uow)
+            create_learning_path_for_tests(uow, algo='aco')
+    else:        
+        result = create_learning_path_for_tests(uow, algo='aco')
+        print("\nalgo= aco")
         assert type(result) == dict
         assert result != {}
         entries_after_path = len(uow.learning_path
@@ -2572,7 +2574,8 @@ def test_create_learning_path(number_of_les):
         assert entries_beginning_path + 1 == entries_after_path
         assert entries_beginning_path_le + number_of_les \
             == entries_after_path_le
-        result = create_learning_path_for_tests(uow)
+        print("algo= ga")
+        result = create_learning_path_for_tests(uow, algo='ga')
         assert type(result) == dict
         assert result != {}
         entries_after_path_2 = len(uow.learning_path

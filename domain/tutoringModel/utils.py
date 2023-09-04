@@ -16,8 +16,6 @@ influence = {
 }
 
 
-
-
 # Calculate the coordinates for the LEs
 def get_coordinates(learning_style, list_of_les):
 
@@ -30,15 +28,15 @@ def get_coordinates(learning_style, list_of_les):
         elif elememnt == cons.abbreviation_as:
             coordinates[cons.abbreviation_as] = (-12, -12, -12, -12)
         elif elememnt == cons.abbreviation_cc:
-            if(learning_style['processing_dimension'] == 'ref'
-               and learning_style['understanding_dimension'] == 'seq'):
+            if learning_style['processing_dimension'] == 'ref'\
+             and learning_style['understanding_dimension'] == 'seq':
                 if learning_style['processing_value'] >\
                         learning_style['understanding_value']:
                     coordinates[cons.abbreviation_cc] = (11, 11, 11, 11)
                 else:
                     coordinates[cons.abbreviation_cc] = (0, 0, 0, 0)
-            elif(learning_style['processing_dimension'] == 'ref'
-                 or learning_style['understanding_dimension'] == 'glo'):
+            elif learning_style['processing_dimension'] == 'ref'\
+                or learning_style['understanding_dimension'] == 'glo':
                 coordinates[cons.abbreviation_cc] = (11, 11, 11, 11)
             else:
                 coordinates[cons.abbreviation_cc] = (0, 0, 0, 0)
@@ -89,55 +87,55 @@ def distance(xyz1, xyz2) -> float:
     return math.dist(xyz1, xyz2)
 
 
-def get_learning_style( learning_style):
-   
+def get_learning_style(learning_style):
+
     result = {}
 
     str_processing = learning_style.get('processing_dimension')
-    value_processing = learning_style.get('processing_value')    
+    value_processing = learning_style.get('processing_value')
     result[str_processing] = value_processing
 
     str_perception = learning_style.get('perception_dimension')
-    value_perception = learning_style.get('perception_value')    
+    value_perception = learning_style.get('perception_value')
     result[str_perception] = value_perception
 
-
     str_input = learning_style.get('input_dimension')
-    value_input = learning_style.get('input_value')    
+    value_input = learning_style.get('input_value')
     result[str_input] = value_input
 
     str_understanding = learning_style.get('understanding_dimension')
-    value_understanding = learning_style.get('understanding_value')    
+    value_understanding = learning_style.get('understanding_value')
     result[str_understanding] = value_understanding
 
     for key, value in dict(result).items():
         if value == None:
             del result[key]
 
-    #print("\nnew_learning_style__LS",learning_style )        
-    #print("\nnew_Result__LS",result )
-    return result     
+    # print("\nnew_learning_style__LS",learning_style )
+    # print("\nnew_Result__LS",result )
+    return result
+
 
 def get_list_learning_element(learning_elements):
 
-    classification_learning_element = []    
+    classification_learning_element = []
     lz_is_present = False
     lz_element = ''
-    
-    for le in learning_elements:   
-        
-        if le['classification']=='KÜ':
-            classification_learning_element.insert(0,le['classification'])
-        elif  le['classification']=='LZ':
+
+    for le in learning_elements:
+
+        if le['classification'] == 'KÜ':
+            classification_learning_element.insert(0, le['classification'])
+        elif le['classification'] == 'LZ':
             lz_is_present = True
             lz_element = le['classification']
-        else:    
+        else:
             classification_learning_element.append(le['classification'])
 
-    if(lz_is_present):
-        classification_learning_element.append(lz_element)       
-    
-    return classification_learning_element   
+    if lz_is_present:
+        classification_learning_element.append(lz_element)
+
+    return classification_learning_element
 
 
 def check_learning_style(input_learning_style):
@@ -145,18 +143,19 @@ def check_learning_style(input_learning_style):
     is_correct = False
     for iterator in input_learning_style:
 
-        if (input_learning_style.get(iterator)):
+        if input_learning_style.get(iterator):
 
             dimension_number = input_learning_style.get(iterator)
-            if (dimension_number < 0 or dimension_number > 11):
+            if dimension_number < 0 or dimension_number > 11:
                 is_correct = True
                 break
 
     return is_correct
 
+
 def check_name_learning_style(input_learning_style):
     # this function may not be necessary
-   
+
     list_is_correct = []
 
     for iterator in input_learning_style:
@@ -165,12 +164,12 @@ def check_name_learning_style(input_learning_style):
         condition2 = (iterator == 'sns' or iterator == 'int')
         condition3 = (iterator == 'vis' or iterator == 'vrb')
         condition4 = (iterator == 'seq' or iterator == 'glo')
-        
-        if(condition1 or condition2 or condition3 or condition4):
-            list_is_correct.append(True)        
+
+        if condition1 or condition2 or condition3 or condition4:
+            list_is_correct.append(True)
 
     temp = [True, True, True, True]
-    if(list_is_correct != temp):
+    if list_is_correct != temp:
         return True
 
     return False

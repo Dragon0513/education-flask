@@ -16,6 +16,7 @@ graf = {
     "AB": (0, 0, 1, -1, 0, 0, 0, 1)  # AB
 }
 
+
 def get_coordinates(learning_style, learning_elements):
     coordinates = {}
     for elememnt in learning_elements:
@@ -26,7 +27,8 @@ def get_coordinates(learning_style, learning_elements):
         elif elememnt == "LZ":
             coordinates['LZ'] = (-12, -12, -12, -12)
         elif elememnt == "ZF":
-            if('REF' in learning_style.keys() and 'SEQ' in learning_style.keys()):
+            if 'REF' in learning_style.keys()\
+                 and 'SEQ' in learning_style.keys():
                 if learning_style['REF'] > learning_style['SEQ']:
                     coordinates['ZF'] = (11, 11, 11, 11)
                 else:
@@ -64,10 +66,11 @@ def get_coordinates(learning_style, learning_elements):
             print("coordinate//*****", coordinate)
     return coordinates
 
+
 def get_coordinate(learning_style, learning_elements):
 
     dict_coordinates = get_coordinates(learning_style, learning_elements)
-   
+
     ele = len(dict_coordinates)
     GA_coordinates = np.zeros((ele, 4))
     idx = 0
@@ -76,6 +79,7 @@ def get_coordinate(learning_style, learning_elements):
         idx = idx+1
 
     return GA_coordinates
+
 
 def check_learning_style(input_learning_style):
 
@@ -91,9 +95,10 @@ def check_learning_style(input_learning_style):
 
     return is_correct
 
+
 def check_name_learning_style(input_learning_style):
     # this function may not be necessary
-   
+
     list_is_correct = []
 
     for iterator in input_learning_style:
@@ -102,139 +107,143 @@ def check_name_learning_style(input_learning_style):
         condition2 = (iterator == 'sns' or iterator == 'int')
         condition3 = (iterator == 'vis' or iterator == 'vrb')
         condition4 = (iterator == 'seq' or iterator == 'glo')
-        
-        if(condition1 or condition2 or condition3 or condition4):
-            list_is_correct.append(True)        
+
+        if condition1 or condition2 or condition3 or condition4:
+            list_is_correct.append(True)
 
     temp = [True, True, True, True]
-    if(list_is_correct != temp):
+    if list_is_correct != temp:
         return True
 
     return False
 
-def get_list_LPLE(learning_path, learning_elements, LP_id):
 
-    # if(dict_Learning_element is None):
-    #     dict_Learning_element = get_dict_Learning_element()
-    List_LPLE = []
-    for element in learning_elements:
+# def get_list_LPLE(learning_path, learning_elements, LP_id):
 
-        classification = element.classification
-        condition = classification is not None
-        condition2 = classification in learning_path
-        
-        if (condition and condition2 ):
-            
-            LPLE = TM.LearningPathLearningElement(learning_element_id=element.id,
-                                                  learning_path_id=LP_id,
-                                                  recommended=True,
-                                                  position=learning_path.index(classification))
-            #print(" classification: ",classification, " id: ",LPLE.learning_element_id," LPLE.position: ", LPLE.position )                                      
-            List_LPLE.append(LPLE)
+#     # if dict_Learning_element is None):
+#     #     dict_Learning_element = get_dict_Learning_element()
+#     List_LPLE = []
+#     for element in learning_elements:
 
-    #print("List_LPLE: ",[i.position for i in List_LPLE])
-    return List_LPLE
+#         classification = element.classification
+#         condition = classification is not None
+#         condition2 = classification in learning_path
+
+#         if (condition and condition2):
+
+#             LPLE = TM.LearningPathLearningElement(learning_element_id=element.id,
+#             learning_path_id=LP_id,
+#             recommended=True,
+#             position=learning_path.index(classification))
+#             # print(" classification: ",
+#             # classification, " id: ",LPLE.learning_element_id,
+#             # " LPLE.position: ", LPLE.position )
+#             List_LPLE.append(LPLE)
+
+#     # print("List_LPLE: ",[i.position for i in List_LPLE])
+#     return List_LPLE
 
 # def get_learning_style( learning_style):
-   
+
 #     result = {}
 
-#     if(learning_style.get('processing_dimension')== "act"):
+#     if learning_style.get('processing_dimension')== "act"):
 #         result["act"] = learning_style.get('processing_value')
 #     else:
 #         result["ref"] = learning_style.get('processing_value')
-  
-#     if(learning_style.get('perception_dimension') == "sns"):
+
+#     if learning_style.get('perception_dimension') == "sns"):
 #         result["sns"] = learning_style.get('perception_value')
 #     else:
 #         result["int"] = learning_style.get('perception_value')
 
-#     if(learning_style.get('input_dimension') == "vis"):
+#     if learning_style.get('input_dimension') == "vis"):
 #         result["vis"] = learning_style.get('input_value')
 #     else:
-#         result["vrb"] = learning_style.get('input_value')   
+#         result["vrb"] = learning_style.get('input_value')
 
-#     if(learning_style.get('understanding_dimension') == "glo"):
+#     if learning_style.get('understanding_dimension') == "glo"):
 #         result["glo"] = learning_style.get('understanding_value')
 #     else:
 #         result["seq"] = learning_style.get('understanding_value')
-    
+
 #     for key, value in dict(result).items():
 #         if value == None:
-#             del result[key]   
-#     print("\nlearning_style__LS",learning_style )        
+#             del result[key]
+#     print("\nlearning_style__LS",learning_style )
 #     print("\nResult__LS",result )
-#     return result    
+#     return result
 
-def get_learning_style( learning_style):
-   
+
+def get_learning_style(learning_style):
+
     result = {}
     str_processing = learning_style.get('processing_dimension')
-    value_processing = learning_style.get('processing_value')    
+    value_processing = learning_style.get('processing_value')
     result[str_processing] = value_processing
 
     str_perception = learning_style.get('perception_dimension')
-    value_perception = learning_style.get('perception_value')    
+    value_perception = learning_style.get('perception_value')
     result[str_perception] = value_perception
 
-
     str_input = learning_style.get('input_dimension')
-    value_input = learning_style.get('input_value')    
+    value_input = learning_style.get('input_value')
     result[str_input] = value_input
 
     str_understanding = learning_style.get('understanding_dimension')
-    value_understanding = learning_style.get('understanding_value')    
+    value_understanding = learning_style.get('understanding_value')
     result[str_understanding] = value_understanding
 
     for key, value in dict(result).items():
         if value == None:
-            del result[key]   
-    print("\nnew_learning_style__LS",learning_style )        
-    print("\nnew_Result__LS",result )
-    return result       
+            del result[key]
+    print("\nnew_learning_style__LS", learning_style)
+    print("\nnew_Result__LS", result)
+    return result
+
 
 def add_Learning_element(learning_elements):
-    #added some learning element for testing
-    #elemnt without RQ for testing
+    # added some learning element for testing
+    # elemnt without RQ for testing
     elements = ["KÜ", "EK", "ZF", "SE",
                 "FO", "ZL", "AN", "ÜB", "AB", "LZ"]
     id = 0
-    
+
     new_learning_elements = learning_elements.copy()
     for element in elements:
-        LearningElement ={'id': id,
-                          'lms_id': 1,
-                          'activity_type': element,
-                          'classification': element,
-                          'name': 'Test LE', 
-                          'university': 'TH-AB', 
-                          'created_by': 'Max Mustermann',
-                          'created_at': '2017-01-01',
-                          'last_updated': None,
-                          'student_learning_element': None}  
+        LearningElement = {'id': id,
+                           'lms_id': 1,
+                           'activity_type': element,
+                           'classification': element,
+                           'name': 'Test LE',
+                           'university': 'TH-AB',
+                           'created_by': 'Max Mustermann',
+                           'created_at': '2017-01-01',
+                           'last_updated': None,
+                           'student_learning_element': None}
         new_learning_elements.append(LearningElement)
 
         id = id+1
-    #print ("new_learning_elements",new_learning_elements)
+    # print ("new_learning_elements",new_learning_elements)
     return new_learning_elements
 
-def get_learning_element( learning_elements):   
-    classification_learning_element = []    
+
+def get_learning_element(learning_elements):
+    classification_learning_element = []
     lz_is_present = False
     lz_element = ''
-    
-    for le in learning_elements:   
-        
-        if le['classification']=='KÜ':
-            classification_learning_element.insert(0,le['classification'])
-        elif  le['classification']=='LZ':
+
+    for le in learning_elements:
+
+        if le['classification'] == 'KÜ':
+            classification_learning_element.insert(0, le['classification'])
+        elif le['classification'] == 'LZ':
             lz_is_present = True
             lz_element = le['classification']
-        else:    
+        else:
             classification_learning_element.append(le['classification'])
 
-    if(lz_is_present):
-        classification_learning_element.append(lz_element)       
-    print("learning elements", classification_learning_element) 
-    return classification_learning_element   
-
+    if lz_is_present:
+        classification_learning_element.append(lz_element)
+    print("learning elements", classification_learning_element)
+    return classification_learning_element

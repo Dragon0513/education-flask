@@ -1,4 +1,12 @@
 import unittest
+import unittest
+from unittest.mock import MagicMock, Mock, patch
+from errors import errors as err
+
+from flask import Response
+
+from service_layer.lti.OIDCLoginFlask import OIDCLoginFlask
+
 
 from flask import request
 
@@ -37,36 +45,90 @@ config_file = {
     }
 }
 
+host = config_file["https://moodle.haski.app"]["tool_url"].split("//")[1]
+
 
 class ToolConfigJsonMock(ToolConfigJson):
     def __init__(self):
         self._iss_conf_dict = config_file
 
 
+tool_config = ToolConfigJson()
+
+
 # pytest tests\unit\lti\test_OIDCLoginFlask.py --cov
 class TestOIDCLoginFlask(unittest.TestCase):
     def setUp(self):
-        self.tool_config = ToolConfigJsonMock()
-        self.oidc_login = OIDCLoginFlask(request, self.tool_config)
+        self.tool_config = tool_config
+        self.request = MagicMock()
+        self.oidc_login = OIDCLoginFlask(self.request, self.tool_config)
+        self.oidc_login._request = MagicMock()
+        self.oidc_login._request.host = host
+        self.oidc_login._request.form = {
+            "iss": "https://moodle.haski.app",
+            "client_id": "VRCKkhKlZtHNHtD",
+            "login_hint": "student",
+            "lti_message_hint": "message_hint",
+            "target_link_uri": "https://backend.haski.app/lti_launch",
+            "lti_deployment_id": "1",
+        }
 
-    def test_tool_config(self):
-        self.assertEqual(
-            self.oidc_login._tool_config._iss_conf_dict,
-            self.tool_config._iss_conf_dict,
-        )
-
-    def test_tool_config_get_platform(self):
-        self.assertEqual(
-            self.oidc_login._tool_config.get_platform("https://moodle.haski.app"),
-            self.tool_config.get_platform("https://moodle.haski.app"),
-        )
+        # self.tool_config = MagicMock()
+        # self.oidc_login = OIDCLoginFlask(self.request, self.tool_config)
 
     def test_tool_config_decode_platform(self):
         # dont need to check every value, just one
-        platform = self.oidc_login._tool_config.decode_platform(
-            self.tool_config.get_platform("https://moodle.haski.app")
+        with patch.multiple(
+            ToolConfigJson,
+            get_platform=MagicMock(
+                return_value=config_file["https://moodle.haski.app"]
+            ),
+        ):
+            platform = self.oidc_login._tool_config.decode_platform(
+                self.tool_config.get_platform("https://moodle.haski.app")
+            )
+            self.assertEqual(
+                platform.platform_name,
+                "HASKI",
+            )
+
+    def test_check_params_successful(self):
+        # expect not to raise an exception
+        with patch.multiple(
+            ToolConfigJson,
+            get_platform=MagicMock(
+                return_value=config_file["https://moodle.haski.app"]
+            ),
+        ):
+            self.oidc_login.check_params()
+            return True
+
+    def test_check_params_missing_iss(self):
+        self.oidc_login._request.form.pop("iss")
+
+        with self.assertRaises(Exception):
+            self.oidc_login.check_params()
+
+    def test_check_params_missing_platform(self):
+        # _iss_conf_dict remove the platform
+        self.oidc_login._tool_config._iss_conf_dict.pop(
+            "https://moodle.haski.app", None
         )
-        self.assertEqual(
-            platform.platform_name,
-            "HASKI",
-        )
+
+        with self.assertRaises(Exception):
+            self.oidc_login.check_params()
+
+    def test_check_params_wrong_target_link_uri(self):
+        self.oidc_login._request.form["target_link_uri"] = "wrong_uri"
+        with patch.multiple(
+            ToolConfigJson,
+            get_platform=MagicMock(
+                return_value=config_file["https://moodle.haski.app"]
+            ),
+        ):
+            with self.assertRaises(err.ErrorException) as e:
+                self.oidc_login.check_params()
+            self.assertEqual(
+                e.exception.message,
+                "target_link_uri invalid Inner Exception: (None, 'target_link_uri is not from the same host', 400)",
+            )

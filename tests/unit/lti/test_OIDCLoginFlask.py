@@ -1,15 +1,7 @@
 import unittest
-import unittest
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import MagicMock, patch
+
 from errors import errors as err
-
-from flask import Response
-
-from service_layer.lti.OIDCLoginFlask import OIDCLoginFlask
-
-
-from flask import request
-
 from service_layer.lti.config.ToolConfigJson import ToolConfigJson
 from service_layer.lti.OIDCLoginFlask import OIDCLoginFlask
 
@@ -106,7 +98,7 @@ class TestOIDCLoginFlask(unittest.TestCase):
     def test_check_params_missing_iss(self):
         self.oidc_login._request.form.pop("iss")
 
-        with self.assertRaises(Exception):
+        with self.assertRaisesRegex(Exception):
             self.oidc_login.check_params()
 
     def test_check_params_missing_platform(self):
@@ -115,7 +107,7 @@ class TestOIDCLoginFlask(unittest.TestCase):
             "https://moodle.haski.app", None
         )
 
-        with self.assertRaises(Exception):
+        with self.assertRaisesRegex(Exception, "No platform found"):
             self.oidc_login.check_params()
 
     def test_check_params_wrong_target_link_uri(self):
@@ -126,9 +118,8 @@ class TestOIDCLoginFlask(unittest.TestCase):
                 return_value=config_file["https://moodle.haski.app"]
             ),
         ):
-            with self.assertRaises(err.ErrorException) as e:
+            with self.assertRaisesRegex(
+                err.ErrorException,
+                "target_link_uri invalid Inner Exception: (None, 'target_link_uri is not from the same host', 400)",  # noqa: E501
+            ):
                 self.oidc_login.check_params()
-            self.assertEqual(
-                e.exception.message,
-                "target_link_uri invalid Inner Exception: (None, 'target_link_uri is not from the same host', 400)",
-            )

@@ -7,10 +7,10 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
 
+import errors.errors as err
 import service_layer.crypto.JWTKeyManagement as jwt
 from service_layer.crypto.cryptorandom import CryptoRandom
 from service_layer.service import SessionServiceFlask
-import errors.errors as err
 
 PRIVATE_KEY_LOCATION: str = "keys/private.pem"
 PUBLIC_KEY_LOCATION: str = "keys/public.pem"

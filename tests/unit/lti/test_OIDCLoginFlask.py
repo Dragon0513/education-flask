@@ -1,6 +1,6 @@
 import os
 import unittest
-from unittest.mock import MagicMock, Mock, create_autospec, patch
+from unittest.mock import MagicMock, patch
 
 from errors import errors as err
 from service_layer.lti.config.ToolConfigJson import ToolConfigJson
@@ -102,7 +102,7 @@ class TestOIDCLoginFlask(unittest.TestCase):
             mock_form.form = form.copy()
             mock_form.form.pop("iss", None)
             with self.assertRaises(
-                Exception,
+                err.ErrorException,
             ):
                 # "(MissingParameterError(None, 'Missing parameters in request.', 400), 'Error in checking parameters', 400)", # noqa: E501
                 self.oidc_login.check_params()
@@ -118,9 +118,8 @@ class TestOIDCLoginFlask(unittest.TestCase):
             return_value=None,
         ):
             with patch.object(self.oidc_login, "_request", _request=MagicMock):
-                # "(MissingParameterError(None, 'Missing parameters in request.', 400), 'Error in checking parameters', 400)",
                 with self.assertRaises(
-                    Exception,
+                    err.ErrorException,
                 ):
                     self.oidc_login.check_params()
 

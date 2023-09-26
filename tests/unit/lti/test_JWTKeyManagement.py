@@ -10,6 +10,7 @@ from cryptography.hazmat.primitives.asymmetric import rsa
 import service_layer.crypto.JWTKeyManagement as jwt
 from service_layer.crypto.cryptorandom import CryptoRandom
 from service_layer.service import SessionServiceFlask
+import errors.errors as err
 
 PRIVATE_KEY_LOCATION: str = "keys/private.pem"
 PUBLIC_KEY_LOCATION: str = "keys/public.pem"
@@ -120,7 +121,7 @@ class TestJWTKeyManagement(unittest.TestCase):
         token = jwt.sign_jwt(test_dictionary)
 
         # Assert
-        with self.assertRaises(Exception):
+        with self.assertRaises(err.InvalidJWTError):
             corrupt_string = bytearray(token, "utf-8").replace(b".", b"!")
             jwt.get_unverified_header(corrupt_string.decode("utf-8"))
 
@@ -171,12 +172,8 @@ class TestJWTKeyManagement(unittest.TestCase):
         token = jwt.sign_jwt(test_dictionary)
         key_public = jwt.load_public_key()
 
-        # Assert exception
-        #         str(
-        #     "(JWSError('Signature verification failed.'), 'The passed JWT is invalid.', 400)"
-        # ),
         with self.assertRaises(
-            Exception,
+            err.InvalidJWTError,
         ):
             jwt.verify_jwt(token + "a", key_public)
 
@@ -184,7 +181,6 @@ class TestJWTKeyManagement(unittest.TestCase):
         """Test if a payload can be signed with a\
             private key and verified with the public key."""
         # Arrange
-        test_dictionary = {"a": "b"}
 
         # Act
         platform = config_file["https://moodle.haski.app"]
@@ -203,7 +199,7 @@ class TestJWTKeyManagement(unittest.TestCase):
             return_value="",
         ):
             with self.assertRaises(
-                Exception,
+                err.KeyNotFoundError,
             ):
                 jwt.load_public_key()
 
@@ -214,7 +210,7 @@ class TestJWTKeyManagement(unittest.TestCase):
             return_value="",
         ):
             with self.assertRaises(
-                Exception,
+                err.KeyNotFoundError,
             ):
                 jwt.sign_jwt({"a": "b"})
 

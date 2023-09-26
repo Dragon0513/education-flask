@@ -1,6 +1,7 @@
 import os
 import shutil
 import unittest
+from unittest.mock import patch
 
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
@@ -15,6 +16,39 @@ PUBLIC_KEY_LOCATION: str = "keys/public.pem"
 
 BACKEND_URL = "https://backend.haski.app"
 LMS_URL = "https://moodle.haski.app"
+
+
+# ignore E501
+config_file = {
+    "https://moodle.haski.app": {
+        "default": True,
+        "client_id": "VRCKkhKlZtHNHtD",
+        "tool_url": "https://backend.haski.app",
+        "frontend_login_url": "https://haski.app/login",
+        "target_link_uri": "https://backend.haski.app/lti_launch",
+        "auth_login_url": "https://moodle.haski.app/mod/lti/auth.php",
+        "auth_token_url": "https://moodle.haski.app/mod/lti/token.php",
+        "key_set_url": "https://moodle.haski.app/mod/lti/certs.php",
+        "haski_lti_activity": "https://moodle.haski.app/mod/lti/view.php?id=138",
+        "platform_name": "HASKI",
+        "key_set": {
+            "keys": [
+                {
+                    "kty": "RSA",
+                    "alg": "RS256",
+                    "kid": "5e58bef6fa8030be050b",
+                    "e": "AQAB",
+                    # pylint: disable=line-too-long
+                    "n": "z8uwIpHep-dGbqqutVqQPsXdwJk8ESoXPw1UD-9PmlTm06Q6PmXl5jHT9J6hTuW-9OjiycuBs07DW1At6LEAEBOJbFw2H6aflmPyhq09Cwernuk6OzekRRmnPdmfYeOcjpHAGaZ3qwaU0E6zPt_Ki1ZqdtLnB53ytO1fuYTmK1FVSbnexK9i4OkLk6OHMCHkInQTndRMWOiKWwrAoc591LlNSzgvlW_S9s-Vj2N4sHAcikKobzMMD8ixsV84Lx3mZyb13qph9qXUMJB9It-5WXa-FfsbUQZ6MeC0ks9_XSyl7tI7Q2eHUqenPimZL15uQnWek-gaE61IAK7ihKSMew",  # noqa: E501
+                    "use": "sig",
+                }
+            ]
+        },
+        "private_key_file": "private.key",
+        "public_key_file": "public.key",
+        "deployment_ids": ["1"],
+    }
+}
 
 
 class TestJWTKeyManagement(unittest.TestCase):
@@ -77,6 +111,19 @@ class TestJWTKeyManagement(unittest.TestCase):
         # Assert
         assert header["alg"] == "RS256" and header["typ"] == "JWT"
 
+    def test_fail_get_unverified_header(self):
+        """Test if a unverified header with a wrong token fails."""
+        # Arrange
+        test_dictionary = {"a": "b"}
+
+        # Act
+        token = jwt.sign_jwt(test_dictionary)
+
+        # Assert
+        with self.assertRaises(Exception):
+            corrupt_string = bytearray(token, "utf-8").replace(b".", b"!")
+            jwt.get_unverified_header(corrupt_string.decode("utf-8"))
+
     def test_load_jwt(self):
         """Test if the unverified claims contains the correct information."""
         # Arrange
@@ -101,6 +148,75 @@ class TestJWTKeyManagement(unittest.TestCase):
 
         # Assert
         assert test_dictionary == jwt.verify_jwt(token, key_public)
+
+    def test_no_key_sign_verify_jwt(self):
+        """Test if a payload can be signed with a\
+            private key and verified with the public key."""
+        # Arrange
+        test_dictionary = {"a": "b"}
+
+        # Act
+        token = jwt.sign_jwt(test_dictionary)
+
+        # Assert
+        assert test_dictionary == jwt.verify_jwt(token)
+
+    def test_fail_verify_jwt(self):
+        """Test if a payload can be signed with a\
+            private key and verified with the public key."""
+        # Arrange
+        test_dictionary = {"a": "b"}
+
+        # Act
+        token = jwt.sign_jwt(test_dictionary)
+        key_public = jwt.load_public_key()
+
+        # Assert exception
+        #         str(
+        #     "(JWSError('Signature verification failed.'), 'The passed JWT is invalid.', 400)"
+        # ),
+        with self.assertRaises(
+            Exception,
+        ):
+            jwt.verify_jwt(token + "a", key_public)
+
+    def test_construct_jwt(self):
+        """Test if a payload can be signed with a\
+            private key and verified with the public key."""
+        # Arrange
+        test_dictionary = {"a": "b"}
+
+        # Act
+        platform = config_file["https://moodle.haski.app"]
+        hmac = next(
+            (key for key in platform["key_set"]["keys"]),
+            "",
+        )
+
+        # Assert
+        assert jwt.construct_key(hmac)
+
+    def test_no_public_key_location(self):
+        with patch.object(
+            jwt,
+            "public_key_location",
+            return_value="",
+        ):
+            with self.assertRaises(
+                Exception,
+            ):
+                jwt.load_public_key()
+
+    def test_no_private_key_location(self):
+        with patch.object(
+            jwt,
+            "private_key_location",
+            return_value="",
+        ):
+            with self.assertRaises(
+                Exception,
+            ):
+                jwt.sign_jwt({"a": "b"})
 
     def test_nonce_jwt(self):
         """Test if a nonce-token can be generated and verified."""

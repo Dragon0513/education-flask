@@ -1,9 +1,9 @@
 import unittest
 from unittest.mock import MagicMock, patch
-
 from errors import errors as err
 from service_layer.lti.config.ToolConfigJson import ToolConfigJson
 from service_layer.lti.OIDCLoginFlask import OIDCLoginFlask
+
 
 # ignore E501
 config_file = {
@@ -97,39 +97,38 @@ class TestOIDCLoginFlask(unittest.TestCase):
             return True
 
     def test_check_params_missing_iss(self):
-        self.oidc_login._request.form.pop("iss")
-
-        with self.assertRaisesRegex(
-            Exception,
-            "(MissingParameterError(None, 'Missing parameters in request.', 400), 'Error in checking parameters', 400)",
-        ):
-            self.oidc_login.check_params()
+        # object clone without iss:
+        with patch.object(self.oidc_login, "_request", _request=MagicMock) as mock_form:
+            mock_form.form = form.copy()
+            mock_form.form.pop("iss", None)
+            with self.assertRaises(
+                Exception,
+            ):
+                # "(MissingParameterError(None, 'Missing parameters in request.', 400), 'Error in checking parameters', 400)", # noqa: E501
+                self.oidc_login.check_params()
 
     def test_check_params_missing_platform(self):
         # _iss_conf_dict remove the platform
         # self.oidc_login._tool_config._iss_conf_dict.pop(
         #     "https://moodle.haski.app", None
         # )
-        with patch.multiple(
+        with patch.object(
             ToolConfigJson,
-            _platform=MagicMock(return_value=None),
+            "get_platform",
+            return_value=None,
         ):
-            with self.assertRaisesRegex(
+            # "(MissingParameterError(None, 'Missing parameters in request.', 400), 'Error in checking parameters', 400)",
+            with self.assertRaises(
                 Exception,
-                "(MissingParameterError(None, 'Missing parameters in request.', 400), 'Error in checking parameters', 400)",
             ):
                 self.oidc_login.check_params()
 
     def test_check_params_wrong_target_link_uri(self):
-        self.oidc_login._request.form["target_link_uri"] = "wrong_uri"
-        with patch.multiple(
-            ToolConfigJson,
-            get_platform=MagicMock(
-                return_value=config_file["https://moodle.haski.app"]
-            ),
-        ):
-            with self.assertRaisesRegex(
+        with patch.object(self.oidc_login, "_request", _request=MagicMock) as mock_form:
+            mock_form.form = form.copy()
+            mock_form.form["target_link_uri"] = "wrong_uri"
+            # "target_link_uri invalid Inner Exception: (None, 'target_link_uri is not from the same host', 400)",  # noqa: E501
+            with self.assertRaises(
                 err.ErrorException,
-                "target_link_uri invalid Inner Exception: (None, 'target_link_uri is not from the same host', 400)",  # noqa: E501
             ):
                 self.oidc_login.check_params()

@@ -46,6 +46,14 @@ class ToolConfigJsonMock(ToolConfigJson):
 
 
 tool_config = ToolConfigJson()
+form = {
+    "iss": "https://moodle.haski.app",
+    "client_id": "VRCKkhKlZtHNHtD",
+    "login_hint": "student",
+    "lti_message_hint": "message_hint",
+    "target_link_uri": "https://backend.haski.app/lti_launch",
+    "lti_deployment_id": "1",
+}
 
 
 # pytest tests\unit\lti\test_OIDCLoginFlask.py --cov
@@ -56,14 +64,7 @@ class TestOIDCLoginFlask(unittest.TestCase):
         self.oidc_login = OIDCLoginFlask(self.request, self.tool_config)
         self.oidc_login._request = MagicMock()
         self.oidc_login._request.host = host
-        self.oidc_login._request.form = {
-            "iss": "https://moodle.haski.app",
-            "client_id": "VRCKkhKlZtHNHtD",
-            "login_hint": "student",
-            "lti_message_hint": "message_hint",
-            "target_link_uri": "https://backend.haski.app/lti_launch",
-            "lti_deployment_id": "1",
-        }
+        self.oidc_login._request.form = form
 
         # self.tool_config = MagicMock()
         # self.oidc_login = OIDCLoginFlask(self.request, self.tool_config)
@@ -98,17 +99,26 @@ class TestOIDCLoginFlask(unittest.TestCase):
     def test_check_params_missing_iss(self):
         self.oidc_login._request.form.pop("iss")
 
-        with self.assertRaisesRegex(Exception):
+        with self.assertRaisesRegex(
+            Exception,
+            "(MissingParameterError(None, 'Missing parameters in request.', 400), 'Error in checking parameters', 400)",
+        ):
             self.oidc_login.check_params()
 
     def test_check_params_missing_platform(self):
         # _iss_conf_dict remove the platform
-        self.oidc_login._tool_config._iss_conf_dict.pop(
-            "https://moodle.haski.app", None
-        )
-
-        with self.assertRaisesRegex(Exception, "No platform found"):
-            self.oidc_login.check_params()
+        # self.oidc_login._tool_config._iss_conf_dict.pop(
+        #     "https://moodle.haski.app", None
+        # )
+        with patch.multiple(
+            ToolConfigJson,
+            _platform=MagicMock(return_value=None),
+        ):
+            with self.assertRaisesRegex(
+                Exception,
+                "(MissingParameterError(None, 'Missing parameters in request.', 400), 'Error in checking parameters', 400)",
+            ):
+                self.oidc_login.check_params()
 
     def test_check_params_wrong_target_link_uri(self):
         self.oidc_login._request.form["target_link_uri"] = "wrong_uri"

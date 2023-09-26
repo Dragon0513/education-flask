@@ -17,8 +17,11 @@ class ToolConfigJson:
         if not os.path.isfile(config_file):
             raise FileNotFoundError("LTI tool config file not found: " + config_file)
 
+        self._iss_conf_dict = self.load_config(config_file)
+
+    def load_config(self, config_file: str):
         with open(config_file, "r") as cfg:
-            self._iss_conf_dict = json.loads(cfg.read())
+            return json.loads(cfg.read())
 
     def get_platform(self, iss: str):
         return self._iss_conf_dict[iss]

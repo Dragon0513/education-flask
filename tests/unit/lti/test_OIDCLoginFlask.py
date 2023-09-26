@@ -1,9 +1,10 @@
+import os
 import unittest
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, Mock, create_autospec, patch
+
 from errors import errors as err
 from service_layer.lti.config.ToolConfigJson import ToolConfigJson
 from service_layer.lti.OIDCLoginFlask import OIDCLoginFlask
-
 
 # ignore E501
 config_file = {
@@ -40,12 +41,6 @@ config_file = {
 host = config_file["https://moodle.haski.app"]["tool_url"].split("//")[1]
 
 
-class ToolConfigJsonMock(ToolConfigJson):
-    def __init__(self):
-        self._iss_conf_dict = config_file
-
-
-tool_config = ToolConfigJson()
 form = {
     "iss": "https://moodle.haski.app",
     "client_id": "VRCKkhKlZtHNHtD",
@@ -57,44 +52,49 @@ form = {
 
 
 # pytest tests\unit\lti\test_OIDCLoginFlask.py --cov
-class TestOIDCLoginFlask(unittest.TestCase):
-    def setUp(self):
-        self.tool_config = tool_config
-        self.request = MagicMock()
-        self.oidc_login = OIDCLoginFlask(self.request, self.tool_config)
-        self.oidc_login._request = MagicMock()
-        self.oidc_login._request.host = host
-        self.oidc_login._request.form = form
 
+
+class TestOIDCLoginFlask(unittest.TestCase):
+    @patch.multiple(
+        ToolConfigJson,
+        load_config=MagicMock(return_value=config_file),
+    )
+    @patch.multiple(os.path, isfile=MagicMock(return_value=True))
+    def setUp(self):
+        self.request = MagicMock()
+        self.oidc_login = OIDCLoginFlask(self.request, ToolConfigJson())
+        self.tool_config = ToolConfigJson()
         # self.tool_config = MagicMock()
-        # self.oidc_login = OIDCLoginFlask(self.request, self.tool_config)
+        # self.self.oidc_login = OIDCLoginFlask(self.request, self.tool_config)
 
     def test_tool_config_decode_platform(self):
         # dont need to check every value, just one
-        with patch.multiple(
-            ToolConfigJson,
-            get_platform=MagicMock(
-                return_value=config_file["https://moodle.haski.app"]
-            ),
-        ):
-            platform = self.oidc_login._tool_config.decode_platform(
-                self.tool_config.get_platform("https://moodle.haski.app")
-            )
-            self.assertEqual(
-                platform.platform_name,
-                "HASKI",
-            )
+        # with patch.multiple(
+        #     ToolConfigJson,
+        #     get_platform=MagicMock(
+        #         return_value=config_file["https://moodle.haski.app"]
+        #     ),
+        # ):
+        # with patch.object(os.path, "isfile", return_value=True):
+        #     with patch.object(
+        #         ToolConfigJson,
+        #         "load_config",
+        #         return_value=config_file,
+        #     ):
+        platform = self.tool_config.decode_platform(
+            self.tool_config.get_platform("https://moodle.haski.app")
+        )
+        self.assertEqual(
+            platform.platform_name,
+            "HASKI",
+        )
 
     def test_check_params_successful(self):
         # expect not to raise an exception
-        with patch.multiple(
-            ToolConfigJson,
-            get_platform=MagicMock(
-                return_value=config_file["https://moodle.haski.app"]
-            ),
-        ):
-            self.oidc_login.check_params()
-            return True
+        with patch.object(self.oidc_login, "_request", _request=MagicMock) as mock_form:
+            mock_form.form = form.copy()
+            mock_form.host = host
+            self.assertTrue(self.oidc_login.check_params())
 
     def test_check_params_missing_iss(self):
         # object clone without iss:
@@ -109,7 +109,7 @@ class TestOIDCLoginFlask(unittest.TestCase):
 
     def test_check_params_missing_platform(self):
         # _iss_conf_dict remove the platform
-        # self.oidc_login._tool_config._iss_conf_dict.pop(
+        # self.self.oidc_login._tool_config._iss_conf_dict.pop(
         #     "https://moodle.haski.app", None
         # )
         with patch.object(
@@ -117,11 +117,12 @@ class TestOIDCLoginFlask(unittest.TestCase):
             "get_platform",
             return_value=None,
         ):
-            # "(MissingParameterError(None, 'Missing parameters in request.', 400), 'Error in checking parameters', 400)",
-            with self.assertRaises(
-                Exception,
-            ):
-                self.oidc_login.check_params()
+            with patch.object(self.oidc_login, "_request", _request=MagicMock):
+                # "(MissingParameterError(None, 'Missing parameters in request.', 400), 'Error in checking parameters', 400)",
+                with self.assertRaises(
+                    Exception,
+                ):
+                    self.oidc_login.check_params()
 
     def test_check_params_wrong_target_link_uri(self):
         with patch.object(self.oidc_login, "_request", _request=MagicMock) as mock_form:

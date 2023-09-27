@@ -71,17 +71,10 @@ class OIDCLoginFlask(OIDCLogin):
                 raise err.ErrorException(message="No platform found", status_code=400)
         except Exception as e:
             raise err.ErrorException(e, message="Error in check_auth", status_code=400)
-        try:
-            parsed_target_link_url = (
-                urllib.parse.urlparse(
-                    self._oidc_login_params_dict.get("target_link_uri")
-                )
-                or None
-            )
-        except ValueError as e:
-            raise err.ErrorException(
-                e, message="target_link_uri is not URL", status_code=400
-            )
+
+        parsed_target_link_url = urllib.parse.urlparse(
+            self._oidc_login_params_dict.get("target_link_uri")
+        )
 
         # Verify if the target_link_uri is valid
         # and does not redirect to other domain than our tool

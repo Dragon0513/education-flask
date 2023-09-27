@@ -102,7 +102,7 @@ class TestOIDCLoginFlask(unittest.TestCase):
         with patch.object(self.oidc_login, "_request", _request=MagicMock) as mock_form:
             mock_form.form = form.copy()
             mock_form.form.pop("iss", None)
-            with self.assertRaisesRegexp(
+            with self.assertRaisesRegex(
                 err.ErrorException, "Missing parameters in request"
             ):
                 # "(MissingParameterError(None, 'Missing parameters in request.', 400), 'Error in checking parameters', 400)", # noqa: E501
@@ -129,3 +129,19 @@ class TestOIDCLoginFlask(unittest.TestCase):
                 err.ErrorException, "target_link_uri is not from the same host"
             ):
                 self.oidc_login.check_params()
+
+    def test_prod_no_https(self):
+        """targetlink has no https and environ is production"""
+
+        with patch.object(self.oidc_login, "_request", _request=MagicMock) as mock_form:
+            mock_form.form = form.copy()
+            mock_form.host = host
+            mock_form.form["target_link_uri"] = "http://backend.haski.app/lti_launch"
+            with patch.dict(
+                os.environ,
+                {"FLASK_ENV": "production"},
+            ):
+                with self.assertRaisesRegex(
+                    err.ErrorException, "target_link_uri is not HTTPS"
+                ):
+                    self.oidc_login.check_params()

@@ -2,9 +2,6 @@ from abc import ABC, abstractmethod
 
 
 class CookieService(ABC):
-    @abstractmethod
-    def get_cookie(self, name):
-        pass
 
     @abstractmethod
     def set_cookie(

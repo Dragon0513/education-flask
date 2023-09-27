@@ -121,7 +121,7 @@ class TestJWTKeyManagement(unittest.TestCase):
         token = jwt.sign_jwt(test_dictionary)
 
         # Assert
-        with self.assertRaises(err.InvalidJWTError):
+        with self.assertRaisesRegex(err.InvalidJWTError, "The passed JWT is invalid"):
             corrupt_string = bytearray(token, "utf-8").replace(b".", b"!")
             jwt.get_unverified_header(corrupt_string.decode("utf-8"))
 
@@ -172,9 +172,7 @@ class TestJWTKeyManagement(unittest.TestCase):
         token = jwt.sign_jwt(test_dictionary)
         key_public = jwt.load_public_key()
 
-        with self.assertRaises(
-            err.InvalidJWTError,
-        ):
+        with self.assertRaisesRegex(err.InvalidJWTError, "The passed JWT is invalid"):
             jwt.verify_jwt(token + "a", key_public)
 
     def test_construct_jwt(self):
@@ -209,8 +207,8 @@ class TestJWTKeyManagement(unittest.TestCase):
             "private_key_location",
             return_value="",
         ):
-            with self.assertRaises(
-                err.KeyNotFoundError,
+            with self.assertRaisesRegex(
+                err.KeyNotFoundError, "Private key location: not found"
             ):
                 jwt.sign_jwt({"a": "b"})
 

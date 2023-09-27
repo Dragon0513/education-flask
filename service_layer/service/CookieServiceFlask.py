@@ -5,12 +5,6 @@ from service_layer.service.CookieService import CookieService
 
 
 class CookieServiceFlask(CookieService):
-    def __init__(self, request: Request):
-        self.request = request
-
-    def get_cookie(self, name, type=str):
-        return self.request.cookies.get(name, type=type)
-
     def set_cookie(
         self,
         response: Response,

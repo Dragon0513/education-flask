@@ -30,7 +30,7 @@ class OIDCLoginFlask(OIDCLogin):
     ):
         self._request = request
         self._cookie_service = (
-            cookie_service if cookie_service else CookieServiceFlask(request)
+            cookie_service if cookie_service else CookieServiceFlask()
         )
         self.oidc_login_params = {
             "iss",

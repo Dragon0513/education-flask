@@ -1,6 +1,6 @@
 from unittest.mock import Mock
-from werkzeug.test import EnvironBuilder
-from werkzeug.wrappers import Request, Response
+
+from werkzeug.wrappers import Response
 
 from service_layer.service.CookieServiceFlask import CookieServiceFlask
 

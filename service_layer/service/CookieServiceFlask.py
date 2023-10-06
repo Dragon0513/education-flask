@@ -1,4 +1,3 @@
-from flask.wrappers import Request
 from werkzeug import Response
 
 from service_layer.service.CookieService import CookieService

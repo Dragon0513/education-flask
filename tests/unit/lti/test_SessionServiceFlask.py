@@ -1,14 +1,15 @@
 import datetime
 import unittest
 from unittest.mock import patch
-from service_layer.service.SessionServiceFlask import (
+
+from service_layer.service.SessionServiceFlask import (  # noqa: E501
     Session,
-    set_state_jwt,
-    set,
-    get,
     check_expiration,
+    get,
     sessions,
-)  # noqa: E501
+    set,
+    set_state_jwt,
+)
 
 
 class TestSessionClass(unittest.TestCase):
@@ -31,7 +32,8 @@ class TestSessionClass(unittest.TestCase):
 
     def test_delitem(self):
         """
-        Test that the __delitem__ method removes the item and sets the 'modified' attribute to True.
+        Test that the __delitem__ method
+        removes the item and sets the 'modified' attribute to True.
         """
         session = Session(key="value")
         self.assertFalse(session.modified)  # Initial state

@@ -1,19 +1,16 @@
 import unittest
+
+from service_layer.lti.Roles import RoleMapper, lti_permissions, lti_roles
 from utils.auth.permissions import Permissions
-from service_layer.lti.Roles import (
-    RoleMapper,
-    lti_roles,
-    lti_permissions,
-)  # Replace 'your_module' with the actual module where these are defined
 
 
 class TestRoles(unittest.TestCase):
     def test_lti_roles(self):
         """Test if lti_roles has the expected mappings."""
         expected_roles = {
-            "http://purl.imsglobal.org/vocab/lis/v2/membership#Instructor": "Instructor",
-            "http://purl.imsglobal.org/vocab/lis/v2/membership#Learner": "Learner",
-            "http://purl.imsglobal.org/vocab/lis/v2/membership#Administrator": "Administrator",
+            "http://purl.imsglobal.org/vocab/lis/v2/membership#Instructor": "Instructor",  # noqa: E501
+            "http://purl.imsglobal.org/vocab/lis/v2/membership#Learner": "Learner",  # noqa: E501
+            "http://purl.imsglobal.org/vocab/lis/v2/membership#Administrator": "Administrator",  # noqa: E501
         }
         self.assertDictEqual(lti_roles, expected_roles)
 

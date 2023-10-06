@@ -6,9 +6,6 @@ skip_gitignore = true
 skip_glob = [".tox", ".git", ".venv", "venv", "venv_hooks", "build", "dist", "docs", "keys", "configs", "__pycache__", ".vscode", ".github"]
 known_first_party = ["black", "blackd", "_black_version"]
 
-[tool.pytest]
-addopts = "--cov=black --cov-report=term-missing --cov-report=xml --cov-report=html"
-
 [tool.black]
 line-length = 88
 target-version = ['py310']
@@ -35,5 +32,5 @@ legacy_tox_ini = """
     passenv = *
     deps =
         -rrequirements.txt
-    commands = pytest --cov=. --cov-report=xml --cov-branch --cov-report=html tests/
+    commands = pytest --cov=domain --cov=entrypoints --cov=errors --cov=repositories --cov=service_layer --cov=utils --cov-report=xml --cov-branch --cov-report=html tests/
 """

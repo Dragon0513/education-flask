@@ -32,5 +32,5 @@ legacy_tox_ini = """
     passenv = *
     deps =
         -rrequirements.txt
-    commands = pytest --cov=domain --cov=entrypoints --cov=errors --cov=repositories --cov=service_layer --cov=utils --cov-report=xml --cov-branch --cov-report=html tests/
+    commands = pytest --cov=. --cov-report=xml --cov-branch --cov-report=html tests/
 """

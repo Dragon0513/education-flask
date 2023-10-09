@@ -6,6 +6,7 @@ from domain.userAdministartion import model as UA
 from domain.learnersModel import model as LM
 from domain.domainModel import model as DM
 from domain.tutoringModel import model as TM
+from domain.learnersModel import basic_ils_algorithm as BILSA
 import errors.errors as err
 
 
@@ -600,22 +601,33 @@ def create_questionnaire_ils(
             if id.startswith("sg"):
                 ils_understanding_answers[id] = answer
         questionnaire_ils.serialize()
-        create_ils_input_answers(uow,
+        ils_input = create_ils_input_answers(uow,
                                  questionnaire_ils.id,
                                  ils_input_answers
                                  )
-        create_ils_perception_answers(uow,
+        ils_perception = create_ils_perception_answers(uow,
                                       questionnaire_ils.id,
                                       ils_perception_answers
                                       )
-        create_ils_processing_answers(uow,
+        ils_processing = create_ils_processing_answers(uow,
                                       questionnaire_ils.id,
                                       ils_processing_answers
                                       )
-        create_ils_understanding_answers(uow,
+        ils_understading = create_ils_understanding_answers(uow,
                                          questionnaire_ils.id,
                                          ils_understanding_answers
                                          )
+        ils_input_values = {key: value for key, value in ils_input.items() if key.startswith('vv')}
+        ils_perception_values = {key: value for key, value in ils_perception.items() if key.startswith('si')}
+        ils_processing_values = {key: value for key, value in ils_processing.items() if key.startswith('ar')}
+        ils_understanding_values = {key: value for key, value in ils_understading.items() if key.startswith('sg')}
+        basic_learning_style = BILSA.calculate_basic_learning_style(
+            ils_input_values,
+            ils_perception_values,
+            ils_processing_values,
+            ils_understanding_values)
+
+        #update_learning_style_by_student_id(uow, )
         characteristics = get_learning_characteristics(
             uow,
             student_id

@@ -621,13 +621,27 @@ def create_questionnaire_ils(
         ils_perception_values = {key: value for key, value in ils_perception.items() if key.startswith('si')}
         ils_processing_values = {key: value for key, value in ils_processing.items() if key.startswith('ar')}
         ils_understanding_values = {key: value for key, value in ils_understading.items() if key.startswith('sg')}
+        # Calculate basic learning style / can be changed to other algorithms
         basic_learning_style = BILSA.calculate_basic_learning_style(
             ils_input_values,
             ils_perception_values,
             ils_processing_values,
             ils_understanding_values)
-
-        #update_learning_style_by_student_id(uow, )
+        # Get user_id with the student_id
+        student = uow.student.get_student_by_student_id(student_id)
+        user = get_user_by_id(uow, student[0].user_id)
+        update_learning_style_by_student_id(uow,
+                                            user["id"],
+                                            user["lms_user_id"],
+                                            student_id,
+                                            basic_learning_style[1][0],
+                                            basic_learning_style[1][1],
+                                            basic_learning_style[0][0],
+                                            basic_learning_style[0][1],
+                                            basic_learning_style[2][0],
+                                            basic_learning_style[2][1],
+                                            basic_learning_style[3][0],
+                                            basic_learning_style[3][1])
         characteristics = get_learning_characteristics(
             uow,
             student_id

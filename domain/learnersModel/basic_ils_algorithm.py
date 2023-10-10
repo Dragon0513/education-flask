@@ -21,12 +21,13 @@ def calculate_basic_learning_style(ils_input, ils_perception,
     print("ils_procession: ", ils_procession)
     print("ils_understanding: ", ils_understanding)
 
-    ils_input = calculate_ils_input(ils_input)
-    ils_perception = calculate_ils_perception(ils_perception)
-    ils_procession = calculate_ils_procession(ils_procession)
-    ils_understanding = calculate_ils_understanding(ils_understanding)
+    ils_input_dim_val = calculate_ils_input(ils_input)
+    ils_perception_dim_val = calculate_ils_perception(ils_perception)
+    ils_procession_dim_val = calculate_ils_procession(ils_procession)
+    ils_understanding_dim_val = calculate_ils_understanding(ils_understanding)
 
-    return ils_input, ils_perception, ils_procession, ils_understanding
+    return (ils_input_dim_val, ils_perception_dim_val, ils_procession_dim_val,
+            ils_understanding_dim_val)
 
 
 def calculate_ils_input(ils_input):
@@ -39,14 +40,14 @@ def calculate_ils_input(ils_input):
             ils_input_value = (ils_input_value - 1)
 
     if ils_input_value < 0:
-        ils_input_dimension = "verbal"
+        ils_input_dimension = "vrb"
     else:
-        ils_input_dimension = "visual"
+        ils_input_dimension = "vis"
 
     print("ils_input_dimension: ", ils_input_dimension,
           "ils_input_value: ", abs(ils_input_value))
 
-    return ils_input_dimension, abs(ils_input_value)
+    return (ils_input_dimension, abs(ils_input_value))
 
 
 def calculate_ils_perception(ils_perception):
@@ -59,9 +60,9 @@ def calculate_ils_perception(ils_perception):
             ils_perception_value = (ils_perception_value - 1)
 
     if ils_perception_value < 0:
-        ils_perception_dimension = "intuitive"
+        ils_perception_dimension = "int"
     else:
-        ils_perception_dimension = "sensory"
+        ils_perception_dimension = "sns"
 
     print("ils_perception_dimension: ", ils_perception_dimension,
           "ils_perception_value: ", abs(ils_perception_value))
@@ -79,9 +80,9 @@ def calculate_ils_procession(ils_procession):
             ils_procession_value = (ils_procession_value - 1)
 
     if ils_procession_value < 0:
-        ils_procession_dimension = "reflective"
+        ils_procession_dimension = "ref"
     else:
-        ils_procession_dimension = "active"
+        ils_procession_dimension = "act"
 
     print("ils_procession_dimension: ", ils_procession_dimension,
           "ils_procession_value: ", abs(ils_procession_value))
@@ -99,9 +100,9 @@ def calculate_ils_understanding(ils_understanding):
             ils_understanding_value = (ils_understanding_value - 1)
 
     if ils_understanding_value < 0:
-        ils_understanding_dimension = "global"
+        ils_understanding_dimension = "glb"
     else:
-        ils_understanding_dimension = "sequential"
+        ils_understanding_dimension = "seq"
 
     print("ils_understanding_dimension: ", ils_understanding_dimension,
           "ils_understanding_value: ", abs(ils_understanding_value))

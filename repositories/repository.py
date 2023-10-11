@@ -1768,8 +1768,49 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         strategy_exist = self.get_learning_strategy(characteristic_id)
         if strategy_exist != []:
             learning_strategy.id = strategy_exist[0].id
-            return self.session.query(LM.LearningStrategy).filter_by(
-                characteristic_id=characteristic_id
+            return (
+                self.session.query(LM.LearningStrategy)
+                .filter_by(characteristic_id=characteristic_id)
+                .update(
+                    {
+                        LM.LearningStrategy.characteristic_id:
+                        learning_strategy.characteristic_id,
+                        LM.LearningStrategy.cogn_str:
+                        learning_strategy.cogn_str,
+                        LM.LearningStrategy.org:
+                        learning_strategy.org,
+                        LM.LearningStrategy.elab:
+                        learning_strategy.elab,
+                        LM.LearningStrategy.crit_rev:
+                        learning_strategy.crit_rev,
+                        LM.LearningStrategy.rep:
+                        learning_strategy.rep,
+                        LM.LearningStrategy.metacogn_str:
+                        learning_strategy.metacogn_str,
+                        LM.LearningStrategy.goal_plan:
+                        learning_strategy.goal_plan,
+                        LM.LearningStrategy.con:
+                        learning_strategy.con,
+                        LM.LearningStrategy.reg:
+                        learning_strategy.reg,
+                        LM.LearningStrategy.int_res_mng_str:
+                        learning_strategy.int_res_mng_str,
+                        LM.LearningStrategy.att:
+                        learning_strategy.att,
+                        LM.LearningStrategy.eff:
+                        learning_strategy.eff,
+                        LM.LearningStrategy.time:
+                        learning_strategy.time,
+                        LM.LearningStrategy.ext_res_mng_str:
+                        learning_strategy.ext_res_mng_str,
+                        LM.LearningStrategy.lrn_w_cls:
+                        learning_strategy.lrn_w_cls,
+                        LM.LearningStrategy.lit_res:
+                        learning_strategy.lit_res,
+                        LM.LearningStrategy.lrn_env:
+                        learning_strategy.lrn_env,
+                    }
+                )
             )
         else:
             raise err.NoValidIdError

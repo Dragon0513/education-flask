@@ -1,7 +1,3 @@
-import sys
-import os
-
-
 # The basic calculating Method for the ILS
 # Every answer will affect the dimension positively or negatively by 1
 
@@ -47,7 +43,7 @@ def calculate_ils_input(ils_input):
     print("ils_input_dimension: ", ils_input_dimension,
           "ils_input_value: ", abs(ils_input_value))
 
-    return (ils_input_dimension, abs(ils_input_value))
+    return ils_input_dimension, abs(ils_input_value)
 
 
 def calculate_ils_perception(ils_perception):

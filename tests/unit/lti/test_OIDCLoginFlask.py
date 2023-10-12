@@ -157,13 +157,15 @@ class TestOIDCLoginFlask(unittest.TestCase):
             mock_form.host = host
             mock_form.form = {"state": "valid_state_jwt"}
 
-            # Mock the JWTKeyManagement.verify_jwt method to return a valid state form
+            # Mock the JWTKeyManagement.verify_jwt method
+            # to return a valid state form
             with patch(
                 "service_layer.crypto.JWTKeyManagement.verify_jwt"
             ) as mock_verify_jwt:
                 mock_verify_jwt.return_value = {"nonce": "valid_nonce"}
 
-                # Mock the JWTKeyManagement.verify_state_jwt_payload method to return True
+                # Mock the JWTKeyManagement.verify_state_jwt_payload
+                # method to return True
                 with patch(
                     "service_layer.crypto.JWTKeyManagement.verify_state_jwt_payload"
                 ) as mock_verify_state_jwt_payload:
@@ -172,7 +174,8 @@ class TestOIDCLoginFlask(unittest.TestCase):
                     # Call the verify_state method
                     self.oidc_login.verify_state()
 
-                    # Assert that the mock methods were called with the correct arguments
+                    # Assert that the mock methods were
+                    # called with the correct arguments
                     mock_verify_jwt.assert_called_once_with("valid_state_jwt")
                     mock_verify_state_jwt_payload.assert_called_once_with(
                         {"nonce": "valid_nonce"}
@@ -196,7 +199,8 @@ class TestOIDCLoginFlask(unittest.TestCase):
                 ):
                     self.oidc_login.verify_state()
 
-                    # Assert that the mock methods were called with the correct arguments
+                    # Assert that the mock methods were
+                    # called with the correct arguments
                     mock_verify_jwt.assert_called_once_with("invalid_state_jwt")
 
     def test_verify_state_invalid_payload(self):
@@ -211,7 +215,8 @@ class TestOIDCLoginFlask(unittest.TestCase):
             ) as mock_verify_jwt:
                 mock_verify_jwt.return_value = {"nonce": "invalid_nonce"}
 
-                # Mock the JWTKeyManagement.verify_state_jwt_payload method to return True
+                # Mock the JWTKeyManagement.verify_state_jwt_payload
+                # method to return True
                 with patch.object(
                     JWTKeyManagement,
                     "verify_state_jwt_payload",
@@ -222,7 +227,8 @@ class TestOIDCLoginFlask(unittest.TestCase):
                     with self.assertRaises(err.InvalidJWTError):
                         self.oidc_login.verify_state()
 
-                        # Assert that the mock methods were called with the correct arguments
+                        # Assert that the mock methods were
+                        # called with the correct arguments
                         mock_verify_jwt.assert_called_once_with("invalid_state_jwt")
                         mock_verify_state_jwt_payload.assert_called_once_with(
                             {"nonce": "invalid_nonce"}
@@ -289,7 +295,8 @@ class TestOIDCLoginFlask(unittest.TestCase):
                         # self.oidc_login._tool_config.get_platform = MagicMock(
                         #     return_value=config_file["https://moodle.haski.app"]
                         # )
-                        # Mock the JWTKeyManagement.verify_jwt method to return a valid id_token
+                        # Mock the JWTKeyManagement.verify_jwt
+                        # method to return a valid id_token
                         with patch(
                             "service_layer.crypto.JWTKeyManagement.verify_jwt"
                         ) as mock_verify_jwt:
@@ -301,7 +308,8 @@ class TestOIDCLoginFlask(unittest.TestCase):
                             # Call the verify_id_token method
                             self.oidc_login.verify_id_token()
 
-                            # Assert that the mock method was called with the correct argument and jose object
+                            # Assert that the mock method was called
+                            # with the correct argument and jose object
                             mock_verify_jwt.assert_called_with(
                                 "valid_id_token_jwt", mock.ANY
                             )

@@ -165,6 +165,8 @@ def verify_jwt_payload(jwt_payload, verify_nonce=True) -> bool:
 def verify_state_jwt_payload(
     state_jwt_payload, verify_nonce=True, session=True
 ) -> bool:
+    """Verifies the payload of a state JWT token. Returns\
+        True if the payload is valid, otherwise False."""
     if not verify_jwt_payload(state_jwt_payload, verify_nonce):
         return False
     # verify state in storage

@@ -1,8 +1,10 @@
 import os
 import unittest
+from unittest import mock
 from unittest.mock import MagicMock, patch
 
 from errors import errors as err
+from service_layer.crypto import JWTKeyManagement
 from service_layer.lti.config.ToolConfigJson import ToolConfigJson
 from service_layer.lti.OIDCLoginFlask import OIDCLoginFlask
 
@@ -145,3 +147,161 @@ class TestOIDCLoginFlask(unittest.TestCase):
                     err.ErrorException, "target_link_uri is not HTTPS"
                 ):
                     self.oidc_login.check_params()
+
+    from unittest.mock import patch
+
+    def test_verify_state_successful(self):
+        # Create a mock request object
+        with patch.object(self.oidc_login, "_request", _request=MagicMock) as mock_form:
+            mock_form.form = form.copy()
+            mock_form.host = host
+            mock_form.form = {"state": "valid_state_jwt"}
+
+            # Mock the JWTKeyManagement.verify_jwt method to return a valid state form
+            with patch(
+                "service_layer.crypto.JWTKeyManagement.verify_jwt"
+            ) as mock_verify_jwt:
+                mock_verify_jwt.return_value = {"nonce": "valid_nonce"}
+
+                # Mock the JWTKeyManagement.verify_state_jwt_payload method to return True
+                with patch(
+                    "service_layer.crypto.JWTKeyManagement.verify_state_jwt_payload"
+                ) as mock_verify_state_jwt_payload:
+                    mock_verify_state_jwt_payload.return_value = True
+
+                    # Call the verify_state method
+                    self.oidc_login.verify_state()
+
+                    # Assert that the mock methods were called with the correct arguments
+                    mock_verify_jwt.assert_called_once_with("valid_state_jwt")
+                    mock_verify_state_jwt_payload.assert_called_once_with(
+                        {"nonce": "valid_nonce"}
+                    )
+
+    def test_verify_state_invalid_jwt(self):
+        with patch.object(self.oidc_login, "_request", _request=MagicMock) as mock_form:
+            mock_form.form = form.copy()
+            mock_form.host = host
+            mock_form.form = {"state": "invalid_state_jwt"}
+
+            # Mock the JWTKeyManagement.verify_jwt method to return a valid state form
+            with patch(
+                "service_layer.crypto.JWTKeyManagement.verify_jwt"
+            ) as mock_verify_jwt:
+                mock_verify_jwt.side_effect = err.InvalidJWTError()
+
+                # Call the verify_state method
+                with self.assertRaisesRegex(
+                    err.InvalidJWTError, "Invalid state signature"
+                ):
+                    self.oidc_login.verify_state()
+
+                    # Assert that the mock methods were called with the correct arguments
+                    mock_verify_jwt.assert_called_once_with("invalid_state_jwt")
+
+    def test_verify_state_invalid_payload(self):
+        with patch.object(self.oidc_login, "_request", _request=MagicMock) as mock_form:
+            mock_form.form = form.copy()
+            mock_form.host = host
+            mock_form.form = {"state": "invalid_state_jwt"}
+
+            # Mock the JWTKeyManagement.verify_jwt method to return a valid state form
+            with patch(
+                "service_layer.crypto.JWTKeyManagement.verify_jwt"
+            ) as mock_verify_jwt:
+                mock_verify_jwt.return_value = {"nonce": "invalid_nonce"}
+
+                # Mock the JWTKeyManagement.verify_state_jwt_payload method to return True
+                with patch.object(
+                    JWTKeyManagement,
+                    "verify_state_jwt_payload",
+                ) as mock_verify_state_jwt_payload:
+                    mock_verify_state_jwt_payload.side_effect = err.InvalidJWTError()
+
+                    # Call the verify_state method
+                    with self.assertRaises(err.InvalidJWTError):
+                        self.oidc_login.verify_state()
+
+                        # Assert that the mock methods were called with the correct arguments
+                        mock_verify_jwt.assert_called_once_with("invalid_state_jwt")
+                        mock_verify_state_jwt_payload.assert_called_once_with(
+                            {"nonce": "invalid_nonce"}
+                        )
+
+    def test_verify_id_token_error_in_form(self):
+        with patch.object(self.oidc_login, "_request", _request=MagicMock) as mock_form:
+            mock_form.form = form.copy()
+            mock_form.host = host
+            mock_form.form = {"error": "error"}
+
+            # Call the verify_id_token method
+            with self.assertRaisesRegex(err.ErrorException, "error"):
+                self.oidc_login.verify_id_token()
+
+    def test_verify_id_token_unverified_header_fail(self):
+        with patch.object(self.oidc_login, "_request", _request=MagicMock) as mock_form:
+            mock_form.form = form.copy()
+            mock_form.host = host
+            mock_form.form = {"id_token": "valid_id_token_jwt"}
+
+            # Mock the JWTKeyManagement.verify_jwt method to return a valid id_token
+            with patch(
+                "service_layer.crypto.JWTKeyManagement.verify_jwt"
+            ) as mock_verify_jwt:
+                mock_verify_jwt.return_value = {"sub": "valid_sub"}
+
+                with self.assertRaisesRegex(
+                    err.InvalidJWTError, "Error loading header"
+                ):
+                    # Call the verify_id_token method
+                    self.oidc_login.verify_id_token()
+
+                    # Assert that the mock method was called with the correct argument
+                    mock_verify_jwt.assert_called_once_with("valid_id_token_jwt")
+
+    def test_verify_id_token_successful(self):
+        with patch.object(self.oidc_login, "_request", _request=MagicMock) as mock_form:
+            mock_form.form = form.copy()
+            mock_form.host = host
+            mock_form.form = {"id_token": "valid_id_token_jwt"}
+
+            with patch.object(
+                JWTKeyManagement,
+                "get_unverified_header",
+                return_value={
+                    "kid": config_file["https://moodle.haski.app"]["key_set"]["keys"][
+                        0
+                    ]["kid"],
+                },
+            ):
+                with patch(
+                    "service_layer.crypto.JWTKeyManagement.load_jwt",
+                ) as mock_load_jwt:
+                    mock_load_jwt.return_value = {
+                        "sub": "valid_sub",
+                        "iss": "https://moodle.haski.app",
+                    }
+                    with patch.object(
+                        self.oidc_login._tool_config,
+                        "get_platform",
+                        return_value=config_file["https://moodle.haski.app"],
+                    ):
+                        # self.oidc_login._tool_config.get_platform = MagicMock(
+                        #     return_value=config_file["https://moodle.haski.app"]
+                        # )
+                        # Mock the JWTKeyManagement.verify_jwt method to return a valid id_token
+                        with patch(
+                            "service_layer.crypto.JWTKeyManagement.verify_jwt"
+                        ) as mock_verify_jwt:
+                            mock_verify_jwt.return_value = {
+                                "sub": "valid_sub",
+                                "iss": "https://moodle.haski.app",
+                            }
+
+                            # Call the verify_id_token method
+                            self.oidc_login.verify_id_token()
+
+                            # Assert that the mock method was called with the correct argument and jose object
+                            mock_verify_jwt.assert_called_with(
+                                "valid_id_token_jwt", mock.ANY
+                            )

@@ -159,12 +159,16 @@ class OIDCLoginFlask(OIDCLogin):
             raise err.ErrorException(message="No state found", status_code=403)
 
         # verify state paramter signature
-        state_form_jwt = self._request.form.get("state", type=str) or ""
-        state_form = JWTKeyManagement.verify_jwt(state_form_jwt)
-        if not state_form:
-            raise err.ErrorException(message="Invalid state signature", status_code=403)
+        state_form_jwt = self._request.form.get("state", "")
+        try:
+            state_form = JWTKeyManagement.verify_jwt(state_form_jwt)
+        except Exception as e:
+            raise err.InvalidJWTError(
+                e, message="Invalid state signature", status_code=403
+            )
+
         if not JWTKeyManagement.verify_state_jwt_payload(state_form):
-            raise err.ErrorException(message="Invalid state payload", status_code=403)
+            raise err.InvalidJWTError(message="Invalid state payload", status_code=403)
 
         return self
 
@@ -184,7 +188,7 @@ class OIDCLoginFlask(OIDCLogin):
             raise err.ErrorException(message="No id_token found", status_code=400)
 
         # Decode the id_token
-        id_token_jwt = self._request.form.get("id_token", type=str) or ""
+        id_token_jwt = self._request.form.get("id_token", "")
         if not id_token_jwt:
             raise err.ErrorException(
                 message="Invalid id_token, crypto key\
@@ -192,9 +196,14 @@ class OIDCLoginFlask(OIDCLogin):
                 status_code=400,
             )
 
-        id_token_header_unverified = JWTKeyManagement.get_unverified_header(
-            id_token_jwt
-        )
+        try:
+            id_token_header_unverified = JWTKeyManagement.get_unverified_header(
+                id_token_jwt
+            )
+        except Exception as e:
+            raise err.InvalidJWTError(
+                e, message="Error loading header", status_code=403
+            )
         id_token_unverified = JWTKeyManagement.load_jwt(id_token_jwt)
 
         platform = self._tool_config.get_platform(id_token_unverified["iss"])

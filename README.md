@@ -84,6 +84,8 @@ openssl genrsa -out keys/private.pem 2048
 openssl rsa -in keys/private.pem -outform PEM -pubout -out keys/public.pem
 ```
 
+_Also remember to change the cryptographic key in ToolConfigJson.py to match yours from moodle. The URL to obtain the key is also in the ToolConfigJson.py file._
+
 ### Project
 
 Either create a new conda environment or use venv. The following steps are for conda:

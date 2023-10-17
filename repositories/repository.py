@@ -490,6 +490,10 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
+    def get_user_by_lms_id(self, lms_user_id) -> list[UA.User]:
+        raise NotImplementedError
+
+    @abc.abstractmethod
     def get_users_by_uni(self, university):
         raise NotImplementedError
 
@@ -1496,6 +1500,13 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
                 .filter_by(lms_user_id=lms_user_id)
                 .all()
             )
+        if result == []:
+            raise err.NoValidIdError()
+        else:
+            return result
+
+    def get_user_by_lms_id(self, lms_user_id):
+        result = self.session.query(UA.User).filter_by(lms_user_id=lms_user_id).all()
         if result == []:
             raise err.NoValidIdError()
         else:

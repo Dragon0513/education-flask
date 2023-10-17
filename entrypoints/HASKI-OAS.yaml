@@ -1,7 +1,7 @@
 openapi: "3.0.3"
 info:
   description: "This is the HASKI API documentation"
-  version: "0.1.0"
+  version: "0.2.0"
   title: "HASKI API"
 servers:
   - url: http://localhost:5000

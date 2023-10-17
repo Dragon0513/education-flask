@@ -5,7 +5,7 @@ from unittest.mock import MagicMock, patch
 
 from errors import errors as err
 from service_layer.crypto import JWTKeyManagement
-from service_layer.lti.config.ToolConfigJson import ToolConfigJson
+import service_layer.lti.config.ToolConfigJson as ToolConfigJson
 from service_layer.lti.OIDCLoginFlask import OIDCLoginFlask
 
 # ignore E501
@@ -57,19 +57,15 @@ form = {
 
 
 class TestOIDCLoginFlask(unittest.TestCase):
-    @patch.multiple(
-        ToolConfigJson,
-        load_config=MagicMock(return_value=config_file),
-    )
     @patch.multiple(os.path, isfile=MagicMock(return_value=True))
     def setUp(self):
         self.request = MagicMock()
-        self.oidc_login = OIDCLoginFlask(self.request, ToolConfigJson())
-        self.tool_config = ToolConfigJson()
+        self.oidc_login = OIDCLoginFlask(self.request)
+        ToolConfigJson._iss_conf_dict = config_file
 
     def test_tool_config_decode_platform(self):
-        platform = self.tool_config.decode_platform(
-            self.tool_config.get_platform("https://moodle.haski.app")
+        platform = ToolConfigJson.decode_platform(
+            ToolConfigJson.get_platform("https://moodle.haski.app")
         )
         self.assertEqual(
             platform.platform_name,
@@ -288,7 +284,7 @@ class TestOIDCLoginFlask(unittest.TestCase):
                         "iss": "https://moodle.haski.app",
                     }
                     with patch.object(
-                        self.oidc_login._tool_config,
+                        ToolConfigJson,
                         "get_platform",
                         return_value=config_file["https://moodle.haski.app"],
                     ):

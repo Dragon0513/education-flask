@@ -11,24 +11,13 @@ import service_layer.crypto.JWTKeyManagement as JWTKeyManagement
 from errors import errors as err
 from repositories import orm
 from service_layer import services, unit_of_work
-from service_layer.lti.config.ToolConfigJson import ToolConfigJson
+import service_layer.lti.config.ToolConfigJson as ToolConfigJson
 from utils import constants as cons
 from utils.decorators import debug_only, json_only
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
 orm.start_mappers()
-
-
-# Conditional Instantiation of ToolConfigJson
-# first time it is called, it will be instantiated
-def get_tool_config():
-    if not hasattr(get_tool_config, "_tool_config"):
-        get_tool_config._tool_config = ToolConfigJson(
-            os.path.abspath(os.path.join(app.root_path, "../configs/lti_config.json"))
-        )
-    return get_tool_config._tool_config
-
 
 mocked_frontend_log = {
     "logs": [
@@ -257,7 +246,7 @@ def course_management(data: Dict[str, Any], course_id, lms_course_id):
 @app.route("/lti_login", methods=["POST"])
 @cross_origin(supports_credentials=True)
 def lti_login():
-    return services.get_oidc_login(request, get_tool_config())
+    return services.get_oidc_login(request)
 
 
 # 2. After the platform has verified the LTI launch request,
@@ -265,7 +254,7 @@ def lti_login():
 @app.route("/lti_launch", methods=["POST"])
 @cross_origin(supports_credentials=True)
 def lti_launch():
-    return services.get_lti_launch(request, get_tool_config())
+    return services.get_lti_launch(request)
 
 
 # 3. Get cookie for frontend if end of OIDC Login workflow
@@ -273,14 +262,14 @@ def lti_launch():
 @app.route("/login", methods=["POST"])
 @cross_origin(supports_credentials=True)
 def login():
-    return services.get_login(request, get_tool_config())
+    return services.get_login(request)
 
 
 # 4. Logout by deleting cookie
 @app.route("/logout", methods=["GET"])
 @cross_origin(supports_credentials=True)
 def logout():
-    return services.get_logout(request, get_tool_config())
+    return services.get_logout(request)
 
 
 # Send the enpoint which launches the LTI tool to the frontend
@@ -288,7 +277,7 @@ def logout():
 @cross_origin(supports_credentials=True)
 def lti_launch_view():
     return {
-        "lti_launch_view": get_tool_config().get_haski_activity_url(
+        "lti_launch_view": ToolConfigJson.get_haski_activity_url(
             os.environ.get("LMS_URL", "https://moodle.haski.app")
         )
     }, 200

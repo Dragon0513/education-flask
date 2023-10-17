@@ -1840,27 +1840,27 @@ def get_user_info(uow: unit_of_work.AbstractUnitOfWork, user_id: str) -> str:
 # ##### LTI #####
 
 
-def get_oidc_login(request: Request, tool_conf):
+def get_oidc_login(request: Request):
     """Return OIDC login url or error response\
         in case of wrong parameters, unsecure or request"""
-    oidc_login = OIDCLoginFlask(request, tool_conf)
+    oidc_login = OIDCLoginFlask(request)
     return oidc_login.check_params().auth_redirect()
 
 
-def get_lti_launch(request: Request, tool_conf):
+def get_lti_launch(request: Request):
     """Craft nonce and state, store them in session and return\
         LTI launch url to Frontend with nonce_jwt in url"""
-    oidc_login = OIDCLoginFlask(request, tool_conf)
+    oidc_login = OIDCLoginFlask(request)
     return oidc_login.verify_state().verify_id_token().lti_launch_from_id_token()
 
 
-def get_login(request, tool_conf):
+def get_login(request):
     """Return cookie value or None"""
-    oidc_login = OIDCLoginFlask(request, tool_conf)
+    oidc_login = OIDCLoginFlask(request)
     return oidc_login.get_cookie_expiration() or None
 
 
-def get_logout(request: Request, tool_conf):
+def get_logout(request: Request):
     """Return logout url or None"""
-    oidc_login = OIDCLoginFlask(request, tool_conf)
+    oidc_login = OIDCLoginFlask(request)
     return oidc_login.get_logout() or None

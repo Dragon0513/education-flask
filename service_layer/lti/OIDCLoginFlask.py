@@ -12,7 +12,7 @@ import service_layer.service.SessionServiceFlask as SessionServiceFlask
 from errors import errors as err
 from service_layer import services, unit_of_work
 from service_layer.crypto.cryptorandom import CryptoRandom
-from service_layer.lti.config.ToolConfigJson import ToolConfigJson
+import service_layer.lti.config.ToolConfigJson as ToolConfigJson
 from service_layer.lti.Messages import LTIIDToken
 from service_layer.lti.OIDCLogin import OIDCLogin
 from service_layer.lti.Roles import RoleMapper
@@ -25,7 +25,6 @@ class OIDCLoginFlask(OIDCLogin):
     def __init__(
         self,
         request: Request,
-        tool_config: ToolConfigJson,
         cookie_service=None,
     ):
         self._request = request
@@ -40,7 +39,7 @@ class OIDCLoginFlask(OIDCLogin):
             "target_link_uri",
             "lti_deployment_id",
         }
-        super(OIDCLoginFlask, self).__init__(request, tool_config)
+        super(OIDCLoginFlask, self).__init__(request)
 
     def check_params(self) -> "OIDCLoginFlask":
         # Check if all parameters are present
@@ -62,8 +61,8 @@ class OIDCLoginFlask(OIDCLogin):
         # and a way to avoid CSRF attacks
         # when redirected from http it doesnt work anymore
         try:
-            self._platform = self._tool_config.decode_platform(
-                self._tool_config.get_platform(
+            self._platform = ToolConfigJson.decode_platform(
+                ToolConfigJson.get_platform(
                     os.environ.get("LMS_URL", "https://moodle.haski.app")
                 )
             )
@@ -122,12 +121,10 @@ class OIDCLoginFlask(OIDCLogin):
         state_jwt = SessionServiceFlask.set_state_jwt(
             nonce,
             self._platform.auth_login_url,
-            self._tool_config.get_tool_url(
-                self._request.environ.get("HTTP_ORIGIN", "")
-            ),
+            ToolConfigJson.get_tool_url(self._request.environ.get("HTTP_ORIGIN", "")),
         )
 
-        platform = self._tool_config.get_platform(
+        platform = ToolConfigJson.get_platform(
             os.environ.get("LMS_URL", "https://moodle.haski.app")
         )
         ru = self.make_url_accept_param(platform["auth_login_url"])
@@ -206,7 +203,7 @@ class OIDCLoginFlask(OIDCLogin):
             )
         id_token_unverified = JWTKeyManagement.load_jwt(id_token_jwt)
 
-        platform = self._tool_config.get_platform(id_token_unverified["iss"])
+        platform = ToolConfigJson.get_platform(id_token_unverified["iss"])
         hmac_key: str = next(
             (
                 key
@@ -250,8 +247,8 @@ class OIDCLoginFlask(OIDCLogin):
         SessionServiceFlask.set(self.id_token.nonce, "nonce_jwt", nonce_jwt)
         # get platform from origin
         try:
-            self._platform = self._tool_config.decode_platform(
-                self._tool_config.get_platform(
+            self._platform = ToolConfigJson.decode_platform(
+                ToolConfigJson.get_platform(
                     self._request.environ.get("HTTP_ORIGIN", "")
                 )
             )

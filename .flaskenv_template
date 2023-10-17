@@ -7,5 +7,6 @@ DB_USER=postgres
 DB_NAME=haski
 DB_PORT=5432
 BACKEND_URL=https://backend.haski.app
+FRONTEND_URL=https://haski.app
 LMS_URL=https://moodle.haski.app
 JWT_KEYS_LOCATION="./keys"

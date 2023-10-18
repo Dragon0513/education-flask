@@ -85,7 +85,6 @@ def calculate_cognitive_str(org1, org2, org3, elab1, elab2, elab3,
     elab = (elab1 + elab2 + elab3) / 3
     crit_rev = (crit_rev1 + crit_rev2 + crit_rev3) / 3
     rep = (rep1 + rep2 + rep3) / 3
-    print("org: ", org, "elab: ", elab, "crit_rev: ", crit_rev, "rep: ", rep)
     return (round(org, 2),
             round(elab, 2),
             round(crit_rev, 2),
@@ -95,7 +94,6 @@ def calculate_cognitive_str(org1, org2, org3, elab1, elab2, elab3,
 
 def calculate_metacognitive_str(goal_plan1, goal_plan2, goal_plan3,
                                 con1, con2, con3, reg1, reg2, reg3):
-    print("calculate_metacognitive_strategy")
     goal_plan = (goal_plan1 + goal_plan2 + reverse_value(goal_plan3)) / 3
     con = (con1 + con2 + con3) / 3
     reg = (reg1 + reg2 + reg3) / 3
@@ -108,7 +106,6 @@ def calculate_metacognitive_str(goal_plan1, goal_plan2, goal_plan3,
 def calculate_internal_resource_management_str(att1, att2, att3, eff1,
                                                eff2, eff3, time1, time2,
                                                time3):
-    print("calculate_internal_resource_management_strategy")
     att = (reverse_value(att1) + reverse_value(att2) + reverse_value(att3)) / 3
     eff = (eff1 + eff2 + eff3) / 3
     time = (time1 + time2 + time3) / 3
@@ -121,7 +118,6 @@ def calculate_internal_resource_management_str(att1, att2, att3, eff1,
 def external_resource_management_str(lrn_w_cls1, lrn_w_cls2, lrn_w_cls3,
                                      lit_res1, lit_res2, lit_res3,
                                      lrn_env1, lrn_env2, lrn_env3):
-    print("external_resource_management_strategy")
     lrn_w_cls = (lrn_w_cls1 + lrn_w_cls2 + lrn_w_cls3) / 3
     lit_res = (lit_res1 + lit_res2 + lit_res3) / 3
     lrn_env = (lrn_env1 + lrn_env2 + lrn_env3) / 3

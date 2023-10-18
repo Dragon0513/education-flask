@@ -11,11 +11,6 @@
 
 def calculate_basic_learning_style(ils_input, ils_perception,
                                    ils_procession, ils_understanding):
-    print("calculate_basic_learning_strategy")
-    print("ils_input: ", ils_input)
-    print("ils_perception: ", ils_perception)
-    print("ils_procession: ", ils_procession)
-    print("ils_understanding: ", ils_understanding)
 
     ils_input_dim_val = calculate_ils_input(ils_input)
     ils_perception_dim_val = calculate_ils_perception(ils_perception)
@@ -40,9 +35,6 @@ def calculate_ils_input(ils_input):
     else:
         ils_input_dimension = "vis"
 
-    print("ils_input_dimension: ", ils_input_dimension,
-          "ils_input_value: ", abs(ils_input_value))
-
     return ils_input_dimension, abs(ils_input_value)
 
 
@@ -59,9 +51,6 @@ def calculate_ils_perception(ils_perception):
         ils_perception_dimension = "int"
     else:
         ils_perception_dimension = "sns"
-
-    print("ils_perception_dimension: ", ils_perception_dimension,
-          "ils_perception_value: ", abs(ils_perception_value))
 
     return ils_perception_dimension, abs(ils_perception_value)
 
@@ -80,9 +69,6 @@ def calculate_ils_procession(ils_procession):
     else:
         ils_procession_dimension = "act"
 
-    print("ils_procession_dimension: ", ils_procession_dimension,
-          "ils_procession_value: ", abs(ils_procession_value))
-
     return ils_procession_dimension, abs(ils_procession_value)
 
 
@@ -99,8 +85,5 @@ def calculate_ils_understanding(ils_understanding):
         ils_understanding_dimension = "glb"
     else:
         ils_understanding_dimension = "seq"
-
-    print("ils_understanding_dimension: ", ils_understanding_dimension,
-          "ils_understanding_value: ", abs(ils_understanding_value))
 
     return ils_understanding_dimension, abs(ils_understanding_value)

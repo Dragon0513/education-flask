@@ -8,10 +8,10 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS, cross_origin
 
 import service_layer.crypto.JWTKeyManagement as JWTKeyManagement
+import service_layer.lti.config.ToolConfigJson as ToolConfigJson
 from errors import errors as err
 from repositories import orm
 from service_layer import services, unit_of_work
-import service_layer.lti.config.ToolConfigJson as ToolConfigJson
 from utils import constants as cons
 from utils.decorators import debug_only, json_only
 

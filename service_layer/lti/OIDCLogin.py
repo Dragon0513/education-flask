@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
 
-import service_layer.lti.config.ToolConfigJson as ToolConfigJson
 from service_layer.lti.lms.Platform import Platform
 
 

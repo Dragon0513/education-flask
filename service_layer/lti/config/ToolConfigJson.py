@@ -1,10 +1,7 @@
-import json
 import os
 
-from config import get_project_root
 from errors import errors as err
 from service_layer.lti.lms.Platform import Platform
-
 
 # Parses LTI Config file and returns a dictionary of the contents
 _iss_conf_dict = {
@@ -34,7 +31,7 @@ _iss_conf_dict = {
                     "alg": "RS256",
                     "kid": "77ce2052ed246a4259da",
                     "e": "AQAB",
-                    "n": "poaM0tABqlxYEEzlqZaD1UsicOunF3WxYBeWHRFZE8s2yTzae3EXJJay6df0FevpE67d0URspbG-U0cVVZnOR7r4Q-4BqJd_KDuQ6e9ZTYCvjCbWWxEu74gutZuZ9phMPWEGB8VJYWmfr0xi0YSGAwKqkNsyqbwJuO2sIXMCjJ7TleUz4QwCGoKAzDhXG6AROKMFa85blKz3Qz7PK6AWSGsQv5I-3kYWbZmQ8dlHhUe_Fgrul9by8qcYW3as5R9R00gheR5oAcminqiZTyjEWMLurCibaAuo-DrwNLeRkh1Z5dxi0JS3EqBWeTexXt8Yoh8cIGzifvNgHkwxSVwaYQ",
+                    "n": "poaM0tABqlxYEEzlqZaD1UsicOunF3WxYBeWHRFZE8s2yTzae3EXJJay6df0FevpE67d0URspbG-U0cVVZnOR7r4Q-4BqJd_KDuQ6e9ZTYCvjCbWWxEu74gutZuZ9phMPWEGB8VJYWmfr0xi0YSGAwKqkNsyqbwJuO2sIXMCjJ7TleUz4QwCGoKAzDhXG6AROKMFa85blKz3Qz7PK6AWSGsQv5I-3kYWbZmQ8dlHhUe_Fgrul9by8qcYW3as5R9R00gheR5oAcminqiZTyjEWMLurCibaAuo-DrwNLeRkh1Z5dxi0JS3EqBWeTexXt8Yoh8cIGzifvNgHkwxSVwaYQ",  # noqa
                     "use": "sig",
                 }
             ]

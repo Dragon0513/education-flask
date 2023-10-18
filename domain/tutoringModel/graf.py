@@ -1,6 +1,6 @@
 from datetime import datetime
 
-import errors as err
+from errors import errors as err
 
 
 class GrafAlgorithm:

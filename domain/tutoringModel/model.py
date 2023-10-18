@@ -1,8 +1,8 @@
 import time
 
-import errors as err
 from domain.tutoringModel import aco, graf
 from domain.tutoringModel.utils import get_coordinates
+from errors import errors as err
 from utils import constants as cons
 
 
@@ -62,7 +62,8 @@ class LearningPath:
             else:
                 if lz_in_list:
                     list_of_les_classifications.insert(
-                        len(list_of_les_classifications) - 1, le["classification"]
+                        len(list_of_les_classifications) - 1,
+                        le["classification"],
                     )
                 else:
                     list_of_les_classifications.append(le["classification"])

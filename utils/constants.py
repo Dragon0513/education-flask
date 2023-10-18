@@ -1,4 +1,6 @@
-date_format = r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z"
+date_format_search = r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z"
+date_format = "%Y-%m-%dT%H:%M:%SZ"
+date_format_message = "Date format must be YYYY-MM-DDTHH:MM:SSZ"
 deletion_message = "Deletion was successful!"
 
 abbreviation_ct = "KÜ"

@@ -1,9 +1,12 @@
-import errors as err
+from flask.wrappers import Request
+
+import errors.errors as err
 from domain.domainModel import model as DM
 from domain.learnersModel import model as LM
 from domain.tutoringModel import model as TM
 from domain.userAdministartion import model as UA
 from service_layer import unit_of_work
+from service_layer.lti.OIDCLoginFlask import OIDCLoginFlask
 
 
 def add_course_creator_to_course(
@@ -1639,6 +1642,34 @@ def get_user_by_id(uow: unit_of_work.AbstractUnitOfWork, user_id, lms_user_id) -
         return result
 
 
+def get_user_by_lms_id(uow: unit_of_work.AbstractUnitOfWork, lms_user_id) -> dict:
+    with uow:
+        user = uow.user.get_user_by_lms_id(lms_user_id)
+        settings = uow.settings.get_settings(user[0].id)
+        if user == []:
+            result = {}
+        else:
+            user[0].settings = settings[0].serialize()
+            user[0].role_id = None
+            result = user[0].serialize()
+        return result
+
+
+def get_student_by_user_id(uow: unit_of_work.AbstractUnitOfWork, user_id) -> dict:
+    with uow:
+        student = uow.student.get_student_by_id(user_id)
+        user = uow.user.get_user_by_id(user_id, None)
+        student[0].__init__(user[0])
+        settings = uow.settings.get_settings(user_id)
+        if student[0] == []:
+            result = {}
+        else:
+            student[0].settings = settings[0].serialize()
+            student[0].role_id = None
+            result = student[0].serialize()
+        return result
+
+
 def update_course(
     uow: unit_of_work.AbstractUnitOfWork, course_id, lms_id, name, university
 ) -> dict:
@@ -1792,3 +1823,44 @@ def update_user(
         settings = uow.settings.get_settings(user_id)
         user.settings = settings[0].serialize()
         return user.serialize()
+
+
+# ##### TEST ENDPOINT #####
+
+
+def get_user_info(uow: unit_of_work.AbstractUnitOfWork, user_id: str) -> str:
+    with uow:
+        return "Admin"
+        # user_info = uow.user_info.get(user_id)
+        # if user_info is None:
+        #     raise err.UserNotFoundError()
+        # return user_info
+
+
+# ##### LTI #####
+
+
+def get_oidc_login(request: Request):
+    """Return OIDC login url or error response\
+        in case of wrong parameters, unsecure or request"""
+    oidc_login = OIDCLoginFlask(request)
+    return oidc_login.check_params().auth_redirect()
+
+
+def get_lti_launch(request: Request):
+    """Craft nonce and state, store them in session and return\
+        LTI launch url to Frontend with nonce_jwt in url"""
+    oidc_login = OIDCLoginFlask(request)
+    return oidc_login.verify_state().verify_id_token().lti_launch_from_id_token()
+
+
+def get_login(request):
+    """Return cookie value or None"""
+    oidc_login = OIDCLoginFlask(request)
+    return oidc_login.get_cookie_expiration() or None
+
+
+def get_logout(request: Request):
+    """Return logout url or None"""
+    oidc_login = OIDCLoginFlask(request)
+    return oidc_login.get_logout() or None

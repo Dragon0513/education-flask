@@ -1,7 +1,7 @@
 import pytest
 
 import domain.tutoringModel.graf as LP
-import errors as err
+from errors import errors as err
 
 
 def test_get_learning_path_correct_result():

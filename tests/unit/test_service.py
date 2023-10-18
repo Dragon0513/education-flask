@@ -1,14 +1,22 @@
 import datetime
 import time
+from unittest.mock import MagicMock, patch
 
 import pytest
 
-import errors as err
+import errors.errors as err
 import repositories.repository as repository
+import service_layer.crypto.JWTKeyManagement as JWTKeyManagement
 from domain.userAdministartion import model as UA
 from service_layer import services, unit_of_work
 
 
+@patch.multiple(
+    JWTKeyManagement,
+    verify_jwt=MagicMock(return_value={"state": "state"}),
+    verify_jwt_payload=MagicMock(return_value=True),
+    load_public_key=MagicMock(return_value="public_key"),
+)
 class FakeRepository(repository.AbstractRepository):  # pragma: no cover
     def __init__(
         self,
@@ -813,6 +821,27 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
         result = []
         for i in self.user:
             if i.id == user_id and i.lms_user_id == lms_user_id:
+                result.append(i)
+        return result
+
+    def get_user_by_lms_user_id(self, lms_user_id):
+        result = []
+        for i in self.user:
+            if i.lms_user_id == lms_user_id:
+                result.append(i)
+        return result
+
+    def get_user_by_lms_id(self, lms_id):
+        result = []
+        for i in self.user:
+            if i.lms_id == lms_id:
+                result.append(i)
+        return result
+
+    def get_student_by_user_id(self, user_id):
+        result = []
+        for i in self.student:
+            if i.user_id == user_id:
                 result.append(i)
         return result
 

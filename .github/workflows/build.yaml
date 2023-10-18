@@ -86,8 +86,13 @@ jobs:
           pip3 install python-dotenv
           pip3 install psycopg2-binary
 
-      - name: Create Database Tables
-        run: python db_setup.py
+      - name: Set up .pem file
+        run: |
+          mkdir -p ${{ github.workspace }}/keys
+          echo "${{ secrets.PEM_PRIVATE }}" > ${{ github.workspace }}/keys/private.pem
+          chmod 600 ${{ github.workspace }}/keys/private.pem
+          echo "${{ secrets.PEM_PUBLIC }}" > ${{ github.workspace }}/keys/public.pem
+          chmod 600 ${{ github.workspace }}/keys/public.pem
 
       - name: Run tox
         run: tox

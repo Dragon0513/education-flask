@@ -7,6 +7,7 @@ class LearningCharacteristic:
         learning_strategy=None,
         learning_style=None,
     ) -> None:
+        self.id = None
         self.student_id = student_id
         self.knowledge = knowledge
         self.learning_analytics = learning_analytics
@@ -37,6 +38,7 @@ class LearningStyle:
         understanding_dimension="seq",
         understanding_value=0,
     ) -> None:
+        self.id = None
         self.characteristic_id = characteristic_id
         self.perception_dimension = perception_dimension
         self.perception_value = perception_value
@@ -64,6 +66,7 @@ class LearningStyle:
 
 class LearningStrategy:
     def __init__(self, characteristic_id) -> None:
+        self.id = None
         self.characteristic_id = characteristic_id
 
     def serialize(self):
@@ -72,6 +75,7 @@ class LearningStrategy:
 
 class Knowledge:
     def __init__(self, characteristic_id) -> None:
+        self.id = None
         self.characteristic_id = characteristic_id
 
     def serialize(self):
@@ -88,6 +92,7 @@ class LearningAnalytics:
 
 class Questionnaire:
     def __init__(self, student_id, learning_style=None, learning_strategy=None) -> None:
+        self.id = None
         self.student_id = student_id
         self.learning_style = learning_style
         self.learning_strategy = learning_strategy
@@ -117,6 +122,7 @@ class IlsInputAnswers:
         vv_8_f31=None,
         vv_9_f35=None,
     ) -> None:
+        self.id = None
         self.questionnaire_id = questionnaire_id
         self.vv_1_f3 = vv_1_f3
         self.vv_2_f7 = vv_2_f7
@@ -164,6 +170,7 @@ class IlsPerceptionAnswers:
         si_8_f30=None,
         si_9_f34=None,
     ) -> None:
+        self.id = None
         self.questionnaire_id = questionnaire_id
         self.si_1_f2 = si_1_f2
         self.si_2_f6 = si_2_f6
@@ -211,6 +218,7 @@ class IlsProcessingAnswers:
         ar_10_f37=None,
         ar_11_f41=None,
     ) -> None:
+        self.id = None
         self.questionnaire_id = questionnaire_id
         self.ar_1_f1 = ar_1_f1
         self.ar_2_f5 = ar_2_f5
@@ -258,6 +266,7 @@ class IlsUnderstandingAnswers:
         sg_8_f32=None,
         sg_9_f36=None,
     ) -> None:
+        self.id = None
         self.questionnaire_id = questionnaire_id
         self.sg_1_f4 = sg_1_f4
         self.sg_2_f8 = sg_2_f8
@@ -333,6 +342,7 @@ class ListK:
         lu2_f38,
         lu3_f39,
     ) -> None:
+        self.id = None
         self.questionnaire_id = questionnaire_id
         self.org1_f1 = org1_f1
         self.org2_f2 = org2_f2

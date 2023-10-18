@@ -1,10 +1,9 @@
 from functools import wraps
 
 from flask import request
-from werkzeug.exceptions import Unauthorized
 
-import errors as err
-from service_layer.crypto.JWTKeyManagement import JWTKeyManagement
+import errors.errors as err
+import service_layer.crypto.JWTKeyManagement as JWTKeyManagement
 from utils.auth.permissions import Permissions
 
 
@@ -33,9 +32,10 @@ def authorize(required_permissions: list[Permissions]):
                 permission.value in user_permissions
                 for permission in required_permissions
             ):
-                raise Unauthorized(
-                    "You do not have the necessary permissions to perform \
-                        this action"
+                raise err.UnauthorizedError(
+                    message="You do not have the necessary\
+                        permissions to perform this action",
+                    status_code=401,
                 )
 
             return f(state, *args, **kws)

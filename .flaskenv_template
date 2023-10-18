@@ -1,7 +1,12 @@
 FLASK_APP=entrypoints/flask_app.py
-FLASK_DEBUG=1
-DB_HOST="localhost"
+FLASK_DEBUG=0
+SECRET_KEY=SECRECT
+DB_HOST=localhost
+DB_PASSWORD=PASSWORD
+DB_USER=postgres
+DB_NAME=haski
 DB_PORT=5432
-DB_PASSWORD="postgres"
-DB_USER="postgres"
-DB_NAME="haski"
+BACKEND_URL=https://backend.haski.app
+FRONTEND_URL=https://haski.app
+LMS_URL=https://moodle.haski.app
+JWT_KEYS_LOCATION="./keys"

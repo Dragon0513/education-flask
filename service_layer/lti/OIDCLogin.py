@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from service_layer.lti.config.ToolConfigJson import ToolConfigJson
+import service_layer.lti.config.ToolConfigJson as ToolConfigJson
 from service_layer.lti.lms.Platform import Platform
 
 
@@ -10,9 +10,8 @@ class OIDCLogin(ABC):
 
     _platform: Platform
 
-    def __init__(self, request, tool_config: ToolConfigJson):
+    def __init__(self, request):
         self._request = request
-        self._tool_config = tool_config
 
     @abstractmethod
     def check_params(self) -> "OIDCLogin":

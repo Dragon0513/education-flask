@@ -1,66 +1,67 @@
-from sqlalchemy import MetaData, Column, Integer, String, Table, Date, Boolean, Float
-from sqlalchemy.orm import mapper
+from sqlalchemy import Boolean, Column, Date, Integer, String, Table, Float
+from sqlalchemy.orm import registry
+
 from domain.domainModel import model as DM
 from domain.learnersModel import model as LM
 from domain.tutoringModel import model as TM
 from domain.userAdministartion import model as UA
 
-metadata = MetaData()
+mapper_registry = registry()
 
 admin = Table(
     "admin",
-    metadata,
+    mapper_registry.metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
-    Column("user_id", Integer, nullable=False)
+    Column("user_id", Integer, nullable=False),
 )
 
 course = Table(
     "course",
-    metadata,
+    mapper_registry.metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("lms_id", Integer, nullable=False),
     Column("name", String, nullable=False),
-    Column("university", String, nullable=False)
+    Column("university", String, nullable=False),
 )
 
 course_creator = Table(
     "course_creator",
-    metadata,
+    mapper_registry.metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
-    Column("user_id", Integer, nullable=False)
+    Column("user_id", Integer, nullable=False),
 )
 
 course_creator_course = Table(
     "course_creator_course",
-    metadata,
+    mapper_registry.metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("course_creator_id", Integer, nullable=False),
     Column("course_id", Integer, nullable=False),
     Column("created_at", Date, nullable=False),
-    Column("last_updated", Date, nullable=True)
+    Column("last_updated", Date, nullable=True),
 )
 
 course_topic = Table(
     "course_topic",
-    metadata,
+    mapper_registry.metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("course_id", Integer, nullable=False),
-    Column("topic_id", Integer, nullable=False)
+    Column("topic_id", Integer, nullable=False),
 )
 
 haski_user = Table(
     "haski_user",
-    metadata,
+    mapper_registry.metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("name", String, nullable=False),
     Column("university", String, nullable=False),
     Column("lms_user_id", Integer, nullable=False),
-    Column("role", String, nullable=False)
+    Column("role", String, nullable=False),
 )
 
 ils_input_answers = Table(
     "ils_input_answers",
-    metadata,
+    mapper_registry.metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("questionnaire_ils_id", Integer, nullable=False),
     Column("vv_1_f3", Integer, nullable=True),
@@ -73,12 +74,12 @@ ils_input_answers = Table(
     Column("vv_8_f31", Integer, nullable=True),
     Column("vv_9_f35", Integer, nullable=True),
     Column("vv_10_f39", Integer, nullable=False),
-    Column("vv_11_f43", Integer, nullable=False)
+    Column("vv_11_f43", Integer, nullable=False),
 )
 
 ils_perception_answers = Table(
     "ils_perception_answers",
-    metadata,
+    mapper_registry.metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("questionnaire_ils_id", Integer, nullable=False),
     Column("si_1_f2", Integer, nullable=False),
@@ -91,12 +92,12 @@ ils_perception_answers = Table(
     Column("si_8_f30", Integer, nullable=True),
     Column("si_9_f34", Integer, nullable=True),
     Column("si_10_f38", Integer, nullable=False),
-    Column("si_11_f42", Integer, nullable=False)
+    Column("si_11_f42", Integer, nullable=False),
 )
 
 ils_processing_answers = Table(
     "ils_processing_answers",
-    metadata,
+    mapper_registry.metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("questionnaire_ils_id", Integer, nullable=False),
     Column("ar_1_f1", Integer, nullable=True),
@@ -109,12 +110,12 @@ ils_processing_answers = Table(
     Column("ar_8_f29", Integer, nullable=False),
     Column("ar_9_f33", Integer, nullable=True),
     Column("ar_10_f37", Integer, nullable=True),
-    Column("ar_11_f41", Integer, nullable=True)
+    Column("ar_11_f41", Integer, nullable=True),
 )
 
 ils_understanding_answers = Table(
     "ils_understanding_answers",
-    metadata,
+    mapper_registry.metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("questionnaire_ils_id", Integer, nullable=False),
     Column("sg_1_f4", Integer, nullable=False),
@@ -127,33 +128,33 @@ ils_understanding_answers = Table(
     Column("sg_8_f32", Integer, nullable=True),
     Column("sg_9_f36", Integer, nullable=True),
     Column("sg_10_f40", Integer, nullable=False),
-    Column("sg_11_f44", Integer, nullable=False)
+    Column("sg_11_f44", Integer, nullable=False),
 )
 
 knowledge = Table(
     "knowledge",
-    metadata,
+    mapper_registry.metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
-    Column("characteristic_id", Integer, nullable=False)
+    Column("characteristic_id", Integer, nullable=False),
 )
 
 learning_analytics = Table(
     "learning_analytics",
-    metadata,
+    mapper_registry.metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
-    Column("characteristic_id", Integer, nullable=False)
+    Column("characteristic_id", Integer, nullable=False),
 )
 
 learning_charcteristics = Table(
     "learning_characteristics",
-    metadata,
+    mapper_registry.metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
-    Column("student_id", Integer, nullable=False)
+    Column("student_id", Integer, nullable=False),
 )
 
 learning_element = Table(
     "learning_element",
-    metadata,
+    mapper_registry.metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("lms_id", Integer, nullable=False),
     Column("activity_type", String, nullable=False),
@@ -162,53 +163,53 @@ learning_element = Table(
     Column("university", String, nullable=False),
     Column("created_at", Date, nullable=False),
     Column("created_by", String, nullable=False),
-    Column("last_updated", Date, nullable=True)
+    Column("last_updated", Date, nullable=True),
 )
 
 learning_element_rating = Table(
     "learning_element_rating",
-    metadata,
+    mapper_registry.metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("learning_element_id", Integer, nullable=False),
     Column("rating", Integer, nullable=False),
     Column("message", String, nullable=True),
-    Column("date", Date, nullable=False)
+    Column("date", Date, nullable=False),
 )
 
 learning_path = Table(
     "learning_path",
-    metadata,
+    mapper_registry.metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("student_id", Integer, nullable=False),
     Column("course_id", Integer, nullable=False),
     Column("based_on", String, nullable=False),
     Column("topic_id", Integer, nullable=True),
-    Column("calculated_on", String, nullable=True)
+    Column("calculated_on", String, nullable=True),
 )
 
 learning_path_learning_element = Table(
     "learning_path_learning_element",
-    metadata,
+    mapper_registry.metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("learning_element_id", Integer, nullable=False),
     Column("learning_path_id", Integer, nullable=False),
     Column("recommended", Boolean, nullable=False),
-    Column("position", Integer, nullable=False)
+    Column("position", Integer, nullable=False),
 )
 
 learning_path_topic = Table(
     "learning_path_topic",
-    metadata,
+    mapper_registry.metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("topic_id", Integer, nullable=False),
     Column("learning_path_id", Integer, nullable=False),
     Column("recommended", Boolean, nullable=False),
-    Column("position", Integer, nullable=False)
+    Column("position", Integer, nullable=False),
 )
 
 learning_strategy = Table(
     "learning_strategy",
-    metadata,
+    mapper_registry.metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("characteristic_id", Integer, nullable=False),
     Column("cogn_str", Float, nullable=False),
@@ -232,7 +233,7 @@ learning_strategy = Table(
 
 learning_style = Table(
     "learning_style",
-    metadata,
+    mapper_registry.metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("characteristic_id", Integer, nullable=False),
     Column("perception_dimension", String, nullable=False),
@@ -242,12 +243,12 @@ learning_style = Table(
     Column("processing_dimension", String, nullable=False),
     Column("processing_value", Integer, nullable=False),
     Column("understanding_dimension", String, nullable=False),
-    Column("understanding_value", Integer, nullable=False)
+    Column("understanding_value", Integer, nullable=False),
 )
 
 questionnaire_list_k = Table(
     "questionnaire_list_k",
-    metadata,
+    mapper_registry.metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("student_id", Integer, nullable=False),
     Column("org1_f1", Integer, nullable=False),
@@ -293,30 +294,41 @@ questionnaire_list_k = Table(
 
 questionnaire_ils = Table(
     "questionnaire_ils",
-    metadata,
+    mapper_registry.metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
-    Column("student_id", Integer, nullable=False)
+    Column("student_id", Integer, nullable=False),
 )
 
 settings = Table(
     "settings",
-    metadata,
+    mapper_registry.metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("user_id", Integer, nullable=False),
     Column("theme", String, nullable=True),
-    Column("pswd", String, nullable=True)
+    Column("pswd", String, nullable=True),
+)
+
+contact_form = Table(
+    "contact_form",
+    mapper_registry.metadata,
+    Column("id", Integer, primary_key=True, autoincrement=True),
+    Column("user_id", Integer, nullable=False),
+    Column("report_topic", String, nullable=False),
+    Column("report_type", String, nullable=False),
+    Column("report_description", String, nullable=False),
+    Column("date", Date, nullable=False),
 )
 
 student = Table(
     "student",
-    metadata,
+    mapper_registry.metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
-    Column("user_id", Integer, nullable=False)
+    Column("user_id", Integer, nullable=False),
 )
 
 student_course = Table(
     "student_course",
-    metadata,
+    mapper_registry.metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("student_id", Integer, nullable=False),
     Column("course_id", Integer, nullable=False),
@@ -327,67 +339,67 @@ student_course = Table(
     Column("processing_dimension", String, nullable=False),
     Column("processing_value", Integer, nullable=False),
     Column("understanding_dimension", String, nullable=False),
-    Column("understanding_value", Integer, nullable=False)
+    Column("understanding_value", Integer, nullable=False),
 )
 
 student_learning_element = Table(
     "student_learning_element",
-    metadata,
+    mapper_registry.metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("student_id", Integer, nullable=False),
     Column("learning_element_id", Integer, nullable=False),
     Column("done", Boolean, nullable=False),
-    Column("done_at", Date, nullable=True)
+    Column("done_at", Date, nullable=True),
 )
 
 student_learning_element_visit = Table(
     "student_learning_element_visit",
-    metadata,
+    mapper_registry.metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("student_id", Integer, nullable=False),
     Column("learning_element_id", Integer, nullable=False),
     Column("visit_start", Date, nullable=False),
-    Column("visit_end", Date, nullable=True)
+    Column("visit_end", Date, nullable=True),
 )
 
 student_topic = Table(
     "student_topic",
-    metadata,
+    mapper_registry.metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("student_id", Integer, nullable=False),
     Column("topic_id", Integer, nullable=False),
     Column("done", Boolean, nullable=False),
-    Column("done_at", Date, nullable=True)
+    Column("done_at", Date, nullable=True),
 )
 
 student_topic_visit = Table(
     "student_topic_visit",
-    metadata,
+    mapper_registry.metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("student_id", Integer, nullable=False),
     Column("topic_id", Integer, nullable=False),
     Column("visit_start", Date, nullable=False),
-    Column("visit_end", Date, nullable=True)
+    Column("visit_end", Date, nullable=True),
 )
 
 teacher = Table(
     "teacher",
-    metadata,
+    mapper_registry.metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
-    Column("user_id", Integer, nullable=False)
+    Column("user_id", Integer, nullable=False),
 )
 
 teacher_course = Table(
     "teacher_course",
-    metadata,
+    mapper_registry.metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("teacher_id", Integer, nullable=False),
-    Column("course_id", Integer, nullable=False)
+    Column("course_id", Integer, nullable=False),
 )
 
 topic = Table(
     "topic",
-    metadata,
+    mapper_registry.metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("lms_id", Integer, nullable=False),
     Column("is_topic", Boolean, nullable=False),
@@ -397,49 +409,166 @@ topic = Table(
     Column("university", String, nullable=False),
     Column("created_by", String, nullable=False),
     Column("created_at", Date, nullable=False),
-    Column("last_updated", Date, nullable=True)
+    Column("last_updated", Date, nullable=True),
 )
 
 topic_learning_element = Table(
     "topic_learning_element",
-    metadata,
+    mapper_registry.metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("topic_id", Integer, nullable=False),
-    Column("learning_element_id", Integer, nullable=False)
+    Column("learning_element_id", Integer, nullable=False),
 )
 
 
 def start_mappers():
-    mapper(UA.Admin, admin)
-    mapper(DM.Course, course)
-    mapper(UA.CourseCreator, course_creator)
-    mapper(DM.CourseCreatorCourse, course_creator_course)
-    mapper(DM.CourseTopic, course_topic)
-    mapper(UA.User, haski_user)
-    mapper(LM.IlsInputAnswers, ils_input_answers)
-    mapper(LM.IlsPerceptionAnswers, ils_perception_answers)
-    mapper(LM.IlsProcessingAnswers, ils_processing_answers)
-    mapper(LM.IlsUnderstandingAnswers, ils_understanding_answers)
-    mapper(LM.Knowledge, knowledge)
-    mapper(LM.LearningAnalytics, learning_analytics)
-    mapper(LM.LearningCharacteristic, learning_charcteristics)
-    mapper(DM.LearningElement, learning_element)
-    mapper(DM.LearningElementRating, learning_element_rating)
-    mapper(TM.LearningPath, learning_path)
-    mapper(TM.LearningPathLearningElement, learning_path_learning_element)
-    mapper(TM.LearningPathTopic, learning_path_topic)
-    mapper(LM.LearningStrategy, learning_strategy)
-    mapper(LM.LearningStyle, learning_style)
-    mapper(LM.QuestionnaireListK, questionnaire_list_k)
-    mapper(LM.QuestionnaireIls, questionnaire_ils)
-    mapper(UA.Settings, settings)
-    mapper(UA.Student, student)
-    mapper(DM.StudentCourse, student_course)
-    mapper(DM.StudentLearningElement, student_learning_element)
-    mapper(DM.StudentLearningElementVisit, student_learning_element_visit)
-    mapper(DM.StudentTopic, student_topic)
-    mapper(DM.StudentTopicVisit, student_topic_visit)
-    mapper(UA.Teacher, teacher)
-    mapper(DM.TeacherCourse, teacher_course)
-    mapper(DM.Topic, topic)
-    mapper(DM.TopicLearningElement, topic_learning_element)
+    mapper_registry.map_imperatively(
+        UA.Admin,
+        admin,
+    )
+    mapper_registry.map_imperatively(
+        DM.Course,
+        course,
+    )
+    mapper_registry.map_imperatively(
+        UA.CourseCreator,
+        course_creator,
+    )
+    mapper_registry.map_imperatively(
+        DM.CourseCreatorCourse,
+        course_creator_course,
+    )
+    mapper_registry.map_imperatively(
+        DM.CourseTopic,
+        course_topic,
+    )
+    mapper_registry.map_imperatively(
+        UA.User,
+        haski_user,
+    )
+    mapper_registry.map_imperatively(
+        LM.IlsInputAnswers,
+        ils_input_answers,
+    )
+    mapper_registry.map_imperatively(
+        LM.IlsPerceptionAnswers,
+        ils_perception_answers,
+    )
+    mapper_registry.map_imperatively(
+        LM.IlsProcessingAnswers,
+        ils_processing_answers,
+    )
+    mapper_registry.map_imperatively(
+        LM.IlsUnderstandingAnswers,
+        ils_understanding_answers,
+    )
+    mapper_registry.map_imperatively(
+        LM.Knowledge,
+        knowledge,
+    )
+    mapper_registry.map_imperatively(
+        LM.LearningAnalytics,
+        learning_analytics,
+    )
+    mapper_registry.map_imperatively(
+        LM.LearningCharacteristic,
+        learning_charcteristics,
+    )
+    mapper_registry.map_imperatively(
+        DM.LearningElement,
+        learning_element,
+    )
+    mapper_registry.map_imperatively(
+        DM.LearningElementRating,
+        learning_element_rating,
+    )
+    mapper_registry.map_imperatively(
+        TM.LearningPath,
+        learning_path,
+    )
+    mapper_registry.map_imperatively(
+        TM.LearningPathLearningElement,
+        learning_path_learning_element,
+    )
+    mapper_registry.map_imperatively(
+        TM.LearningPathTopic,
+        learning_path_topic,
+    )
+    mapper_registry.map_imperatively(
+        LM.LearningStrategy,
+        learning_strategy,
+    )
+    mapper_registry.map_imperatively(
+        LM.LearningStyle,
+        learning_style,
+    )
+
+    mapper_registry.map_imperatively(
+        LM.QuestionnaireListK,
+        questionnaire_list_k,
+    )
+
+    mapper_registry.map_imperatively(
+        LM.QuestionnaireIls,
+        questionnaire_ils,
+    )
+
+    mapper_registry.map_imperatively(
+        UA.Settings,
+        settings,
+    )
+
+    mapper_registry.map_imperatively(
+        UA.ContactForm,
+        contact_form,
+    )
+
+    mapper_registry.map_imperatively(
+        UA.Student,
+        student,
+    )
+
+    mapper_registry.map_imperatively(
+        DM.StudentCourse,
+        student_course,
+    )
+
+    mapper_registry.map_imperatively(
+        DM.StudentLearningElement,
+        student_learning_element,
+    )
+
+    mapper_registry.map_imperatively(
+        DM.StudentLearningElementVisit,
+        student_learning_element_visit,
+    )
+
+    mapper_registry.map_imperatively(
+        DM.StudentTopic,
+        student_topic,
+    )
+
+    mapper_registry.map_imperatively(
+        DM.StudentTopicVisit,
+        student_topic_visit,
+    )
+
+    mapper_registry.map_imperatively(
+        UA.Teacher,
+        teacher,
+    )
+
+    mapper_registry.map_imperatively(
+        DM.TeacherCourse,
+        teacher_course,
+    )
+
+    mapper_registry.map_imperatively(
+        DM.Topic,
+        topic,
+    )
+
+    mapper_registry.map_imperatively(
+        DM.TopicLearningElement,
+        topic_learning_element,
+    )

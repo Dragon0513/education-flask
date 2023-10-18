@@ -139,7 +139,6 @@ class Knowledge:
 
 class LearningAnalytics:
     def __init__(self, characteristic_id) -> None:
-        self.id = None
         self.characteristic_id = characteristic_id
 
     def serialize(self):

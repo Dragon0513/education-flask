@@ -1,8 +1,9 @@
-from domain.tutoringModel import graf, aco
-from errors import errors as err
-from domain.tutoringModel.utils import get_coordinates
-from utils import constants as cons
 import time
+
+from domain.tutoringModel import aco, graf
+from domain.tutoringModel.utils import get_coordinates
+from errors import errors as err
+from utils import constants as cons
 
 
 class LearningPath:
@@ -29,9 +30,7 @@ class LearningPath:
             "calculated_on": self.calculated_on,
         }
 
-    def get_learning_path(
-        self, student_id, learning_style, _algorithm, list_of_les
-    ):
+    def get_learning_path(self, student_id, learning_style, _algorithm, list_of_les):
         algorithm = _algorithm.lower()
         if algorithm == "graf":
             path = graf.GrafAlgorithm(
@@ -41,9 +40,7 @@ class LearningPath:
             self.path = ", ".join(temp)
         elif algorithm == "aco":
             list_of_les_classifications = self.prepare_le_for_aco(list_of_les)
-            coordinates = get_coordinates(
-                learning_style, list_of_les_classifications
-            )
+            coordinates = get_coordinates(learning_style, list_of_les_classifications)
             path = aco.AntColonySolver()
             result = path.solve(list(coordinates.items()))
             le_path = ""
@@ -74,9 +71,7 @@ class LearningPath:
 
 
 class LearningPathTopic:
-    def __init__(
-        self, topic_id, learning_path_id, recommended, position
-    ) -> None:
+    def __init__(self, topic_id, learning_path_id, recommended, position) -> None:
         self.topic_id = topic_id
         self.learning_path_id = learning_path_id
         self.recommended = recommended

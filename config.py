@@ -1,6 +1,11 @@
 import os
 from pathlib import Path
 
+from dotenv import load_dotenv
+
+load_dotenv(".flaskenv")
+load_dotenv()  # If we have a .env file, load it
+
 
 def get_project_root() -> str:
     """Returns project root folder."""

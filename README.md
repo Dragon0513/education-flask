@@ -1,5 +1,7 @@
 # HASKI Backend System
 
+[![Build](https://github.com/HASKI-RAK/HASKI-Backend/actions/workflows/build.yaml/badge.svg)](https://github.com/HASKI-RAK/HASKI-Backend/actions/workflows/build.yaml)
+
 This is the offical Repository for the HASKI (Hochschullehre: Adaptiv, selbstgesteuert, KI-gestützt) Backend.
 It will provide all necessary tools for creating and recommending learning paths and learning elements for the students, who will use the system.
 This is a joint project from three bavarian universities:
@@ -12,7 +14,6 @@ Hochschule Kempten
 
 The HASKI-Project is supported by the German Federal Ministry of Education and Research (BMBF), grant number 16DHBKI036, and the Bavarian State Ministry of Scie
 The responsibility for the content of this publication remains with the authors.
-
 
 ## Purpose of the Project
 
@@ -83,10 +84,25 @@ openssl genrsa -out keys/private.pem 2048
 openssl rsa -in keys/private.pem -outform PEM -pubout -out keys/public.pem
 ```
 
+_Also remember to change the cryptographic key in ToolConfigJson.py to match yours from moodle. The URL to obtain the key is also in the ToolConfigJson.py file._
+
 ### Project
+
+Either create a new conda environment or use venv. The following steps are for conda:
 
 - Create a new conda environment using `conda create --name HASKI-Backend --file requirements.txt`
 - Activate the environment: `conda activate HASKI-Backend`
+
+Using venv:
+
+- Create a new venv using `python -m venv venv`
+- Activate the environment: `source venv/bin/activate` or `venv\Scripts\activate` on Windows
+- Install the requirements using `pip install -r requirements.txt`
+
+Then:
+
+- Fill the .env file with the necessary information. Note that `DB_PASSWORD` is the password for the database user, not pgAdmin.
+- Create the database as explained in [DB Setup](#db-setup)
 - Run the app using `flask run`
 
 To create a new requirements file after installing a new library, please run the following command: `pip list --format=freeze > requirements.txt`
@@ -101,14 +117,12 @@ https://www.postgresqltutorial.com/postgresql-getting-started/install-postgresql
 https://www.postgresqltutorial.com/postgresql-getting-started/connect-to-postgresql-database/
 
 After the installation, you can run it on the CMD or the pgAdmin 4 application.
-You first have to create a database Called HASKI.
-Afterwards, you can use the `setup\Table_Setup.sql` Script for creating the table within your DB.
-
-For the last step, you should check the `db_config.py` file and change the password for your set password.
-Caution, there are two passwords set during the setup of PostgreSQL!
-This is not the Masterpassword to unlock the pgAdmin 4, but the password for the superuser postgres!
+You first have to create a database by using `python db_setup.py`.
+Then run `python db_fill.py` to fill the database with mock data if applicable.
+Run `python db_clean_up.py` to clean up the database if necessary. Use arg `--dropdatabase` to drop the database.
 
 ## Running in Docker
+
 This project includes a Pipeline, that will automatically create a Docker image in the repository when merging into the main branch.
 This Docker image should always be the latest running version.
 Please create a .env file first locally, so that it can be passed with docker run.
@@ -119,8 +133,8 @@ Start the Docker image as container with the following command:
 ## Contribution
 
 For contributing to the project, please work on the Issues and fulfill the requested tasks.
-After completing, please run `python validate_script.py` in the root folder and check, that all is working fine.
-The test coverage should be as good as possible and there shouldn't be any information displayed by pycodestyle.
+Before commiting, always run `python validate_script.py` in the root folder and check the output.
+The test coverage should be as good as possible and there shouldn't be any information displayed by flake8, isort and black.
 For checking the code quality, you can use Sonarqube (https://docs.sonarqube.org/latest/setup-and-upgrade/install-the-server/).
 There shouldn't be any code smells left, when contributing to the project.
 

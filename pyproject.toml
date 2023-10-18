@@ -1,0 +1,36 @@
+[tool.isort]
+atomic = true
+profile = "black"
+line_length = 88
+skip_gitignore = true
+skip_glob = [".tox", ".git", ".venv", "venv", "venv_hooks", "build", "dist", "docs", "keys", "configs", "__pycache__", ".vscode", ".github"]
+known_first_party = ["black", "blackd", "_black_version"]
+
+[tool.black]
+line-length = 88
+target-version = ['py310']
+
+[tool.flake8]
+# E203: whitespace before ':', which is not PEP8 compliant
+# W503: line break before binary operator, which is not PEP8 compliant
+# W504: line break after binary operator, which is not PEP8 compliant
+# B905 should be enabled when we drop support for 3.9
+ignore = ["E203", "W504", "W503", "B006", "B008"]
+# line length is intentionally set to 80 here because black uses Bugbear
+# See https://black.readthedocs.io/en/stable/the_black_code_style/current_style.html#line-length for more details
+max-line-length = 88
+max-complexity = 18
+exclude = [".tox", ".git", ".venv", "venv", "venv_hooks", "build", "dist", "docs", "keys", "configs", "__pycache__", ".vscode", ".github"]
+
+[tool.tox]
+legacy_tox_ini = """
+    [tox]
+    envlist = py310
+    skipsdist = True
+
+    [testenv]
+    passenv = *
+    deps =
+        -rrequirements.txt
+    commands = pytest --cov=. --cov-report=xml --cov-branch --cov-report=html tests/
+"""

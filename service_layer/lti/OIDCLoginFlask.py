@@ -2,19 +2,21 @@ import json
 import os
 import time
 import urllib.parse
-from service_layer import services, unit_of_work
-import service_layer.crypto.JWTKeyManagement as JWTKeyManagement
-from errors import errors as err
+
 from flask import redirect
 from flask.wrappers import Request
 from werkzeug.wrappers.response import Response
+
+import service_layer.crypto.JWTKeyManagement as JWTKeyManagement
+import service_layer.service.SessionServiceFlask as SessionServiceFlask
+from errors import errors as err
+from service_layer import services, unit_of_work
 from service_layer.crypto.cryptorandom import CryptoRandom
+import service_layer.lti.config.ToolConfigJson as ToolConfigJson
 from service_layer.lti.Messages import LTIIDToken
 from service_layer.lti.OIDCLogin import OIDCLogin
 from service_layer.lti.Roles import RoleMapper
 from service_layer.service.CookieServiceFlask import CookieServiceFlask
-from service_layer.lti.config.ToolConfigJson import ToolConfigJson
-import service_layer.service.SessionServiceFlask as SessionServiceFlask
 
 
 class OIDCLoginFlask(OIDCLogin):
@@ -23,12 +25,11 @@ class OIDCLoginFlask(OIDCLogin):
     def __init__(
         self,
         request: Request,
-        tool_config: ToolConfigJson,
         cookie_service=None,
     ):
         self._request = request
         self._cookie_service = (
-            cookie_service if cookie_service else CookieServiceFlask(request)
+            cookie_service if cookie_service else CookieServiceFlask()
         )
         self.oidc_login_params = {
             "iss",
@@ -38,7 +39,7 @@ class OIDCLoginFlask(OIDCLogin):
             "target_link_uri",
             "lti_deployment_id",
         }
-        super(OIDCLoginFlask, self).__init__(request, tool_config)
+        super(OIDCLoginFlask, self).__init__(request)
 
     def check_params(self) -> "OIDCLoginFlask":
         # Check if all parameters are present
@@ -48,8 +49,7 @@ class OIDCLoginFlask(OIDCLogin):
             # store subset with values from request form in object
             else:
                 self._oidc_login_params_dict = {
-                    key: self._request.form.get(key)
-                    for key in self.oidc_login_params
+                    key: self._request.form.get(key) for key in self.oidc_login_params
                 }
         except Exception as e:
             raise err.ErrorException(
@@ -61,30 +61,19 @@ class OIDCLoginFlask(OIDCLogin):
         # and a way to avoid CSRF attacks
         # when redirected from http it doesnt work anymore
         try:
-            self._platform = self._tool_config.decode_platform(
-                self._tool_config.get_platform(
+            self._platform = ToolConfigJson.decode_platform(
+                ToolConfigJson.get_platform(
                     os.environ.get("LMS_URL", "https://moodle.haski.app")
                 )
             )
             if not self._platform:
-                raise err.ErrorException(
-                    message="No platform found", status_code=400
-                )
+                raise err.ErrorException(message="No platform found", status_code=400)
         except Exception as e:
-            raise err.ErrorException(
-                e, message="Error in check_auth", status_code=400
-            )
-        try:
-            parsed_target_link_url = (
-                urllib.parse.urlparse(
-                    self._oidc_login_params_dict.get("target_link_uri")
-                )
-                or None
-            )
-        except ValueError as e:
-            raise err.ErrorException(
-                e, message="target_link_uri is not URL", status_code=400
-            )
+            raise err.ErrorException(e, message="Error in check_auth", status_code=400)
+
+        parsed_target_link_url = urllib.parse.urlparse(
+            self._oidc_login_params_dict.get("target_link_uri")
+        )
 
         # Verify if the target_link_uri is valid
         # and does not redirect to other domain than our tool
@@ -132,30 +121,24 @@ class OIDCLoginFlask(OIDCLogin):
         state_jwt = SessionServiceFlask.set_state_jwt(
             nonce,
             self._platform.auth_login_url,
-            self._tool_config.get_tool_url(
-                self._request.environ.get("HTTP_ORIGIN", "")
-            ),
+            ToolConfigJson.get_tool_url(self._request.environ.get("HTTP_ORIGIN", "")),
         )
 
-        platform = self._tool_config.get_platform(
+        platform = ToolConfigJson.get_platform(
             os.environ.get("LMS_URL", "https://moodle.haski.app")
         )
         ru = self.make_url_accept_param(platform["auth_login_url"])
         params = {
             "client_id": platform["client_id"],
             "response_mode": "form_post",
-            "redirect_uri": self._oidc_login_params_dict.get(
-                "target_link_uri"
-            ),
+            "redirect_uri": self._oidc_login_params_dict.get("target_link_uri"),
             "response_type": "id_token",
             "scope": "openid",
             "nonce": nonce,
             "state": state_jwt,
             "login_hint": self._oidc_login_params_dict.get("login_hint"),
             # resource link id or deep link idc
-            "lti_message_hint": self._oidc_login_params_dict.get(
-                "lti_message_hint"
-            ),
+            "lti_message_hint": self._oidc_login_params_dict.get("lti_message_hint"),
         }
         print(ru + urllib.parse.urlencode(params))
         response = redirect(ru + urllib.parse.urlencode(params))
@@ -173,16 +156,16 @@ class OIDCLoginFlask(OIDCLogin):
             raise err.ErrorException(message="No state found", status_code=403)
 
         # verify state paramter signature
-        state_form_jwt = self._request.form.get("state", type=str) or ""
-        state_form = JWTKeyManagement.verify_jwt(state_form_jwt)
-        if not state_form:
-            raise err.ErrorException(
-                message="Invalid state signature", status_code=403
+        state_form_jwt = self._request.form.get("state", "")
+        try:
+            state_form = JWTKeyManagement.verify_jwt(state_form_jwt)
+        except Exception as e:
+            raise err.InvalidJWTError(
+                e, message="Invalid state signature", status_code=403
             )
+
         if not JWTKeyManagement.verify_state_jwt_payload(state_form):
-            raise err.ErrorException(
-                message="Invalid state payload", status_code=403
-            )
+            raise err.InvalidJWTError(message="Invalid state payload", status_code=403)
 
         return self
 
@@ -199,24 +182,28 @@ class OIDCLoginFlask(OIDCLogin):
                 status_code=400,
             )
         if not self._request.form.get("id_token"):
-            raise err.ErrorException(
-                message="No id_token found", status_code=400
-            )
+            raise err.ErrorException(message="No id_token found", status_code=400)
 
         # Decode the id_token
-        id_token_jwt = self._request.form.get("id_token", type=str) or ""
+        id_token_jwt = self._request.form.get("id_token", "")
         if not id_token_jwt:
             raise err.ErrorException(
                 message="Invalid id_token, crypto key\
                     signature or lti config data of LMS may have changed",
-                status_code=400,)
+                status_code=400,
+            )
 
-        id_token_header_unverified = JWTKeyManagement.get_unverified_header(
-            id_token_jwt
-        )
+        try:
+            id_token_header_unverified = JWTKeyManagement.get_unverified_header(
+                id_token_jwt
+            )
+        except Exception as e:
+            raise err.InvalidJWTError(
+                e, message="Error loading header", status_code=403
+            )
         id_token_unverified = JWTKeyManagement.load_jwt(id_token_jwt)
 
-        platform = self._tool_config.get_platform(id_token_unverified["iss"])
+        platform = ToolConfigJson.get_platform(id_token_unverified["iss"])
         hmac_key: str = next(
             (
                 key
@@ -226,9 +213,7 @@ class OIDCLoginFlask(OIDCLogin):
             "",
         )
         if not hmac_key:
-            raise err.ErrorException(
-                message="Invalid decryption key", status_code=400
-            )
+            raise err.ErrorException(message="Invalid decryption key", status_code=400)
         self.id_token = JWTKeyManagement.verify_jwt(
             id_token_jwt, JWTKeyManagement.construct_key(hmac_key)
         )
@@ -238,13 +223,9 @@ class OIDCLoginFlask(OIDCLogin):
             )
         try:
             self.id_token = LTIIDToken(**self.id_token)
-            SessionServiceFlask.set(
-                self.id_token.nonce, "id_token", self.id_token
-            )
+            SessionServiceFlask.set(self.id_token.nonce, "id_token", self.id_token)
         except Exception as e:
-            raise err.ErrorException(
-                e, message="Invalid id_token", status_code=403
-            )
+            raise err.ErrorException(e, message="Invalid id_token", status_code=403)
 
         return self
 
@@ -255,9 +236,7 @@ class OIDCLoginFlask(OIDCLogin):
         state_form_jwt = self._request.form.get("state", type=str) or ""
         state_form = JWTKeyManagement.verify_jwt(state_form_jwt)
         if not JWTKeyManagement.verify_state_jwt_payload(state_form):
-            raise err.ErrorException(
-                message="Invalid state payload", status_code=403
-            )
+            raise err.ErrorException(message="Invalid state payload", status_code=403)
 
         # generate nonce to obtain cookie in next request
         nonce_jwt = JWTKeyManagement.generate_nonce_jwt(
@@ -268,19 +247,19 @@ class OIDCLoginFlask(OIDCLogin):
         SessionServiceFlask.set(self.id_token.nonce, "nonce_jwt", nonce_jwt)
         # get platform from origin
         try:
-            self._platform = self._tool_config.decode_platform(
-                self._tool_config.get_platform(
+            self._platform = ToolConfigJson.decode_platform(
+                ToolConfigJson.get_platform(
                     self._request.environ.get("HTTP_ORIGIN", "")
                 )
             )
             if not self._platform:
-                raise err.ErrorException(
-                    message="No platform found", status_code=400
-                )
+                raise err.ErrorException(message="No platform found", status_code=400)
         except Exception as e:
             raise err.ErrorException(
-                e, message="Error\
-                    in check_auth", status_code=400
+                e,
+                message="Error\
+                    in check_auth",
+                status_code=400,
             )
         # redirect to tool (login url in frontend)
         # e.g. https://haski.app/login?nonce=...
@@ -297,14 +276,15 @@ class OIDCLoginFlask(OIDCLogin):
             if not user:
                 user = services.create_user(
                     unit_of_work.SqlAlchemyUnitOfWork(),
-                    name=self.id_token.name, university=self.id_token
-                    ["https://purl.imsglobal.org/spec/lti/claim/tool_platform"]
-                    ["name"],
+                    name=self.id_token.name,
+                    university=self.id_token[
+                        "https://purl.imsglobal.org/spec/lti/claim/tool_platform"
+                    ]["name"],
                     lms_user_id=self.id_token.sub,
                     role=RoleMapper(
-                        self.id_token
-                        ["https://purl.imsglobal.org/spec/lti/claim/roles"]).
-                    get_role(),)
+                        self.id_token["https://purl.imsglobal.org/spec/lti/claim/roles"]
+                    ).get_role(),
+                )
             if user["role"] == "student":
                 # Type student, has to work cause of Substitution Principle
                 user = services.get_student_by_user_id(
@@ -326,14 +306,10 @@ class OIDCLoginFlask(OIDCLogin):
         nonce_jwt = json_data["nonce"] or ""
         nonce_payload = JWTKeyManagement.verify_jwt(nonce_jwt)
         if not nonce_payload:
-            raise err.ErrorException(
-                message="Invalid nonce signature", status_code=403
-            )
+            raise err.ErrorException(message="Invalid nonce signature", status_code=403)
 
         if not JWTKeyManagement.verify_jwt_payload(nonce_payload):
-            raise err.ErrorException(
-                message="Invalid nonce payload", status_code=403
-            )
+            raise err.ErrorException(message="Invalid nonce payload", status_code=403)
 
         # get user based on id_token
         token = SessionServiceFlask.get(nonce_payload["nonce"], "id_token")
@@ -364,9 +340,7 @@ class OIDCLoginFlask(OIDCLogin):
                 "role": role,
                 "role_id": user["role_id"],
                 "session_nonce": nonce_payload["nonce"],
-                "permissions": [
-                    permission.value for permission in permissions
-                ],
+                "permissions": [permission.value for permission in permissions],
             },
         )
         # response object to attach a cookie

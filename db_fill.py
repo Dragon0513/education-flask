@@ -1,13 +1,14 @@
-import psycopg2
 import os
+
+import psycopg2
 
 # Establishing the connection
 conn = psycopg2.connect(
-    database=os.environ.get('DB_NAME', 'haski'),
-    user='postgres',
-    password=os.environ.get('DB_PASSWORD', 'genericPassword'),
-    host=os.environ.get('DB_HOST', '127.0.0.1'),
-    port=os.environ.get('DB_PORT', 5432)
+    database=os.environ.get("DB_NAME", "haski"),
+    user="postgres",
+    password=os.environ.get("DB_PASSWORD", "postgres"),
+    host=os.environ.get("DB_HOST", "127.0.0.1"),
+    port=os.environ.get("DB_PORT", 5432),
 )
 
 conn.autocommit = True
@@ -543,6 +544,27 @@ sql = '''
     date)
     VALUES (5, 1, 'Mangelhaft', '2023-07-13 16:00:00')
 '''
+cursor.execute(sql)
+
+# create contactform
+sql = """
+    INSERT INTO contact_form (user_id, report_topic, report_type, date)
+    VALUES (1, 'General Error', 'Elemente werden nicht angezeigt',\
+    '2023-07-13 16:00:00')
+"""
+cursor.execute(sql)
+
+sql = """
+    INSERT INTO contact_form (user_id, report_topic, report_type, date)
+    VALUES (2, 'Bug', 'Wenn ich auf Button klicke, dann...',\
+    '2023-07-13 16:00:00')
+"""
+cursor.execute(sql)
+
+sql = """
+    INSERT INTO contact_form (user_id, report_topic, report_type, date)
+    VALUES (3, 'Feedback', 'Übersicht verbessern', '2023-07-13 16:00:00')
+"""
 cursor.execute(sql)
 
 # Add student to course

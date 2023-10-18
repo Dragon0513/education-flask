@@ -1,6 +1,8 @@
 from functools import wraps
-import errors.errors as err
+
 from flask import request
+
+import errors.errors as err
 import service_layer.crypto.JWTKeyManagement as JWTKeyManagement
 from utils.auth.permissions import Permissions
 
@@ -21,9 +23,7 @@ def authorize(required_permissions: list[Permissions]):
                 raise err.StateNotMatchingError()
 
             state = JWTKeyManagement.verify_jwt(state_jwt)
-            if not JWTKeyManagement.verify_jwt_payload(
-                state, verify_nonce=False
-            ):
+            if not JWTKeyManagement.verify_jwt_payload(state, verify_nonce=False):
                 raise err.UnauthorizedError()
 
             # Check if user has any of the required permissions

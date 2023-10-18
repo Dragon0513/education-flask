@@ -1,7 +1,7 @@
-import random
 import base64
-from string import ascii_letters, digits
+import random
 import time
+from string import ascii_letters, digits
 
 
 class CryptoRandom(object):
@@ -31,9 +31,7 @@ class CryptoRandom(object):
     @staticmethod
     def createuniqueidbase64(length=32) -> str:
         """Return a unique id of a given length."""
-        return base64.b64encode(CryptoRandom.getrandbytes(length)).decode(
-            "utf-8"
-        )
+        return base64.b64encode(CryptoRandom.getrandbytes(length)).decode("utf-8")
 
     @staticmethod
     def getrandomstring(length=32) -> str:
@@ -46,6 +44,4 @@ class CryptoRandom(object):
     @staticmethod
     def getrandomstringbase64(length=32) -> str:
         """Return a random string of a given length."""
-        return base64.b64encode(CryptoRandom.getrandbytes(length)).decode(
-            "utf-8"
-        )
+        return base64.b64encode(CryptoRandom.getrandbytes(length)).decode("utf-8")

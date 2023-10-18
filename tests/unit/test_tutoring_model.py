@@ -1,7 +1,8 @@
 import pytest
-from domain.tutoringModel import model as TM
+
 from domain.domainModel import model as DM
 from domain.learnersModel import model as LM
+from domain.tutoringModel import model as TM
 from domain.tutoringModel import utils
 
 
@@ -39,10 +40,7 @@ def test_distance():
     [("vis", "sns", "act", "glo"), ("vrb", "int", "ref", "seq")],
 )
 def test_get_coordinates(
-    input_dimension,
-    perception_dimension,
-    processing_dimension,
-    understanding_dimension,
+    input_dimension, perception_dimension, processing_dimension, understanding_dimension
 ):
     ls = LM.LearningStyle(
         input_dimension=input_dimension,

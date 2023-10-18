@@ -7,16 +7,16 @@ class AException(Exception):
     status_code: int = 500
 
     def __init__(
-        self, exception: Exception | None = None, message=None, status_code=500
+        self,
+        exception: Exception | None = None,
+        message: str = "An unexpected error occurred.",
+        status_code=500,
     ):
         super().__init__(exception, message, status_code)
-        conditional_message = (
-            (message + " Inner Exception: ")
-            if message
-            else "" + str(exception)
-        )
         self.message = (
-            conditional_message if exception is not None else message
+            message + (" Inner Exception: " + str(exception))
+            if exception is not None
+            else message
         )
         self.status_code = status_code
 
@@ -50,7 +50,7 @@ class MissingParameterError(AException):
         self,
         exception: Exception | None = None,
         message="Missing parameters in request.",
-        status_code=404,
+        status_code=400,
     ):
         super().__init__(exception, message, status_code)
 
@@ -80,7 +80,7 @@ class WrongParameterValueError(AException):
         self,
         exception: Exception | None = None,
         message="The passed parameter values are invalid.",
-        status_code=404,
+        status_code=400,
     ):
         super().__init__(exception, message, status_code)
 
@@ -233,5 +233,35 @@ class KeyNotFoundError(AException):
         message="Key not found. Please generate a \
             key pair as described in the README.md.",
         status_code=404,
+    ):
+        super().__init__(exception, message, status_code)
+
+
+class ContactFormError(AException):
+    def __init__(
+        self,
+        exception: Exception | None = None,
+        message="The contact form could not be sent.",
+        status_code=400,
+    ):
+        super().__init__(exception, message, status_code)
+
+
+class MissingUserError(AException):
+    def __init__(
+        self,
+        exception: Exception | None = None,
+        message="The user does not exist.",
+        status_code=400,
+    ):
+        super().__init__(exception, message, status_code)
+
+
+class NoJsonError(AException):
+    def __init__(
+        self,
+        exception: Exception | None = None,
+        message="The request body is not a valid json.",
+        status_code=400,
     ):
         super().__init__(exception, message, status_code)

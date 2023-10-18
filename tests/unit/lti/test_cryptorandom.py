@@ -1,5 +1,6 @@
-from service_layer.crypto.cryptorandom import CryptoRandom
 import base64
+
+from service_layer.crypto.cryptorandom import CryptoRandom
 
 # pytest tests\unit\lti\test_cryptorandom.py --cov
 

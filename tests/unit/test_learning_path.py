@@ -1,5 +1,6 @@
-import domain.tutoringModel.graf as LP
 import pytest
+
+import domain.tutoringModel.graf as LP
 from errors import errors as err
 
 

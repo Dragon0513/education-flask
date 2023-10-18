@@ -1,7 +1,9 @@
+import random
 from itertools import chain
 from typing import Any, List, Tuple
-import random
+
 import numpy as np
+
 from domain.tutoringModel import utils
 
 
@@ -27,9 +29,7 @@ class AntColonySolver:
         self._initalized = False
 
         if self.min_round_trips and self.max_round_trips:
-            self.min_round_trips = min(
-                self.min_round_trips, self.max_round_trips
-            )
+            self.min_round_trips = min(self.min_round_trips, self.max_round_trips)
         if self.min_ants and self.max_ants:
             self.min_ants = min(self.min_ants, self.max_ants)
 
@@ -47,8 +47,7 @@ class AntColonySolver:
         # - division in a tight loop is expensive
         self.distance_cost = {
             source: {
-                dest: 1
-                / (1 + self.distances[source][dest]) ** self.distance_power
+                dest: 1 / (1 + self.distances[source][dest]) ** self.distance_power
                 for dest in problem_path
             }
             for source in problem_path
@@ -70,9 +69,7 @@ class AntColonySolver:
             self.ant_count = len(problem_path)
         if self.ant_speed <= 0:
             self.ant_speed = (
-                np.median(
-                    list(chain(*[d.values() for d in self.distances.values()]))
-                )
+                np.median(list(chain(*[d.values() for d in self.distances.values()])))
                 // 5
             )
         self.ant_speed = int(max(1, self.ant_speed))
@@ -95,9 +92,7 @@ class AntColonySolver:
         ants = {
             "distance": np.zeros((self.ant_count,)).astype("int32"),
             "path": [[problem_path[0]] for _ in range(self.ant_count)],
-            "remaining": [
-                set(problem_path[1:-1]) for _ in range(self.ant_count)
-            ],
+            "remaining": [set(problem_path[1:-1]) for _ in range(self.ant_count)],
             "end": problem_path[-1],
             "path_cost": np.zeros((self.ant_count,)).astype("int32"),
             "round_trips": np.zeros((self.ant_count,)).astype("int32"),
@@ -124,19 +119,8 @@ class AntColonySolver:
             ants_arriving = np.invert(ants_travelling)
             ants_arriving_index = np.where(ants_arriving)[0]
             for i in ants_arriving_index:
-                (
-                    ants,
-                    best_path,
-                    best_path_cost,
-                    best_epochs,
-                ) = self.ants_arriving(
-                    ants,
-                    i,
-                    epoch,
-                    problem_path,
-                    best_path,
-                    best_path_cost,
-                    best_epochs,
+                ants, best_path, best_path_cost, best_epochs = self.ants_arriving(
+                    ants, i, epoch, problem_path, best_path, best_path_cost, best_epochs
                 )
 
             if self.loop_termination(best_epochs, epoch):
@@ -158,35 +142,28 @@ class AntColonySolver:
         if not ants["remaining"][index]:
             # ants return home
             return ants["path"][index][0]
-        for next_node in ants["remaining"][index]:
-            if next_node == this_node:
+        for _next_node in ants["remaining"][index]:
+            if _next_node == this_node:
                 continue
             reward = (
-                self.pheromones[this_node][next_node] ** self.pheromone_power
+                self.pheromones[this_node][_next_node] ** self.pheromone_power
                 # Prefer shorter paths
-                * self.distance_cost[this_node][next_node]
+                * self.distance_cost[this_node][_next_node]
             )
-            weights.append((reward, next_node))
+            weights.append((reward, _next_node))
             weights_sum += reward
 
         # Pick a random path in proportion to the weight of the pheromone
         rand = random.random() * weights_sum
-        for weight, next_node in weights:
+        for weight, _next_node in weights:
             if rand > weight:
                 rand -= weight
             else:
                 break
-        return next_node
+        return _next_node
 
     def ants_arriving(
-        self,
-        ants,
-        i,
-        epoch,
-        problem_path,
-        best_path,
-        best_path_cost,
-        best_epochs,
+        self, ants, i, epoch, problem_path, best_path, best_path_cost, best_epochs
     ):
         # ant has arrived at next_node
         this_node = ants["path"][i][-1]
@@ -202,9 +179,7 @@ class AntColonySolver:
             ants["path"][i].pop(-1)
             ants["path"][i].append(ants["end"])
             self.ants_used += 1
-            self.round_trips = max(
-                self.round_trips, ants["round_trips"][i] + 1
-            )
+            self.round_trips = max(self.round_trips, ants["round_trips"][i] + 1)
 
             # We have found a new best path - inform the Queen
             was_best_path = False
@@ -224,9 +199,7 @@ class AntColonySolver:
             #       routes in combination with doubling pheromone for best_path
             reward = 1
             if self.reward_power:
-                reward *= (
-                    best_path_cost / ants["path_cost"][i]
-                ) ** self.reward_power
+                reward *= (best_path_cost / ants["path_cost"][i]) ** self.reward_power
             if self.decay_power:
                 reward *= self.round_trips**self.decay_power
             for path_index in range(len(ants["path"][i]) - 1):
@@ -237,12 +210,8 @@ class AntColonySolver:
                 if was_best_path:
                     # Queen orders to double the number
                     # of ants following this new best path
-                    self.pheromones[this_node][
-                        next_node
-                    ] *= self.best_path_smell
-                    self.pheromones[next_node][
-                        this_node
-                    ] *= self.best_path_smell
+                    self.pheromones[this_node][next_node] *= self.best_path_smell
+                    self.pheromones[next_node][this_node] *= self.best_path_smell
 
             # reset ant
             ants["distance"][i] = 0

@@ -31,9 +31,7 @@ class User:
 
 class Admin(User):
     def __init__(self, user: User) -> None:
-        super().__init__(
-            user.name, user.university, user.lms_user_id, role=user.role
-        )
+        super().__init__(user.name, user.university, user.lms_user_id, role=user.role)
         self.user_id = user.id
 
     def serialize(self):
@@ -42,9 +40,7 @@ class Admin(User):
 
 class CourseCreator(User):
     def __init__(self, user: User) -> None:
-        super().__init__(
-            user.name, user.university, user.lms_user_id, role=user.role
-        )
+        super().__init__(user.name, user.university, user.lms_user_id, role=user.role)
         self.user_id = user.id
 
     def serialize(self):
@@ -53,9 +49,7 @@ class CourseCreator(User):
 
 class Teacher(User):
     def __init__(self, user: User) -> None:
-        super().__init__(
-            user.name, user.university, user.lms_user_id, role=user.role
-        )
+        super().__init__(user.name, user.university, user.lms_user_id, role=user.role)
         self.user_id = user.id
 
     def serialize(self):
@@ -64,9 +58,7 @@ class Teacher(User):
 
 class Student(User):
     def __init__(self, user: User) -> None:
-        super().__init__(
-            user.name, user.university, user.lms_user_id, role=user.role
-        )
+        super().__init__(user.name, user.university, user.lms_user_id, role=user.role)
         self.user_id = user.id
 
     def serialize(self):
@@ -75,6 +67,7 @@ class Student(User):
 
 class Settings:
     def __init__(self, user_id, theme="Standard", pswd=None) -> None:
+        self.id = None
         self.user_id = user_id
         self.theme = theme
         self.pswd = pswd
@@ -85,4 +78,26 @@ class Settings:
             "user_id": self.user_id,
             "theme": self.theme,
             "pswd": self.pswd,
+        }
+
+
+class ContactForm:
+    def __init__(
+        self, user_id, report_topic, report_type, report_description, date
+    ) -> None:
+        self.id = None
+        self.user_id = user_id
+        self.report_topic = report_topic
+        self.report_type = report_type
+        self.report_description = report_description
+        self.date = date
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "report_topic": self.report_topic,
+            "report_type": self.report_type,
+            "report_description": self.report_description,
+            "date": self.date,
         }

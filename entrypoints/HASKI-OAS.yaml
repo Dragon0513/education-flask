@@ -1,11 +1,11 @@
 openapi: "3.0.3"
 info:
   description: "This is the HASKI API documentation"
-  version: "0.1.0"
+  version: "0.2.0"
   title: "HASKI API"
 servers:
-- url: http://localhost:5000
-  description: Development server (localhost)
+  - url: http://localhost:5000
+    description: Development server (localhost)
 tags:
   - name: "HASKI-intern"
     description: "Communication between Backend and Frontend"
@@ -23,6 +23,8 @@ tags:
     description: "All Course Creator endpoints"
   - name: "Admin"
     description: "All Admin endpoints"
+  - name: "LTI"
+    description: "All LTI and OpenID Connect flow endpoints"
 paths:
   /user/{user_id}/{lms_user_id}: #Y
     get:
@@ -65,8 +67,8 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
-  /user/{user_id}/{lms_user_id}/settings:
+                $ref: "#/components/schemas/GeneralError"
+  /user/{user_id}/{lms_user_id}/settings: #Y
     get:
       tags:
         - "HASKI-intern"
@@ -196,7 +198,53 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/GeneralError"
-
+  /user/{user_id}/{lms_user_id}/contactform:
+    post:
+      summary: "Post the content of a user specific contactform"
+      tags:
+        - "HASKI-intern"
+        - "User"
+      operationId: "postContactForm"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          description: "The ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "lms_user_id"
+          in: "path"
+          description: "The Moodle ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ContactForm"
+      responses:
+        "201":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContactForm"
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
   /user/{user_id}/{lms_user_id}/student/{student_id}/learningCharacteristics:
     get:
       tags:
@@ -293,7 +341,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError" #Y
   /user/{user_id}/{lms_user_id}/student/{student_id}/learningAnalytics:
     get:
       tags:
@@ -390,7 +438,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError" #Y
   /user/{user_id}/{lms_user_id}/student/{student_id}/learningStyle:
     get:
       tags:
@@ -541,7 +589,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError" #Y
   /user/{user_id}/{lms_user_id}/student/{student_id}/learningStrategy:
     get:
       tags:
@@ -638,7 +686,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError" #Y
   /user/{user_id}/{lms_user_id}/student/{student_id}/knowledge:
     get:
       tags:
@@ -735,7 +783,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError" #Y
   /user/{user_id}/{lms_user_id}/student/{student_id}/course:
     get:
       tags:
@@ -784,7 +832,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError" #Y
   /user/{user_id}/{lms_user_id}/student/{student_id}/course/{course_id}:
     get:
       tags:
@@ -840,119 +888,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
-  /user/{user_id}/{lms_user_id}/student/{student_id}/course/{course_id}/recommendation:
-    get:
-      tags:
-        - "HASKI-intern"
-        - "Student"
-      summary: "Get Student Courses Recommendation"
-      description: "Get a topic recommendation for a specific Student in a specific Course"
-      operationId: "getStudentCoursesRecommendation"
-      parameters:
-        - name: "user_id"
-          in: "path"
-          description: "The ID of the User"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-        - name: "lms_user_id"
-          in: "path"
-          description: "The Moodle ID of the User"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-        - name: "student_id"
-          in: "path"
-          description: "The ID of the Student"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-        - name: "course_id"
-          in: "path"
-          description: "The ID of the Course"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-      responses:
-        "200":
-          description: "Successful Operation"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TopicStudent'
-        "400":
-          description: "Bad Request"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralError'
-        "404":
-          description: "Not Found"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralError'
-  /user/{user_id}/{lms_user_id}/student/{student_id}/course/{course_id}/learningPath:
-    get:
-      tags:
-        - "HASKI-intern"
-        - "Student"
-      summary: "Get Student Courses Learning Path"
-      description: "Get a topic learning path for a specific Student in a specific Course"
-      operationId: "getStudentCoursesLearningPath"
-      parameters:
-        - name: "user_id"
-          in: "path"
-          description: "The ID of the User"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-        - name: "lms_user_id"
-          in: "path"
-          description: "The Moodle ID of the User"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-        - name: "student_id"
-          in: "path"
-          description: "The ID of the Student"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-        - name: "course_id"
-          in: "path"
-          description: "The ID of the Course"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-      responses:
-        "200":
-          description: "Successful Operation"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TopicsPath'
-        "400":
-          description: "Bad Request"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralError'
-        "404":
-          description: "Not Found"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError" #ToDo
   /user/{user_id}/{lms_user_id}/student/{student_id}/course/{course_id}/topic:
     get:
       tags:
@@ -1008,7 +944,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError" #ToDo
   /user/{user_id}/{lms_user_id}/student/{student_id}/course/{course_id}/learningElement:
     get:
       tags:
@@ -1064,7 +1000,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError" #ToDo
   /user/{user_id}/{lms_user_id}/student/{student_id}/course/{course_id}/topic/{topic_id}:
     get:
       tags:
@@ -1127,8 +1063,8 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
-  /user/{user_id}/{lms_user_id}/student/{student_id}/course/{course_id}/topic/{topic_id}/recommendation: 
+                $ref: "#/components/schemas/GeneralError" #ToDo
+  /user/{user_id}/{lms_user_id}/student/{student_id}/course/{course_id}/topic/{topic_id}/recommendation:
     get:
       tags:
         - "HASKI-intern"
@@ -1190,7 +1126,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError" #?
   /user/{user_id}/{lms_user_id}/student/{student_id}/course/{course_id}/topic/{topic_id}/learningPath:
     get:
       tags:
@@ -1253,7 +1189,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError" #ToDo
   /user/{user_id}/{lms_user_id}/student/{student_id}/course/{course_id}/topic/{topic_id}/subtopic:
     get:
       tags:
@@ -1316,7 +1252,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError" #ToDo
   /user/{user_id}/{lms_user_id}/student/{student_id}/course/{course_id}/topic/{topic_id}/learningElement:
     get:
       tags:
@@ -1379,7 +1315,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError" #ToDo
   /user/{user_id}/{lms_user_id}/student/{student_id}/course/{course_id}/topic/{topic_id}/learningElement/{learning_element_id}:
     get:
       tags:
@@ -1449,177 +1385,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
-  /user/{user_id}/{lms_user_id}/student/{student_id}/dashboard/overview:
-    get:
-      tags:
-        - "HASKI-intern"
-        - "Student"
-      summary: "Get Student Dashboard Overview"
-      description: "Get the Dashboard Overview for a specific Student"
-      operationId: "getStudentDashbaordOverview"
-      parameters:
-        - name: "user_id"
-          in: "path"
-          description: "The ID of the User"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-        - name: "lms_user_id"
-          in: "path"
-          description: "The Moodle ID of the User"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-        - name: "student_id"
-          in: "path"
-          description: "The ID of the Student"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-      responses:
-        "200":
-          description: "Successful Operation"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DashboardStudentOverview'
-        "400":
-          description: "Bad Request"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralError'
-        "404":
-          description: "Not Found"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralError'
-  /user/{user_id}/{lms_user_id}/student/{student_id}/dashboard/course/{course_id}:
-    get:
-      tags:
-        - "HASKI-intern"
-        - "Student"
-      summary: "Get Student Dashboard Course"
-      description: "Get the Dashboard for a Course for a specific Student"
-      operationId: "getStudentDashbaordCourse"
-      parameters:
-        - name: "user_id"
-          in: "path"
-          description: "The ID of the User"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-        - name: "lms_user_id"
-          in: "path"
-          description: "The Moodle ID of the User"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-        - name: "student_id"
-          in: "path"
-          description: "The ID of the Student"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-        - name: "course_id"
-          in: "path"
-          description: "The ID of the Course"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-      responses:
-        "200":
-          description: "Successful Operation"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DashboardStudentCourse'
-        "400":
-          description: "Bad Request"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralError'
-        "404":
-          description: "Not Found"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralError'
-  /user/{user_id}/{lms_user_id}/student/{student_id}/dashboard/course/{course_id}/topic/{topic_id}:
-    get:
-      tags:
-        - "HASKI-intern"
-        - "Student"
-      summary: "Get Student Dashboard Topic"
-      description: "Get the Dashboard for a Topic for a specific Student"
-      operationId: "getStudentDashbaordTopic"
-      parameters:
-        - name: "user_id"
-          in: "path"
-          description: "The ID of the User"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-        - name: "lms_user_id"
-          in: "path"
-          description: "The Moodle ID of the User"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-        - name: "student_id"
-          in: "path"
-          description: "The ID of the Student"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-        - name: "course_id"
-          in: "path"
-          description: "The ID of the Course"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-        - name: "topic_id"
-          in: "path"
-          description: "The ID of the Topic"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-      responses:
-        "200":
-          description: "Successful Operation"
-          content:
-            application/json:
-              schema:
-                oneOf:
-                - $ref: '#/components/schemas/DashboardStudentTopic'
-                - $ref: '#/components/schemas/DashboardStudentSubTopic'
-        "400":
-          description: "Bad Request"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralError'
-        "404":
-          description: "Not Found"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError" #ToDo
 
   /user/{user_id}/{lms_user_id}/teacher/{teacher_id}/course:
     get:
@@ -1669,282 +1435,8 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
-  /user/{user_id}/{lms_user_id}/teacher/{teacher_id}/dashboard/course/{course_id}:
-    get:
-      tags:
-        - "HASKI-intern"
-        - "Teacher"
-      summary: "Get Teacher Daschboard Course"
-      description: "Get the Dashboard for a Course for a specific Teacher"
-      operationId: "getTeacherDashboardCourse"
-      parameters:
-        - name: "user_id"
-          in: "path"
-          description: "The ID of the User"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-        - name: "lms_user_id"
-          in: "path"
-          description: "The Moodle ID of the User"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-        - name: "teacher_id"
-          in: "path"
-          description: "The ID of the Teacher"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-        - name: "course_id"
-          in: "path"
-          description: "The ID of the Course"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-      responses:
-        "200":
-          description: "Successful Operation"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DashboardTeacherCourse'
-        "400":
-          description: "Bad Request"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralError'
-        "404":
-          description: "Not Found"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralError'
-  /user/{user_id}/{lms_user_id}/teacher/{teacher_id}/dashboard/course/{course_id}/topic:
-    get:
-      tags:
-        - "HASKI-intern"
-        - "Teacher"
-      summary: "Get Teacher Daschboard Topic"
-      description: "Get the Dashboard for a Topic for a specific Teacher"
-      operationId: "getTeacherDashboardTopic"
-      parameters:
-        - name: "user_id"
-          in: "path"
-          description: "The ID of the User"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-        - name: "lms_user_id"
-          in: "path"
-          description: "The Moodle ID of the User"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-        - name: "teacher_id"
-          in: "path"
-          description: "The ID of the Teacher"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-        - name: "course_id"
-          in: "path"
-          description: "The ID of the Course"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-      responses:
-        "200":
-          description: "Successful Operation"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DashboardTeacherTopic'
-        "400":
-          description: "Bad Request"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralError'
-        "404":
-          description: "Not Found"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralError'
-  /user/{user_id}/{lms_user_id}/teacher/{teacher_id}/dashboard/course/{course_id}/topic/{topic_id}:
-    get:
-      tags:
-        - "HASKI-intern"
-        - "Teacher"
-      summary: "Get Teacher Daschboard LE"
-      description: "Get the Dashboard for Learning Elements for a specific Teacher"
-      operationId: "getTeacherDashboardLE"
-      parameters:
-        - name: "user_id"
-          in: "path"
-          description: "The ID of the User"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-        - name: "lms_user_id"
-          in: "path"
-          description: "The Moodle ID of the User"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-        - name: "teacher_id"
-          in: "path"
-          description: "The ID of the Teacher"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-        - name: "course_id"
-          in: "path"
-          description: "The ID of the Course"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-        - name: "topic_id"
-          in: "path"
-          description: "The ID of the Topic"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-      responses:
-        "200":
-          description: "Successful Operation"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DashboardTeacherLearningElements'
-        "400":
-          description: "Bad Request"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralError'
-        "404":
-          description: "Not Found"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralError'
-  
-  /user/{user_id}/{lms_user_id}/courseCreator/{course_creator_id}/course:
-    get:
-      tags:
-        - "HASKI-intern"
-        - "CourseCreator"
-      summary: "Get Course Creator Courses"
-      description: "Get all Courses for a specific Teacher"
-      operationId: "getCourseCreatorCourses"
-      parameters:
-        - name: "user_id"
-          in: "path"
-          description: "The ID of the User"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-        - name: "lms_user_id"
-          in: "path"
-          description: "The Moodle ID of the User"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-        - name: "course_creator_id"
-          in: "path"
-          description: "The ID of the Course Creator"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-      responses:
-        "200":
-          description: "Successful Operation"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CoursesCourseCreator'
-        "400":
-          description: "Bad Request"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralError'
-        "404":
-          description: "Not Found"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralError'
-  
-  /user/{user_id}/{lms_user_id}/admin/{admin_id}/course:
-    get:
-      tags:
-        - "HASKI-intern"
-        - "Admin"
-      summary: "Get Admin Courses"
-      description: "Get all Courses for a specific Admin"
-      operationId: "getAdminCourses"
-      parameters:
-        - name: "user_id"
-          in: "path"
-          description: "The ID of the User"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-        - name: "lms_user_id"
-          in: "path"
-          description: "The Moodle ID of the User"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-        - name: "admin_id"
-          in: "path"
-          description: "The ID of the Admin"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-      responses:
-        "200":
-          description: "Successful Operation"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CoursesAdmin'
-        "400":
-          description: "Bad Request"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralError'
-        "404":
-          description: "Not Found"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError" #ToDo
+
   /user/{user_id}/{lms_user_id}/admin/{admin_id}/user:
     get:
       tags:
@@ -1993,7 +1485,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError" #?
   /user/{user_id}/{lms_user_id}/admin/{admin_id}/logs:
     get:
       tags:
@@ -2043,267 +1535,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
-  /user/{user_id}/{lms_user_id}/admin/{admin_id}/logs/accessLogs:
-    get:
-      tags:
-        - "HASKI-intern"
-        - "Admin"
-        - "Logs"
-      summary: "Get Acess Logs"
-      description: "Get Access Logs for a specific Admin"
-      operationId: "getAccessLogs"
-      parameters:
-        - name: "user_id"
-          in: "path"
-          description: "The ID of the User"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-        - name: "lms_user_id"
-          in: "path"
-          description: "The Moodle ID of the User"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-        - name: "admin_id"
-          in: "path"
-          description: "The ID of the Admin"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-      responses:
-        "200":
-          description: "Successful Operation"
-          content:
-            application/json:
-              schema:
-                type: "array"
-                items:
-                  $ref: '#/components/schemas/AccessLog'
-        "400":
-          description: "Bad Request"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralError'
-        "404":
-          description: "Not Found"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralError'
-  /user/{user_id}/{lms_user_id}/admin/{admin_id}/logs/frontendLogs:
-    get:
-      tags:
-        - "HASKI-intern"
-        - "Admin"
-        - "Logs"
-      summary: "Get Frontend Logs"
-      description: "Get Frontend Logs for a specific Admin"
-      operationId: "getFrontendLogs"
-      parameters:
-        - name: "user_id"
-          in: "path"
-          description: "The ID of the User"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-        - name: "lms_user_id"
-          in: "path"
-          description: "The Moodle ID of the User"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-        - name: "admin_id"
-          in: "path"
-          description: "The ID of the Admin"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-      responses:
-        "200":
-          description: "Successful Operation"
-          content:
-            application/json:
-              schema:
-                type: "array"
-                items:
-                  $ref: '#/components/schemas/FrontendLog'
-        "400":
-          description: "Bad Request"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralError'
-        "404":
-          description: "Not Found"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralError'
-  /user/{user_id}/{lms_user_id}/admin/{admin_id}/logs/mainLogs:
-    get:
-      tags:
-        - "HASKI-intern"
-        - "Admin"
-        - "Logs"
-      summary: "Get Main Logs"
-      description: "Get Main Logs for a specific Admin"
-      operationId: "getMainLogs"
-      parameters:
-        - name: "user_id"
-          in: "path"
-          description: "The ID of the User"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-        - name: "lms_user_id"
-          in: "path"
-          description: "The Moodle ID of the User"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-        - name: "admin_id"
-          in: "path"
-          description: "The ID of the Admin"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-      responses:
-        "200":
-          description: "Successful Operation"
-          content:
-            application/json:
-              schema:
-                type: "array"
-                items:
-                  $ref: '#/components/schemas/MainLog'
-        "400":
-          description: "Bad Request"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralError'
-        "404":
-          description: "Not Found"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralError'
-  /user/{user_id}/{lms_user_id}/admin/{admin_id}/logs/errorLogs:
-    get:
-      tags:
-        - "HASKI-intern"
-        - "Admin"
-        - "Logs"
-      summary: "Get Error Logs"
-      description: "Get Error Logs for a specific Admin"
-      operationId: "getErrorLogs"
-      parameters:
-        - name: "user_id"
-          in: "path"
-          description: "The ID of the User"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-        - name: "lms_user_id"
-          in: "path"
-          description: "The Moodle ID of the User"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-        - name: "admin_id"
-          in: "path"
-          description: "The ID of the Admin"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-      responses:
-        "200":
-          description: "Successful Operation"
-          content:
-            application/json:
-              schema:
-                type: "array"
-                items:
-                  $ref: '#/components/schemas/ErrorLog'
-        "400":
-          description: "Bad Request"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralError'
-        "404":
-          description: "Not Found"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralError'
-  /user/{user_id}/{lms_user_id}/admin/{admin_id}/logs/systemLogs:
-    get:
-      tags:
-        - "HASKI-intern"
-        - "Admin"
-        - "Logs"
-      summary: "Get System Logs"
-      description: "Get System Logs for a specific Admin"
-      operationId: "getSystemLogs"
-      parameters:
-        - name: "user_id"
-          in: "path"
-          description: "The ID of the User"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-        - name: "lms_user_id"
-          in: "path"
-          description: "The Moodle ID of the User"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-        - name: "admin_id"
-          in: "path"
-          description: "The ID of the Admin"
-          required: true
-          schema:
-            type: "string"
-          example: 1
-      responses:
-        "200":
-          description: "Successful Operation"
-          content:
-            application/json:
-              schema:
-                type: "array"
-                items:
-                  $ref: '#/components/schemas/SystemLog'
-        "400":
-          description: "Bad Request"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralError'
-        "404":
-          description: "Not Found"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError" #?
 
   /logs/frontend:
     post:
@@ -2337,8 +1569,8 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
-  
+                $ref: "#/components/schemas/GeneralError" #Y
+
   /lms/user:
     post:
       tags:
@@ -2370,7 +1602,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError" #Y #Y
   /lms/user/{user_id}/{lms_user_id}:
     put:
       tags:
@@ -2457,7 +1689,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError" #Y
   /lms/course:
     post:
       tags:
@@ -2489,7 +1721,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError" #Y
   /lms/course/{course_id}/{lms_course_id}:
     put:
       tags:
@@ -2576,7 +1808,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError" #Y
   /lms/course/{course_id}/{lms_course_id}/topic:
     post:
       tags:
@@ -2623,7 +1855,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError" #Y
   /lms/course/{course_id}/{lms_course_id}/topic/{topic_id}/{lms_topic_id}:
     put:
       tags:
@@ -2738,7 +1970,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError" #Y #Y
   /lms/course/{course_id}/{lms_course_id}/topic/{topic_id}/{lms_topic_id}/learningElement:
     post:
       tags:
@@ -2799,7 +2031,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError" #Y
   /lms/course/{course_id}/{lms_course_id}/topic/{topic_id}/{lms_topic_id}/learningElement/{learning_element_id}/{lms_learning_element_id}:
     put:
       tags:
@@ -2942,7 +2174,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError" #Y
   /lms/course/{course_id}/student/{student_id}:
     post:
       tags:
@@ -2971,19 +2203,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CourseStudent'
+                $ref: "#/components/schemas/CourseStudent"
         "400":
           description: "Bad Request"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError"
         "404":
           description: "Not Found"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError" #Y
   /lms/student/{student_id}/{lms_user_id}/questionnaire:
     post:
       tags:
@@ -3030,7 +2262,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError" #Y
   /lms/student/{student_id}/{lms_user_id}/topic/{topic_id}:
     post:
       tags:
@@ -3084,7 +2316,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
+                $ref: "#/components/schemas/GeneralError" #Y
   /lms/student/{student_id}/{lms_user_id}/learning_element/{learning_element_id}:
     post:
       tags:
@@ -3138,10 +2370,235 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GeneralError'
-  
+                $ref: "#/components/schemas/GeneralError" #Y
+  /lti_login:
+    post:
+      tags:
+        - "LTI"
+      summary: "LTI Login"
+      description: "Login via LTI"
+      operationId: "postLtiLogin"
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/LtiLogin"
+      responses:
+        '200':
+          description: "Login successful"
+        '400':
+          description: "Missing or invalid parameters"
+  /lti_launch:
+    post:
+      tags:
+        - "LTI"
+      summary: "LTI Launch endpoint"
+      description: "This endpoint is responsible for launching the LTI tool. It uses the `verify_state` function to ensure the state parameter is valid."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: "object"
+              properties:
+                state:
+                  type: "string"
+                  description: "The state parameter to be verified."
+      responses:
+        '200':
+          description: "LTI Launch successful."
+        '403':
+          description: "Forbidden, state parameter is not valid."
+  /login:
+    post:
+      tags:
+        - "LTI"
+      summary: "Login endpoint"
+      description: "This endpoint is responsible for user login. It uses the `get_cookie_expiration` function to set the expiration of the session cookie."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: "object"
+              properties:
+                nonce:
+                  type: "string"
+                  description: "The nonce parameter used to verify the session."
+      responses:
+        '200':
+          description: "Login successful, session cookie set."
+        '403':
+          description: "Forbidden, nonce parameter is not valid or session could not be established."
+        '400':
+          description: "he passed JWT is invalid. Inner Exception: Not enough segments"
+  /logout:
+    get:
+      tags:
+        - "LTI"
+      summary: "Logout endpoint"
+      description: "This endpoint is responsible for user logout. It uses the `get_logout` function to clear the session cookie."
+      responses:
+        '204':
+          description: "Logout successful, session cookie cleared."
+        '500':
+          description: "Internal Server Error, logout process failed."
+  /lti_launch_view:
+    get:
+      tags:
+        - "LTI"
+      summary: "LTI Launch View endpoint"
+      description: "This endpoint is responsible for sending the endpoint which launches the LTI tool to the frontend."
+      responses:
+        '200':
+          description: "Successful operation."
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  lti_launch_view:
+                    type: "string"
+                    description: "The URL of the LTI launch view."
+        '500':
+          description: "Internal Server Error."
+  /lms/user_from_cookie:
+    get:
+      tags:
+        - "LTI"
+      summary: "Get User From Cookie endpoint"
+      description: "This endpoint is responsible for getting user info from the cookie."
+      responses:
+        '200':
+          description: "Successful operation."
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  user:
+                    type: "object"
+                    description: "The user object retrieved from the cookie."
+        '400':
+          description: "Bad Request. The passed parameter values are invalid."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WrongParameterValueError'
+        '401':
+          description: "Unauthorized. The request is unauthorized."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+        '500':
+          description: "Internal Server Error."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AException'
+  /login_credentials:
+    post:
+      tags:
+        - "LTI"
+      summary: "Login Credentials endpoint"
+      description: "This endpoint is responsible for posting a user login by id and getting a user by id."
+      requestBody:
+        required: true
+        content:
+          "application/json":
+            schema:
+              type: "object"
+              properties:
+                lms_user_id:
+                  type: "integer"
+                  description: "The LMS user ID."
+      responses:
+        '201':
+          description: "Successful operation, user created."
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  user:
+                    type: "object"
+                    description: "The user object created."
+        '400':
+          description: "Bad Request. The passed parameter values are invalid."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WrongParameterValueError'
+        '401':
+          description: "Unauthorized. The request is unauthorized."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+        '404':
+          description: "Not Found. The requested resource could not be found."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AException'
+        '500':
+          description: "Internal Server Error."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AException'
 components:
   schemas:
+    WrongParameterValueError:
+      type: "object"
+      properties:
+        message:
+          type: "string"
+        status_code:
+          type: "integer"
+    UnauthorizedError:
+      type: "object"
+      properties:
+        message:
+          type: "string"
+        status_code:
+          type: "integer"
+    AException:
+      type: "object"
+      properties:
+        message:
+          type: "string"
+        status_code:
+          type: "integer"
+    LtiLogin:
+      type: "object"
+      properties:
+        iss:
+          type: "string"
+          example: "https://moodle.de"
+          description: "The Issuer"
+        client_id:
+          type: "string"
+          example: "cBahj22jsj"
+          description: "Client ID set in moodle"
+        login_hint:
+          type: "string"
+          example: "e20984648b488fb11b323741425126dca07aa300"
+          description: "carry information about the actual LTI message that is being launched."
+        lti_message_hint:
+          type: "string"
+          example: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ2ZXJpZmllciI6IjhhOGFjNDQ0NDJjNjkxMDFjYjRiMzVkZjQyNTA5NzhhNjUyYzhmNTY0YWU3MDhjOTcxMGE1OTQ2ODAzMTY3MzUyMjA3YTczNjQ2YjRlOTA1NTYyNzM1MDMxNDM1ZGY1MzU3MDQ5Y2Q1YzMyNWYwMDA5N2Y0YjQ4YTA5MWQwMTA5IiwiY2FudmFzX2RvbWFpbiI6ImNhbnZhcy5zdGdlb3JnZXMuYmMuY2EiLCJjb250ZXh0X3R5cGUiOiJDb3Vyc2UiLCJjb250ZXh0X2lkIjo0OTcwMDAwMDAwMDAwMDg2MSwiZXhwIjoxNTkyMjQ5NzY4fQ.KmI75uFTAZBWe9F1mZ6nXnpabWVKDUm4HS6HjP-jExw"
+          description: "carry information about the actual LTI message that is being launched."
+        target_link_uri:
+          type: "string"
+          example: "https://OurLtiApplication/someEndpoint"
+          description: "The target link uri"
+        lti_deployment_id:
+          type: "string"
+          example: "1"
+          description: "Deployment ID set by moodle"
     AccessLog:
       type: "object"
       properties:
@@ -4259,6 +3716,21 @@ components:
           type: "string"
           example: "password"
           description: "The password of the User"
+    ContactForm:
+      type: "object"
+      properties:
+        report_topic:
+          type: "string"
+          example: "Lernelement / UI / Design / Sonstiges"
+          description: "The topic of the report"
+        report_type:
+          type: "string"
+          example: "Problem / Fehler / Bewertung / Funktionalität / Sonstiges"
+          description: "The type of the report"
+        report_description:
+          type: "string"
+          example: "Das Lernelement ist nicht verständlich"
+          description: "The description of the report"
     SystemLog:
       type: "object"
       properties:
@@ -4419,20 +3891,24 @@ components:
       properties:
         topics:
           type: "array"
-          items: 
-            $ref: "#/components/schemas/Student"
-    SuccessMessage:
+          items:
+            $ref: "#/components/schemas/TopicStudent"
+    TopicsPath:
+      type: "array"
+      items:
+        type: "object"
+        properties:
+          position:
+            type: "integer"
+            format: "int64"
+            example: 1
+            description: "The position of the topic within the path"
+          topic:
+            $ref: "#/components/schemas/TopicStudent"
+    TopicVisit:
       type: "object"
-      required: 
-      - "code"
-      - "message"
-      properties: 
-        code: 
-          type: "integer"
-          format: "int32"
-          example: 201
-          description: "The http code"
-        message: 
+      properties:
+        visit_start:
           type: "string"
           format: "date-time"
           example: "2017-07-21T17:32:28Z"

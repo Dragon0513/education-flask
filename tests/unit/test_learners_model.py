@@ -4,10 +4,11 @@ from unittest.mock import MagicMock, patch
 
 import errors.errors as err
 import service_layer.crypto.JWTKeyManagement as JWTKeyManagement
-from utils.auth.auth import authorize
-from utils.auth.permissions import Permissions
 from domain.learnersModel import basic_ils_algorithm as BILSA
 from domain.learnersModel import basic_listk_algorithm as BLKA
+from utils.auth.auth import authorize
+from utils.auth.permissions import Permissions
+
 
 class TestBasicQuestionnaireAlgorithms(unittest.TestCase):
 

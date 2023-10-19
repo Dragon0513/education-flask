@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, Date, Integer, String, Table, Float
+from sqlalchemy import Boolean, Column, Date, Float, Integer, String, Table
 from sqlalchemy.orm import registry
 
 from domain.domainModel import model as DM

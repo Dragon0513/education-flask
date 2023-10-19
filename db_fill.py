@@ -1738,7 +1738,7 @@ sql = """
 cursor.execute(sql)
 
 sql = """
-    INSERT INTO ils_perception_answers (questionnaire_ils_id, si_1_f2, 
+    INSERT INTO ils_perception_answers (questionnaire_ils_id, si_1_f2,
     si_2_f6, si_3_f10, si_4_f14, si_5_f18, si_6_f22, si_7_f26, si_8_f30,\
     si_9_f34, si_10_f38, si_11_f42)
     VALUES (1, 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b')

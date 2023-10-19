@@ -120,15 +120,15 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
-    def create_questionnaire_list_k(self,
-                                    questionnaire_list_k: LM.QuestionnaireListK)\
-            -> LM.QuestionnaireListK:
+    def create_questionnaire_list_k(
+        self, questionnaire_list_k: LM.QuestionnaireListK
+    ) -> LM.QuestionnaireListK:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def create_questionnaire_ils(self,
-                                 questionnaire_ils: LM.QuestionnaireIls)\
-            -> LM.QuestionnaireIls:
+    def create_questionnaire_ils(
+        self, questionnaire_ils: LM.QuestionnaireIls
+    ) -> LM.QuestionnaireIls:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -210,13 +210,11 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
-    def delete_questionnaire_list_k(self,
-                                    questionnaire_list_k_id):
+    def delete_questionnaire_list_k(self, questionnaire_list_k_id):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def delete_questionnaire_ils(self,
-                                 questionnaire_ils_id):
+    def delete_questionnaire_ils(self, questionnaire_ils_id):
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -344,30 +342,24 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_ils_input_answers_by_id(
-            self,
-            questionnaire_ils_id
-    ) -> LM.IlsInputAnswers:
+    def get_ils_input_answers_by_id(self, questionnaire_ils_id) -> LM.IlsInputAnswers:
         raise NotImplementedError
 
     @abc.abstractmethod
     def get_ils_perception_answers_by_id(
-            self,
-            questionnaire_ils_id
+        self, questionnaire_ils_id
     ) -> LM.IlsPerceptionAnswers:
         raise NotImplementedError
 
     @abc.abstractmethod
     def get_ils_processing_answers_by_id(
-            self,
-            questionnaire_ils_id
+        self, questionnaire_ils_id
     ) -> LM.IlsProcessingAnswers:
         raise NotImplementedError
 
     @abc.abstractmethod
     def get_ils_understanding_answers_by_id(
-            self,
-            questionnaire_ils_id
+        self, questionnaire_ils_id
     ) -> LM.IlsUnderstandingAnswers:
         raise NotImplementedError
 
@@ -419,16 +411,12 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
 
     @abc.abstractmethod
     def get_questionnaire_list_k_by_id(
-            self,
-            questionnaire_list_k_id: LM.QuestionnaireListK
+        self, questionnaire_list_k_id: LM.QuestionnaireListK
     ) -> LM.QuestionnaireListK:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_questionnaire_ils_by_id(
-            self,
-            questionnaire_ils_id
-    ) -> LM.QuestionnaireIls:
+    def get_questionnaire_ils_by_id(self, questionnaire_ils_id) -> LM.QuestionnaireIls:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -795,8 +783,7 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
             raise err.CreationError()
 
     def create_questionnaire_list_k(
-            self,
-            questionnaire_list_k
+        self, questionnaire_list_k
     ) -> LM.QuestionnaireListK:
         try:
             self.session.add(questionnaire_list_k)
@@ -805,10 +792,7 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         except Exception:
             raise err.CreationError()
 
-    def create_questionnaire_ils(
-            self,
-            questionnaire_ils
-    ) -> LM.QuestionnaireIls:
+    def create_questionnaire_ils(self, questionnaire_ils) -> LM.QuestionnaireIls:
         try:
             self.session.add(questionnaire_ils)
         except IntegrityError:
@@ -1025,10 +1009,13 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
             raise err.NoValidIdError()
 
     def delete_questionnaire_list_k(self, questionnaire_list_k_id):
-        questionnaire_list_k = self.get_questionnaire_list_k_by_id(questionnaire_list_k_id)
+        questionnaire_list_k = self.get_questionnaire_list_k_by_id(
+            questionnaire_list_k_id
+        )
         if questionnaire_list_k != []:
             self.session.query(LM.QuestionnaireListK).filter_by(
-                id=questionnaire_list_k_id).delete()
+                id=questionnaire_list_k_id
+            ).delete()
         else:
             raise err.NoValidIdError()
 
@@ -1036,7 +1023,8 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         questionnaire_ils = self.get_questionnaire_ils_by_id(questionnaire_ils_id)
         if questionnaire_ils != []:
             self.session.query(LM.QuestionnaireIls).filter_by(
-                id=questionnaire_ils_id).delete()
+                id=questionnaire_ils_id
+            ).delete()
         else:
             raise err.NoValidIdError()
 
@@ -1312,10 +1300,7 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         except Exception:
             raise err.DatabaseQueryError()
 
-    def get_ils_input_answers_by_id(
-            self,
-            questionnaire_ils_id
-    ) -> LM.IlsInputAnswers:
+    def get_ils_input_answers_by_id(self, questionnaire_ils_id) -> LM.IlsInputAnswers:
         result = (
             self.session.query(LM.IlsInputAnswers)
             .filter_by(questionnaire_ils_id=questionnaire_ils_id)
@@ -1327,13 +1312,12 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
             return result
 
     def get_ils_perception_answers_by_id(
-            self,
-            questionnaire_ils_id
+        self, questionnaire_ils_id
     ) -> LM.IlsPerceptionAnswers:
         result = (
-             self.session.query(LM.IlsPerceptionAnswers)
-             .filter_by(questionnaire_ils_id=questionnaire_ils_id)
-             .all()
+            self.session.query(LM.IlsPerceptionAnswers)
+            .filter_by(questionnaire_ils_id=questionnaire_ils_id)
+            .all()
         )
         if result == []:
             raise err.NoValidIdError()
@@ -1341,8 +1325,7 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
             return result
 
     def get_ils_processing_answers_by_id(
-            self,
-            questionnaire_ils_id
+        self, questionnaire_ils_id
     ) -> LM.IlsProcessingAnswers:
         result = (
             self.session.query(LM.IlsProcessingAnswers)
@@ -1355,8 +1338,7 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
             return result
 
     def get_ils_understanding_answers_by_id(
-            self,
-            questionnaire_ils_id
+        self, questionnaire_ils_id
     ) -> LM.IlsUnderstandingAnswers:
         result = (
             self.session.query(LM.IlsUnderstandingAnswers)
@@ -1369,8 +1351,7 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
             return result
 
     def get_questionnaire_list_k_by_id(
-            self,
-            questionnaire_list_k
+        self, questionnaire_list_k
     ) -> LM.QuestionnaireListK:
         result = (
             self.session.query(LM.QuestionnaireListK)
@@ -1382,10 +1363,7 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         else:
             return result
 
-    def get_questionnaire_ils_by_id(
-            self,
-            questionnaire_ils
-    ) -> LM.QuestionnaireIls:
+    def get_questionnaire_ils_by_id(self, questionnaire_ils) -> LM.QuestionnaireIls:
         result = (
             self.session.query(LM.QuestionnaireIls)
             .filter_by(id=questionnaire_ils)
@@ -1397,8 +1375,7 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
             return result
 
     def get_questionnaire_list_k_by_student_id(
-            self,
-            student_id
+        self, student_id
     ) -> LM.QuestionnaireListK:
         result = (
             self.session.query(LM.QuestionnaireListK)
@@ -1407,10 +1384,12 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         )
         return result
 
-    def get_questionnaire_ils_by_student_id(self, student_id)\
-            -> LM.QuestionnaireIls:
-        result = self.session.query(LM.QuestionnaireIls).filter_by(
-            student_id=student_id).all()
+    def get_questionnaire_ils_by_student_id(self, student_id) -> LM.QuestionnaireIls:
+        result = (
+            self.session.query(LM.QuestionnaireIls)
+            .filter_by(student_id=student_id)
+            .all()
+        )
         return result
 
     def get_settings(self, user_id) -> UA.Settings:
@@ -1653,42 +1632,24 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
                 .filter_by(characteristic_id=characteristic_id)
                 .update(
                     {
-                        LM.LearningStrategy.characteristic_id:
-                        learning_strategy.characteristic_id,
-                        LM.LearningStrategy.cogn_str:
-                        learning_strategy.cogn_str,
-                        LM.LearningStrategy.org:
-                        learning_strategy.org,
-                        LM.LearningStrategy.elab:
-                        learning_strategy.elab,
-                        LM.LearningStrategy.crit_rev:
-                        learning_strategy.crit_rev,
-                        LM.LearningStrategy.rep:
-                        learning_strategy.rep,
-                        LM.LearningStrategy.metacogn_str:
-                        learning_strategy.metacogn_str,
-                        LM.LearningStrategy.goal_plan:
-                        learning_strategy.goal_plan,
-                        LM.LearningStrategy.con:
-                        learning_strategy.con,
-                        LM.LearningStrategy.reg:
-                        learning_strategy.reg,
-                        LM.LearningStrategy.int_res_mng_str:
-                        learning_strategy.int_res_mng_str,
-                        LM.LearningStrategy.att:
-                        learning_strategy.att,
-                        LM.LearningStrategy.eff:
-                        learning_strategy.eff,
-                        LM.LearningStrategy.time:
-                        learning_strategy.time,
-                        LM.LearningStrategy.ext_res_mng_str:
-                        learning_strategy.ext_res_mng_str,
-                        LM.LearningStrategy.lrn_w_cls:
-                        learning_strategy.lrn_w_cls,
-                        LM.LearningStrategy.lit_res:
-                        learning_strategy.lit_res,
-                        LM.LearningStrategy.lrn_env:
-                        learning_strategy.lrn_env,
+                        LM.LearningStrategy.characteristic_id: learning_strategy.characteristic_id,
+                        LM.LearningStrategy.cogn_str: learning_strategy.cogn_str,
+                        LM.LearningStrategy.org: learning_strategy.org,
+                        LM.LearningStrategy.elab: learning_strategy.elab,
+                        LM.LearningStrategy.crit_rev: learning_strategy.crit_rev,
+                        LM.LearningStrategy.rep: learning_strategy.rep,
+                        LM.LearningStrategy.metacogn_str: learning_strategy.metacogn_str,
+                        LM.LearningStrategy.goal_plan: learning_strategy.goal_plan,
+                        LM.LearningStrategy.con: learning_strategy.con,
+                        LM.LearningStrategy.reg: learning_strategy.reg,
+                        LM.LearningStrategy.int_res_mng_str: learning_strategy.int_res_mng_str,
+                        LM.LearningStrategy.att: learning_strategy.att,
+                        LM.LearningStrategy.eff: learning_strategy.eff,
+                        LM.LearningStrategy.time: learning_strategy.time,
+                        LM.LearningStrategy.ext_res_mng_str: learning_strategy.ext_res_mng_str,
+                        LM.LearningStrategy.lrn_w_cls: learning_strategy.lrn_w_cls,
+                        LM.LearningStrategy.lit_res: learning_strategy.lit_res,
+                        LM.LearningStrategy.lrn_env: learning_strategy.lrn_env,
                     }
                 )
             )

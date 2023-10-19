@@ -814,7 +814,6 @@ class TestApi:
         for key in keys_expected:
             assert key in response.keys()
 
-
     # Post Questionnaire for Student
     @pytest.mark.parametrize(
         "moodle_user_id, keys_expected, status_code_expected, \
@@ -856,15 +855,15 @@ class TestApi:
         ],
     )
     def test_post_questionnaire_list_k(
-            client,
-            moodle_user_id,
-            keys_expected,
-            status_code_expected,
-            save_id,
-            error_id_missing,
-            error_key_wrong,
-            error_answer_list_k,
-            error_list_k_id,
+        client,
+        moodle_user_id,
+        keys_expected,
+        status_code_expected,
+        save_id,
+        error_id_missing,
+        error_key_wrong,
+        error_answer_list_k,
+        error_list_k_id,
     ):
         global student_id
         json_input = {}
@@ -883,12 +882,12 @@ class TestApi:
         json_input["list_k"] = list_k
 
         url = (
-                path_lms_student
-                + "/"
-                + str(student_id)
-                + "/"
-                + str(moodle_user_id)
-                + path_questionnaire_list_k
+            path_lms_student
+            + "/"
+            + str(student_id)
+            + "/"
+            + str(moodle_user_id)
+            + path_questionnaire_list_k
         )
         r = client.post(url, json=json_input)
         assert r.status_code == status_code_expected
@@ -899,32 +898,31 @@ class TestApi:
             global questionnaire_list_k_id
             questionnaire_list_k_id = response["id"]
 
-
     @pytest.mark.parametrize(
         "ils_long, moodle_user_id, keys_expected, status_code_expected, \
          save_id, error_id_missing, error_key_wrong, error_answer_ils,",
         [
             # Working example
             (
-                    True,
-                    4,
-                    ["id", "student_id", "learning_style"],
-                    201,
-                    True,
-                    False,
-                    False,
-                    False,
+                True,
+                4,
+                ["id", "student_id", "learning_style"],
+                201,
+                True,
+                False,
+                False,
+                False,
             ),
             # Working example short questionnaire
             (
-                    False,
-                    4,
-                    ["id", "student_id", "learning_style"],
-                    201,
-                    True,
-                    False,
-                    False,
-                    False,
+                False,
+                4,
+                ["id", "student_id", "learning_style"],
+                201,
+                True,
+                False,
+                False,
+                False,
             ),
             # Missing mandatory answer
             (False, 4, ["error"], 400, False, True, False, False),

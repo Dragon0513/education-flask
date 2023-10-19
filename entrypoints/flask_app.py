@@ -844,13 +844,13 @@ def questionnaire_ils(data: Dict[str, Any], student_id):
                 raise err.MissingParameterError()
 
 
-@app.route("/lms/student/<student_id>/questionnaire/listk", methods=['POST'])
+@app.route("/lms/student/<student_id>/questionnaire/listk", methods=["POST"])
 @cross_origin(supports_credentials=True)
 @json_only()
 def questionnaire_list_k(data: Dict[str, Any], student_id):
     method = request.method
     match method:
-        case 'POST':
+        case "POST":
             condition = "list_k" in data
             if condition:
                 list_k = {}
@@ -895,7 +895,7 @@ def questionnaire_list_k(data: Dict[str, Any], student_id):
                     "lit_res3_f36",
                     "lrn_env1_f37",
                     "lrn_env2_f38",
-                    "lrn_env3_f39"
+                    "lrn_env3_f39",
                 ]
                 for key in required_answers_list_k:
                     if key not in list_k.keys():
@@ -910,7 +910,7 @@ def questionnaire_list_k(data: Dict[str, Any], student_id):
                 result = services.create_questionnaire_list_k(
                     uow=unit_of_work.SqlAlchemyUnitOfWork(),
                     student_id=student_id,
-                    list_k_answers=list_k
+                    list_k_answers=list_k,
                 )
                 status_code = 201
                 return jsonify(result), status_code

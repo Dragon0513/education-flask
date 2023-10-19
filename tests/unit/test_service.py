@@ -1628,9 +1628,7 @@ def test_create_ils_input_answers():
             ils_input_answers[key] = "a"
     entries_beginning = len(uow.ils_input_answers.ils_input_answers)
     result = services.create_ils_input_answers(
-        uow=uow,
-        questionnaire_ils_id=1,
-        answers=ils_input_answers
+        uow=uow, questionnaire_ils_id=1, answers=ils_input_answers
     )
     entries_after = len(uow.ils_input_answers.ils_input_answers)
     assert type(result) == dict
@@ -1646,9 +1644,7 @@ def test_create_ils_perception_answers():
             ils_perception_answers[key] = "a"
     entries_beginning = len(uow.ils_perception_answers.ils_perception_answers)
     result = services.create_ils_perception_answers(
-        uow=uow,
-        questionnaire_ils_id=1,
-        answers=ils_perception_answers
+        uow=uow, questionnaire_ils_id=1, answers=ils_perception_answers
     )
     entries_after = len(uow.ils_perception_answers.ils_perception_answers)
     assert type(result) == dict
@@ -1664,9 +1660,7 @@ def test_create_ils_processing_answers():
             ils_processing_answers[key] = "a"
     entries_beginning = len(uow.ils_processing_answers.ils_processing_answers)
     result = services.create_ils_processing_answers(
-        uow=uow,
-        questionnaire_ils_id=1,
-        answers=ils_processing_answers
+        uow=uow, questionnaire_ils_id=1, answers=ils_processing_answers
     )
     entries_after = len(uow.ils_processing_answers.ils_processing_answers)
     assert type(result) == dict
@@ -1682,9 +1676,7 @@ def test_create_ils_understanding_answers():
             ils_understanding_answers[key] = "a"
     entries_beginning = len(uow.ils_understanding_answers.ils_understanding_answers)
     result = services.create_ils_understanding_answers(
-        uow=uow,
-        questionnaire_ils_id=1,
-        answers=ils_understanding_answers
+        uow=uow, questionnaire_ils_id=1, answers=ils_understanding_answers
     )
     entries_after = len(uow.ils_understanding_answers.ils_understanding_answers)
     assert type(result) == dict
@@ -1694,28 +1686,21 @@ def test_create_ils_understanding_answers():
 
 def test_create_list_k_questionnaire():
     uow = FakeUnitOfWork()
-    services.create_learning_characteristics(
-        uow=uow,
-        student_id=1
-    )
+    services.create_learning_characteristics(uow=uow, student_id=1)
     entries_beginning = len(uow.questionnaire_list_k.questionnaire_list_k)
     questionnaire_list_k_answers = {}
 
     for key in questionnaire_list_k_ids:
         questionnaire_list_k_answers[key] = 1
     result = services.create_questionnaire_list_k(
-        uow=uow,
-        student_id=1,
-        list_k_answers=questionnaire_list_k_answers
+        uow=uow, student_id=1, list_k_answers=questionnaire_list_k_answers
     )
     entries_after = len(uow.questionnaire_list_k.questionnaire_list_k)
     assert type(result) == dict
     assert result != {}
     assert entries_beginning + 1 == entries_after
     services.create_questionnaire_list_k(
-        uow=uow,
-        student_id=1,
-        list_k_answers=questionnaire_list_k_answers
+        uow=uow, student_id=1, list_k_answers=questionnaire_list_k_answers
     )
     entries_after2 = len(uow.questionnaire_list_k.questionnaire_list_k)
     assert type(result) == dict
@@ -1723,22 +1708,18 @@ def test_create_list_k_questionnaire():
     assert entries_after == entries_after2
 
 
-@pytest.mark.parametrize("full_version", [
-    # Working Example short form
-    (
-            True
-    ),
-    # Working Example full form
-    (
-            False
-    )
-])
+@pytest.mark.parametrize(
+    "full_version",
+    [
+        # Working Example short form
+        (True),
+        # Working Example full form
+        (False),
+    ],
+)
 def test_create_questionnaire_ils(full_version):
     uow = FakeUnitOfWork()
-    services.create_learning_characteristics(
-        uow=uow,
-        student_id=1
-    )
+    services.create_learning_characteristics(uow=uow, student_id=1)
     entries_beginning = len(uow.questionnaire_ils.questionnaire_ils)
     questionnaire_ils_answers = {}
     if full_version:
@@ -1774,15 +1755,10 @@ def test_delete_ils_input_answers():
         if key.startswith("vv"):
             ils_input_answers[key] = "a"
     services.create_ils_input_answers(
-        uow=uow,
-        questionnaire_ils_id=1,
-        answers=ils_input_answers
+        uow=uow, questionnaire_ils_id=1, answers=ils_input_answers
     )
     entries_beginning = len(uow.ils_input_answers.ils_input_answers)
-    result = services.delete_ils_input_answers(
-        uow=uow,
-        questionnaire_ils_id=1
-    )
+    result = services.delete_ils_input_answers(uow=uow, questionnaire_ils_id=1)
     entries_after = len(uow.ils_input_answers.ils_input_answers)
     assert type(result) == dict
     assert result == {}
@@ -1796,15 +1772,10 @@ def test_delete_ils_perception_answers():
         if key.startswith("si"):
             ils_perception_answers[key] = "a"
     services.create_ils_perception_answers(
-        uow=uow,
-        questionnaire_ils_id=1,
-        answers=ils_perception_answers
+        uow=uow, questionnaire_ils_id=1, answers=ils_perception_answers
     )
     entries_beginning = len(uow.ils_perception_answers.ils_perception_answers)
-    result = services.delete_ils_perception_answers(
-        uow=uow,
-        questionnaire_ils_id=1
-    )
+    result = services.delete_ils_perception_answers(uow=uow, questionnaire_ils_id=1)
     entries_after = len(uow.ils_perception_answers.ils_perception_answers)
     assert type(result) == dict
     assert result == {}
@@ -1818,15 +1789,10 @@ def test_delete_ils_processing_answers():
         if key.startswith("ar"):
             ils_processing_answers[key] = "a"
     services.create_ils_processing_answers(
-        uow=uow,
-        questionnaire_ils_id=1,
-        answers=ils_processing_answers
+        uow=uow, questionnaire_ils_id=1, answers=ils_processing_answers
     )
     entries_beginning = len(uow.ils_processing_answers.ils_processing_answers)
-    result = services.delete_ils_processing_answers(
-        uow=uow,
-        questionnaire_ils_id=1
-    )
+    result = services.delete_ils_processing_answers(uow=uow, questionnaire_ils_id=1)
     entries_after = len(uow.ils_processing_answers.ils_processing_answers)
     assert type(result) == dict
     assert result == {}
@@ -1840,9 +1806,7 @@ def test_delete_ils_understanding_answers():
         if key.startswith("sg"):
             ils_understanding_answers[key] = "a"
     services.create_ils_understanding_answers(
-        uow=uow,
-        questionnaire_ils_id=1,
-        answers=ils_understanding_answers
+        uow=uow, questionnaire_ils_id=1, answers=ils_understanding_answers
     )
     entries_beginning = len(uow.ils_understanding_answers.ils_understanding_answers)
     result = services.delete_ils_understanding_answers(
@@ -1857,45 +1821,33 @@ def test_delete_ils_understanding_answers():
 
 def test_delete_questionnaire_list_k():
     uow = FakeUnitOfWork()
-    services.create_learning_characteristics(
-        uow=uow,
-        student_id=1
-    )
+    services.create_learning_characteristics(uow=uow, student_id=1)
     questionnaire_list_k_answers = {}
     for key in questionnaire_list_k_ids:
         questionnaire_list_k_answers[key] = 1
     services.create_questionnaire_list_k(
-        uow=uow,
-        student_id=1,
-        list_k_answers=questionnaire_list_k_answers
+        uow=uow, student_id=1, list_k_answers=questionnaire_list_k_answers
     )
     entries_beginning = len(uow.questionnaire_list_k.questionnaire_list_k)
-    result = services.delete_questionnaire_list_k(
-        uow=uow,
-        questionnaire_list_k_id=1
-    )
+    result = services.delete_questionnaire_list_k(uow=uow, questionnaire_list_k_id=1)
     entries_after = len(uow.questionnaire_list_k.questionnaire_list_k)
     assert type(result) == dict
     assert result == {}
     assert entries_beginning - 1 == entries_after
 
 
-@pytest.mark.parametrize("full_version", [
-    # Working Example complete ILS
-    (
-        True
-    ),
-    # Working Example Short Form
-    (
-        False
-    )
-])
+@pytest.mark.parametrize(
+    "full_version",
+    [
+        # Working Example complete ILS
+        (True),
+        # Working Example Short Form
+        (False),
+    ],
+)
 def test_delete_questionnaire_ils(full_version):
     uow = FakeUnitOfWork()
-    services.create_learning_characteristics(
-        uow=uow,
-        student_id=1
-    )
+    services.create_learning_characteristics(uow=uow, student_id=1)
     questionnaire_ils_answers = {}
     if full_version:
         for key in ils_complete:
@@ -1909,10 +1861,7 @@ def test_delete_questionnaire_ils(full_version):
         ils_answers=questionnaire_ils_answers,
     )
     entries_beginning = len(uow.questionnaire_ils.questionnaire_ils)
-    result = services.delete_questionnaire_ils(
-        uow=uow,
-        questionnaire_ils_id=1
-    )
+    result = services.delete_questionnaire_ils(uow=uow, questionnaire_ils_id=1)
     entries_after = len(uow.questionnaire_ils.questionnaire_ils)
     assert type(result) == dict
     assert result == {}

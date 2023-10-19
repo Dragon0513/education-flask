@@ -228,7 +228,7 @@ learning_strategy = Table(
     Column("ext_res_mng_str", Float, nullable=False),
     Column("lrn_w_cls", Float, nullable=False),
     Column("lit_res", Float, nullable=False),
-    Column("lrn_env", Float, nullable=False)
+    Column("lrn_env", Float, nullable=False),
 )
 
 learning_style = Table(
@@ -289,7 +289,7 @@ questionnaire_list_k = Table(
     Column("lit_res3_f36", Integer, nullable=False),
     Column("lrn_env1_f37", Integer, nullable=False),
     Column("lrn_env2_f38", Integer, nullable=False),
-    Column("lrn_env3_f39", Integer, nullable=False)
+    Column("lrn_env3_f39", Integer, nullable=False),
 )
 
 questionnaire_ils = Table(

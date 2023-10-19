@@ -3,9 +3,9 @@ import unittest
 from unittest import mock
 from unittest.mock import MagicMock, patch
 
+import service_layer.lti.config.ToolConfigJson as ToolConfigJson
 from errors import errors as err
 from service_layer.crypto import JWTKeyManagement
-import service_layer.lti.config.ToolConfigJson as ToolConfigJson
 from service_layer.lti.OIDCLoginFlask import OIDCLoginFlask
 
 # ignore E501

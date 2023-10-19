@@ -1628,28 +1628,30 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         if strategy_exist != []:
             learning_strategy.id = strategy_exist[0].id
             return (
+                # ignore E501 line too long flake8 error since there is
+                # no way to make this shorter without making it unreadable
                 self.session.query(LM.LearningStrategy)
                 .filter_by(characteristic_id=characteristic_id)
                 .update(
                     {
-                        LM.LearningStrategy.characteristic_id: learning_strategy.characteristic_id,
-                        LM.LearningStrategy.cogn_str: learning_strategy.cogn_str,
-                        LM.LearningStrategy.org: learning_strategy.org,
-                        LM.LearningStrategy.elab: learning_strategy.elab,
-                        LM.LearningStrategy.crit_rev: learning_strategy.crit_rev,
-                        LM.LearningStrategy.rep: learning_strategy.rep,
-                        LM.LearningStrategy.metacogn_str: learning_strategy.metacogn_str,
-                        LM.LearningStrategy.goal_plan: learning_strategy.goal_plan,
-                        LM.LearningStrategy.con: learning_strategy.con,
-                        LM.LearningStrategy.reg: learning_strategy.reg,
-                        LM.LearningStrategy.int_res_mng_str: learning_strategy.int_res_mng_str,
-                        LM.LearningStrategy.att: learning_strategy.att,
-                        LM.LearningStrategy.eff: learning_strategy.eff,
-                        LM.LearningStrategy.time: learning_strategy.time,
-                        LM.LearningStrategy.ext_res_mng_str: learning_strategy.ext_res_mng_str,
-                        LM.LearningStrategy.lrn_w_cls: learning_strategy.lrn_w_cls,
-                        LM.LearningStrategy.lit_res: learning_strategy.lit_res,
-                        LM.LearningStrategy.lrn_env: learning_strategy.lrn_env,
+                        LM.LearningStrategy.characteristic_id: learning_strategy.characteristic_id, # noqa
+                        LM.LearningStrategy.cogn_str: learning_strategy.cogn_str, # noqa
+                        LM.LearningStrategy.org: learning_strategy.org, # noqa
+                        LM.LearningStrategy.elab: learning_strategy.elab, # noqa
+                        LM.LearningStrategy.crit_rev: learning_strategy.crit_rev, # noqa
+                        LM.LearningStrategy.rep: learning_strategy.rep, # noqa
+                        LM.LearningStrategy.metacogn_str: learning_strategy.metacogn_str, # noqa
+                        LM.LearningStrategy.goal_plan: learning_strategy.goal_plan, # noqa
+                        LM.LearningStrategy.con: learning_strategy.con, # noqa
+                        LM.LearningStrategy.reg: learning_strategy.reg, # noqa
+                        LM.LearningStrategy.int_res_mng_str: learning_strategy.int_res_mng_str, # noqa
+                        LM.LearningStrategy.att: learning_strategy.att, # noqa
+                        LM.LearningStrategy.eff: learning_strategy.eff, # noqa
+                        LM.LearningStrategy.time: learning_strategy.time, # noqa
+                        LM.LearningStrategy.ext_res_mng_str: learning_strategy.ext_res_mng_str, # noqa
+                        LM.LearningStrategy.lrn_w_cls: learning_strategy.lrn_w_cls, # noqa
+                        LM.LearningStrategy.lit_res: learning_strategy.lit_res, # noqa
+                        LM.LearningStrategy.lrn_env: learning_strategy.lrn_env, # noqa
                     }
                 )
             )

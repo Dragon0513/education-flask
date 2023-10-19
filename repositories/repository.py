@@ -1634,24 +1634,24 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
                 .filter_by(characteristic_id=characteristic_id)
                 .update(
                     {
-                        LM.LearningStrategy.characteristic_id: learning_strategy.characteristic_id, # noqa
-                        LM.LearningStrategy.cogn_str: learning_strategy.cogn_str, # noqa
-                        LM.LearningStrategy.org: learning_strategy.org, # noqa
-                        LM.LearningStrategy.elab: learning_strategy.elab, # noqa
-                        LM.LearningStrategy.crit_rev: learning_strategy.crit_rev, # noqa
-                        LM.LearningStrategy.rep: learning_strategy.rep, # noqa
-                        LM.LearningStrategy.metacogn_str: learning_strategy.metacogn_str, # noqa
-                        LM.LearningStrategy.goal_plan: learning_strategy.goal_plan, # noqa
-                        LM.LearningStrategy.con: learning_strategy.con, # noqa
-                        LM.LearningStrategy.reg: learning_strategy.reg, # noqa
-                        LM.LearningStrategy.int_res_mng_str: learning_strategy.int_res_mng_str, # noqa
-                        LM.LearningStrategy.att: learning_strategy.att, # noqa
-                        LM.LearningStrategy.eff: learning_strategy.eff, # noqa
-                        LM.LearningStrategy.time: learning_strategy.time, # noqa
-                        LM.LearningStrategy.ext_res_mng_str: learning_strategy.ext_res_mng_str, # noqa
-                        LM.LearningStrategy.lrn_w_cls: learning_strategy.lrn_w_cls, # noqa
-                        LM.LearningStrategy.lit_res: learning_strategy.lit_res, # noqa
-                        LM.LearningStrategy.lrn_env: learning_strategy.lrn_env, # noqa
+                        LM.LearningStrategy.characteristic_id: learning_strategy.characteristic_id,  # noqa
+                        LM.LearningStrategy.cogn_str: learning_strategy.cogn_str,  # noqa
+                        LM.LearningStrategy.org: learning_strategy.org,  # noqa
+                        LM.LearningStrategy.elab: learning_strategy.elab,  # noqa
+                        LM.LearningStrategy.crit_rev: learning_strategy.crit_rev,  # noqa
+                        LM.LearningStrategy.rep: learning_strategy.rep,  # noqa
+                        LM.LearningStrategy.metacogn_str: learning_strategy.metacogn_str,  # noqa
+                        LM.LearningStrategy.goal_plan: learning_strategy.goal_plan,  # noqa
+                        LM.LearningStrategy.con: learning_strategy.con,  # noqa
+                        LM.LearningStrategy.reg: learning_strategy.reg,  # noqa
+                        LM.LearningStrategy.int_res_mng_str: learning_strategy.int_res_mng_str,  # noqa
+                        LM.LearningStrategy.att: learning_strategy.att,  # noqa
+                        LM.LearningStrategy.eff: learning_strategy.eff,  # noqa
+                        LM.LearningStrategy.time: learning_strategy.time,  # noqa
+                        LM.LearningStrategy.ext_res_mng_str: learning_strategy.ext_res_mng_str,  # noqa
+                        LM.LearningStrategy.lrn_w_cls: learning_strategy.lrn_w_cls,  # noqa
+                        LM.LearningStrategy.lit_res: learning_strategy.lit_res,  # noqa
+                        LM.LearningStrategy.lrn_env: learning_strategy.lrn_env,  # noqa
                     }
                 )
             )

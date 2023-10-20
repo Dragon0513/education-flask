@@ -3784,7 +3784,8 @@ components:
             example: "org1_f1"
             description: "The ID of the question from the ListK, id of the question inside the dimension and the number of the question in the questionnaire"
           answer:
-            type: "string"
+            type: "number"
+            format: "int64"
             example: 1
             description: "The answer the student selected"
     Logs:

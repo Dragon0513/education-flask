@@ -1686,11 +1686,13 @@ def test_create_ils_understanding_answers():
 
 def test_create_list_k_questionnaire():
     uow = FakeUnitOfWork()
-    services.create_user(uow=uow,
-                         name="Sonja Studentin",
-                         university=university_example,
-                         lms_user_id=1,
-                         role="student")
+    services.create_user(
+        uow=uow,
+        name="Sonja Studentin",
+        university=university_example,
+        lms_user_id=1,
+        role="student",
+    )
     services.create_learning_characteristics(uow=uow, student_id=1)
     entries_beginning = len(uow.questionnaire_list_k.questionnaire_list_k)
     questionnaire_list_k_answers = {}
@@ -1724,11 +1726,13 @@ def test_create_list_k_questionnaire():
 )
 def test_create_questionnaire_ils(full_version):
     uow = FakeUnitOfWork()
-    services.create_user(uow=uow,
-                         name="Sonja Studentin",
-                         university=university_example,
-                         lms_user_id=1,
-                         role="student")
+    services.create_user(
+        uow=uow,
+        name="Sonja Studentin",
+        university=university_example,
+        lms_user_id=1,
+        role="student",
+    )
     services.create_learning_characteristics(uow=uow, student_id=1)
     entries_beginning = len(uow.questionnaire_ils.questionnaire_ils)
     questionnaire_ils_answers = {}
@@ -1831,11 +1835,13 @@ def test_delete_ils_understanding_answers():
 
 def test_delete_questionnaire_list_k():
     uow = FakeUnitOfWork()
-    services.create_user(uow=uow,
-                         name="Sonja Studentin",
-                         university=university_example,
-                         lms_user_id=1,
-                         role="student")
+    services.create_user(
+        uow=uow,
+        name="Sonja Studentin",
+        university=university_example,
+        lms_user_id=1,
+        role="student",
+    )
     services.create_learning_characteristics(uow=uow, student_id=1)
     questionnaire_list_k_answers = {}
     for key in questionnaire_list_k_ids:
@@ -1862,11 +1868,13 @@ def test_delete_questionnaire_list_k():
 )
 def test_delete_questionnaire_ils(full_version):
     uow = FakeUnitOfWork()
-    services.create_user(uow=uow,
-                         name="Sonja Studentin",
-                         university=university_example,
-                         lms_user_id=1,
-                         role="student")
+    services.create_user(
+        uow=uow,
+        name="Sonja Studentin",
+        university=university_example,
+        lms_user_id=1,
+        role="student",
+    )
     services.create_learning_characteristics(uow=uow, student_id=1)
     questionnaire_ils_answers = {}
     if full_version:

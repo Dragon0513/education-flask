@@ -2,6 +2,8 @@ from flask.wrappers import Request
 
 import errors.errors as err
 from domain.domainModel import model as DM
+from domain.learnersModel import basic_ils_algorithm as BILSA
+from domain.learnersModel import basic_listk_algorithm as BLKA
 from domain.learnersModel import model as LM
 from domain.tutoringModel import model as TM
 from domain.userAdministartion import model as UA
@@ -178,11 +180,11 @@ def create_course_topic(
 
 
 def create_ils_input_answers(
-    uow: unit_of_work.AbstractUnitOfWork, questionnaire_id, answers
+    uow: unit_of_work.AbstractUnitOfWork, questionnaire_ils_id, answers
 ) -> dict:
     with uow:
         ils_input_answers = LM.IlsInputAnswers(
-            questionnaire_id,
+            questionnaire_ils_id,
             answers["vv_2_f7"],
             answers["vv_5_f19"],
             answers["vv_7_f27"],
@@ -202,11 +204,11 @@ def create_ils_input_answers(
 
 
 def create_ils_perception_answers(
-    uow: unit_of_work.AbstractUnitOfWork, questionnaire_id, answers
+    uow: unit_of_work.AbstractUnitOfWork, questionnaire_ils_id, answers
 ) -> dict:
     with uow:
         ils_perception_answers = LM.IlsPerceptionAnswers(
-            questionnaire_id,
+            questionnaire_ils_id,
             answers["si_1_f2"],
             answers["si_4_f14"],
             answers["si_7_f26"],
@@ -226,11 +228,11 @@ def create_ils_perception_answers(
 
 
 def create_ils_processing_answers(
-    uow: unit_of_work.AbstractUnitOfWork, questionnaire_id, answers
+    uow: unit_of_work.AbstractUnitOfWork, questionnaire_ils_id, answers
 ) -> dict:
     with uow:
         ils_processing_answers = LM.IlsProcessingAnswers(
-            questionnaire_id,
+            questionnaire_ils_id,
             answers["ar_3_f9"],
             answers["ar_4_f13"],
             answers["ar_6_f21"],
@@ -250,22 +252,22 @@ def create_ils_processing_answers(
 
 
 def create_ils_understanding_answers(
-    uow: unit_of_work.AbstractUnitOfWork, questionnaire_id, answers
+    uow: unit_of_work.AbstractUnitOfWork, questionnaire_ils_id, answers
 ) -> dict:
     with uow:
         ils_understanding_answers = LM.IlsUnderstandingAnswers(
-            questionnaire_id,
+            questionnaire_ils_id,
             answers["sg_1_f4"],
             answers["sg_2_f8"],
             answers["sg_4_f16"],
             answers["sg_10_f40"],
             answers["sg_11_f44"],
-            answers["sg_3_f12"] if "" in answers.keys() else None,
-            answers["sg_5_f20"] if "" in answers.keys() else None,
-            answers["sg_6_f24"] if "" in answers.keys() else None,
-            answers["sg_7_f28"] if "" in answers.keys() else None,
-            answers["sg_8_f32"] if "" in answers.keys() else None,
-            answers["sg_9_f36"] if "" in answers.keys() else None,
+            answers["sg_3_f12"] if "sg_3_f12" in answers.keys() else None,
+            answers["sg_5_f20"] if "sg_5_f20" in answers.keys() else None,
+            answers["sg_6_f24"] if "sg_6_f24" in answers.keys() else None,
+            answers["sg_7_f28"] if "sg_7_f28" in answers.keys() else None,
+            answers["sg_8_f32"] if "sg_8_f32" in answers.keys() else None,
+            answers["sg_9_f36"] if "sg_9_f36" in answers.keys() else None,
         )
         uow.ils_understanding_answers.create_ils_understanding_answers(
             ils_understanding_answers
@@ -454,67 +456,101 @@ def create_learning_style(
         return result
 
 
-def create_list_k(
-    uow: unit_of_work.AbstractUnitOfWork, questionnaire_id, answers
+def create_questionnaire_list_k(
+    uow: unit_of_work.AbstractUnitOfWork, student_id, list_k_answers
 ) -> dict:
     with uow:
-        list_k = LM.ListK(
-            questionnaire_id,
-            answers["org1_f1"],
-            answers["org2_f2"],
-            answers["org3_f3"],
-            answers["ela1_f4"],
-            answers["ela2_f5"],
-            answers["ela3_f6"],
-            answers["krp1_f7"],
-            answers["krp2_f8"],
-            answers["krp3_f9"],
-            answers["wie1_f10"],
-            answers["wie2_f11"],
-            answers["wie3_f12"],
-            answers["zp1_f13"],
-            answers["zp2_f14"],
-            answers["zp3_f15"],
-            answers["kon1_f16"],
-            answers["kon2_f17"],
-            answers["kon3_f18"],
-            answers["reg1_f19"],
-            answers["reg2_f20"],
-            answers["reg3_f21"],
-            answers["auf1_f22"],
-            answers["auf2_f23"],
-            answers["auf3_f24"],
-            answers["ans1_f25"],
-            answers["ans2_f26"],
-            answers["ans3_f27"],
-            answers["zei1_f28"],
-            answers["zei2_f29"],
-            answers["zei3_f30"],
-            answers["lms1_f31"],
-            answers["lms2_f32"],
-            answers["lms3_f33"],
-            answers["lit1_f34"],
-            answers["lit2_f35"],
-            answers["lit3_f36"],
-            answers["lu1_f37"],
-            answers["lu2_f38"],
-            answers["lu3_f39"],
+        exist = uow.questionnaire_list_k.get_questionnaire_list_k_by_student_id(
+            student_id
         )
-        uow.list_k.create_list_k(list_k)
+        if exist != []:
+            delete_questionnaire_list_k(uow, exist[0].id)
+        questionnaire_list_k = LM.QuestionnaireListK(
+            student_id,
+            list_k_answers["org1_f1"],
+            list_k_answers["org2_f2"],
+            list_k_answers["org3_f3"],
+            list_k_answers["elab1_f4"],
+            list_k_answers["elab2_f5"],
+            list_k_answers["elab3_f6"],
+            list_k_answers["crit_rev1_f7"],
+            list_k_answers["crit_rev2_f8"],
+            list_k_answers["crit_rev3_f9"],
+            list_k_answers["rep1_f10"],
+            list_k_answers["rep2_f11"],
+            list_k_answers["rep3_f12"],
+            list_k_answers["goal_plan1_f13"],
+            list_k_answers["goal_plan2_f14"],
+            list_k_answers["goal_plan3_f15"],
+            list_k_answers["con1_f16"],
+            list_k_answers["con2_f17"],
+            list_k_answers["con3_f18"],
+            list_k_answers["reg1_f19"],
+            list_k_answers["reg2_f20"],
+            list_k_answers["reg3_f21"],
+            list_k_answers["att1_f22"],
+            list_k_answers["att2_f23"],
+            list_k_answers["att3_f24"],
+            list_k_answers["eff1_f25"],
+            list_k_answers["eff2_f26"],
+            list_k_answers["eff3_f27"],
+            list_k_answers["time1_f28"],
+            list_k_answers["time2_f29"],
+            list_k_answers["time3_f30"],
+            list_k_answers["lrn_w_cls1_f31"],
+            list_k_answers["lrn_w_cls2_f32"],
+            list_k_answers["lrn_w_cls3_f33"],
+            list_k_answers["lit_res1_f34"],
+            list_k_answers["lit_res2_f35"],
+            list_k_answers["lit_res3_f36"],
+            list_k_answers["lrn_env1_f37"],
+            list_k_answers["lrn_env2_f38"],
+            list_k_answers["lrn_env3_f39"],
+        )
+        uow.questionnaire_list_k.create_questionnaire_list_k(questionnaire_list_k)
         uow.commit()
-        result = list_k.serialize()
-        return result
+        questionnaire_list_k.serialize()
+        # Calculate basic learning strategy / implement other algorithm here
+        basic_learning_strategy = BLKA.calculate_basic_learning_strategy(list_k_answers)
+        # Get user_id with the student_id
+        student = uow.student.get_student_by_student_id(student_id)
+        user = get_user_by_id(uow, student[0].user_id, None)
+        update_learning_strategy_by_student_id(
+            uow,
+            user["id"],
+            user["lms_user_id"],
+            student_id,
+            basic_learning_strategy[0][4],
+            basic_learning_strategy[0][0],
+            basic_learning_strategy[0][1],
+            basic_learning_strategy[0][2],
+            basic_learning_strategy[0][3],
+            basic_learning_strategy[1][3],
+            basic_learning_strategy[1][0],
+            basic_learning_strategy[1][1],
+            basic_learning_strategy[1][2],
+            basic_learning_strategy[2][3],
+            basic_learning_strategy[2][0],
+            basic_learning_strategy[2][1],
+            basic_learning_strategy[2][2],
+            basic_learning_strategy[3][3],
+            basic_learning_strategy[3][0],
+            basic_learning_strategy[3][1],
+            basic_learning_strategy[3][2],
+        )
+        characteristics = get_learning_characteristics(uow, student_id)
+        return get_learning_strategy(uow, characteristics["id"])
 
 
-def create_questionnaire(
-    uow: unit_of_work.AbstractUnitOfWork, student_id, ils_answers, list_k_answers
+def create_questionnaire_ils(
+    uow: unit_of_work.AbstractUnitOfWork, student_id, ils_answers
 ) -> dict:
     with uow:
-        exist = uow.questionnaire.get_questionnaire_by_student_id(student_id)
+        exist = uow.questionnaire_ils.get_questionnaire_ils_by_student_id(student_id)
         if exist != []:
-            delete_questionnaire(uow, exist[0].id)
-        questionnaire = LM.Questionnaire(student_id)
-        uow.questionnaire.create_questionnaire(questionnaire)
+            delete_questionnaire_ils(uow, exist[0].id)
+        questionnaire_ils = LM.QuestionnaireIls(student_id)
+        uow.questionnaire_ils.create_questionnaire_ils(questionnaire_ils)
         uow.commit()
         ils_input_answers = {}
         ils_perception_answers = {}
@@ -529,20 +565,59 @@ def create_questionnaire(
                 ils_processing_answers[id] = answer
             if id.startswith("sg"):
                 ils_understanding_answers[id] = answer
-        create_ils_input_answers(uow, questionnaire.id, ils_input_answers)
-        create_ils_perception_answers(uow, questionnaire.id, ils_perception_answers)
-        create_ils_processing_answers(uow, questionnaire.id, ils_processing_answers)
-        create_ils_understanding_answers(
-            uow, questionnaire.id, ils_understanding_answers
+        questionnaire_ils.serialize()
+        ils_input = create_ils_input_answers(
+            uow, questionnaire_ils.id, ils_input_answers
         )
-        create_list_k(uow, questionnaire.id, list_k_answers)
+        ils_perception = create_ils_perception_answers(
+            uow, questionnaire_ils.id, ils_perception_answers
+        )
+        ils_processing = create_ils_processing_answers(
+            uow, questionnaire_ils.id, ils_processing_answers
+        )
+        ils_understading = create_ils_understanding_answers(
+            uow, questionnaire_ils.id, ils_understanding_answers
+        )
+        ils_input_values = {
+            key: value for key, value in ils_input.items() if key.startswith("vv")
+        }
+        ils_perception_values = {
+            key: value for key, value in ils_perception.items() if key.startswith("si")
+        }
+        ils_processing_values = {
+            key: value for key, value in ils_processing.items() if key.startswith("ar")
+        }
+        ils_understanding_values = {
+            key: value
+            for key, value in ils_understading.items()
+            if key.startswith("sg")
+        }
+        # Calculate basic learning style / can be changed to other algorithms
+        basic_learning_style = BILSA.calculate_basic_learning_style(
+            ils_input_values,
+            ils_perception_values,
+            ils_processing_values,
+            ils_understanding_values,
+        )
+        # Get user_id with the student_id
+        student = uow.student.get_student_by_student_id(student_id)
+        user = get_user_by_id(uow, student[0].user_id, None)
+        update_learning_style_by_student_id(
+            uow,
+            user["id"],
+            user["lms_user_id"],
+            student_id,
+            basic_learning_style[1][0],
+            basic_learning_style[1][1],
+            basic_learning_style[0][0],
+            basic_learning_style[0][1],
+            basic_learning_style[2][0],
+            basic_learning_style[2][1],
+            basic_learning_style[3][0],
+            basic_learning_style[3][1],
+        )
         characteristics = get_learning_characteristics(uow, student_id)
-        questionnaire.learning_style = get_learning_style(uow, characteristics["id"])
-        questionnaire.learning_strategy = get_learning_strategy(
-            uow, characteristics["id"]
-        )
-        result = questionnaire.serialize()
-        return result
+        return get_learning_style(uow, characteristics["id"])
 
 
 def create_settings(uow: unit_of_work.AbstractUnitOfWork, user_id) -> dict:
@@ -693,36 +768,40 @@ def delete_course_topic_by_topic(
         return {}
 
 
-def delete_ils_input_answers(uow: unit_of_work.AbstractUnitOfWork, questionnaire_id):
+def delete_ils_input_answers(
+    uow: unit_of_work.AbstractUnitOfWork, questionnaire_ils_id
+):
     with uow:
-        uow.ils_input_answers.delete_ils_input_answers(questionnaire_id)
+        uow.ils_input_answers.delete_ils_input_answers(questionnaire_ils_id)
         uow.commit()
         return {}
 
 
 def delete_ils_perception_answers(
-    uow: unit_of_work.AbstractUnitOfWork, questionnaire_id
+    uow: unit_of_work.AbstractUnitOfWork, questionnaire_ils_id
 ):
     with uow:
-        uow.ils_perception_answers.delete_ils_perception_answers(questionnaire_id)
+        uow.ils_perception_answers.delete_ils_perception_answers(questionnaire_ils_id)
         uow.commit()
         return {}
 
 
 def delete_ils_processing_answers(
-    uow: unit_of_work.AbstractUnitOfWork, questionnaire_id
+    uow: unit_of_work.AbstractUnitOfWork, questionnaire_ils_id
 ):
     with uow:
-        uow.ils_processing_answers.delete_ils_processing_answers(questionnaire_id)
+        uow.ils_processing_answers.delete_ils_processing_answers(questionnaire_ils_id)
         uow.commit()
         return {}
 
 
 def delete_ils_understanding_answers(
-    uow: unit_of_work.AbstractUnitOfWork, questionnaire_id
+    uow: unit_of_work.AbstractUnitOfWork, questionnaire_ils_id
 ):
     with uow:
-        uow.ils_understanding_answers.delete_ils_understanding_answers(questionnaire_id)
+        uow.ils_understanding_answers.delete_ils_understanding_answers(
+            questionnaire_ils_id
+        )
         uow.commit()
         return {}
 
@@ -771,21 +850,24 @@ def delete_learning_path_topic(uow: unit_of_work.AbstractUnitOfWork, learning_pa
         uow.commit()
 
 
-def delete_list_k(uow: unit_of_work.AbstractUnitOfWork, questionnaire_id):
+def delete_questionnaire_list_k(
+    uow: unit_of_work.AbstractUnitOfWork, questionnaire_list_k_id
+):
     with uow:
-        uow.list_k.delete_list_k(questionnaire_id)
+        uow.questionnaire_list_k.delete_questionnaire_list_k(questionnaire_list_k_id)
         uow.commit()
         return {}
 
 
-def delete_questionnaire(uow: unit_of_work.AbstractUnitOfWork, questionnaire_id):
+def delete_questionnaire_ils(
+    uow: unit_of_work.AbstractUnitOfWork, questionnaire_ils_id
+):
     with uow:
-        delete_ils_input_answers(uow, questionnaire_id)
-        delete_ils_perception_answers(uow, questionnaire_id)
-        delete_ils_processing_answers(uow, questionnaire_id)
-        delete_ils_understanding_answers(uow, questionnaire_id)
-        delete_list_k(uow, questionnaire_id)
-        uow.questionnaire.delete_questionnaire(questionnaire_id)
+        delete_ils_input_answers(uow, questionnaire_ils_id)
+        delete_ils_perception_answers(uow, questionnaire_ils_id)
+        delete_ils_processing_answers(uow, questionnaire_ils_id)
+        delete_ils_understanding_answers(uow, questionnaire_ils_id)
+        uow.questionnaire_ils.delete_questionnaire_ils(questionnaire_ils_id)
         uow.commit()
         return {}
 
@@ -805,9 +887,18 @@ def delete_student(uow: unit_of_work.AbstractUnitOfWork, user_id):
         delete_student_topic(uow, student[0].id)
         delete_student_course(uow, student[0].id)
         delete_learning_paths(uow, student[0].id)
-        questionnaire = uow.questionnaire.get_questionnaire_by_student_id(student[0].id)
-        if questionnaire != []:
-            delete_questionnaire(uow, questionnaire[0].id)
+        questionnaire_ils = uow.questionnaire_ils.get_questionnaire_ils_by_student_id(
+            student[0].id
+        )
+        questionnaire_list_k = (
+            uow.questionnaire_list_k.get_questionnaire_list_k_by_student_id(
+                student[0].id
+            )
+        )
+        if questionnaire_ils != []:
+            delete_questionnaire_ils(uow, questionnaire_ils[0].id)
+        if questionnaire_list_k != []:
+            delete_questionnaire_list_k(uow, questionnaire_list_k[0].id)
         uow.student.delete_student(user_id)
         uow.commit()
         return {}
@@ -1742,6 +1833,60 @@ def update_learning_style_by_student_id(
         uow.learning_style.update_learning_style(characteristic["id"], learning_style)
         uow.commit()
         result = learning_style.serialize()
+        return result
+
+
+def update_learning_strategy_by_student_id(
+    uow: unit_of_work.AbstractUnitOfWork,
+    user_id,
+    lms_user_id,
+    student_id,
+    cogn_str,
+    org,
+    elab,
+    crit_rev,
+    rep,
+    metacogn_str,
+    goal_plan,
+    con,
+    reg,
+    int_res_mng_str,
+    att,
+    eff,
+    time,
+    ext_res_mng_str,
+    lrn_w_cls,
+    lit_res,
+    lrn_env,
+) -> dict:
+    with uow:
+        get_user_by_id(uow, user_id, lms_user_id)
+        characteristic = get_learning_characteristics(uow, student_id)
+        learning_strategy = LM.LearningStrategy(
+            characteristic["id"],
+            cogn_str,
+            org,
+            elab,
+            crit_rev,
+            rep,
+            metacogn_str,
+            goal_plan,
+            con,
+            reg,
+            int_res_mng_str,
+            att,
+            eff,
+            time,
+            ext_res_mng_str,
+            lrn_w_cls,
+            lit_res,
+            lrn_env,
+        )
+        uow.learning_strategy.update_learning_strategy(
+            characteristic["id"], learning_strategy
+        )
+        uow.commit()
+        result = learning_strategy.serialize()
         return result
 
 

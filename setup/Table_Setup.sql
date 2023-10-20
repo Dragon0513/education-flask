@@ -623,13 +623,13 @@ ALTER TABLE IF EXISTS public.learning_path_learning_element
     OWNER to postgres;
 
 -- Questionnaire
-DROP TABLE IF EXISTS public.questionnaire;
+DROP TABLE IF EXISTS public.questionnaire_ils;
 
-CREATE TABLE IF NOT EXISTS public.questionnaire
+CREATE TABLE IF NOT EXISTS public.questionnaire_ils
 (
     id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
     student_id integer NOT NULL,
-    CONSTRAINT questionnaire_pkey PRIMARY KEY (id),
+    CONSTRAINT questionnaire_ils_pkey PRIMARY KEY (id),
     CONSTRAINT student_id FOREIGN KEY (student_id)
         REFERENCES public.student (id) MATCH SIMPLE
         ON UPDATE NO ACTION
@@ -638,7 +638,7 @@ CREATE TABLE IF NOT EXISTS public.questionnaire
 
 TABLESPACE pg_default;
 
-ALTER TABLE IF EXISTS public.questionnaire
+ALTER TABLE IF EXISTS public.questionnaire_ils
     OWNER to postgres;
 
 -- ILS Input Answers
@@ -647,7 +647,7 @@ DROP TABLE IF EXISTS public.ils_input_answers;
 CREATE TABLE IF NOT EXISTS public.ils_input_answers
 (
     id integer NOT NULL,
-    questionnaire_id integer NOT NULL,
+    questionnaire_ils_id integer NOT NULL,
     vv_1_f3 text COLLATE pg_catalog."default",
     vv_2_f7 text COLLATE pg_catalog."default" NOT NULL,
     vv_3_f11 text COLLATE pg_catalog."default",
@@ -660,8 +660,8 @@ CREATE TABLE IF NOT EXISTS public.ils_input_answers
     vv_10_f39 text COLLATE pg_catalog."default" NOT NULL,
     vv_11_f43 text COLLATE pg_catalog."default" NOT NULL,
     CONSTRAINT ils_input_answers_pkey PRIMARY KEY (id),
-    CONSTRAINT questionnaire_id FOREIGN KEY (questionnaire_id)
-        REFERENCES public.questionnaire (id) MATCH SIMPLE
+    CONSTRAINT questionnaire_ils_id FOREIGN KEY (questionnaire_ils_id)
+        REFERENCES public.questionnaire_ils (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
 )
@@ -677,7 +677,7 @@ DROP TABLE IF EXISTS public.ils_perception_answers;
 CREATE TABLE IF NOT EXISTS public.ils_perception_answers
 (
     id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
-    questionnaire_id integer NOT NULL,
+    questionnaire_ils_id integer NOT NULL,
     si_1_f2 text COLLATE pg_catalog."default" NOT NULL,
     si_2_f6 text COLLATE pg_catalog."default",
     si_3_f10 text COLLATE pg_catalog."default",
@@ -690,8 +690,8 @@ CREATE TABLE IF NOT EXISTS public.ils_perception_answers
     si_10_f38 text COLLATE pg_catalog."default" NOT NULL,
     si_11_f42 text COLLATE pg_catalog."default" NOT NULL,
     CONSTRAINT ils_perception_answers_pkey PRIMARY KEY (id),
-    CONSTRAINT questionnaire_id FOREIGN KEY (questionnaire_id)
-        REFERENCES public.questionnaire (id) MATCH SIMPLE
+    CONSTRAINT questionnaire_ils_id FOREIGN KEY (questionnaire_ils_id)
+        REFERENCES public.questionnaire_ils (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
         NOT VALID
@@ -708,7 +708,7 @@ DROP TABLE IF EXISTS public.ils_processing_answers;
 CREATE TABLE IF NOT EXISTS public.ils_processing_answers
 (
     id integer NOT NULL,
-    questionnaire_id integer NOT NULL,
+    questionnaire_ils_id integer NOT NULL,
     ar_1_f1 text COLLATE pg_catalog."default",
     ar_2_f5 text COLLATE pg_catalog."default",
     ar_3_f9 text COLLATE pg_catalog."default" NOT NULL,
@@ -721,8 +721,8 @@ CREATE TABLE IF NOT EXISTS public.ils_processing_answers
     ar_10_f37 text COLLATE pg_catalog."default",
     ar_11_f41 text COLLATE pg_catalog."default",
     CONSTRAINT ils_processing_answers_pkey PRIMARY KEY (id),
-    CONSTRAINT questionnaire_id FOREIGN KEY (questionnaire_id)
-        REFERENCES public.questionnaire (id) MATCH SIMPLE
+    CONSTRAINT questionnaire_ils_id FOREIGN KEY (questionnaire_ils_id)
+        REFERENCES public.questionnaire_ils (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
 )
@@ -738,7 +738,7 @@ DROP TABLE IF EXISTS public.ils_understanding_answers;
 CREATE TABLE IF NOT EXISTS public.ils_understanding_answers
 (
     id integer NOT NULL,
-    questionnaire_id integer NOT NULL,
+    questionnaire_ils_id integer NOT NULL,
     sg_1_f4 text COLLATE pg_catalog."default" NOT NULL,
     sg_2_f8 text COLLATE pg_catalog."default" NOT NULL,
     sg_3_f12 text COLLATE pg_catalog."default",
@@ -751,8 +751,8 @@ CREATE TABLE IF NOT EXISTS public.ils_understanding_answers
     sg_10_f40 text COLLATE pg_catalog."default" NOT NULL,
     sg_11_f44 text COLLATE pg_catalog."default" NOT NULL,
     CONSTRAINT ils_understanding_answers_pkey PRIMARY KEY (id),
-    CONSTRAINT questionnaire_id FOREIGN KEY (questionnaire_id)
-        REFERENCES public.questionnaire (id) MATCH SIMPLE
+    CONSTRAINT questionnaire_ils_id FOREIGN KEY (questionnaire_ils_id)
+        REFERENCES public.questionnaire_ils (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
 )

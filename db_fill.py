@@ -207,13 +207,13 @@ cursor.execute(sql)
 
 sql = """
     INSERT INTO haski_user (name, university, lms_user_id, role)
-    VALUES ('Liam Smith', 'HS-KE', 11, 'student')
+    VALUES ('Liam Smith', 'HS-KE', 11, 'teacher')
 """
 cursor.execute(sql)
 
 sql = """
     INSERT INTO settings (user_id, theme, pswd)
-    VALUES (11, 'dark', 'student')
+    VALUES (11, 'dark', 'teacher')
 """
 cursor.execute(sql)
 
@@ -225,13 +225,13 @@ cursor.execute(sql)
 
 sql = """
     INSERT INTO haski_user (name, university, lms_user_id, role)
-    VALUES ('Sophia Martinez', 'HS-RE', 12, 'student')
+    VALUES ('Sophia Martinez', 'HS-RE', 12, 'teacher')
 """
 cursor.execute(sql)
 
 sql = """
     INSERT INTO settings (user_id, theme, pswd)
-    VALUES (12, 'Standard', 'student')
+    VALUES (12, 'Standard', 'teacher')
 """
 cursor.execute(sql)
 
@@ -1671,20 +1671,29 @@ cursor.execute(sql)
 
 # create learning_strategy
 sql = """
-    INSERT INTO learning_strategy (characteristic_id)
-    VALUES (1)
+    INSERT INTO learning_strategy (characteristic_id, cogn_str, org, elab,\
+    crit_rev, rep, metacogn_str, goal_plan, con, reg, int_res_mng_str,\
+    att, eff, time, ext_res_mng_str, lrn_w_cls, lit_res, lrn_env)
+    VALUES (1, 1.33, 2.33, 3.33, 4.33, 1.33, 2.33, 3.33, 4.33, 1.33, 2.33,\
+    3.33, 4.33, 1.33, 2.33, 3.33, 4.33, 1.33)
 """
 cursor.execute(sql)
 
 sql = """
-    INSERT INTO learning_strategy (characteristic_id)
-    VALUES (2)
+    INSERT INTO learning_strategy (characteristic_id, cogn_str, org, elab,\
+    crit_rev, rep, metacogn_str, goal_plan, con, reg, int_res_mng_str,\
+    att, eff, time, ext_res_mng_str, lrn_w_cls, lit_res, lrn_env)
+    VALUES (2, 1.67, 2.67, 3.74, 4.84, 2.45, 2.88, 3.78, 4.77, 1.48, 2.88,\
+    3.03, 4.79, 1.50, 2.78, 3.99, 4.04, 1.79)
 """
 cursor.execute(sql)
 
 sql = """
-    INSERT INTO learning_strategy (characteristic_id)
-    VALUES (3)
+    INSERT INTO learning_strategy (characteristic_id, cogn_str, org, elab,\
+    crit_rev, rep, metacogn_str, goal_plan, con, reg, int_res_mng_str,\
+    att, eff, time, ext_res_mng_str, lrn_w_cls, lit_res, lrn_env)
+    VALUES (3, 4.67, 3.67, 2.74, 1.84, 2.45, 4.88, 1.78, 1.77, 5.00, 3.88,\
+    3.03, 4.79, 1.50, 1.78, 2.99, 2.04, 1.79)
 """
 cursor.execute(sql)
 
@@ -1715,13 +1724,13 @@ cursor.execute(sql)
 
 # create ils questionnaire answers
 sql = """
-    INSERT INTO questionnaire (student_id)
+    INSERT INTO questionnaire_ils (student_id)
     VALUES (1)
 """
 cursor.execute(sql)
 
 sql = """
-    INSERT INTO ils_input_answers (questionnaire_id, vv_1_f3, vv_2_f7,\
+    INSERT INTO ils_input_answers (questionnaire_ils_id, vv_1_f3, vv_2_f7,\
     vv_3_f11, vv_4_f15, vv_5_f19, vv_6_f23, vv_7_f27, vv_8_f31, vv_9_f35,\
     vv_10_f39, vv_11_f43)
     VALUES (1, 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a')
@@ -1729,37 +1738,37 @@ sql = """
 cursor.execute(sql)
 
 sql = """
-    INSERT INTO ils_perception_answers (questionnaire_id, si_1_f2, si_2_f6,\
-    si_3_f10, si_4_f14, si_5_f18, si_6_f22, si_7_f26, si_8_f30, si_9_f34,\
-     si_10_f38, si_11_f42)
+    INSERT INTO ils_perception_answers (questionnaire_ils_id, si_1_f2,
+    si_2_f6, si_3_f10, si_4_f14, si_5_f18, si_6_f22, si_7_f26, si_8_f30,\
+    si_9_f34, si_10_f38, si_11_f42)
     VALUES (1, 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b')
 """
 cursor.execute(sql)
 
 sql = """
-    INSERT INTO ils_processing_answers (questionnaire_id, ar_1_f1, ar_2_f5,\
-    ar_3_f9, ar_4_f13, ar_5_f17, ar_6_f21, ar_7_f25, ar_8_f29, ar_9_f33,\
-    ar_10_f37, ar_11_f41)
+    INSERT INTO ils_processing_answers (questionnaire_ils_id, ar_1_f1,\
+    ar_2_f5, ar_3_f9, ar_4_f13, ar_5_f17, ar_6_f21, ar_7_f25, ar_8_f29,\
+    ar_9_f33, ar_10_f37, ar_11_f41)
     VALUES (1, 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a')
 """
 cursor.execute(sql)
 
 sql = """
-    INSERT INTO ils_understanding_answers (questionnaire_id, sg_1_f4, sg_2_f8,\
-    sg_3_f12, sg_4_f16, sg_5_f20, sg_6_f24, sg_7_f28, sg_8_f32, sg_9_f36,\
-    sg_10_f40, sg_11_f44)
+    INSERT INTO ils_understanding_answers (questionnaire_ils_id, sg_1_f4,\
+    sg_2_f8, sg_3_f12, sg_4_f16, sg_5_f20, sg_6_f24, sg_7_f28, sg_8_f32,\
+    sg_9_f36, sg_10_f40, sg_11_f44)
     VALUES (1, 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b')
 """
 cursor.execute(sql)
 
 sql = """
-    INSERT INTO questionnaire (student_id)
+    INSERT INTO questionnaire_ils (student_id)
     VALUES (2)
 """
 cursor.execute(sql)
 
 sql = """
-    INSERT INTO ils_input_answers (questionnaire_id, vv_1_f3, vv_2_f7,\
+    INSERT INTO ils_input_answers (questionnaire_ils_id, vv_1_f3, vv_2_f7,\
     vv_3_f11, vv_4_f15, vv_5_f19, vv_6_f23, vv_7_f27, vv_8_f31, vv_9_f35,\
     vv_10_f39, vv_11_f43)
     VALUES (2, 'a', 'a', 'a', 'a', 'b', 'b', 'b', 'b', 'b', 'b', 'b')
@@ -1767,7 +1776,7 @@ sql = """
 cursor.execute(sql)
 
 sql = """
-    INSERT INTO ils_perception_answers (questionnaire_id, si_1_f2, si_2_f6,\
+    INSERT INTO ils_perception_answers (questionnaire_ils_id, si_1_f2, si_2_f6,\
     si_3_f10, si_4_f14, si_5_f18, si_6_f22, si_7_f26, si_8_f30, si_9_f34,\
     si_10_f38, si_11_f42)
     VALUES (2, 'b', 'b', 'b', 'b', 'b', 'a', 'a', 'a', 'a', 'a', 'a')
@@ -1775,29 +1784,29 @@ sql = """
 cursor.execute(sql)
 
 sql = """
-    INSERT INTO ils_processing_answers (questionnaire_id, ar_1_f1, ar_2_f5,\
-    ar_3_f9, ar_4_f13, ar_5_f17, ar_6_f21, ar_7_f25, ar_8_f29, ar_9_f33,\
-    ar_10_f37, ar_11_f41)
+    INSERT INTO ils_processing_answers (questionnaire_ils_id, ar_1_f1,\
+    ar_2_f5, ar_3_f9, ar_4_f13, ar_5_f17, ar_6_f21, ar_7_f25, ar_8_f29,\
+    ar_9_f33, ar_10_f37, ar_11_f41)
     VALUES (2, 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a')
 """
 cursor.execute(sql)
 
 sql = """
-    INSERT INTO ils_understanding_answers (questionnaire_id, sg_1_f4, sg_2_f8,\
-    sg_3_f12, sg_4_f16, sg_5_f20, sg_6_f24, sg_7_f28, sg_8_f32, sg_9_f36,\
-    sg_10_f40, sg_11_f44)
+    INSERT INTO ils_understanding_answers (questionnaire_ils_id, sg_1_f4,\
+    sg_2_f8, sg_3_f12, sg_4_f16, sg_5_f20, sg_6_f24, sg_7_f28, sg_8_f32,\
+    sg_9_f36, sg_10_f40, sg_11_f44)
     VALUES (2, 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b')
 """
 cursor.execute(sql)
 
 sql = """
-    INSERT INTO questionnaire (student_id)
+    INSERT INTO questionnaire_ils (student_id)
     VALUES (3)
 """
 cursor.execute(sql)
 
 sql = """
-    INSERT INTO ils_input_answers (questionnaire_id, vv_1_f3, vv_2_f7,\
+    INSERT INTO ils_input_answers (questionnaire_ils_id, vv_1_f3, vv_2_f7,\
     vv_3_f11, vv_4_f15, vv_5_f19, vv_6_f23, vv_7_f27, vv_8_f31, vv_9_f35,\
     vv_10_f39, vv_11_f43)
     VALUES (3, 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a')
@@ -1805,61 +1814,67 @@ sql = """
 cursor.execute(sql)
 
 sql = """
-    INSERT INTO ils_perception_answers (questionnaire_id, si_1_f2, si_2_f6,\
-    si_3_f10, si_4_f14, si_5_f18, si_6_f22, si_7_f26, si_8_f30, si_9_f34,\
-    si_10_f38, si_11_f42)
+    INSERT INTO ils_perception_answers (questionnaire_ils_id, si_1_f2,\
+    si_2_f6, si_3_f10, si_4_f14, si_5_f18, si_6_f22, si_7_f26, si_8_f30,\
+    si_9_f34, si_10_f38, si_11_f42)
     VALUES (3, 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b')
 """
 cursor.execute(sql)
 
 sql = """
-    INSERT INTO ils_processing_answers (questionnaire_id, ar_1_f1, ar_2_f5,\
-    ar_3_f9, ar_4_f13, ar_5_f17, ar_6_f21, ar_7_f25, ar_8_f29, ar_9_f33,\
-    ar_10_f37, ar_11_f41)
+    INSERT INTO ils_processing_answers (questionnaire_ils_id, ar_1_f1,\
+    ar_2_f5, ar_3_f9, ar_4_f13, ar_5_f17, ar_6_f21, ar_7_f25, ar_8_f29,\
+    ar_9_f33, ar_10_f37, ar_11_f41)
     VALUES (3, 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a')
 """
 cursor.execute(sql)
 
 sql = """
-    INSERT INTO ils_understanding_answers (questionnaire_id, sg_1_f4, sg_2_f8,\
-    sg_3_f12, sg_4_f16, sg_5_f20, sg_6_f24, sg_7_f28, sg_8_f32, sg_9_f36,\
-    sg_10_f40, sg_11_f44)
+    INSERT INTO ils_understanding_answers (questionnaire_ils_id, sg_1_f4,\
+    sg_2_f8, sg_3_f12, sg_4_f16, sg_5_f20, sg_6_f24, sg_7_f28, sg_8_f32,\
+    sg_9_f36, sg_10_f40, sg_11_f44)
     VALUES (3, 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b', 'a', 'b')
 """
 cursor.execute(sql)
 
 # Create questionnaire list k
 sql = """
-    INSERT INTO list_k (questionnaire_id, org1_f1, org2_f2, org3_f3, ela1_f4,\
-    ela2_f5, ela3_f6, krp1_f7, krp2_f8, krp3_f9, wie1_f10, wie2_f11, wie3_f12,\
-    zp1_f13, zp2_f14, zp3_f15, kon1_f16, kon2_f17, kon3_f18, reg1_f19,\
-    reg2_f20, reg3_f21, auf1_f22, auf2_f23, auf3_f24, ans1_f25, ans2_f26,\
-    ans3_f27, zei1_f28, zei2_f29, zei3_f30, lms1_f31, lms2_f32, lms3_f33,\
-    lit1_f34, lit2_f35, lit3_f36, lu1_f37, lu2_f38, lu3_f39)
+    INSERT INTO questionnaire_list_k (student_id, org1_f1, org2_f2, org3_f3,\
+    elab1_f4, elab2_f5, elab3_f6, crit_rev1_f7, crit_rev2_f8, crit_rev3_f9,\
+    rep1_f10, rep2_f11, rep3_f12, goal_plan1_f13, goal_plan2_f14,\
+    goal_plan3_f15, con1_f16, con2_f17, con3_f18, reg1_f19, reg2_f20,\
+    reg3_f21, att1_f22, att2_f23, att3_f24, eff1_f25, eff2_f26, eff3_f27,\
+    time1_f28, time2_f29, time3_f30, lrn_w_cls1_f31, lrn_w_cls2_f32,\
+    lrn_w_cls3_f33, lit_res1_f34, lit_res2_f35, lit_res3_f36, lrn_env1_f37,\
+    lrn_env2_f38, lrn_env3_f39)
     VALUES (1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,\
     3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3)
 """
 cursor.execute(sql)
 
 sql = """
-    INSERT INTO list_k (questionnaire_id, org1_f1, org2_f2, org3_f3, ela1_f4,\
-    ela2_f5, ela3_f6, krp1_f7, krp2_f8, krp3_f9, wie1_f10, wie2_f11, wie3_f12,\
-    zp1_f13, zp2_f14, zp3_f15, kon1_f16, kon2_f17, kon3_f18, reg1_f19,\
-    reg2_f20, reg3_f21, auf1_f22, auf2_f23, auf3_f24, ans1_f25, ans2_f26,\
-    ans3_f27, zei1_f28, zei2_f29, zei3_f30, lms1_f31, lms2_f32, lms3_f33,\
-    lit1_f34, lit2_f35, lit3_f36, lu1_f37, lu2_f38, lu3_f39)
+    INSERT INTO questionnaire_list_k (student_id, org1_f1, org2_f2, org3_f3,\
+    elab1_f4, elab2_f5, elab3_f6, crit_rev1_f7, crit_rev2_f8, crit_rev3_f9,\
+    rep1_f10, rep2_f11, rep3_f12, goal_plan1_f13, goal_plan2_f14,\
+    goal_plan3_f15, con1_f16, con2_f17, con3_f18, reg1_f19, reg2_f20,\
+    reg3_f21, att1_f22, att2_f23, att3_f24, eff1_f25, eff2_f26, eff3_f27,\
+    time1_f28, time2_f29, time3_f30, lrn_w_cls1_f31, lrn_w_cls2_f32,\
+    lrn_w_cls3_f33, lit_res1_f34, lit_res2_f35, lit_res3_f36, lrn_env1_f37,\
+    lrn_env2_f38, lrn_env3_f39)
     VALUES (2, 3, 5, 3, 1, 1, 2, 3, 3, 5, 3, 4, 3, 3, 1, 2, 3, 5, 3, 4, 3, 2,\
     3, 1, 3, 5, 3, 1, 3, 3, 3, 2, 3, 5, 3, 5, 3, 1, 3, 4)
 """
 cursor.execute(sql)
 
 sql = """
-    INSERT INTO list_k (questionnaire_id, org1_f1, org2_f2, org3_f3, ela1_f4,\
-    ela2_f5, ela3_f6, krp1_f7, krp2_f8, krp3_f9, wie1_f10, wie2_f11, wie3_f12,\
-    zp1_f13, zp2_f14, zp3_f15, kon1_f16, kon2_f17, kon3_f18, reg1_f19,\
-    reg2_f20, reg3_f21, auf1_f22, auf2_f23, auf3_f24, ans1_f25, ans2_f26,\
-    ans3_f27, zei1_f28, zei2_f29, zei3_f30, lms1_f31, lms2_f32, lms3_f33,\
-    lit1_f34, lit2_f35, lit3_f36, lu1_f37, lu2_f38, lu3_f39)
+    INSERT INTO questionnaire_list_k (student_id, org1_f1, org2_f2, org3_f3,\
+    elab1_f4, elab2_f5, elab3_f6, crit_rev1_f7, crit_rev2_f8, crit_rev3_f9,\
+    rep1_f10, rep2_f11, rep3_f12, goal_plan1_f13, goal_plan2_f14,\
+    goal_plan3_f15, con1_f16, con2_f17, con3_f18, reg1_f19, reg2_f20,\
+    reg3_f21, att1_f22, att2_f23, att3_f24, eff1_f25, eff2_f26, eff3_f27,\
+    time1_f28, time2_f29, time3_f30, lrn_w_cls1_f31, lrn_w_cls2_f32,\
+    lrn_w_cls3_f33, lit_res1_f34, lit_res2_f35, lit_res3_f36, lrn_env1_f37,\
+    lrn_env2_f38, lrn_env3_f39)
     VALUES (3, 1, 1, 3, 1, 1, 2, 3, 3, 5, 3, 4, 3, 3, 1, 2, 3, 5, 3, 4, 3, 2,\
     3, 1, 3, 5, 3, 1, 3, 3, 3, 2, 3, 5, 3, 5, 4, 5, 5, 1)
 """

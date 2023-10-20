@@ -2216,12 +2216,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/GeneralError" #Y
-  /lms/student/{student_id}/{lms_user_id}/questionnaire:
+  /lms/student/{student_id}/questionnaire/ils:
     post:
       tags:
         - "Moodle"
       summary: "Post ILS Questionnaire"
-      description: "Post the answers to the ILS Questionnaire for a specific User from Moodle"
+      description: "Post the answers to the ILS Questionnaire for a specific User from Moodle, the learning style will be calculated with a basic algorithm."
       operationId: "postIlsMoodle"
       parameters:
         - name: "student_id"
@@ -2231,9 +2231,42 @@ paths:
           schema:
             type: "string"
           example: 1
-        - name: "lms_user_id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/QuestionnaireILS"
+      responses:
+        "201":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LearningStyle"
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError" #Y
+  /lms/student/{student_id}/questionnaire/listk:
+    post:
+      tags:
+        - "Moodle"
+      summary: "Post ListK Questionnaire"
+      description: "Post the answers to the ListK Questionnaire for a specific User from Moodle, the learning strategy will be calculated with a basic algorithm."
+      operationId: "postListKMoodle"
+      parameters:
+        - name: "student_id"
           in: "path"
-          description: "The Moodle ID of the User"
+          description: "The ID of the Student"
           required: true
           schema:
             type: "string"
@@ -2243,7 +2276,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Questionnaire"
+              $ref: "#/components/schemas/QuestionnaireListK"
       responses:
         "201":
           description: "Successful Operation"
@@ -3317,7 +3350,7 @@ components:
           type: "string"
           example: "FCP"
           description: "Name of the log data"
-          enum: ["FCP", "TTFB", "CLS", "LCP", "FID", "INP"]
+          enum: [ "FCP", "TTFB", "CLS", "LCP", "FID", "INP" ]
         value:
           type: "number"
           format: "double"
@@ -3327,7 +3360,7 @@ components:
           type: "string"
           example: "poor"
           description: "Rating of the log data"
-          enum: ["good", "needs-improvement", "poor"]
+          enum: [ "good", "needs-improvement", "poor" ]
         delta:
           type: "number"
           format: "double"
@@ -3533,12 +3566,118 @@ components:
           description: "The ID of the learning element, that was clicked before"
     LearningStrategy:
       type: "object"
+      properties:
+        att:
+          type: "number"
+          format: "double"
+          example: 3.0
+          description: "The average of the att dimension"
+        characteristic_id:
+          type: "number"
+          format: "int64"
+          example: 1
+          description: "The ID of the characteristic from the ListK"
+        cogn_str:
+            type: "number"
+            format: "double"
+            example: 3.0
+            description: "The average of the cogn_str dimension"
+        con:
+            type: "number"
+            format: "double"
+            example: 3.0
+            description: "The average of the con dimension"
+        crit_rev:
+            type: "number"
+            format: "double"
+            example: 3.0
+            description: "The average of the crit_rev dimension"
+        eff:
+            type: "number"
+            format: "double"
+            example: 3.0
+            description: "The average of the eff dimension"
+        elab:
+            type: "number"
+            format: "double"
+            example: 3.0
+            description: "The average of the elab dimension"
+        ext_res_mng_str:
+            type: "number"
+            format: "double"
+            example: 3.0
+            description: "The average of the ext_res_mng_str dimension"
+        goal_plan:
+            type: "number"
+            format: "double"
+            example: 3.0
+            description: "The average of the goal_plan dimension"
+        id:
+            type: "number"
+            format: "int64"
+            example: 1
+            description: "The ID of the learning strategy"
+        int_res_mng_str:
+            type: "number"
+            format: "double"
+            example: 3.0
+            description: "The average of the int_res_mng_str dimension"
+        lit_res:
+            type: "number"
+            format: "double"
+            example: 3.0
+            description: "The average of the lit_res dimension"
+        lrn_env:
+            type: "number"
+            format: "double"
+            example: 3.0
+            description: "The average of the lrn_env dimension"
+        lrn_w_cls:
+            type: "number"
+            format: "double"
+            example: 3.0
+            description: "The average of the lrn_w_cls dimension"
+        metacogn_str:
+            type: "number"
+            format: "double"
+            example: 3.0
+            description: "The average of the metacogn_str dimension"
+        org:
+            type: "number"
+            format: "double"
+            example: 3.0
+            description: "The average of the org dimension"
+        reg:
+            type: "number"
+            format: "double"
+            example: 3.0
+            description: "The average of the reg dimension"
+        rep:
+            type: "number"
+            format: "double"
+            example: 3.0
+            description: "The average of the rep dimension"
+        time:
+            type: "number"
+            format: "double"
+            example: 3.0
+            description: "The average of the time dimension"
     LearningStyle:
       type: "object"
       properties:
+        characteristic_id:
+          type: "number"
+          format: "int64"
+          example: 1
+          description: "The ID of the characteristic from the ILS"
+        id:
+          type: "number"
+          format: "int64"
+          example: 1
+          description: "The ID of the learning style"
         perception_dimension:
           type: "string"
-          example: "SNS"
+          example: "sns"
           description: "The dimension expression for perception according to Felder-Silverman"
         perception_value:
           type: "number"
@@ -3547,7 +3686,7 @@ components:
           description: "The dimension value for perception according to Felder-Silverman"
         input_dimension:
           type: "string"
-          example: "VIS"
+          example: "vis"
           description: "The dimension expression for input according to Felder-Silverman"
         input_value:
           type: "number"
@@ -3556,7 +3695,7 @@ components:
           description: "The dimension value for input according to Felder-Silverman"
         processing_dimension:
           type: "string"
-          example: "ACT"
+          example: "act"
           description: "The dimension expression for processing according to Felder-Silverman"
         processing_value:
           type: "number"
@@ -3565,7 +3704,7 @@ components:
           description: "The dimension value for processing according to Felder-Silverman"
         understanding_dimension:
           type: "string"
-          example: "GLO"
+          example: "seq"
           description: "The dimension expression for understanding according to Felder-Silverman"
         understanding_value:
           type: "number"
@@ -3639,6 +3778,16 @@ components:
       type: "array"
       items:
         type: "object"
+        properties:
+          question_id:
+            type: "string"
+            example: "org1_f1"
+            description: "The ID of the question from the ListK, id of the question inside the dimension and the number of the question in the questionnaire"
+          answer:
+            type: "number"
+            format: "int64"
+            example: 1
+            description: "The answer the student selected"
     Logs:
       type: "object"
       properties:
@@ -3696,11 +3845,14 @@ components:
           format: "double"
           example: 0.3
           description: "The percentage of high performer"
-    Questionnaire:
+    QuestionnaireILS:
       type: "object"
       properties:
         ils:
           $ref: "#/components/schemas/IlsQuestionnaire"
+    QuestionnaireListK:
+      type: "object"
+      properties:
         list_k:
           $ref: "#/components/schemas/ListKQuestionnaire"
     Settings:

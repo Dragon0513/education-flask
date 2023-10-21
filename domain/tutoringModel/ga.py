@@ -1,19 +1,17 @@
 import math
 import numpy as np
-from sklearn.metrics import pairwise_distances_argmin
-# from domain.tutoringModel import model
-from domain.tutoringModel import utils
 import errors as err
+from domain.tutoringModel import utils
 
 
-class GaAlgorithmus(object):
-    """Genetische Algorithmus"""
+class Genetische_Algorithm:
+    """Genetische Algorithmus  sdfasdfs"""
 
-    def __init__(self,
-                 learning_style=None,
-                 learning_elements=None,
-                 ):
-       
+    def __init__(
+        self,
+        learning_style=None,
+        learning_elements=None,
+    ):
         self.learning_elements = learning_elements
         self.best_population = None
         self.le_coordinate = None
@@ -24,46 +22,35 @@ class GaAlgorithmus(object):
         self.cross_rate = 0.9
         self.pop_size = 80
 
-        if learning_elements is not None:
-            self.learning_elements = utils.get_list_learning_element(
-                learning_elements)
-            self.le_size = len(self.learning_elements)
-
     def create_random_population(self, dict_coordinates) -> None:
         """function for the calculation of the score.
-           position a also Initialise some populations
-           with Clustering if this is possible.
-           param dict_coordinates  """
+        position a also Initialise some populations
+        with Clustering if this is possible.
+        param dict_coordinates"""
         self.le_coordinate = np.array(
-            [dict_coordinates[key]for key in dict_coordinates]
-            )
-        self.le_coordinate.reshape(
-            (len(dict_coordinates), 4)
-            )
+            [dict_coordinates[key] for key in dict_coordinates]
+        )
+        self.le_coordinate.reshape((len(dict_coordinates), 4))
 
         positions = np.arange(1, self.le_size)
         self.population = np.vstack(
-            [np.random.permutation(positions)
-             for _ in range(self.pop_size)])
+            [np.random.permutation(positions) for _ in range(self.pop_size)]
+        )
 
-        is_not_none = False
-        is_not_none, labels = self.find_cluster_between_le(
-            self.le_coordinate,
-            n_cluster=3,
-            rseed=2
-            )
-        if is_not_none:
-            daten = self.get_clustering_order(positions, labels)
-            self.population[0:-2, :] = daten
+        # is_not_none = False
+        # is_not_none, labels = self.find_cluster_between_le(
+        # self.le_coordinate, n_cluster=3, rseed=2
+        # )
+        # if is_not_none:
+        # daten = self.get_clustering_order(positions, labels)
+        # self.population[0:-2, :] = daten
 
     def valide_population(self):
         """Function to add validation:
-           First Learning Element is fixed
-           in the Learning path."""
+        First Learning Element is fixed
+        in the Learning path."""
 
-        new_pop = np.zeros((self.pop_size,
-                            self.le_size),
-                           dtype=int)
+        new_pop = np.zeros((self.pop_size, self.le_size), dtype=int)
         new_pop[:, 0] = 0
         # new_pop[:, self.le_size -1] = self.le_size -1
         new_pop[:, 1:self.le_size] = self.population.copy()
@@ -90,15 +77,17 @@ class GaAlgorithmus(object):
         """Funcion para Berechnung der Fitnessnote."""
         # a score is evaluated for each individual, which is
         # calculated using the fitness function: dtype=np.float64)
-        total_sum = (np.square(np.diff(line_x))
-                     + np.square(np.diff(line_y))
-                     + np.square(np.diff(line_z))
-                     + np.square(np.diff(line_k)))
+        total_sum = (
+            np.square(np.diff(line_x))
+            + np.square(np.diff(line_y))
+            + np.square(np.diff(line_z))
+            + np.square(np.diff(line_k))
+        )
         fitness = np.sqrt(np.sum(total_sum, 1))
         return fitness
 
     def crossover(self, parent, pop):
-        """function for the calculation 
+        """function for the calculation
         of crossovers between each individual."""
         # two parents are randomly
         # selected from the population, to pass on a part
@@ -122,7 +111,7 @@ class GaAlgorithmus(object):
         # probability is set at which an offspring will receive
         # a mutation. In this case, two points within the pathway
         # are exchanged. This creates a new pathway that
-        # may not appear in the previous generation 
+        # may not appear in the previous generation
         temp = self.le_size - 2
         for point in range(temp):
             if np.random.rand() < self.mutate_rate:
@@ -162,36 +151,41 @@ class GaAlgorithmus(object):
         # index = np.append(best_population, self.le_size-1)
         index = best_population
         index = np.append(0, index)
-        if (len(index) > 10):
+        if len(index) > 10:
             le_coordinate = self.le_coordinate[index]
 
-        for i in range(len(index)-1):
+        for i in range(len(index) - 1):
             temp1 = le_coordinate[i]
-            temp2 = le_coordinate[i+1]
+            temp2 = le_coordinate[i + 1]
             sume = sume + math.dist(temp1, temp2)
 
         euclidean_distance = round(sume, 2)
         return euclidean_distance
 
     def find_cluster_between_le(self, daten, n_cluster=3, rseed=2) -> bool:
-        """ this function calculates the clustering """
+        """this function calculates the clustering"""
         labels = []
         if len(daten) <= 0:
             return False, labels
-        rng = np.random.RandomState(rseed)
+
+        # rng = np.random.RandomState(rseed)
+        rng = 0
         i = rng.permutation(daten.shape[0])[:n_cluster]
         centers = daten[i]
         new_centers = np.unique(centers, axis=0)
         if len(new_centers) < n_cluster:
             return False, labels
 
-        while (True):
-            labels = pairwise_distances_argmin(daten, centers)
-            mean_cluster = [daten[labels == i].mean(0)
-                            for i in range(n_cluster)]
+        while True:
+            # labels = pairwise_distances_argmin(daten, centers)
+            labels = 0
+            mean_cluster = [
+                daten[labels == i].mean(0)
+                for i in range(n_cluster)
+            ]
             new_centers = np.array(mean_cluster)
 
-            if (np.all(centers == new_centers)):
+            if np.all(centers == new_centers):
                 break
             else:
                 centers = new_centers
@@ -216,7 +210,7 @@ class GaAlgorithmus(object):
         # self.daten_compare = daten
         return daten
 
-    def calculate_learning_path(self, learning_style):
+    def calculate_learning_path_ga(self, learning_style):
         """this function calculates the learning path."""
         best_total_score = 300
         le_coordinate = utils.get_coordinates(
@@ -225,7 +219,6 @@ class GaAlgorithmus(object):
         self.create_random_population(le_coordinate)
 
         for i in range(self.n_generation):
-
             new_pop = self.valide_population()
             lx, ly, lz, lk = self.get_lines_paths(new_pop)
             fitness = self.get_fitness(lx, ly, lz, lk)
@@ -241,30 +234,28 @@ class GaAlgorithmus(object):
             best_sample = new_pop[0]
 
             if best_score < best_total_score:
-
                 best_total_score = best_score
                 self.best_population = best_sample
 
             # evolution
             self.evolve(fitness, best_sample)
 
-        # euclidean_distance = self.calculate_distance(best_sample)
-
         ga_path = np.array(self.learning_elements)
         population = self.valide_population()
         idx = population[0]
         result_ga_lp = ga_path[idx]
 
+        # convert to string
         learning_path = self.get_learning_path_as_str(result_ga_lp)
 
         return learning_path
 
     def get_learning_path_as_str(self, result_ga):
-
+        """.."""
         str_learning_path = ""
         contain_le = False
         for ele in result_ga:
-            str_learning_path = str_learning_path + ele + ', '
+            str_learning_path = str_learning_path + ele + ", "
             contain_le = True
 
         if contain_le:
@@ -272,36 +263,117 @@ class GaAlgorithmus(object):
 
         return str_learning_path
 
+    def get_learning_style(self, learning_style):
+        """..."""
+
+        new_learning_style = {}
+        str_processing = learning_style.get("processing_dimension")
+        value_processing = learning_style.get("processing_value")
+        new_learning_style[str_processing] = value_processing
+
+        str_perception = learning_style.get("perception_dimension")
+        value_perception = learning_style.get("perception_value")
+        new_learning_style[str_perception] = value_perception
+
+        str_input = learning_style.get("input_dimension")
+        value_input = learning_style.get("input_value")
+        new_learning_style[str_input] = value_input
+
+        str_understanding = learning_style.get(
+            "understanding_dimension")
+        value_understanding = learning_style.get("understanding_value")
+        new_learning_style[str_understanding] = value_understanding
+
+        for key, value in dict(new_learning_style).items():
+            if value is None:
+                del new_learning_style[key]
+        # print("\nnew_learning_style__LS", learning_style)
+        # print("\nnew_Result__LS", new_learning_style)
+        return new_learning_style
+
+    def check_learning_style(self, input_learning_style):
+        """ check_learning_style """
+        is_correct = False
+        for iterator in input_learning_style:
+            if input_learning_style.get(iterator):
+                dimension_number = input_learning_style.get(iterator)
+                if dimension_number < 0 or dimension_number > 11:
+                    is_correct = True
+                    break
+
+        return is_correct
+
+    def check_name_learning_style(self, input_learning_style):
+        """this ist no necesary"""
+
+        list_is_correct = []
+
+        for iterator in input_learning_style:
+            condition1 = iterator == "act" or iterator == "ref"
+            condition2 = iterator == "sns" or iterator == "int"
+            condition3 = iterator == "vis" or iterator == "vrb"
+            condition4 = iterator == "seq" or iterator == "glo"
+
+            if condition1 or condition2 or condition3 or condition4:
+                list_is_correct.append(True)
+
+        temp = [True, True, True, True]
+        if list_is_correct != temp:
+            return True
+
+        return False
+
+    def get_learning_element(self, learning_elements):
+        classification_learning_element = []
+        lz_is_present = False
+        lz_element = ""
+
+        for le in learning_elements:
+            if le["classification"] == "KÜ":
+                classification_learning_element.insert(0,
+                                                       le["classification"])
+            elif le["classification"] == "LZ":
+                lz_is_present = True
+                lz_element = le["classification"]
+            else:
+                classification_learning_element.append(le["classification"])
+
+        if lz_is_present:
+            classification_learning_element.append(lz_element)
+        print("learning elements", classification_learning_element)
+        return classification_learning_element
+
     def get_learning_path(self, input_learning_style=None,
-                          input_learning_element=None):
+                          input_learning_element=None
+                          ):
+        """.."""
         result_ga = []
-        # time1 = time.time()
 
         if input_learning_style is not None:
-            learning_style = utils.get_learning_style(input_learning_style)
+            learning_style = self.get_learning_style(input_learning_style)
 
         if len(learning_style) != 4:
             raise err.WrongLearningStyleNumberError()
 
-        if utils.check_learning_style(learning_style):
+        if self.check_learning_style(learning_style):
             raise err.WrongLearningStyleDimensionError()
 
-        if utils.check_name_learning_style(learning_style):
+        if self.check_name_learning_style(learning_style):
             raise err.WrongLearningStyleDimensionError()
 
+        # esto hay que modificarlo no sabemos si viene Vacio
         if input_learning_element is not None:
-            self.learning_elements = utils.get_list_learning_element(
+            # added more learning elementen
+            # input_learning_element = self.add_Learning_element(
+            # input_learning_element)
+            self.learning_elements = self.get_learning_element(
                 input_learning_element)
             self.le_size = len(self.learning_elements)
         else:
             raise err.WrongLearningStyleDimensionError()
 
-        result_ga = self.calculate_learning_path(input_learning_style)
+        result_ga = self.calculate_learning_path_ga(input_learning_style)
 
-        # time2 = time.time()
-        # time_sec = time2-time1
-        # print("Time_sec: ", time_sec)
         print("\nResult_GA_Learning path: ", result_ga)
-        # print("\n\n")
 
         return result_ga

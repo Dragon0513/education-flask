@@ -7,22 +7,23 @@ import errors as err
 
 
 class GaAlgorithmus(object):
-    """GaAlgorithmus"""
-    def __init__(self,                
+    """Genetische Algorithmus"""
+
+    def __init__(self,
                  learning_style=None,
                  learning_elements=None,
                  ):
-
-        self.pop_size = 80
-        self.cross_rate = 0.9
-        self.mutate_rate = 0.3
-        self.n_generation = 100
+       
+        self.learning_elements = learning_elements
         self.best_population = None
         self.le_coordinate = None
-        self.learning_elements = learning_elements
-        self.le_size = None
+        self.n_generation = 100
         self.population = None
-        
+        self.le_size = None
+        self.mutate_rate = 0.3
+        self.cross_rate = 0.9
+        self.pop_size = 80
+
         if learning_elements is not None:
             self.learning_elements = utils.get_list_learning_element(
                 learning_elements)
@@ -34,8 +35,11 @@ class GaAlgorithmus(object):
            with Clustering if this is possible.
            param dict_coordinates  """
         self.le_coordinate = np.array(
-            [dict_coordinates[key]for key in dict_coordinates])
-        self.le_coordinate.reshape((len(dict_coordinates), 4))
+            [dict_coordinates[key]for key in dict_coordinates]
+            )
+        self.le_coordinate.reshape(
+            (len(dict_coordinates), 4)
+            )
 
         positions = np.arange(1, self.le_size)
         self.population = np.vstack(
@@ -44,14 +48,19 @@ class GaAlgorithmus(object):
 
         is_not_none = False
         is_not_none, labels = self.find_cluster_between_le(
-            self.le_coordinate, n_cluster=3, rseed=2)
+            self.le_coordinate,
+            n_cluster=3,
+            rseed=2
+            )
         if is_not_none:
             daten = self.get_clustering_order(positions, labels)
             self.population[0:-2, :] = daten
 
     def valide_population(self):
         """Function to add validation:
-           First Learning Element is fixed in the Learning path."""
+           First Learning Element is fixed
+           in the Learning path."""
+
         new_pop = np.zeros((self.pop_size,
                             self.le_size),
                            dtype=int)
@@ -113,7 +122,7 @@ class GaAlgorithmus(object):
         # probability is set at which an offspring will receive
         # a mutation. In this case, two points within the pathway
         # are exchanged. This creates a new pathway that
-        # may not appear in the previous generation """
+        # may not appear in the previous generation 
         temp = self.le_size - 2
         for point in range(temp):
             if np.random.rand() < self.mutate_rate:

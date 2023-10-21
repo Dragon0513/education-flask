@@ -1,9 +1,15 @@
 .pytest_cache/
 __pycache__/
 .venv/
+venv_hooks/
+venv/
 .scannerwork/
 .dependencygraph/
 coverage.xml
 .env
 .coverage
-domain/tutoringModel/ga.py
+.vscode/
+keys/
+.flaskenv
+configs/lti_config.json
+test_keys/

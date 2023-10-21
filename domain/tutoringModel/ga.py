@@ -307,16 +307,13 @@ class Genetische_Algorithm:
         """this ist no necesary"""
 
         list_is_correct = []
-
         for iterator in input_learning_style:
             condition1 = iterator == "act" or iterator == "ref"
             condition2 = iterator == "sns" or iterator == "int"
             condition3 = iterator == "vis" or iterator == "vrb"
             condition4 = iterator == "seq" or iterator == "glo"
-
             if condition1 or condition2 or condition3 or condition4:
                 list_is_correct.append(True)
-
         temp = [True, True, True, True]
         if list_is_correct != temp:
             return True
@@ -375,5 +372,4 @@ class Genetische_Algorithm:
         result_ga = self.calculate_learning_path_ga(input_learning_style)
 
         print("\nResult_GA_Learning path: ", result_ga)
-
         return result_ga

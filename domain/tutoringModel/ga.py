@@ -55,7 +55,7 @@ class Genetische_Algorithm:
         new_pop = np.zeros((self.pop_size, self.le_size), dtype=int)
         new_pop[:, 0] = 0
         # new_pop[:, self.le_size -1] = self.le_size -1
-        new_pop[:, 1 : self.le_size] = self.population.copy()
+        new_pop[:, 1:self.le_size] = self.population.copy()
         return new_pop
 
     def get_lines_paths(self, new_pop):
@@ -230,7 +230,7 @@ class Genetische_Algorithm:
             new_pop = self.population[best_index].copy()
             self.population = new_pop.copy()
             best_sample = new_pop[0]
-
+            print('generation:', i)
             if best_score < best_total_score:
                 best_total_score = best_score
                 self.best_population = best_sample

@@ -39,14 +39,7 @@ class Genetische_Algorithm:
             [np.random.permutation(positions) for _ in range(self.pop_size)]
         )
 
-        # is_not_none = False
-        # is_not_none, labels = self.find_cluster_between_le(
-        # self.le_coordinate, n_cluster=3, rseed=2
-        # )
-        # if is_not_none:
-        # daten = self.get_clustering_order(positions, labels)
-        # self.population[0:-2, :] = daten
-
+        
     def valide_population(self):
         """Function to add validation:
         First Learning Element is fixed
@@ -54,7 +47,7 @@ class Genetische_Algorithm:
 
         new_pop = np.zeros((self.pop_size, self.le_size), dtype=int)
         new_pop[:, 0] = 0
-        # new_pop[:, self.le_size -1] = self.le_size -1
+        
         new_pop[:, 1 : self.le_size] = self.population.copy()
         return new_pop
 
@@ -65,8 +58,8 @@ class Genetische_Algorithm:
         line_y = np.empty_like(new_pop, dtype=np.float64)
         line_z = np.empty_like(new_pop, dtype=np.float64)
         line_k = np.empty_like(new_pop, dtype=np.float64)
-        # total_distance = np.empty((line_x.shape[0],),
-        # dtype=np.float64)
+        
+        
         for i, j in enumerate(new_pop):
             le_coord = self.le_coordinate[j]
             line_x[i, :] = le_coord[:, 0]
@@ -150,7 +143,7 @@ class Genetische_Algorithm:
         to evolve will be selected."""
         sume = 0
         le_coordinate = self.le_coordinate
-        # index = np.append(best_population, self.le_size-1)
+        
         index = best_population
         index = np.append(0, index)
         if len(index) > 10:
@@ -163,51 +156,6 @@ class Genetische_Algorithm:
 
         euclidean_distance = round(sume, 2)
         return euclidean_distance
-
-    def find_cluster_between_le(self, daten, n_cluster=3, rseed=2) -> bool:
-        """this function calculates the clustering"""
-        labels = []
-        if len(daten) <= 0:
-            return False, labels
-
-        # rng = np.random.RandomState(rseed)
-        rng = 0
-        i = rng.permutation(daten.shape[0])[:n_cluster]
-        centers = daten[i]
-        new_centers = np.unique(centers, axis=0)
-        if len(new_centers) < n_cluster:
-            return False, labels
-
-        while True:
-            # labels = pairwise_distances_argmin(daten, centers)
-            labels = 0
-            mean_cluster = [daten[labels == i].mean(0) for i in range(n_cluster)]
-            new_centers = np.array(mean_cluster)
-
-            if np.all(centers == new_centers):
-                break
-            else:
-                centers = new_centers
-
-        return True, labels
-
-    def get_clustering_order(self, daten, labels):
-        """this function organises the clustering."""
-        labels = labels[1:]
-        positions = np.arange(1, self.le_size)
-        label_0 = positions[labels == 0]
-        label_1 = positions[labels == 1]
-        label_2 = positions[labels == 2]
-
-        daten = np.concatenate((label_2, label_0), axis=None)
-        daten = np.concatenate((daten, label_1), axis=None)
-
-        daten = np.concatenate((0, daten), axis=None)
-        # ga_path = np.array(self.learning_elements)
-        print(daten)
-        # print(ga_path)
-        # self.daten_compare = daten
-        return daten
 
     def calculate_learning_path_ga(self, learning_style):
         """this function calculates the learning path."""
@@ -284,8 +232,8 @@ class Genetische_Algorithm:
         for key, value in dict(new_learning_style).items():
             if value is None:
                 del new_learning_style[key]
-        # print("\nnew_learning_style__LS", learning_style)
-        # print("\nnew_Result__LS", new_learning_style)
+
+
         return new_learning_style
 
     def check_learning_style(self, input_learning_style):

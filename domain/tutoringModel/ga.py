@@ -55,7 +55,7 @@ class Genetische_Algorithm:
         new_pop = np.zeros((self.pop_size, self.le_size), dtype=int)
         new_pop[:, 0] = 0
         # new_pop[:, self.le_size -1] = self.le_size -1
-        new_pop[:, 1:self.le_size] = self.population.copy()
+        new_pop[:, 1 : self.le_size] = self.population.copy()
         return new_pop
 
     def get_lines_paths(self, new_pop):
@@ -181,10 +181,7 @@ class Genetische_Algorithm:
         while True:
             # labels = pairwise_distances_argmin(daten, centers)
             labels = 0
-            mean_cluster = [
-                daten[labels == i].mean(0)
-                for i in range(n_cluster)
-            ]
+            mean_cluster = [daten[labels == i].mean(0) for i in range(n_cluster)]
             new_centers = np.array(mean_cluster)
 
             if np.all(centers == new_centers):
@@ -215,8 +212,7 @@ class Genetische_Algorithm:
     def calculate_learning_path_ga(self, learning_style):
         """this function calculates the learning path."""
         best_total_score = 300
-        le_coordinate = utils.get_coordinates(
-            learning_style, self.learning_elements)
+        le_coordinate = utils.get_coordinates(learning_style, self.learning_elements)
 
         self.create_random_population(le_coordinate)
 
@@ -281,8 +277,7 @@ class Genetische_Algorithm:
         value_input = learning_style.get("input_value")
         new_learning_style[str_input] = value_input
 
-        str_understanding = learning_style.get(
-            "understanding_dimension")
+        str_understanding = learning_style.get("understanding_dimension")
         value_understanding = learning_style.get("understanding_value")
         new_learning_style[str_understanding] = value_understanding
 
@@ -294,7 +289,7 @@ class Genetische_Algorithm:
         return new_learning_style
 
     def check_learning_style(self, input_learning_style):
-        """ check_learning_style """
+        """check_learning_style"""
         is_correct = False
         for iterator in input_learning_style:
             if input_learning_style.get(iterator):
@@ -329,8 +324,7 @@ class Genetische_Algorithm:
 
         for le in learning_elements:
             if le["classification"] == "KÜ":
-                classification_learning_element.insert(0,
-                                                       le["classification"])
+                classification_learning_element.insert(0, le["classification"])
             elif le["classification"] == "LZ":
                 lz_is_present = True
                 lz_element = le["classification"]
@@ -342,9 +336,7 @@ class Genetische_Algorithm:
         print("learning elements", classification_learning_element)
         return classification_learning_element
 
-    def get_learning_path(self, input_learning_style=None,
-                          input_learning_element=None
-                          ):
+    def get_learning_path(self, input_learning_style=None, input_learning_element=None):
         """.."""
         result_ga = []
 
@@ -365,8 +357,7 @@ class Genetische_Algorithm:
             # added more learning elementen
             # input_learning_element = self.add_Learning_element(
             # input_learning_element)
-            self.learning_elements = self.get_learning_element(
-                input_learning_element)
+            self.learning_elements = self.get_learning_element(input_learning_element)
             self.le_size = len(self.learning_elements)
         else:
             raise err.WrongLearningStyleDimensionError()

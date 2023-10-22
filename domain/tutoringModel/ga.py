@@ -1,5 +1,7 @@
 import math
+
 import numpy as np
+
 import errors as err
 from domain.tutoringModel import utils
 

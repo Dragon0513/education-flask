@@ -49,7 +49,7 @@ class LearningPath:
             self.path = le_path[:-2]
 
         elif algorithm == "ga":
-            print("Genetische Algorithmus")
+            
             genetic_alg = ga.Genetische_Algorithm(
                 learning_style=learning_style, learning_elements=list_of_les
             )
@@ -57,8 +57,6 @@ class LearningPath:
                 input_learning_style=learning_style, input_learning_element=list_of_les
             )
 
-            print("Genetische Algorithmus")
-            print("Genetische Algorithmus")
         else:
             raise err.NoValidAlgorithmError()
 

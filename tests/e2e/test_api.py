@@ -1072,7 +1072,7 @@ class TestApi:
         [
             # Working Example
             (
-                {"algorithm": "aco"},
+                {"algorithm": "ga"},
                 4,
                 [
                     "id",

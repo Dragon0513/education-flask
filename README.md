@@ -126,9 +126,9 @@ Run `python db_clean_up.py` to clean up the database if necessary. Use arg `--dr
 This project includes a Pipeline, that will automatically create a Docker image in the repository when merging into the main branch.
 This Docker image should always be the latest running version.
 Please create a .env file first locally, so that it can be passed with docker run.
-A template is provided in the .env_template file in this repository.
+A template is provided in the .env_template file in this repository. Use the volume flag to mount the keys folder into the container.
 Start the Docker image as container with the following command:
-`docker run -d -p 5000:5000 --env-file <path/to/.env-File> ghcr.io/haski-rak/haski-backend:main`
+`docker run docker run -v /yourfolder/keys:/app/keys -d -p 5000:5000 --env-file <path/to/.env-File> ghcr.io/haski-rak/haski-backend:main`
 
 ## Contribution
 

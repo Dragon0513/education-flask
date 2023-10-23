@@ -61,3 +61,51 @@ def test_get_coordinates(
     assert result["KÜ"] == (13, 13, 13, 13)
     assert result["EK"] == (12, 12, 12, 12)
     assert result["LZ"] == (-12, -12, -12, -12)
+
+
+def test_prepare_les_for_ga():
+    list_of_les = []
+    list_of_keys = ["ZF", "KÜ", "SE", "FO", "LZ", "ZL", "AN", "ÜB", "AB", "EK"]
+    for i, ele_name in enumerate(list_of_keys):
+        le = DM.LearningElement(
+            lms_id=i,
+            activity_type="lesson",
+            classification=ele_name,
+            name="Test LE",
+            university="TH-AB",
+            created_by="Max Mustermann",
+            created_at="2023-09-01",
+            last_updated=None,
+            student_learning_element=None,
+        )
+        list_of_les.append(le.serialize())
+    learning_style = {
+        "id": 1,
+        "characteristic_id": 1,
+        "perception_dimension": "sns",
+        "perception_value": 0,
+        "input_dimension": "vrb",
+        "input_value": 0,
+        "processing_dimension": "act",
+        "processing_value": 0,
+        "understanding_dimension": "seq",
+        "understanding_value": 0,
+    }
+    lp = TM.LearningPath(student_id=1, course_id=1, based_on="ga")
+    lp.get_learning_path(
+        student_id=1,
+        learning_style=learning_style,
+        _algorithm="ga",
+        list_of_les=list_of_les,
+    )
+    result = lp.path
+    result = result.split(",")
+    assert type(result) == list
+    assert len(result) != 0
+    assert result[0] == "KÜ"
+    assert result[-1] == " LZ"
+
+
+# input_learning_element=[
+#     {'id': 2, 'lms_id': 2, 'activity_type': 'lesson', 'classification': 'BE', 'name': 'Test LE', 'university': 'TH-AB', 'created_by': 'Max Mustermann', 'created_at': '2017-01-01', 'last_updated': None, 'student_learning_element': None},
+#     {'id': 1, 'lms_id': 1, 'activity_type': 'quiz', 'classification': 'RQ', 'name': 'Test LE', 'university': 'TH-AB', 'created_by': 'Max Mustermann', 'created_at': '2017-01-01', 'last_updated': None, 'student_learning_element': None}]

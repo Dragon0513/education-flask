@@ -176,8 +176,8 @@ class Genetische_Algorithm:
             new_pop = self.population[best_index].copy()
             self.population = new_pop.copy()
             best_sample = new_pop[0]
-            print("generation:", i)
-            if best_score < best_total_score:
+            # print("generation:", i)
+            if best_score < best_total_score and i < self.n_generation:
                 best_total_score = best_score
                 self.best_population = best_sample
 
@@ -284,7 +284,6 @@ class Genetische_Algorithm:
     def get_learning_path(self, input_learning_style=None, input_learning_element=None):
         """.."""
         result_ga = []
-
         if input_learning_style is not None:
             learning_style = self.get_learning_style(input_learning_style)
 
@@ -308,6 +307,6 @@ class Genetische_Algorithm:
             raise err.WrongLearningStyleDimensionError()
 
         result_ga = self.calculate_learning_path_ga(input_learning_style)
-
-        print("\nResult_GA_Learning path: ", result_ga)
+        print("Learning stylw", input_learning_style)
+        print("\nResult input_learning_element: ", input_learning_style)
         return result_ga

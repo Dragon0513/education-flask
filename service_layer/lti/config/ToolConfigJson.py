@@ -5,7 +5,7 @@ from service_layer.lti.lms.Platform import Platform
 
 # Parses LTI Config file and returns a dictionary of the contents
 _iss_conf_dict = {
-    os.environ.get("MOODLE_URL", "http://fakedomain.com"): {
+    os.environ.get("LMS_URL", "http://fakedomain.com"): {
         "default": True,
         "client_id": os.environ.get("CLIENT_ID", "None"),
         "tool_url": os.environ.get("BACKEND_URL", "http://fakedomain.com:5000"),
@@ -15,13 +15,13 @@ _iss_conf_dict = {
         + "/login",
         "target_link_uri": os.environ.get("BACKEND_URL", "http://fakedomain.com:5000")
         + "/lti_launch",
-        "auth_login_url": os.environ.get("MOODLE_URL", "http://fakedomain.com")
+        "auth_login_url": os.environ.get("LMS_URL", "http://fakedomain.com")
         + "/mod/lti/auth.php",
-        "auth_token_url": os.environ.get("MOODLE_URL", "http://fakedomain.com")
+        "auth_token_url": os.environ.get("LMS_URL", "http://fakedomain.com")
         + "/mod/lti/token.php",
-        "key_set_url": os.environ.get("MOODLE_URL", "http://fakedomain.com")
+        "key_set_url": os.environ.get("LMS_URL", "http://fakedomain.com")
         + "/mod/lti/certs.php",
-        "haski_lti_activity": os.environ.get("MOODLE_URL", "http://fakedomain.com")
+        "haski_lti_activity": os.environ.get("LMS_URL", "http://fakedomain.com")
         + "/mod/lti/view.php?id=2",
         "platform_name": os.environ.get("PLATFORM_NAME", "HASKI"),
         "key_set": {

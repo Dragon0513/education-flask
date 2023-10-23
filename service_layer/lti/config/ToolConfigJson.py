@@ -5,9 +5,9 @@ from service_layer.lti.lms.Platform import Platform
 
 # Parses LTI Config file and returns a dictionary of the contents
 _iss_conf_dict = {
-    "http://fakedomain.com": {
+    os.environ.get("MOODLE_URL", "http://fakedomain.com"): {
         "default": True,
-        "client_id": "L27dePw8pAl34ST",
+        "client_id": os.environ.get("CLIENT_ID", "None"),
         "tool_url": os.environ.get("BACKEND_URL", "http://fakedomain.com:5000"),
         "frontend_login_url": os.environ.get(
             "FRONTEND_URL", "http://fakedomain.com:8080"
@@ -23,15 +23,17 @@ _iss_conf_dict = {
         + "/mod/lti/certs.php",
         "haski_lti_activity": os.environ.get("MOODLE_URL", "http://fakedomain.com")
         + "/mod/lti/view.php?id=2",
-        "platform_name": "HASKI",
+        "platform_name": os.environ.get("PLATFORM_NAME", "HASKI"),
         "key_set": {
             "keys": [
                 {
                     "kty": "RSA",
                     "alg": "RS256",
-                    "kid": "77ce2052ed246a4259da",
+                    "kid": os.environ.get("KEY_ID", "None"),
                     "e": "AQAB",
-                    "n": "poaM0tABqlxYEEzlqZaD1UsicOunF3WxYBeWHRFZE8s2yTzae3EXJJay6df0FevpE67d0URspbG-U0cVVZnOR7r4Q-4BqJd_KDuQ6e9ZTYCvjCbWWxEu74gutZuZ9phMPWEGB8VJYWmfr0xi0YSGAwKqkNsyqbwJuO2sIXMCjJ7TleUz4QwCGoKAzDhXG6AROKMFa85blKz3Qz7PK6AWSGsQv5I-3kYWbZmQ8dlHhUe_Fgrul9by8qcYW3as5R9R00gheR5oAcminqiZTyjEWMLurCibaAuo-DrwNLeRkh1Z5dxi0JS3EqBWeTexXt8Yoh8cIGzifvNgHkwxSVwaYQ",  # noqa
+                    "n": os.environ.get(
+                        "KEY_N_VALUE", "None"
+                    ),  # noqa: Place your default n value here
                     "use": "sig",
                 }
             ]

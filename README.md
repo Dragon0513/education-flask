@@ -1,6 +1,7 @@
 # HASKI Backend System
 
 [![Build](https://github.com/HASKI-RAK/HASKI-Backend/actions/workflows/build.yaml/badge.svg)](https://github.com/HASKI-RAK/HASKI-Backend/actions/workflows/build.yaml)
+[![Docker Build](https://github.com/HASKI-RAK/HASKI-Backend/actions/workflows/bulid_docker.yaml/badge.svg)](https://github.com/HASKI-RAK/HASKI-Backend/actions/workflows/bulid_docker.yaml)
 
 This is the offical Repository for the HASKI (Hochschullehre: Adaptiv, selbstgesteuert, KI-gestützt) Backend.
 It will provide all necessary tools for creating and recommending learning paths and learning elements for the students, who will use the system.
@@ -101,7 +102,8 @@ Using venv:
 
 Then:
 
-- Fill the .env file with the necessary information. Note that `DB_PASSWORD` is the password for the database user, not pgAdmin.
+- Fill the .flaskenv file with the necessary information. For this, use the .flaskenv_template file as a template.
+  Note that `DB_PASSWORD` is the password for the database user, not pgAdmin.
 - Create the database as explained in [DB Setup](#db-setup)
 - Run the app using `flask run`
 
@@ -125,10 +127,10 @@ Run `python db_clean_up.py` to clean up the database if necessary. Use arg `--dr
 
 This project includes a Pipeline, that will automatically create a Docker image in the repository when merging into the main branch.
 This Docker image should always be the latest running version.
-Please create a .env file first locally, so that it can be passed with docker run.
+Please create a .flaskenv file first locally, so that it can be passed with docker run.
 A template is provided in the .env_template file in this repository. Use the volume flag to mount the keys folder into the container.
 Start the Docker image as container with the following command:
-`docker run docker run -v /yourfolder/keys:/app/keys -d -p 5000:5000 --env-file <path/to/.env-File> ghcr.io/haski-rak/haski-backend:main`
+`docker run docker run -v /yourfolder/keys:/app/keys -d -p 5000:5000 --env-file <path/to/.flaskenv-File> ghcr.io/haski-rak/haski-backend:main`
 
 ## Contribution
 

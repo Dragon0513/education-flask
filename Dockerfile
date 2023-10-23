@@ -30,6 +30,4 @@ COPY config.py /app/config.py
 
 COPY errors/ /app/errors/
 
-COPY configs/ /app/configs/
-
 CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]

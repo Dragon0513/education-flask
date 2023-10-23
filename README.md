@@ -102,7 +102,8 @@ Using venv:
 
 Then:
 
-- Fill the .env file with the necessary information. Note that `DB_PASSWORD` is the password for the database user, not pgAdmin.
+- Fill the .flaskenv file with the necessary information. For this, use the .flaskenv_template file as a template.
+  Note that `DB_PASSWORD` is the password for the database user, not pgAdmin.
 - Create the database as explained in [DB Setup](#db-setup)
 - Run the app using `flask run`
 

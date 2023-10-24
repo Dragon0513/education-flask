@@ -44,7 +44,7 @@ class GeneticAlgorithm:
         )
         self.le_coordinate.reshape((len(dict_coordinates), 4))
         # le_size ist the size of list of learning element
-        self.population = utils.ramdon_generator(self.le_size, self.pop_size)
+        self.population = utils.permutation_generator(self.le_size, self.pop_size)
 
     def valide_population(self):
         """Function to add validation:
@@ -89,16 +89,17 @@ class GeneticAlgorithm:
     def crossover(self, parent, pop):
         """Function for the calculation of crossovers between
         each individual."""
-        # two parents are randomly
-        # selected from the population, to pass on a part
-        # of their solution to their child.  """
+        # two parents are randomly selected from the population,
+        # to inherit a part of their solution to their child.
 
         if np.random.rand() < self.cross_rate:
             samples = 2
-            i_ = np.random.randint(0, samples, size=1)
+            # i_ = np.random.randint(0, samples, size=1)
+            i_ = np.random.randint(0, samples)
             # choose crossover learning elements
             temp = self.le_size - 1
-            cross_points = np.random.randint(0, 2, temp).astype(bool)
+            # cross_points = np.random.randint(0, 2, temp).astype(bool)
+            cross_points = utils.ramdon_generator(2, temp, 'bool')
             keep_le = parent[~cross_points]
             swap_le = pop[i_, np.isin(pop[i_].ravel(), keep_le, invert=True)]
             parent = np.concatenate((keep_le, swap_le))
@@ -115,7 +116,8 @@ class GeneticAlgorithm:
         temp = self.le_size - 2
         for point in range(temp):
             if np.random.rand() < self.mutate_rate:
-                swap_point = np.random.randint(0, int(temp))
+                # swap_point = np.random.randint(0, int(temp))
+                swap_point = utils.ramdon_generator(2, temp, 'int')
                 swap_a, swap_b = child[point], child[swap_point]
                 child[point], child[swap_point] = swap_b, swap_a
         return child

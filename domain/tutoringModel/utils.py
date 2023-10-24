@@ -94,9 +94,19 @@ def distance(xyz1, xyz2) -> float:
     return math.dist(xyz1, xyz2)
 
 # function to randomly generate the population for ga
-def ramdon_generator(le_size, pop_size):
+def permutation_generator(le_size, pop_size):
     positions = np.arange(1, le_size)
     population = np.vstack(
         [np.random.permutation(positions)
          for _ in range(pop_size)])
     return population
+
+def ramdon_generator( num, size, type_):
+    if type_ == 'decimal':
+        return np.random.rand()
+    if type_ == 'int':
+        return np.random.randint(0, num, size=1)
+    if type_ == 'bool':
+        return np.random.randint(0, num, size).astype(bool)
+    else:
+        return 0

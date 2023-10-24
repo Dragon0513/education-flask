@@ -1,7 +1,7 @@
 import numpy as np
 
-from domain.tutoringModel import utils
 import errors as err
+from domain.tutoringModel import utils
 
 
 class GeneticAlgorithm:

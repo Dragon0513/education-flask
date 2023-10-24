@@ -43,6 +43,7 @@ class GeneticAlgorithm:
             [dict_coordinates[key] for key in dict_coordinates]
         )
         self.le_coordinate.reshape((len(dict_coordinates), 4))
+        # le_size ist the size of list of learning element
         self.population = utils.ramdon_generator(self.le_size, self.pop_size)
 
     def valide_population(self):

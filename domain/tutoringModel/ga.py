@@ -1,31 +1,41 @@
-import math
-
 import numpy as np
 
-import errors as err
 from domain.tutoringModel import utils
+import errors as err
 
 
-class Genetische_Algorithm:
-    """Genetische Algorithmus  sdfasdfs"""
+class GeneticAlgorithm:
+    """The Genetic Algorithm class simulates the process of natural
+    selection using methods of evolutionary selection,
+    combination and variation of individuals (Learning path)."""
+
+    # learning path sequencing problem will be considered as
+    # a Traveling Salesman Problem (TSP) and the Learning Style
+    # of the Student is used for creating Personalized and
+    # adaptive learning paths.
 
     def __init__(
         self,
-        learning_style=None,
         learning_elements=None,
     ):
         self.learning_elements = learning_elements
-        self.best_population = None
-        self.le_coordinate = None
+        self.learning_style = {}
+        self.best_population = []
+        self.le_coordinate: np.ndarray = np.array([])
         self.n_generation = 100
-        self.population = None
-        self.le_size = None
+        self.population: np.ndarray = np.array([])
+        self.le_size = 0.0
         self.mutate_rate = 0.3
         self.cross_rate = 0.9
         self.pop_size = 80
+        if learning_elements is not None:
+            #  convert learning element into
+            #  a list with the short name of learning element
+            le = self.get_learning_element(learning_elements)
+            self.le_size = len(le)
 
     def create_random_population(self, dict_coordinates) -> None:
-        """function for the calculation of the score.
+        """Function for the calculation of the score.
         position a also Initialise some populations
         with Clustering if this is possible.
         param dict_coordinates"""
@@ -33,11 +43,7 @@ class Genetische_Algorithm:
             [dict_coordinates[key] for key in dict_coordinates]
         )
         self.le_coordinate.reshape((len(dict_coordinates), 4))
-
-        positions = np.arange(1, self.le_size)
-        self.population = np.vstack(
-            [np.random.permutation(positions) for _ in range(self.pop_size)]
-        )
+        self.population = utils.ramdon_generator(self.le_size, self.pop_size)
 
     def valide_population(self):
         """Function to add validation:
@@ -67,7 +73,7 @@ class Genetische_Algorithm:
         return line_x, line_y, line_z, line_k
 
     def get_fitness(self, line_x, line_y, line_z, line_k):
-        """Funcion para Berechnung der Fitnessnote."""
+        """Function to calculate the fitness function for GA"""
         # a score is evaluated for each individual, which is
         # calculated using the fitness function: dtype=np.float64)
         total_sum = (
@@ -80,8 +86,8 @@ class Genetische_Algorithm:
         return fitness
 
     def crossover(self, parent, pop):
-        """function for the calculation
-        of crossovers between each individual."""
+        """Function for the calculation of crossovers between
+        each individual."""
         # two parents are randomly
         # selected from the population, to pass on a part
         # of their solution to their child.  """
@@ -134,29 +140,8 @@ class Genetische_Algorithm:
 
         self.population[best_samples:] = population[best_samples:].copy()
 
-    def calculate_distance(self, best_population) -> float:
-        """In the selection phase, after knowing
-        the aptitude of each individual, those that will be selected
-        of each individual, those that are most suitable
-        to evolve will be selected."""
-        sume = 0
-        le_coordinate = self.le_coordinate
-
-        index = best_population
-        index = np.append(0, index)
-        if len(index) > 10:
-            le_coordinate = self.le_coordinate[index]
-
-        for i in range(len(index) - 1):
-            temp1 = le_coordinate[i]
-            temp2 = le_coordinate[i + 1]
-            sume = sume + math.dist(temp1, temp2)
-
-        euclidean_distance = round(sume, 2)
-        return euclidean_distance
-
     def calculate_learning_path_ga(self, learning_style):
-        """this function calculates the learning path."""
+        """This function calculates the learning path with Genetic algorithm"""
         best_total_score = 300
         le_coordinate = utils.get_coordinates(learning_style, self.learning_elements)
 
@@ -195,21 +180,20 @@ class Genetische_Algorithm:
         return learning_path
 
     def get_learning_path_as_str(self, result_ga):
-        """.."""
+        """Convert the list of learning path into sting"""
         str_learning_path = ""
         contain_le = False
         for ele in result_ga:
             str_learning_path = str_learning_path + ele + ", "
             contain_le = True
-
         if contain_le:
             str_learning_path = str_learning_path[:-2]
 
         return str_learning_path
 
     def get_learning_style(self, learning_style):
-        """..."""
-
+        """Convert the dictionary into another format
+        with the dimension and value for Genetic algorithm"""
         new_learning_style = {}
         str_processing = learning_style.get("processing_dimension")
         value_processing = learning_style.get("processing_value")
@@ -230,11 +214,11 @@ class Genetische_Algorithm:
         for key, value in dict(new_learning_style).items():
             if value is None:
                 del new_learning_style[key]
-
         return new_learning_style
 
     def check_learning_style(self, input_learning_style):
-        """check_learning_style"""
+        """Checks if the learning styles
+        have values between 0 and 11"""
         is_correct = False
         for iterator in input_learning_style:
             if input_learning_style.get(iterator):
@@ -246,23 +230,28 @@ class Genetische_Algorithm:
         return is_correct
 
     def check_name_learning_style(self, input_learning_style):
-        """this ist no necesary"""
-
+        """Check if the names of learning styles are correct."""
         list_is_correct = []
-        for iterator in input_learning_style:
-            condition1 = iterator == "act" or iterator == "ref"
-            condition2 = iterator == "sns" or iterator == "int"
-            condition3 = iterator == "vis" or iterator == "vrb"
-            condition4 = iterator == "seq" or iterator == "glo"
-            if condition1 or condition2 or condition3 or condition4:
+        pairs = [
+            {"act", "ref"},
+            {"sns", "int"},
+            {"vis", "vrb"},
+            {"seq", "glo"},
+        ]
+        for key in input_learning_style:
+            cond1 = key in pairs[0]
+            cond2 = key in pairs[1]
+            cond3 = key in pairs[2]
+            cond4 = key in pairs[3]
+            if cond1 or cond2 or cond3 or cond4:
                 list_is_correct.append(True)
-        temp = [True, True, True, True]
-        if list_is_correct != temp:
-            return True
-
-        return False
+        if any(list_is_correct):
+            return False
+        return True
 
     def get_learning_element(self, learning_elements):
+        """converts the dictionary learning element
+        into a list with only the short name LE"""
         classification_learning_element = []
         lz_is_present = False
         lz_element = ""
@@ -282,7 +271,7 @@ class Genetische_Algorithm:
         return classification_learning_element
 
     def get_learning_path(self, input_learning_style=None, input_learning_element=None):
-        """.."""
+        """calculates and verifies the learning path the genetic algorithm"""
         result_ga = []
         if input_learning_style is not None:
             learning_style = self.get_learning_style(input_learning_style)
@@ -296,17 +285,13 @@ class Genetische_Algorithm:
         if self.check_name_learning_style(learning_style):
             raise err.WrongLearningStyleDimensionError()
 
-        # esto hay que modificarlo no sabemos si viene Vacio
         if input_learning_element is not None:
             # added more learning elementen
-            # input_learning_element = self.add_Learning_element(
-            # input_learning_element)
             self.learning_elements = self.get_learning_element(input_learning_element)
             self.le_size = len(self.learning_elements)
         else:
             raise err.WrongLearningStyleDimensionError()
 
         result_ga = self.calculate_learning_path_ga(input_learning_style)
-        print("Learning stylw", input_learning_style)
-        print("\nResult input_learning_element: ", input_learning_style)
+
         return result_ga

@@ -1065,7 +1065,58 @@ class TestApi:
         for key in keys_expected:
             assert key in response.keys()
 
-    # Learning Path is calculated
+    # Learning Path is calculated 
+    @pytest.mark.parametrize(
+        "input, moodle_user_id, keys_expected,\
+                            status_code_expected",
+        [
+            # Working Example
+            (
+                {"algorithm": "aco"},
+                4,
+                [
+                    "id",
+                    "course_id",
+                    "topic_id",
+                    "student_id",
+                    "based_on",
+                    "path",
+                    "calculated_on",
+                ],
+                201,
+            ),
+            # Missing Parameter
+            ({}, 4, ["error", "message"], 400),
+        ],
+    )
+    def test_post_learning_path(
+        self, client_class, input, moodle_user_id, keys_expected, status_code_expected
+    ):
+        global user_id_student, student_id, course_id, sub_topic_id
+        url = (
+            path_user
+            + "/"
+            + str(user_id_student)
+            + "/"
+            + str(moodle_user_id)
+            + path_student
+            + "/"
+            + str(student_id)
+            + path_course
+            + "/"
+            + str(course_id)
+            + path_topic
+            + "/"
+            + str(sub_topic_id)
+            + path_learning_path
+        )
+        r = client_class.post(url, json=input)
+        assert r.status_code == status_code_expected
+        response = json.loads(r.data.decode("utf-8").strip("\n"))
+        for key in keys_expected:
+            assert key in response.keys()
+
+    # Learning Path is calculated for ga
     @pytest.mark.parametrize(
         "input, moodle_user_id, keys_expected,\
                             status_code_expected",
@@ -1089,7 +1140,7 @@ class TestApi:
             ({}, 4, ["error", "message"], 400),
         ],
     )
-    def test_post_learning_path(
+    def test_post_learning_path_for_ga(
         self, client_class, input, moodle_user_id, keys_expected, status_code_expected
     ):
         global user_id_student, student_id, course_id, sub_topic_id

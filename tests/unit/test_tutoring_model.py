@@ -98,9 +98,11 @@ def test_prepare_les_for_ga():
         _algorithm="ga",
         list_of_les=list_of_les,
     )
+
     result = lp.path
-    result = result.split(",")
-    assert type(result) == list
-    assert len(result) != 0
+    result = result.split(", ")
+    print(result)
+    assert isinstance(result, list)
     assert result[0] == "KÜ"
-    assert result[-1] == " LZ"
+    assert result[1] == "EK"
+    assert result[-1] == "LZ"

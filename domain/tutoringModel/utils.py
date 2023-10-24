@@ -1,5 +1,5 @@
 import math
-
+import numpy as np
 from utils import constants as cons
 
 # Interpretation of Graf et al. for Learning Elements
@@ -90,3 +90,11 @@ def distance(xyz1, xyz2) -> float:
         xyz1 = xyz1[1]
         xyz2 = xyz2[1]
     return math.dist(xyz1, xyz2)
+
+# function to randomly generate the population for ga
+def ramdon_generator(le_size, pop_size):
+    positions = np.arange(1, le_size)
+    population = np.vstack(
+        [np.random.permutation(positions)
+         for _ in range(pop_size)])
+    return population

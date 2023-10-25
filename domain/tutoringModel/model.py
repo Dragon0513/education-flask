@@ -49,9 +49,7 @@ class LearningPath:
             self.path = le_path[:-2]
 
         elif algorithm == "ga":
-            genetic_alg = ga. GeneticAlgorithm(
-                learning_elements=list_of_les
-            )
+            genetic_alg = ga.GeneticAlgorithm(learning_elements=list_of_les)
             self.path = genetic_alg.get_learning_path(
                 input_learning_style=learning_style, input_learning_element=list_of_les
             )

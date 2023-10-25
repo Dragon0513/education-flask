@@ -99,7 +99,7 @@ class GeneticAlgorithm:
             # choose crossover learning elements
             temp = self.le_size - 1
             # cross_points = np.random.randint(0, 2, temp).astype(bool)
-            cross_points = utils.ramdon_generator(2, temp, 'bool')
+            cross_points = utils.ramdon_generator(2, temp, "bool")
             keep_le = parent[~cross_points]
             swap_le = pop[i_, np.isin(pop[i_].ravel(), keep_le, invert=True)]
             parent = np.concatenate((keep_le, swap_le))
@@ -117,7 +117,7 @@ class GeneticAlgorithm:
         for point in range(temp):
             if np.random.rand() < self.mutate_rate:
                 # swap_point = np.random.randint(0, int(temp))
-                swap_point = utils.ramdon_generator(2, temp, 'int')
+                swap_point = utils.ramdon_generator(2, temp, "int")
                 swap_a, swap_b = child[point], child[swap_point]
                 child[point], child[swap_point] = swap_b, swap_a
         return child

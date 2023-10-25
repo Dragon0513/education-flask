@@ -1,6 +1,6 @@
 import numpy as np
 
-import errors as err
+import errors.errors as err
 from domain.tutoringModel import utils
 
 
@@ -164,7 +164,7 @@ class GeneticAlgorithm:
             new_pop = self.population[best_index].copy()
             self.population = new_pop.copy()
             best_sample = new_pop[0]
-            # print("generation:", i)
+
             if best_score < best_total_score and i < self.n_generation:
                 best_total_score = best_score
                 self.best_population = best_sample
@@ -270,7 +270,7 @@ class GeneticAlgorithm:
 
         if lz_is_present:
             classification_learning_element.append(lz_element)
-        print("learning elements", classification_learning_element)
+
         return classification_learning_element
 
     def get_learning_path(self, input_learning_style=None, input_learning_element=None):
@@ -280,20 +280,20 @@ class GeneticAlgorithm:
             learning_style = self.get_learning_style(input_learning_style)
 
         if len(learning_style) != 4:
-            raise err.WrongLearningStyleNumberError()
+            raise err.NoValidParameterValueError()
 
         if self.check_learning_style(learning_style):
-            raise err.WrongLearningStyleDimensionError()
+            raise err.NoValidParameterValueError()
 
         if self.check_name_learning_style(learning_style):
-            raise err.WrongLearningStyleDimensionError()
+            raise err.NoValidParameterValueError()
 
         if input_learning_element is not None:
             # added more learning elementen
             self.learning_elements = self.get_learning_element(input_learning_element)
             self.le_size = len(self.learning_elements)
         else:
-            raise err.WrongLearningStyleDimensionError()
+            raise err.NoValidParameterValueError()
 
         result_ga = self.calculate_learning_path_ga(input_learning_style)
 

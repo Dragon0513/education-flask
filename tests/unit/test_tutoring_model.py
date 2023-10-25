@@ -1,5 +1,7 @@
 import pytest
 
+import errors.errors as err
+
 from domain.domainModel import model as DM
 from domain.learnersModel import model as LM
 from domain.tutoringModel import model as TM
@@ -63,9 +65,42 @@ def test_get_coordinates(
     assert result["LZ"] == (-12, -12, -12, -12)
 
 
-def test_prepare_les_for_ga():
+@pytest.mark.parametrize(
+    "learning_style",
+    [
+        (
+            {
+                "id": 1,
+                "characteristic_id": 1,
+                "perception_dimension": "sns",
+                "perception_value": 5,
+                "input_dimension": "vrb",
+                "input_value": 0,
+                "processing_dimension": "act",
+                "processing_value": 9,
+                "understanding_dimension": "seq",
+                "understanding_value": 11,
+            }
+        ),
+        (
+            {
+                "id": 1,
+                "characteristic_id": 1,
+                "perception_dimension": "int",
+                "perception_value": 1,
+                "input_dimension": "vis",
+                "input_value": 11,
+                "processing_dimension": "ref",
+                "processing_value": 1,
+                "understanding_dimension": "glo",
+                "understanding_value": 3,
+            }
+        ),
+    ],
+)
+def test_prepare_les_for_ga(learning_style):
     list_of_les = []
-    list_of_keys = ["ZF", "KÜ", "SE", "FO", "LZ", "ZL", "AN", "ÜB", "AB", "EK"]
+    list_of_keys = ["ZF", "KÜ", "SE", "LZ", "ZL", "AN", "ÜB", "EK"]
     for i, ele_name in enumerate(list_of_keys):
         le = DM.LearningElement(
             lms_id=i,
@@ -75,22 +110,8 @@ def test_prepare_les_for_ga():
             university="TH-AB",
             created_by="Max Mustermann",
             created_at="2023-09-01",
-            last_updated=None,
-            student_learning_element=None,
         )
         list_of_les.append(le.serialize())
-    learning_style = {
-        "id": 1,
-        "characteristic_id": 1,
-        "perception_dimension": "sns",
-        "perception_value": 0,
-        "input_dimension": "vrb",
-        "input_value": 0,
-        "processing_dimension": "act",
-        "processing_value": 0,
-        "understanding_dimension": "seq",
-        "understanding_value": 0,
-    }
     lp = TM.LearningPath(student_id=1, course_id=1, based_on="ga")
     lp.get_learning_path(
         student_id=1,
@@ -98,11 +119,52 @@ def test_prepare_les_for_ga():
         _algorithm="ga",
         list_of_les=list_of_les,
     )
-
     result = lp.path
     result = result.split(", ")
-    print(result)
     assert isinstance(result, list)
     assert result[0] == "KÜ"
     assert result[1] == "EK"
     assert result[-1] == "LZ"
+
+
+@pytest.mark.parametrize(
+    "learning_style",
+    [
+        (
+            {
+                "id": 1,
+                "characteristic_id": 1,
+                "perception_dimension": "sns",
+                "perception_value": 15,
+                "input_dimension": "vrb",
+                "input_value": 20,
+                "processing_dimension": "act",
+                "processing_value": 5,
+                "understanding_dimension": "seq",
+                "understanding_value": 13,
+            }
+        )
+    ],
+)
+def test_with_out_of_range_learning_style_for_ga(learning_style):
+    list_of_les = []
+    list_of_keys = ["ZF", "KÜ", "SE", "LZ", "ZL", "ÜB", "AB", "EK"]
+    for i, ele_name in enumerate(list_of_keys):
+        le = DM.LearningElement(
+            lms_id=i,
+            activity_type="lesson",
+            classification=ele_name,
+            name="Test LE",
+            university="TH-AB",
+            created_by="Max Mustermann",
+            created_at="2023-09-01",
+        )
+        list_of_les.append(le.serialize())
+    lp = TM.LearningPath(student_id=1, course_id=1, based_on="ga")
+    with pytest.raises(err.NoValidParameterValueError):
+        lp.get_learning_path(
+            student_id=1,
+            learning_style=learning_style,
+            _algorithm="ga",
+            list_of_les=list_of_les,
+        )

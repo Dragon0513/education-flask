@@ -1118,8 +1118,8 @@ class TestApi:
 
     # Learning Path is calculated for ga
     @pytest.mark.parametrize(
-        "input, moodle_user_id, keys_expected,\
-                            status_code_expected",
+        "input, moodle_user_id, keys_exp,\
+                            status_code_exp",
         [
             # Working Example
             (
@@ -1140,31 +1140,33 @@ class TestApi:
             ({}, 4, ["error", "message"], 400),
         ],
     )
-    def test_post_learning_path_for_ga(
-        self, client_class, input, moodle_user_id, keys_expected, status_code_expected
+    def test_post_learning_path_ga(
+        self, client_class, input, moodle_user_id, keys_exp, status_code_exp
     ):
-        global user_id_student, student_id, course_id, sub_topic_id
-        url = (
-            path_user
-            + "/"
-            + str(user_id_student)
-            + "/"
-            + str(moodle_user_id)
-            + path_student
-            + "/"
-            + str(student_id)
-            + path_course
-            + "/"
-            + str(course_id)
-            + path_topic
-            + "/"
-            + str(sub_topic_id)
-            + path_learning_path
+        global user_id_student, student_id, course_id2, sub_topic_id2
+        client_post = client_class.post(
+            (
+                path_user
+                + "/"
+                + str(user_id_student)
+                + "/"
+                + str(moodle_user_id)
+                + path_student
+                + "/"
+                + str(student_id)
+                + path_course
+                + "/"
+                + str(course_id)
+                + path_topic
+                + "/"
+                + str(sub_topic_id)
+                + path_learning_path
+            ),
+            json=input,
         )
-        r = client_class.post(url, json=input)
-        assert r.status_code == status_code_expected
-        response = json.loads(r.data.decode("utf-8").strip("\n"))
-        for key in keys_expected:
+        assert client_post.status_code == status_code_exp
+        response = json.loads(client_post.data.decode("utf-8").strip("\n"))
+        for key in keys_exp:
             assert key in response.keys()
 
     # Post a Contact Form

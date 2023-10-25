@@ -165,7 +165,8 @@ class GeneticAlgorithm:
             self.population = new_pop.copy()
             best_sample = new_pop[0]
             # print("generation:", i)
-            if best_score < best_total_score and i < self.n_generation:
+            if (best_score < best_total_score and
+               i < self.n_generation):
                 best_total_score = best_score
                 self.best_population = best_sample
 

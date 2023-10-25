@@ -68,6 +68,8 @@ These are:
 
 • The naming (of variables, functions, classes, etc.) should be self-explaining.
 
+• We use logging for debugging and error handling: logger.debug, logger.info, logger.warning, logger.error, logger.critical
+
 ## Setup
 
 ### Crypto

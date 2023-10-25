@@ -1,10 +1,10 @@
-from logging.config import dictConfig
-from errors import errors as err
 import logging
+import os
+from enum import Enum
+from logging.config import dictConfig
 from logging.handlers import RotatingFileHandler
 
-from enum import Enum
-import os
+from errors import errors as err
 
 global g_loggers
 global g_logging_config

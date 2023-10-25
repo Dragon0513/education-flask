@@ -1065,7 +1065,7 @@ class TestApi:
         for key in keys_expected:
             assert key in response.keys()
 
-    # Learning Path is calculated 
+    # Learning Path is calculated
     @pytest.mark.parametrize(
         "input, moodle_user_id, keys_expected,\
                             status_code_expected",

@@ -50,14 +50,14 @@ mocked_frontend_log = {
 @app.errorhandler(Exception)
 def handle_general_exception(ex):
     response = json.dumps({"error": ex.__class__.__name__, "message": str(ex)})
-    app.logger.error(response)
+    logger.error(response)
     return response, 500
 
 
 @app.errorhandler(err.AException)
 def handle_custom_exception(ex: err.AException):
     response = json.dumps({"error": ex.__class__.__name__, "message": ex.message})
-    app.logger.error(response)
+    logger.error(response)
     return response, ex.status_code
 
 

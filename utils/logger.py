@@ -2,7 +2,6 @@ import logging
 import os
 from enum import Enum
 from logging.config import dictConfig
-from logging.handlers import RotatingFileHandler
 
 from errors import errors as err
 

@@ -1,4 +1,5 @@
 import json
+
 import os
 import re
 from datetime import datetime
@@ -13,11 +14,14 @@ from errors import errors as err
 from repositories import orm
 from service_layer import services, unit_of_work
 from utils import constants as cons
+import utils.logger as logger
 from utils.decorators import debug_only, json_only
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
 orm.start_mappers()
+
+logger.configure_dict()
 
 mocked_frontend_log = {
     "logs": [
@@ -47,12 +51,14 @@ mocked_frontend_log = {
 @app.errorhandler(Exception)
 def handle_general_exception(ex):
     response = json.dumps({"error": ex.__class__.__name__, "message": str(ex)})
+    app.logger.error(response)
     return response, 500
 
 
 @app.errorhandler(err.AException)
 def handle_custom_exception(ex: err.AException):
     response = json.dumps({"error": ex.__class__.__name__, "message": ex.message})
+    app.logger.error(response)
     return response, ex.status_code
 
 

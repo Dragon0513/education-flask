@@ -276,25 +276,24 @@ class GeneticAlgorithm:
     def get_learning_path(self, input_learning_style=None, input_learning_element=None):
         """calculates and verifies the learning path the genetic algorithm"""
         result_ga = []
-        if input_learning_style is not None:
+        if input_learning_style is None:
+            raise err.MissingParameterError()
+        else:
             learning_style = self.get_learning_style(input_learning_style)
+            if len(learning_style) != 4:
+                raise err.WrongLearningStyleNumberError()
 
-        if len(learning_style) != 4:
+            if self.check_learning_style(learning_style):
+                raise err.WrongLearningStyleDimensionError()
+
+            if self.check_name_learning_style(learning_style):
+                raise err.WrongParameterValueError()
+
+        if input_learning_element is None:
             raise err.NoValidParameterValueError()
-
-        if self.check_learning_style(learning_style):
-            raise err.NoValidParameterValueError()
-
-        if self.check_name_learning_style(learning_style):
-            raise err.NoValidParameterValueError()
-
-        if input_learning_element is not None:
-            # added more learning elementen
+        else:
             self.learning_elements = self.get_learning_element(input_learning_element)
             self.le_size = len(self.learning_elements)
-        else:
-            raise err.NoValidParameterValueError()
 
         result_ga = self.calculate_learning_path_ga(input_learning_style)
-
         return result_ga

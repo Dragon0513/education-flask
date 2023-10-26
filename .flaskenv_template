@@ -1,6 +1,7 @@
 FLASK_APP=entrypoints/flask_app.py
 PLATFORM_NAME=HASKI
 FLASK_DEBUG=0
+LOG_FILE=1
 DB_HOST=localhost
 DB_PASSWORD=PASSWORD
 DB_USER=postgres

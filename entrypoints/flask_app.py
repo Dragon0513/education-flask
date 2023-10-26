@@ -9,6 +9,7 @@ from flask_cors import CORS, cross_origin
 
 import service_layer.crypto.JWTKeyManagement as JWTKeyManagement
 import service_layer.lti.config.ToolConfigJson as ToolConfigJson
+import utils.logger as logger
 from errors import errors as err
 from repositories import orm
 from service_layer import services, unit_of_work
@@ -18,6 +19,8 @@ from utils.decorators import debug_only, json_only
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
 orm.start_mappers()
+
+logger.configure_dict()
 
 mocked_frontend_log = {
     "logs": [
@@ -47,12 +50,14 @@ mocked_frontend_log = {
 @app.errorhandler(Exception)
 def handle_general_exception(ex):
     response = json.dumps({"error": ex.__class__.__name__, "message": str(ex)})
+    logger.error(response)
     return response, 500
 
 
 @app.errorhandler(err.AException)
 def handle_custom_exception(ex: err.AException):
     response = json.dumps({"error": ex.__class__.__name__, "message": ex.message})
+    logger.error(response)
     return response, ex.status_code
 
 

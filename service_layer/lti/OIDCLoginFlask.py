@@ -10,6 +10,7 @@ from werkzeug.wrappers.response import Response
 import service_layer.crypto.JWTKeyManagement as JWTKeyManagement
 import service_layer.lti.config.ToolConfigJson as ToolConfigJson
 import service_layer.service.SessionServiceFlask as SessionServiceFlask
+import utils.logger as logger
 from errors import errors as err
 from service_layer import services, unit_of_work
 from service_layer.crypto.cryptorandom import CryptoRandom
@@ -32,17 +33,19 @@ class OIDCLoginFlask(OIDCLogin):
             cookie_service if cookie_service else CookieServiceFlask()
         )
         self.oidc_login_params = {
-            "iss",
-            "client_id",
-            "login_hint",
-            "lti_message_hint",
-            "target_link_uri",
-            "lti_deployment_id",
+            "iss",  # lms url
+            "client_id",  # client id of the tool
+            "login_hint",  # lms user id
+            "lti_message_hint",  # resource link id or deep link id
+            "target_link_uri",  # target link uri of the tool (also in backend)
+            "lti_deployment_id",  # deployment id
         }
         super(OIDCLoginFlask, self).__init__(request)
 
     def check_params(self) -> "OIDCLoginFlask":
-        # Check if all parameters are present
+        """Check if all parameters are present in the request form"""
+        logger.debug("Starting OIDC login for user: " + str(self._request.form))
+        logger.debug("Checking parameters")
         try:
             if not self.oidc_login_params.issubset(self._request.form.keys()):
                 raise err.MissingParameterError(status_code=400)
@@ -66,14 +69,18 @@ class OIDCLoginFlask(OIDCLogin):
                     os.environ.get("LMS_URL", "https://moodle.haski.app")
                 )
             )
+
             if not self._platform:
                 raise err.ErrorException(message="No platform found", status_code=400)
         except Exception as e:
             raise err.ErrorException(e, message="Error in check_auth", status_code=400)
 
+        logger.debug(str(self._platform))
         parsed_target_link_url = urllib.parse.urlparse(
             self._oidc_login_params_dict.get("target_link_uri")
         )
+
+        logger.debug(str(parsed_target_link_url.netloc))
 
         # Verify if the target_link_uri is valid
         # and does not redirect to other domain than our tool
@@ -89,6 +96,7 @@ class OIDCLoginFlask(OIDCLogin):
                     message="target_link_uri is not from the same host",
                     status_code=400,
                 )
+            logger.debug(str(self._oidc_login_params_dict.get("target_link_uri")))
         except Exception as e:
             raise err.ErrorException(
                 e, message="target_link_uri invalid", status_code=400
@@ -103,14 +111,14 @@ class OIDCLoginFlask(OIDCLogin):
             raise err.ErrorException(
                 message="target_link_uri may be malicious", status_code=400
             )
-
+        logger.debug(str(self._oidc_login_params_dict.get("target_link_uri")))
         return self
 
     def auth_redirect(self) -> Response:
         """Login to OIDC provider from LMS.
         Crafts the redirect url by adding the necessary parameters
         """
-
+        logger.debug("Auth redirect")
         # Create a unique nonce in session for this
         # flow to prevent replay attacks
         nonce = CryptoRandom().getrandomstring(32)
@@ -140,7 +148,7 @@ class OIDCLoginFlask(OIDCLogin):
             # resource link id or deep link idc
             "lti_message_hint": self._oidc_login_params_dict.get("lti_message_hint"),
         }
-        print(ru + urllib.parse.urlencode(params))
+        logger.debug("Redirecting to: " + ru + urllib.parse.urlencode(params))
         response = redirect(ru + urllib.parse.urlencode(params))
         return response
 
@@ -150,6 +158,7 @@ class OIDCLoginFlask(OIDCLogin):
          is rejected with a 403 Forbidden response.
         """
         # 🔑 check auth
+        logger.debug("Verifying state")
 
         # Verify the state parameter
         if not self._request.form.get("state"):
@@ -166,7 +175,7 @@ class OIDCLoginFlask(OIDCLogin):
 
         if not JWTKeyManagement.verify_state_jwt_payload(state_form):
             raise err.InvalidJWTError(message="Invalid state payload", status_code=403)
-
+        logger.debug("State verified: " + str(state_form))
         return self
 
     def verify_id_token(self) -> "OIDCLoginFlask":
@@ -174,6 +183,7 @@ class OIDCLoginFlask(OIDCLogin):
         If the id_token is not valid,
          the request is rejected with a 403 Forbidden response.
         """
+        logger.debug("Verifying id_token")
 
         # check if error in request
         if self._request.form.get("error"):
@@ -232,6 +242,7 @@ class OIDCLoginFlask(OIDCLogin):
     def lti_launch_from_id_token(self) -> Response:
         """Launch LTI from id_token. Redirects\
             to Frontend with nonce jwt in URL."""
+        logger.debug("LTI launch from id_token")
         # state from form
         state_form_jwt = self._request.form.get("state", type=str) or ""
         state_form = JWTKeyManagement.verify_jwt(state_form_jwt)
@@ -273,6 +284,7 @@ class OIDCLoginFlask(OIDCLogin):
             user = services.get_user_by_lms_id(
                 unit_of_work.SqlAlchemyUnitOfWork(), self.id_token.sub
             )
+            logger.debug("User: " + str(user))
             if not user:
                 user = services.create_user(
                     unit_of_work.SqlAlchemyUnitOfWork(),
@@ -295,10 +307,11 @@ class OIDCLoginFlask(OIDCLogin):
             raise err.ErrorException(
                 e, message="User could not be created", status_code=400
             )
-
+        logger.debug("Redirecting to: " + str(response))
         return response
 
     def get_cookie_expiration(self) -> Response:
+        """Get cookie expiration time in seconds"""
         # verify nonce jwt in request
         json_data = self._request.get_json() or {}
         if not json_data.get("nonce"):

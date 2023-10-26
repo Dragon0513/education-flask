@@ -160,7 +160,7 @@ def test_with_out_of_range_learning_style_for_ga(learning_style):
         )
         list_of_les.append(le.serialize())
     lp = TM.LearningPath(student_id=1, course_id=1, based_on="ga")
-    with pytest.raises(err.NoValidParameterValueError):
+    with pytest.raises(err.WrongLearningStyleDimensionError):
         lp.get_learning_path(
             student_id=1,
             learning_style=learning_style,

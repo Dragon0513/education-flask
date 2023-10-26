@@ -260,7 +260,7 @@ class GeneticAlgorithm:
         lz_element = ""
 
         for le in learning_elements:
-            if le["classification"] == "KÜ":
+            if le["classification"] == abbreviation_ct:
                 classification_learning_element.insert(0, le["classification"])
             elif le["classification"] == "LZ":
                 lz_is_present = True

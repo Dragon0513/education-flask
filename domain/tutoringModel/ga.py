@@ -2,6 +2,7 @@ import numpy as np
 
 import errors.errors as err
 from domain.tutoringModel import utils
+import utils.constants as abb
 
 
 class GeneticAlgorithm:
@@ -43,17 +44,13 @@ class GeneticAlgorithm:
             [dict_coordinates[key] for key in dict_coordinates]
         )
         self.le_coordinate.reshape((len(dict_coordinates), 4))
-        # le_size ist the size of list of learning element
         self.population = utils.permutation_generator(self.le_size, self.pop_size)
 
     def valide_population(self):
-        """Function to add validation:
-        First Learning Element is fixed
+        """Function to add validation: First Learning Element is fixed
         in the Learning path."""
-
         new_pop = np.zeros((self.pop_size, self.le_size), dtype=int)
         new_pop[:, 0] = 0
-
         new_pop[:, 1 : self.le_size] = self.population.copy()
         return new_pop
 
@@ -94,12 +91,10 @@ class GeneticAlgorithm:
 
         if np.random.rand() < self.cross_rate:
             samples = 2
-            # i_ = np.random.randint(0, samples, size=1)
-            i_ = np.random.randint(0, samples)
+            i_ = utils.random_generator(samples, size=1, type_="int")
             # choose crossover learning elements
             temp = self.le_size - 1
-            # cross_points = np.random.randint(0, 2, temp).astype(bool)
-            cross_points = utils.ramdon_generator(2, temp, "bool")
+            cross_points = utils.random_generator(2, size=temp, type_="bool")
             keep_le = parent[~cross_points]
             swap_le = pop[i_, np.isin(pop[i_].ravel(), keep_le, invert=True)]
             parent = np.concatenate((keep_le, swap_le))
@@ -115,9 +110,9 @@ class GeneticAlgorithm:
         # may not appear in the previous generation
         temp = self.le_size - 2
         for point in range(temp):
-            if np.random.rand() < self.mutate_rate:
-                # swap_point = np.random.randint(0, int(temp))
-                swap_point = utils.ramdon_generator(2, temp, "int")
+            rate = utils.random_generator(2, temp, "float")
+            if rate < self.mutate_rate:
+                swap_point = utils.random_generator(2, temp, "int")
                 swap_a, swap_b = child[point], child[swap_point]
                 child[point], child[swap_point] = swap_b, swap_a
         return child
@@ -177,7 +172,6 @@ class GeneticAlgorithm:
         idx = population[0]
         result_ga_lp = ga_path[idx]
 
-        # convert to string
         learning_path = self.get_learning_path_as_str(result_ga_lp)
 
         return learning_path
@@ -234,23 +228,18 @@ class GeneticAlgorithm:
 
     def check_name_learning_style(self, input_learning_style):
         """Check if the names of learning styles are correct."""
-        list_is_correct = []
         pairs = [
             {"act", "ref"},
             {"sns", "int"},
             {"vis", "vrb"},
             {"seq", "glo"},
         ]
-        for key in input_learning_style:
-            cond1 = key in pairs[0]
-            cond2 = key in pairs[1]
-            cond3 = key in pairs[2]
-            cond4 = key in pairs[3]
-            if cond1 or cond2 or cond3 or cond4:
-                list_is_correct.append(True)
-        if any(list_is_correct):
-            return False
-        return True
+        return any(
+            [
+                True if set(pair).issubset(input_learning_style) else False
+                for pair in pairs
+            ]
+        )
 
     def get_learning_element(self, learning_elements):
         """converts the dictionary learning element
@@ -260,9 +249,9 @@ class GeneticAlgorithm:
         lz_element = ""
 
         for le in learning_elements:
-            if le["classification"] == abbreviation_ct:
+            if le["classification"] == abb.abbreviation_ct:
                 classification_learning_element.insert(0, le["classification"])
-            elif le["classification"] == "LZ":
+            elif le["classification"] == abb.abbreviation_as:
                 lz_is_present = True
                 lz_element = le["classification"]
             else:

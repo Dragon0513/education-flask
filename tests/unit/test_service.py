@@ -1283,8 +1283,19 @@ def create_learning_path_for_tests(uow):
         student_id=1,
         course_id=1,
         topic_id=1,
-        algorithm="ga",
+        algorithm="aco",
     )
+    
+def create_learning_path_for_tests_ga(uow):
+    return services.create_learning_path(
+        uow=uow,
+        user_id=1,
+        lms_user_id=1,
+        student_id=1,
+        course_id=1,
+        topic_id=1,
+        algorithm="ga",
+    )    
 
 
 def add_student_to_course_for_tests(uow):

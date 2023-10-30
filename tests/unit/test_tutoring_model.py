@@ -119,6 +119,8 @@ def test_prepare_les_for_ga(learning_style):
         list_of_les=list_of_les,
     )
     result = lp.path
+    assert isinstance(result, str)
+    assert ", " in result
     result = result.split(", ")
     assert isinstance(result, list)
     assert result[0] == "KÜ"

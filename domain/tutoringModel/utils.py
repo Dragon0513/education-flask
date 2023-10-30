@@ -111,6 +111,4 @@ def random_generator(num, size, type_):
     elif type_ == "bool":
         return rng.choice([True, False], size)
     else:
-        raise ValueError(
-            "Unknown type. Valid types are 'float', 'int' or 'bool'."
-        )
+        raise ValueError("Unknown type. Valid types are 'float', 'int' or 'bool'.")

@@ -1,8 +1,8 @@
 import numpy as np
 
 import errors.errors as err
-from domain.tutoringModel import utils
 import utils.constants as abb
+from domain.tutoringModel import utils
 
 
 class GeneticAlgorithm:

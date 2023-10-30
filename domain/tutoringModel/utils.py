@@ -103,7 +103,7 @@ def permutation_generator(le_size, pop_size):
 
 
 def random_generator(num, size, type_):
-    rng = np.random.default_rng()
+    rng = np.random.default_rng(42)
     if type_ == "float":
         return rng.random(size)
     elif type_ == "int":

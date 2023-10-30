@@ -103,11 +103,14 @@ def permutation_generator(le_size, pop_size):
 
 
 def random_generator(num, size, type_):
-    if type_ == "float":
-        return np.random.rand()
-
-    if type_ == "int":
-        return np.random.randint(0, num, size=1)
-
     rng = np.random.default_rng()
-    return rng.choice([True, False], size)
+    if type_ == "float":
+        return rng.random(size)
+    elif type_ == "int":
+        return rng.integers(0, num, size=1)
+    elif type_ == "bool":
+        return rng.choice([True, False], size)
+    else:
+        raise ValueError(
+            "Unknown type for the random_generator function. Valid types are 'float', 'int' or 'bool'."
+        )

@@ -25,7 +25,7 @@ class GeneticAlgorithm:
         self.le_coordinate: np.ndarray = np.array([])
         self.n_generation = 100
         self.population: np.ndarray = np.array([])
-        self.le_size = 0.0
+        self.le_size = 0
         self.mutate_rate = 0.3
         self.cross_rate = 0.9
         self.pop_size = 80
@@ -101,16 +101,16 @@ class GeneticAlgorithm:
         return parent
 
     def mutate(self, child):
-        """funcion fo"""
-        # To prevent all offspring of a new generation
-        # from having the same approximation, a percentage
-        # probability is set at which an offspring will receive
-        # a mutation. In this case, two points within the pathway
+        """To prevent all offspring of a new generation
+        from having the same approximation, a percentage
+        probability is set at which an offspring will receive
+        a mutation"""
+        # In this case, two points within the pathway
         # are exchanged. This creates a new pathway that
         # may not appear in the previous generation
         temp = self.le_size - 2
         for point in range(temp):
-            rate = utils.random_generator(2, temp, "float")
+            rate = utils.random_generator(0, 1, "float")
             if rate < self.mutate_rate:
                 swap_point = utils.random_generator(2, temp, "int")
                 swap_a, swap_b = child[point], child[swap_point]

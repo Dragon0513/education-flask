@@ -1,78 +1,72 @@
-from datetime import datetime
-
-from errors import errors as err
+from domain.tutoringModel.utils import check_learning_style, influence
 
 
 class GrafAlgorithm:
-    # Learning Element Types: (+) = 1 and (-) = 0
-    learning_style_rq = {"AKT": 0, "REF": 1, "INT": 1}
-    learning_style_se = {"AKT": 1, "REF": 0, "SNS": 1}
-    learning_style_fo = {"AKT": 1, "REF": 0, "INT": 0, "VIS": 0, "VRB": 1}
-    learning_style_zl = {"AKT": 0, "REF": 1, "SNS": 0, "INT": 1, "VIS": 0, "VRB": 1}
-    learning_style_an = {"AKT": 1, "REF": 0, "SNS": 1, "INT": 0, "VIS": 1, "VRB": 0}
-    learning_style_ub = {"AKT": 1, "REF": 0, "SNS": 1, "INT": 1}
-    learning_style_be = {"AKT": 0, "REF": 1, "SNS": 1, "INT": 0, "GLO": 1}
-    learning_style_ab = {"SNS": 1, "INT": 0, "GLO": 1}
-    learning_style_zf = {"REF": 1, "GLO": 1}
 
     def __init__(
         self,
         student_id,
         learning_path=None,
-        learning_style={"AKT": 0, "INT": 0, "VIS": 0, "GLO": 0},
         id=None,
     ):
-        if id is None:
-            self.id = datetime.timestamp(datetime.now())
-        else:
-            self.id = id
+        self.id = id
         self.student_id = student_id
-        if learning_path is None:
-            self.learning_path = self.get_learning_path(learning_style)
+        self.learning_path = learning_path
+
+    def calculate_graf_score(self, learning_element, learning_style):
+        if(learning_element == "KÜ"):
+            return 99
+        elif(learning_element == "EK"):
+            return 98
+        elif(learning_element == "LZ"):
+            return -99
+        elif(learning_element == "ZF"):
+            if (
+                learning_style["processing_dimension"] == "ref"
+                and learning_style["understanding_dimension"] == "seq"
+            ):
+                if (
+                    learning_style["processing_value"]
+                    > learning_style["understanding_value"]
+                ):
+                    return 97
+                else:
+                    return 0
+            elif (
+                learning_style["processing_dimension"] == "ref"
+                or learning_style["understanding_dimension"] == "glo"
+            ):
+                return 97
+            else:
+                return 0
         else:
-            self.learning_path = learning_path
-
-    def check_learning_style(self, input_learning_style):
-        is_correct = False
-
-        for iterator in input_learning_style:
-            if input_learning_style.get(iterator):
-                dimension_number = input_learning_style.get(iterator)
-                if dimension_number < 0 or dimension_number > 11:
-                    is_correct = True
-                    break
-        return is_correct
-
-    def special_case_zf(self, input_learning_style):
-        # Validates ZF learning elements
-        result = 0
-        reflective = input_learning_style.get("REF")
-        sequential = input_learning_style.get("SEQ")
-        style_global = input_learning_style.get("GLO")
-
-        condition1 = reflective and sequential
-        condition2 = condition1 and reflective > sequential
-        condition3 = (reflective and not sequential) or style_global
-
-        if condition2 or condition3:
-            result = 99
-
-        return result
-
-    def calculate_sequence(self, learning_element_types, input_learning_style):
-        graf_value = 0
-        learning_style = 0
-
-        for learning_style, value in learning_element_types.items():
-            if input_learning_style.get(learning_style):
-                learning_style = input_learning_style.get(learning_style)
-
-                if value == 0:
-                    learning_style *= -1
-
-                graf_value += learning_style
-
-        return graf_value
+            sum = 0
+            print(influence[learning_element])
+            if(learning_style["processing_dimension"] == "act"):
+                sum = sum + influence[learning_element][0] * \
+                    learning_style["processing_value"]
+            else:
+                sum = sum + influence[learning_element][1] * \
+                    learning_style["processing_value"]
+            if(learning_style["perception_dimension"] == "sns"):
+                sum = sum + influence[learning_element][2] * \
+                    learning_style["perception_value"]
+            else:
+                sum = sum + influence[learning_element][3] * \
+                    learning_style["perception_value"]
+            if(learning_style["input_dimension"] == "act"):
+                sum = sum + influence[learning_element][4] * \
+                    learning_style["input_value"]
+            else:
+                sum = sum + influence[learning_element][5] * \
+                    learning_style["input_value"]
+            if(learning_style["understanding_dimension"] == "act"):
+                sum = sum + influence[learning_element][6] * \
+                    learning_style["understanding_value"]
+            else:
+                sum = sum + influence[learning_element][7] * \
+                    learning_style["understanding_value"]
+            return sum
 
     def sort_learning_path(self, learning_path):
         sort_learning_path = []
@@ -84,40 +78,14 @@ class GrafAlgorithm:
         return sort_learning_path
 
     def get_learning_path(
-        self, input_learning_style={"AKT": 0, "INT": 0, "VIS": 0, "GLO": 0}
+        self,
+        input_learning_style={},
+        list_of_les={}
     ):
-        if len(input_learning_style) != 4:
-            raise err.WrongLearningStyleNumberError()
-
-        if self.check_learning_style(input_learning_style):
-            raise err.WrongLearningStyleDimensionError()
-
+        check_learning_style(input_learning_style)
         learning_path = {}
-
-        learning_path["RQ"] = self.calculate_sequence(
-            self.learning_style_rq, input_learning_style
-        )
-        learning_path["SE"] = self.calculate_sequence(
-            self.learning_style_se, input_learning_style
-        )
-        learning_path["FO"] = self.calculate_sequence(
-            self.learning_style_fo, input_learning_style
-        )
-        learning_path["ZL"] = self.calculate_sequence(
-            self.learning_style_zl, input_learning_style
-        )
-        learning_path["AN"] = self.calculate_sequence(
-            self.learning_style_an, input_learning_style
-        )
-        learning_path["UB"] = self.calculate_sequence(
-            self.learning_style_ub, input_learning_style
-        )
-        learning_path["BE"] = self.calculate_sequence(
-            self.learning_style_be, input_learning_style
-        )
-        learning_path["AB"] = self.calculate_sequence(
-            self.learning_style_ab, input_learning_style
-        )
-        learning_path["ZF"] = self.special_case_zf(input_learning_style)
-
+        for le in list_of_les:
+            value = self.calculate_graf_score(
+                le['classification'], input_learning_style)
+            learning_path[le['classification']] = value
         return self.sort_learning_path(learning_path)

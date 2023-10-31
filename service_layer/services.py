@@ -15,11 +15,13 @@ def add_course_creator_to_course(
     uow: unit_of_work.AbstractUnitOfWork, created_by, course_id, created_at
 ) -> dict:
     with uow:
-        course_creator = uow.course_creator.get_course_creator_by_id(created_by)
+        course_creator = uow.course_creator.get_course_creator_by_id(
+            created_by)
         course_creator_course = DM.CourseCreatorCourse(
             course_creator[0].id, course_id, created_at
         )
-        uow.course_creator_course.add_course_creator_to_course(course_creator_course)
+        uow.course_creator_course.add_course_creator_to_course(
+            course_creator_course)
         uow.commit()
         result = course_creator_course.serialize()
         return result
@@ -31,7 +33,8 @@ def add_student_to_course(
     with uow:
         uow.student.get_student_by_student_id(student_id)
         get_course_by_id(uow, None, None, course_id)
-        student_course = uow.student_course.get_student_course(student_id, course_id)
+        student_course = uow.student_course.get_student_course(
+            student_id, course_id)
         if student_course != []:
             raise err.AlreadyExisting()
         characteristics = get_learning_characteristics(uow, student_id)
@@ -109,7 +112,8 @@ def add_student_topic_visit(
     with uow:
         if previous_topic_id is not None:
             update_previous_topic_visit(uow, student_id, visit_start)
-        student_topic_visit = DM.StudentTopicVisit(student_id, topic_id, visit_start)
+        student_topic_visit = DM.StudentTopicVisit(
+            student_id, topic_id, visit_start)
         uow.student_topic_visit.add_student_topic_visit(student_topic_visit)
         uow.commit()
         result = student_topic_visit.serialize()
@@ -122,7 +126,8 @@ def add_teacher_to_course(
     with uow:
         get_course_by_id(uow, None, None, course_id)
         user = uow.teacher.get_teacher_by_teacher_id(teacher_id)
-        teacher_coures = get_courses_for_teacher(uow, user[0].user_id, teacher_id)
+        teacher_coures = get_courses_for_teacher(
+            uow, user[0].user_id, teacher_id)
         for course in teacher_coures["courses"]:
             if int(course["id"]) == int(course_id):
                 raise err.AlreadyExisting()
@@ -221,7 +226,8 @@ def create_ils_perception_answers(
             answers["si_8_f30"] if "si_8_f30" in answers.keys() else None,
             answers["si_9_f34"] if "si_9_f34" in answers.keys() else None,
         )
-        uow.ils_perception_answers.create_ils_perception_answers(ils_perception_answers)
+        uow.ils_perception_answers.create_ils_perception_answers(
+            ils_perception_answers)
         uow.commit()
         result = ils_perception_answers.serialize()
         return result
@@ -245,7 +251,8 @@ def create_ils_processing_answers(
             answers["ar_10_f37"] if "ar_10_f37" in answers.keys() else None,
             answers["ar_11_f41"] if "ar_11_f41" in answers.keys() else None,
         )
-        uow.ils_processing_answers.create_ils_processing_answers(ils_processing_answers)
+        uow.ils_processing_answers.create_ils_processing_answers(
+            ils_processing_answers)
         uow.commit()
         result = ils_processing_answers.serialize()
         return result
@@ -302,7 +309,8 @@ def create_learning_characteristics(
 ) -> dict:
     with uow:
         characteristic = LM.LearningCharacteristic(student_id)
-        uow.learning_characteristics.create_learning_characteristics(characteristic)
+        uow.learning_characteristics.create_learning_characteristics(
+            characteristic)
         uow.commit()
         create_knowledge(uow, characteristic.id)
         create_learning_analytics(uow, characteristic.id)
@@ -357,7 +365,8 @@ def create_learning_path(
         paths_exisiting = get_learning_paths(uow=uow, student_id=student_id)
         for path_exisiting in paths_exisiting:
             condition1 = int(path_exisiting["course_id"]) == int(course_id)
-            condition2 = int(path_exisiting["topic_id"]) == int(topic_id) if path_exisiting["topic_id"] else False
+            condition2 = int(path_exisiting["topic_id"]) == int(
+                topic_id) if path_exisiting["topic_id"] else False
             if condition1 and condition2:
                 delete_learning_path_learning_element(
                     uow=uow, learning_path_id=int(path_exisiting["id"])
@@ -368,7 +377,8 @@ def create_learning_path(
                 delete_learning_path(
                     uow=uow, learning_path_id=int(path_exisiting["id"])
                 )
-        learning_path = TM.LearningPath(student_id, course_id, algorithm, topic_id)
+        learning_path = TM.LearningPath(
+            student_id, course_id, algorithm, topic_id)
         uow.learning_path.create_learning_path(learning_path)
         uow.commit()
         result = learning_path.serialize()

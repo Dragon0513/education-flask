@@ -100,7 +100,7 @@ def distance(xyz1, xyz2) -> float:
 def permutation_generator(le_size, pop_size):
     """function to randomly generate population for ga"""
     positions = np.arange(1, le_size)
-    perm = np.random.permutation(positions)
+    perm = rng.permutation(positions)
     population = np.tile(perm, (pop_size, 1))
     return population
 

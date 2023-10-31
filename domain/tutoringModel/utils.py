@@ -4,6 +4,8 @@ import numpy as np
 
 from utils import constants as cons
 
+rng = np.random.default_rng(5)
+
 # Interpretation of Graf et al. for Learning Elements
 # -1: negative Influence; 0: neutral; 1: positive Influence
 # ACT-REF-SNS-INT-VIS-VRB-SEQ-GLO
@@ -103,11 +105,9 @@ def permutation_generator(le_size, pop_size):
 
 
 def random_generator(num, size, type_):
-    rng = np.random.default_rng()
-    if type_ == "float":
-        return rng.random(size)
-    elif type_ == "int":
+    if type_ == "int":
         return rng.integers(0, num, size=1)
+
     elif type_ == "bool":
         return rng.choice([True, False], size)
     else:

@@ -89,7 +89,7 @@ class GeneticAlgorithm:
         # two parents are randomly selected from the population,
         # to inherit a part of their solution to their child.
 
-        if np.random.rand() < self.cross_rate:
+        if utils.rng.random() < self.cross_rate:
             samples = 2
             i_ = utils.random_generator(samples, size=1, type_="int")
             # choose crossover learning elements
@@ -110,8 +110,7 @@ class GeneticAlgorithm:
         # may not appear in the previous generation
         temp = self.le_size - 2
         for point in range(temp):
-            rate = utils.random_generator(0, 1, "float")
-            if rate < self.mutate_rate:
+            if utils.rng.random() < self.mutate_rate:
                 swap_point = utils.random_generator(2, temp, "int")
                 swap_a, swap_b = child[point], child[swap_point]
                 child[point], child[swap_point] = swap_b, swap_a

@@ -2,6 +2,7 @@ import math
 
 import numpy as np
 
+import errors.errors as err
 from utils import constants as cons
 
 rng = np.random.default_rng(5)
@@ -111,4 +112,4 @@ def random_generator(num, size, type_):
     elif type_ == "bool":
         return rng.choice([True, False], size)
     else:
-        raise ValueError("Unknown type. Valid types are 'float', 'int' or 'bool'.")
+        raise err.WrongParameterValueError()

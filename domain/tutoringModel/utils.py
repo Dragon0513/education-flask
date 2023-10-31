@@ -1,6 +1,11 @@
 import math
 
+import numpy as np
+
+import errors.errors as err
 from utils import constants as cons
+
+rng = np.random.default_rng(5)
 
 # Interpretation of Graf et al. for Learning Elements
 # -1: negative Influence; 0: neutral; 1: positive Influence
@@ -90,3 +95,21 @@ def distance(xyz1, xyz2) -> float:
         xyz1 = xyz1[1]
         xyz2 = xyz2[1]
     return math.dist(xyz1, xyz2)
+
+
+def permutation_generator(le_size, pop_size):
+    """function to randomly generate population for ga"""
+    positions = np.arange(1, le_size)
+    perm = rng.permutation(positions)
+    population = np.tile(perm, (pop_size, 1))
+    return population
+
+
+def random_generator(num, size, type_):
+    if type_ == "int":
+        return rng.integers(0, num, size=1)
+
+    elif type_ == "bool":
+        return rng.choice([True, False], size)
+    else:
+        raise err.WrongParameterValueError()

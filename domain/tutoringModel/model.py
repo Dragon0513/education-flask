@@ -34,9 +34,9 @@ class LearningPath:
         algorithm = _algorithm.lower()
         if algorithm == "graf":
             path = graf.GrafAlgorithm(
-                student_id=student_id, learning_style=learning_style
+                student_id=student_id
             )
-            temp = path.get_learning_path(input_learning_style=learning_style)
+            temp = path.get_learning_path(input_learning_style=learning_style, list_of_les=list_of_les)
             self.path = ", ".join(temp)
         elif algorithm == "aco":
             list_of_les_classifications = self.prepare_le_for_aco(list_of_les)

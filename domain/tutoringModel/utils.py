@@ -3,7 +3,6 @@ import math
 import numpy as np
 
 import errors.errors as err
-from errors import errors as err
 from utils import constants as cons
 
 rng = np.random.default_rng(5)

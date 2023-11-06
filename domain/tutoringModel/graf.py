@@ -1,4 +1,3 @@
-import errors.errors as err
 from domain.tutoringModel.utils import check_learning_style, influence
 from utils import constants as cons
 
@@ -45,7 +44,6 @@ class GrafAlgorithm:
 
     def calculate_variable_score(self, learning_element, learning_style):
         score = 0
-        found = False
         if (learning_style["processing_dimension"] == "act"):
             score = score + influence[learning_element][0] * \
                 learning_style["processing_value"]
@@ -70,10 +68,7 @@ class GrafAlgorithm:
         else:
             score = score + influence[learning_element][7] * \
                 learning_style["understanding_value"]
-        if found:
-            return score
-        else:
-            raise err.WrongLearningElementError()
+        return score
 
     def calculate_graf_score(self, learning_element, learning_style):
         if(

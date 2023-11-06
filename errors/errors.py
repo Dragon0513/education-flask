@@ -265,13 +265,3 @@ class NoJsonError(AException):
         status_code=400,
     ):
         super().__init__(exception, message, status_code)
-        
-        
-class WrongLearningElementError(AException):
-    def __init__(
-        self,
-        exception: Exception | None = None,
-        message="There is a wrong learning element in the Database.",
-        status_code=400,
-    ):
-        super().__init__(exception, message, status_code)

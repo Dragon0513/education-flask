@@ -1,6 +1,5 @@
-from domain.tutoringModel.utils import check_learning_style, influence
-
 import errors.errors as err
+from domain.tutoringModel.utils import check_learning_style, influence
 from utils import constants as cons
 
 

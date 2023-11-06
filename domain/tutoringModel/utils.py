@@ -80,13 +80,11 @@ def get_coordinates(learning_style, list_of_les):
                 )
             if learning_style["understanding_dimension"] == "seq":
                 coordinate.append(
-                    learning_style["understanding_value"] *
-                    influence[elememnt][6]
+                    learning_style["understanding_value"] * influence[elememnt][6]
                 )
             elif learning_style["understanding_dimension"] == "glo":
                 coordinate.append(
-                    learning_style["understanding_value"] *
-                    influence[elememnt][7]
+                    learning_style["understanding_value"] * influence[elememnt][7]
                 )
             coordinates[elememnt] = tuple(coordinate)
     return coordinates
@@ -133,14 +131,16 @@ def check_learning_style(input_learning_style):
     condition10 = -11 <= input_learning_style["input_value"] <= 11
     condition11 = -11 <= input_learning_style["processing_value"] <= 11
     condition12 = -11 <= input_learning_style["understanding_value"] <= 11
-    if (not (condition1 and
-             condition2 and
-             condition3 and
-             condition4 and
-             condition5 and
-             condition6 and
-             condition7 and
-             condition8)):
+    if not (
+        condition1
+        and condition2
+        and condition3
+        and condition4
+        and condition5
+        and condition6
+        and condition7
+        and condition8
+    ):
         raise err.WrongLearningStyleNumberError()
-    if (not (condition9 and condition10 and condition11 and condition12)):
+    if not (condition9 and condition10 and condition11 and condition12):
         raise err.WrongLearningStyleDimensionError()

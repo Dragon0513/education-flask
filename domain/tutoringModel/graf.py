@@ -3,7 +3,6 @@ from utils import constants as cons
 
 
 class GrafAlgorithm:
-
     def __init__(
         self,
         student_id,
@@ -15,11 +14,11 @@ class GrafAlgorithm:
         self.learning_path = learning_path
 
     def get_standard_values_for_graf(self, learning_element):
-        if (learning_element == cons.abbreviation_ct):
+        if learning_element == cons.abbreviation_ct:
             return 99
-        elif (learning_element == cons.abbreviation_co):
+        elif learning_element == cons.abbreviation_co:
             return 98
-        elif (learning_element == cons.abbreviation_as):
+        elif learning_element == cons.abbreviation_as:
             return -99
 
     def get_cc_score(self, learning_style):
@@ -44,44 +43,57 @@ class GrafAlgorithm:
 
     def calculate_variable_score(self, learning_element, learning_style):
         score = 0
-        if (learning_style["processing_dimension"] == "act"):
-            score = score + influence[learning_element][0] * \
-                learning_style["processing_value"]
+        if learning_style["processing_dimension"] == "act":
+            score = (
+                score
+                + influence[learning_element][0] * learning_style["processing_value"]
+            )
         else:
-            score = score + influence[learning_element][1] * \
-                learning_style["processing_value"]
-        if (learning_style["perception_dimension"] == "sns"):
-            score = score + influence[learning_element][2] * \
-                learning_style["perception_value"]
+            score = (
+                score
+                + influence[learning_element][1] * learning_style["processing_value"]
+            )
+        if learning_style["perception_dimension"] == "sns":
+            score = (
+                score
+                + influence[learning_element][2] * learning_style["perception_value"]
+            )
         else:
-            score = score + influence[learning_element][3] * \
-                learning_style["perception_value"]
-        if (learning_style["input_dimension"] == "act"):
-            score = score + influence[learning_element][4] * \
-                learning_style["input_value"]
+            score = (
+                score
+                + influence[learning_element][3] * learning_style["perception_value"]
+            )
+        if learning_style["input_dimension"] == "act":
+            score = (
+                score + influence[learning_element][4] * learning_style["input_value"]
+            )
         else:
-            score = score + influence[learning_element][5] * \
-                learning_style["input_value"]
-        if (learning_style["understanding_dimension"] == "act"):
-            score = score + influence[learning_element][6] * \
-                learning_style["understanding_value"]
+            score = (
+                score + influence[learning_element][5] * learning_style["input_value"]
+            )
+        if learning_style["understanding_dimension"] == "act":
+            score = (
+                score
+                + influence[learning_element][6] * learning_style["understanding_value"]
+            )
         else:
-            score = score + influence[learning_element][7] * \
-                learning_style["understanding_value"]
+            score = (
+                score
+                + influence[learning_element][7] * learning_style["understanding_value"]
+            )
         return score
 
     def calculate_graf_score(self, learning_element, learning_style):
-        if(
-            learning_element == cons.abbreviation_ct or
-            learning_element == cons.abbreviation_co or
-            learning_element == cons.abbreviation_as
+        if (
+            learning_element == cons.abbreviation_ct
+            or learning_element == cons.abbreviation_co
+            or learning_element == cons.abbreviation_as
         ):
             return self.get_standard_values_for_graf(learning_element)
-        elif (learning_element == cons.abbreviation_cc):
+        elif learning_element == cons.abbreviation_cc:
             return self.get_cc_score(learning_style)
         else:
             return self.calculate_variable_score(learning_element, learning_style)
-        
 
     def sort_learning_path(self, learning_path):
         sort_learning_path = []
@@ -92,15 +104,12 @@ class GrafAlgorithm:
             del learning_path[highest_item]
         return sort_learning_path
 
-    def get_learning_path(
-        self,
-        input_learning_style={},
-        list_of_les={}
-    ):
+    def get_learning_path(self, input_learning_style={}, list_of_les={}):
         check_learning_style(input_learning_style)
         learning_path = {}
         for le in list_of_les:
             value = self.calculate_graf_score(
-                le['classification'], input_learning_style)
-            learning_path[le['classification']] = value
+                le["classification"], input_learning_style
+            )
+            learning_path[le["classification"]] = value
         return self.sort_learning_path(learning_path)

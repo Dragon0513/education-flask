@@ -1266,7 +1266,7 @@ def create_learning_element_for_tests_2(uow):
         services.create_learning_element(
             uow=uow,
             topic_id=1,
-            lms_id=i+1,
+            lms_id=i + 1,
             activity_type="lesson",
             classification=list_of_les[i],
             name="Test LE",
@@ -1294,7 +1294,7 @@ def create_learning_path_for_tests(uow, algorithm="aco"):
         topic_id=1,
         algorithm=algorithm,
     )
-    
+
 
 def create_learning_path_for_tests_ga(uow):
     return services.create_learning_path(

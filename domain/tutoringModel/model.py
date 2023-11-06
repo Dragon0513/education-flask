@@ -33,16 +33,14 @@ class LearningPath:
     def get_learning_path(self, student_id, learning_style, _algorithm, list_of_les):
         algorithm = _algorithm.lower()
         if algorithm == "graf":
-            path = graf.GrafAlgorithm(
-                student_id=student_id
-            )
+            path = graf.GrafAlgorithm(student_id=student_id)
             temp = path.get_learning_path(
-                input_learning_style=learning_style, list_of_les=list_of_les)
+                input_learning_style=learning_style, list_of_les=list_of_les
+            )
             self.path = ", ".join(temp)
         elif algorithm == "aco":
             list_of_les_classifications = self.prepare_le_for_aco(list_of_les)
-            coordinates = get_coordinates(
-                learning_style, list_of_les_classifications)
+            coordinates = get_coordinates(learning_style, list_of_les_classifications)
             path = aco.AntColonySolver()
             result = path.solve(list(coordinates.items()))
             le_path = ""

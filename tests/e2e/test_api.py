@@ -1085,9 +1085,24 @@ class TestApi:
         "input, moodle_user_id, keys_expected,\
                             status_code_expected",
         [
-            # Working Example
+            # Working Example ACO
             (
                 {"algorithm": "aco"},
+                4,
+                [
+                    "id",
+                    "course_id",
+                    "topic_id",
+                    "student_id",
+                    "based_on",
+                    "path",
+                    "calculated_on",
+                ],
+                201,
+            ),
+            # Working Example Graf
+            (
+                {"algorithm": "graf"},
                 4,
                 [
                     "id",

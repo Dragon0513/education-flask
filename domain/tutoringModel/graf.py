@@ -1,4 +1,5 @@
 from domain.tutoringModel.utils import check_learning_style, influence
+from utils import constants as cons
 
 
 class GrafAlgorithm:
@@ -14,13 +15,13 @@ class GrafAlgorithm:
         self.learning_path = learning_path
 
     def calculate_graf_score(self, learning_element, learning_style):
-        if (learning_element == "KÜ"):
+        if (learning_element == cons.abbreviation_ct):
             return 99
-        elif (learning_element == "EK"):
+        elif (learning_element == cons.abbreviation_co):
             return 98
-        elif (learning_element == "LZ"):
+        elif (learning_element == cons.abbreviation_as):
             return -99
-        elif (learning_element == "ZF"):
+        elif (learning_element == cons.abbreviation_cc):
             if (
                 learning_style["processing_dimension"] == "ref"
                 and learning_style["understanding_dimension"] == "seq"

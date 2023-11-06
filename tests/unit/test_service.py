@@ -1282,7 +1282,7 @@ def create_topic_learning_element_for_tests(uow):
     services.create_topic_learning_element(uow=uow, topic_id=1, learning_element_id=1)
 
 
-def create_learning_path_for_tests(uow):
+def create_learning_path_for_tests(uow, algorithm="aco"):
     return services.create_learning_path(
         uow=uow,
         user_id=1,
@@ -1290,9 +1290,9 @@ def create_learning_path_for_tests(uow):
         student_id=1,
         course_id=1,
         topic_id=1,
-        algorithm="aco",
+        algorithm=algorithm,
     )
-
+    
 
 def create_learning_path_for_tests_ga(uow):
     return services.create_learning_path(
@@ -2387,17 +2387,23 @@ def test_student_topic_visit():
 
 
 @pytest.mark.parametrize(
-    "number_of_les",
+    "number_of_les, algorithm",
     [
         # 0
-        (0),
+        (0, "aco"),
         # 1
-        (1),
+        (1, "aco"),
         # 2
-        (2),
+        (2, "aco"),
+        # 0
+        (0, "graf"),
+        # 1
+        (1, "graf"),
+        # 2
+        (2, "graf"),
     ],
 )
-def test_create_learning_path(number_of_les):
+def test_create_learning_path(number_of_les, algorithm):
     uow = FakeUnitOfWork()
     create_course_creator_for_tests(uow)
     create_student_for_tests(uow)
@@ -2413,9 +2419,9 @@ def test_create_learning_path(number_of_les):
     )
     if number_of_les == 0:
         with pytest.raises(err.NoLearningElementsError):
-            create_learning_path_for_tests(uow)
+            create_learning_path_for_tests(uow, algorithm)
     else:
-        result = create_learning_path_for_tests(uow)
+        result = create_learning_path_for_tests(uow, algorithm)
         assert type(result) == dict
         assert result != {}
         entries_after_path = len(uow.learning_path.learning_path)
@@ -2424,7 +2430,7 @@ def test_create_learning_path(number_of_les):
         )
         assert entries_beginning_path + 1 == entries_after_path
         assert entries_beginning_path_le + number_of_les == entries_after_path_le
-        result = create_learning_path_for_tests(uow)
+        result = create_learning_path_for_tests(uow, algorithm)
         assert type(result) == dict
         assert result != {}
         entries_after_path_2 = len(uow.learning_path.learning_path)

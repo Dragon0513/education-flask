@@ -1261,17 +1261,19 @@ def create_learning_element_for_tests_1(uow):
 
 
 def create_learning_element_for_tests_2(uow):
-    services.create_learning_element(
-        uow=uow,
-        topic_id=1,
-        lms_id=2,
-        activity_type="lesson",
-        classification="BE",
-        name="Test LE",
-        created_at="2017-01-01",
-        created_by=user_name_example,
-        university=university_example,
-    )
+    list_of_les = ["BE", "KÜ", "LZ", "EK", "ZF"]
+    for i in range(5):
+        services.create_learning_element(
+            uow=uow,
+            topic_id=1,
+            lms_id=i+1,
+            activity_type="lesson",
+            classification=list_of_les[i],
+            name="Test LE",
+            created_at="2017-01-01",
+            created_by=user_name_example,
+            university=university_example,
+        )
 
 
 def create_course_topic_for_tests(uow):
@@ -2394,13 +2396,13 @@ def test_student_topic_visit():
         # 1
         (1, "aco"),
         # 2
-        (2, "aco"),
+        (6, "aco"),
         # 0
         (0, "graf"),
         # 1
         (1, "graf"),
         # 2
-        (2, "graf"),
+        (6, "graf"),
     ],
 )
 def test_create_learning_path(number_of_les, algorithm):

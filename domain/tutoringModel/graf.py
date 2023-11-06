@@ -1,80 +1,120 @@
-from datetime import datetime
-
-from errors import errors as err
+from domain.tutoringModel.utils import check_learning_style, influence
+from utils import constants as cons
 
 
 class GrafAlgorithm:
-    # Learning Element Types: (+) = 1 and (-) = 0
-    learning_style_rq = {"AKT": 0, "REF": 1, "INT": 1}
-    learning_style_se = {"AKT": 1, "REF": 0, "SNS": 1}
-    learning_style_fo = {"AKT": 1, "REF": 0, "INT": 0, "VIS": 0, "VRB": 1}
-    learning_style_zl = {"AKT": 0, "REF": 1, "SNS": 0, "INT": 1, "VIS": 0, "VRB": 1}
-    learning_style_an = {"AKT": 1, "REF": 0, "SNS": 1, "INT": 0, "VIS": 1, "VRB": 0}
-    learning_style_ub = {"AKT": 1, "REF": 0, "SNS": 1, "INT": 1}
-    learning_style_be = {"AKT": 0, "REF": 1, "SNS": 1, "INT": 0, "GLO": 1}
-    learning_style_ab = {"SNS": 1, "INT": 0, "GLO": 1}
-    learning_style_zf = {"REF": 1, "GLO": 1}
+    """This algorithm calculates the learning path based on the\
+        appraoch by Graf et al. and the lerning style. Our assumptions are:\
+            1. CT, CO and AS have fixed numbers.
+            2. CC can either be very positive or neutral
+            3. All other LEs have variable influence
+    """
 
     def __init__(
         self,
         student_id,
         learning_path=None,
-        learning_style={"AKT": 0, "INT": 0, "VIS": 0, "GLO": 0},
         id=None,
     ):
-        if id is None:
-            self.id = datetime.timestamp(datetime.now())
-        else:
-            self.id = id
+        self.id = id
         self.student_id = student_id
-        if learning_path is None:
-            self.learning_path = self.get_learning_path(learning_style)
+        self.learning_path = learning_path
+
+    def get_standard_values_for_graf(self, learning_element):
+        """This function returns the fixed values for the LEs CT, CO and AS"""
+        if learning_element == cons.abbreviation_ct:
+            return 99
+        elif learning_element == cons.abbreviation_co:
+            return 98
+        elif learning_element == cons.abbreviation_as:
+            return -99
+
+    def get_cc_score(self, learning_style):
+        """This function checks, whether CC is positive or neutral"""
+        if (
+            learning_style[cons.name_processing_dimension] == "ref"
+            and learning_style[cons.name_understanding_dimension] == "seq"
+        ):
+            if (
+                learning_style["processing_value"]
+                > learning_style["understanding_value"]
+            ):
+                return 97
+            else:
+                return 0
+        elif (
+            learning_style[cons.name_processing_dimension] == "ref"
+            or learning_style[cons.name_understanding_dimension] == "glo"
+        ):
+            return 97
         else:
-            self.learning_path = learning_path
+            return 0
 
-    def check_learning_style(self, input_learning_style):
-        is_correct = False
+    def calculate_variable_score(self, learning_element, learning_style):
+        """The function calculates the score based on\
+            Graf et al. for a learning element"""
+        score = 0
+        if learning_style[cons.name_processing_dimension] == "act":
+            score = (
+                score
+                + influence[learning_element][0]
+                * learning_style[cons.name_processing_value]
+            )
+        else:
+            score = (
+                score
+                + influence[learning_element][1] * learning_style["processing_value"]
+            )
+        if learning_style[cons.name_perception_dimension] == "sns":
+            score = (
+                score
+                + influence[learning_element][2]
+                * learning_style[cons.name_perception_value]
+            )
+        else:
+            score = (
+                score
+                + influence[learning_element][3] * learning_style["perception_value"]
+            )
+        if learning_style[cons.name_input_dimension] == "act":
+            score = (
+                score
+                + influence[learning_element][4] * learning_style[cons.name_input_value]
+            )
+        else:
+            score = (
+                score + influence[learning_element][5] * learning_style["input_value"]
+            )
+        if learning_style[cons.name_understanding_dimension] == "act":
+            score = (
+                score
+                + influence[learning_element][6]
+                * learning_style[cons.name_understanding_value]
+            )
+        else:
+            score = (
+                score
+                + influence[learning_element][7]
+                * learning_style[cons.name_understanding_value]
+            )
+        return score
 
-        for iterator in input_learning_style:
-            if input_learning_style.get(iterator):
-                dimension_number = input_learning_style.get(iterator)
-                if dimension_number < 0 or dimension_number > 11:
-                    is_correct = True
-                    break
-        return is_correct
-
-    def special_case_zf(self, input_learning_style):
-        # Validates ZF learning elements
-        result = 0
-        reflective = input_learning_style.get("REF")
-        sequential = input_learning_style.get("SEQ")
-        style_global = input_learning_style.get("GLO")
-
-        condition1 = reflective and sequential
-        condition2 = condition1 and reflective > sequential
-        condition3 = (reflective and not sequential) or style_global
-
-        if condition2 or condition3:
-            result = 99
-
-        return result
-
-    def calculate_sequence(self, learning_element_types, input_learning_style):
-        graf_value = 0
-        learning_style = 0
-
-        for learning_style, value in learning_element_types.items():
-            if input_learning_style.get(learning_style):
-                learning_style = input_learning_style.get(learning_style)
-
-                if value == 0:
-                    learning_style *= -1
-
-                graf_value += learning_style
-
-        return graf_value
+    def calculate_graf_score(self, learning_element, learning_style):
+        """This function forwards the calculation to the right method\
+            based on the LE"""
+        if (
+            learning_element == cons.abbreviation_ct
+            or learning_element == cons.abbreviation_co
+            or learning_element == cons.abbreviation_as
+        ):
+            return self.get_standard_values_for_graf(learning_element)
+        elif learning_element == cons.abbreviation_cc:
+            return self.get_cc_score(learning_style)
+        else:
+            return self.calculate_variable_score(learning_element, learning_style)
 
     def sort_learning_path(self, learning_path):
+        """The LEs will be sorted for the LE from max to min"""
         sort_learning_path = []
 
         for _ in range(len(learning_path)):
@@ -83,41 +123,13 @@ class GrafAlgorithm:
             del learning_path[highest_item]
         return sort_learning_path
 
-    def get_learning_path(
-        self, input_learning_style={"AKT": 0, "INT": 0, "VIS": 0, "GLO": 0}
-    ):
-        if len(input_learning_style) != 4:
-            raise err.WrongLearningStyleNumberError()
-
-        if self.check_learning_style(input_learning_style):
-            raise err.WrongLearningStyleDimensionError()
-
+    def get_learning_path(self, input_learning_style={}, list_of_les={}):
+        """Inital method to start generating the learning path"""
+        check_learning_style(input_learning_style)
         learning_path = {}
-
-        learning_path["RQ"] = self.calculate_sequence(
-            self.learning_style_rq, input_learning_style
-        )
-        learning_path["SE"] = self.calculate_sequence(
-            self.learning_style_se, input_learning_style
-        )
-        learning_path["FO"] = self.calculate_sequence(
-            self.learning_style_fo, input_learning_style
-        )
-        learning_path["ZL"] = self.calculate_sequence(
-            self.learning_style_zl, input_learning_style
-        )
-        learning_path["AN"] = self.calculate_sequence(
-            self.learning_style_an, input_learning_style
-        )
-        learning_path["UB"] = self.calculate_sequence(
-            self.learning_style_ub, input_learning_style
-        )
-        learning_path["BE"] = self.calculate_sequence(
-            self.learning_style_be, input_learning_style
-        )
-        learning_path["AB"] = self.calculate_sequence(
-            self.learning_style_ab, input_learning_style
-        )
-        learning_path["ZF"] = self.special_case_zf(input_learning_style)
-
+        for le in list_of_les:
+            value = self.calculate_graf_score(
+                le["classification"], input_learning_style
+            )
+            learning_path[le["classification"]] = value
         return self.sort_learning_path(learning_path)

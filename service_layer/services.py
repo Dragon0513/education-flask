@@ -357,7 +357,11 @@ def create_learning_path(
         paths_exisiting = get_learning_paths(uow=uow, student_id=student_id)
         for path_exisiting in paths_exisiting:
             condition1 = int(path_exisiting["course_id"]) == int(course_id)
-            condition2 = int(path_exisiting["topic_id"]) == int(topic_id)
+            condition2 = (
+                int(path_exisiting["topic_id"]) == int(topic_id)
+                if path_exisiting["topic_id"]
+                else False
+            )
             if condition1 and condition2:
                 delete_learning_path_learning_element(
                     uow=uow, learning_path_id=int(path_exisiting["id"])

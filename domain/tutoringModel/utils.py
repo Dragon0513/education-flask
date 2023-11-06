@@ -113,3 +113,35 @@ def random_generator(num, size, type_):
         return rng.choice([True, False], size)
     else:
         raise err.WrongParameterValueError()
+
+
+def check_learning_style(input_learning_style):
+    """ Check if learning style is correctly formatted and\
+    has the right dimensions"""
+    condition1 = cons.name_perception_dimension in input_learning_style.keys()
+    condition2 = cons.name_input_dimension in input_learning_style.keys()
+    condition3 = cons.name_processing_dimension in input_learning_style.keys()
+    condition4 = cons.name_understanding_dimension in input_learning_style.keys()
+    condition5 = cons.name_perception_value in input_learning_style.keys()
+    condition6 = cons.name_input_value in input_learning_style.keys()
+    condition7 = cons.name_processing_value in input_learning_style.keys()
+    condition8 = cons.name_understanding_value in input_learning_style.keys()
+    if not (
+        condition1
+        and condition2
+        and condition3
+        and condition4
+        and condition5
+        and condition6
+        and condition7
+        and condition8
+    ):
+        raise err.WrongLearningStyleNumberError()
+    condition9 = -11 <= input_learning_style[cons.name_perception_value] <= 11
+    condition10 = -11 <= input_learning_style[cons.name_input_value] <= 11
+    condition11 = -11 <= input_learning_style[cons.name_processing_value] <= 11
+    condition12 = -11 <= input_learning_style[cons.name_understanding_value] <= 11
+    if not (condition9 and condition10 and condition11 and condition12):
+        raise err.WrongLearningStyleDimensionError()
+    else:
+        return True

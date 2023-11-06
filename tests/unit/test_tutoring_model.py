@@ -242,4 +242,5 @@ def test_learning_style_check(learning_style, error):
         with pytest.raises(err.WrongLearningStyleNumberError):
             utils.check_learning_style(learning_style)
     else:
-        assert True
+        result = utils.check_learning_style(learning_style)
+        assert result

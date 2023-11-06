@@ -9,6 +9,7 @@ import repositories.repository as repository
 import service_layer.crypto.JWTKeyManagement as JWTKeyManagement
 from domain.userAdministartion import model as UA
 from service_layer import services, unit_of_work
+from utils import constants as cons
 
 
 @patch.multiple(
@@ -1261,8 +1262,14 @@ def create_learning_element_for_tests_1(uow):
 
 
 def create_learning_element_for_tests_2(uow):
-    list_of_les = ["BE", "KÜ", "LZ", "EK", "ZF"]
-    for i in range(5):
+    list_of_les = [
+        cons.abbreviation_ex,
+        cons.abbreviation_ct,
+        cons.abbreviation_as,
+        cons.abbreviation_co,
+        cons.abbreviation_cc,
+    ]
+    for i in range(len(list_of_les)):
         services.create_learning_element(
             uow=uow,
             topic_id=1,

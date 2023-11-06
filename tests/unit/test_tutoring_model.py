@@ -172,7 +172,7 @@ def test_with_out_of_range_learning_style_for_ga(learning_style):
 
 
 @pytest.mark.parametrize(
-    "learning_style",
+    "learning_style, error",
     [
         (
             {
@@ -186,7 +186,8 @@ def test_with_out_of_range_learning_style_for_ga(learning_style):
                 "processing_value": 5,
                 "understanding_dimension": "seq",
                 "understanding_value": 7,
-            }
+            },
+            None,
         ),
         (
             {
@@ -200,7 +201,8 @@ def test_with_out_of_range_learning_style_for_ga(learning_style):
                 "processing_value": 5,
                 "understanding_dimension": "glo",
                 "understanding_value": 7,
-            }
+            },
+            None,
         ),
         (
             {
@@ -214,7 +216,8 @@ def test_with_out_of_range_learning_style_for_ga(learning_style):
                 "processing_value": 5,
                 "understanding_dimension": "glo",
                 "understanding_value": 13,
-            }
+            },
+            "dimension",
         ),
         (
             {
@@ -225,10 +228,18 @@ def test_with_out_of_range_learning_style_for_ga(learning_style):
                 "input_dimension": "vis",
                 "input_value": 20,
                 "processing_dimension": "ref",
-                "processing_value": 5
-            }
-        )
-    ]
+                "processing_value": 5,
+            },
+            "number",
+        ),
+    ],
 )
-def test_learning_style_check(learning_style):
-    assert 0 == 0
+def test_learning_style_check(learning_style, error):
+    if error == "dimension":
+        with pytest.raises(err.WrongLearningStyleDimensionError):
+            utils.check_learning_style(learning_style)
+    elif error == "number":
+        with pytest.raises(err.WrongLearningStyleNumberError):
+            utils.check_learning_style(learning_style)
+    else:
+        assert True

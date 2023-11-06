@@ -126,10 +126,6 @@ def check_learning_style(input_learning_style):
     condition6 = "input_value" in input_learning_style.keys()
     condition7 = "processing_value" in input_learning_style.keys()
     condition8 = "understanding_value" in input_learning_style.keys()
-    condition9 = -11 <= input_learning_style["perception_value"] <= 11
-    condition10 = -11 <= input_learning_style["input_value"] <= 11
-    condition11 = -11 <= input_learning_style["processing_value"] <= 11
-    condition12 = -11 <= input_learning_style["understanding_value"] <= 11
     if not (
         condition1
         and condition2
@@ -141,5 +137,9 @@ def check_learning_style(input_learning_style):
         and condition8
     ):
         raise err.WrongLearningStyleNumberError()
+    condition9 = -11 <= input_learning_style["perception_value"] <= 11
+    condition10 = -11 <= input_learning_style["input_value"] <= 11
+    condition11 = -11 <= input_learning_style["processing_value"] <= 11
+    condition12 = -11 <= input_learning_style["understanding_value"] <= 11
     if not (condition9 and condition10 and condition11 and condition12):
         raise err.WrongLearningStyleDimensionError()

@@ -28,22 +28,23 @@ class GeneticAlgorithm:
         self.le_size = 0
         self.mutate_rate = 0.3
         self.cross_rate = 0.9
-        self.pop_size = 80
+        self.pop_size = 150
         if learning_elements is not None:
             #  convert learning element into
             #  a list with the short name of learning element
             le = self.get_learning_element(learning_elements)
-            self.le_size = len(le)
-
+            self.le_size = len(le)   
+   
     def create_random_population(self, dict_coordinates) -> None:
         """Function for the calculation of the score.
         position a also Initialise some populations
         with Clustering if this is possible.
-        param dict_coordinates"""
-        self.le_coordinate = np.array(
-            [dict_coordinates[key] for key in dict_coordinates]
-        )
-        self.le_coordinate.reshape((len(dict_coordinates), 4))
+        param dict_coordinates"""      
+        self.le_coordinate = np.array([dict_coordinates[element] 
+                                       for element in self.learning_elements])
+        
+        self.le_coordinate.reshape((len(self.le_coordinate), 4))
+        
         self.population = utils.permutation_generator(self.le_size, self.pop_size)
 
     def valide_population(self):

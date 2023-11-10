@@ -53,7 +53,7 @@ def test_get_coordinates(
         understanding_dimension=understanding_dimension,
         understanding_value=7,
     )
-    list_of_les = ["BE", "FO", "KÜ", "SE", "LZ", "EK", "ÜB", "ZF"]
+    list_of_les = ["BE", "FO", "KÜ", "SE", "LZ", "EK", "ÜB", "ZF", "ÜB"]
     result = utils.get_coordinates(
         learning_style=ls.serialize(), list_of_les=list_of_les
     )
@@ -99,7 +99,7 @@ def test_get_coordinates(
 )
 def test_prepare_les_for_ga(learning_style):
     list_of_les = []
-    list_of_keys = ["ZF", "KÜ", "SE", "LZ", "ZL", "AN", "ÜB", "EK"]
+    list_of_keys = ["KÜ", "ÜB", "ÜB", "ÜB", "ÜB", "SE", "LZ", "ZL", "AN", "ÜB", "EK"]
     for i, ele_name in enumerate(list_of_keys):
         le = DM.LearningElement(
             lms_id=i,
@@ -122,6 +122,120 @@ def test_prepare_les_for_ga(learning_style):
     assert isinstance(result, str)
     assert ", " in result
     result = result.split(", ")
+    assert isinstance(result, list)
+    assert result[0] == "KÜ"
+    assert result[1] == "EK"
+    assert result[-1] == "LZ"
+
+
+@pytest.mark.parametrize(
+    "learning_style, list_of_keys",
+    [
+        (
+            {
+                "id": 1,
+                "characteristic_id": 3,
+                "perception_dimension": "int",
+                "perception_value": 3,
+                "input_dimension": "vis",
+                "input_value": 5,
+                "processing_dimension": "ref",
+                "processing_value": 7,
+                "understanding_dimension": "glo",
+                "understanding_value": 3,
+            },
+            ["KÜ", "ÜB", "ÜB", "ÜB", "ÜB", "SE", "LZ", "ZL", "AN", "EK", "EK"],
+        ),
+        (
+            {
+                "id": 1,
+                "characteristic_id": 7,
+                "perception_dimension": "int",
+                "perception_value": 9,
+                "input_dimension": "vis",
+                "input_value": 11,
+                "processing_dimension": "ref",
+                "processing_value": 1,
+                "understanding_dimension": "glo",
+                "understanding_value": 5,
+            },
+            ["ÜB", "ÜB", "ÜB","LZ", "EK", "SE","EK", "ZL", "ZF", "AN", "KÜ", "EK"],
+        ),   (
+            {
+                "id": 1,
+                "characteristic_id": 7,
+                "perception_dimension": "int",
+                "perception_value": 9,
+                "input_dimension": "vis",
+                "input_value": 11,
+                "processing_dimension": "ref",
+                "processing_value": 1,
+                "understanding_dimension": "glo",
+                "understanding_value": 5,
+            },
+            ["ÜB", "ÜB","LZ", "SE", "BE", "AN", "EK","KÜ", "ZL", "ZF", "ÜB", "ÜB", "ÜB"],
+        ),
+        (
+            {
+                "id": 1,
+                "characteristic_id": 11,
+                "perception_dimension": "int",
+                "perception_value": 5,
+                "input_dimension": "vis",
+                "input_value": 3,
+                "processing_dimension": "ref",
+                "processing_value": 1,
+                "understanding_dimension": "glo",
+                "understanding_value": 9,
+            },
+            [
+                "ÜB",
+                "LZ",
+                "ÜB",
+                "ÜB",
+                "FO",
+                "EK",
+                "FO",
+                "SE",
+                "BE",                
+                "BE",
+                "AN",
+                "SE",
+                "AN",
+                "LZ",
+                "ZL",
+                "FO",
+                "KÜ",
+            ],
+        ),
+    ],
+)
+def test_prepare_les_for_ga(learning_style, list_of_keys):
+    list_of_les = []
+
+    for i, ele_name in enumerate(list_of_keys):
+        le = DM.LearningElement(
+            lms_id=i,
+            activity_type="lesson",
+            classification=ele_name,
+            name="Test LE",
+            university="TH-AB",
+            created_by="Max Mustermann",
+            created_at="2023-09-01",
+        )
+        list_of_les.append(le.serialize())
+    lp = TM.LearningPath(student_id=1, course_id=1, based_on="ga")
+    lp.get_learning_path(
+        student_id=1,
+        learning_style=learning_style,
+        _algorithm="ga",
+        list_of_les=list_of_les,
+    )
+    result = lp.path
+    assert isinstance(result, str)
+    assert ", " in result
+    result = result.split(", ")
+    print("result",result)
     assert isinstance(result, list)
     assert result[0] == "KÜ"
     assert result[1] == "EK"

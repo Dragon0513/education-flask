@@ -22,7 +22,8 @@ _iss_conf_dict = {
         "key_set_url": os.environ.get("LMS_URL", "http://fakedomain.com")
         + "/mod/lti/certs.php",
         "haski_lti_activity": os.environ.get("LMS_URL", "http://fakedomain.com")
-        + "/mod/lti/view.php?id=2",
+        + "/mod/lti/view.php?id="
+        + os.environ.get("LTI_ACTIVITY_ID", "2"),
         "platform_name": os.environ.get("PLATFORM_NAME", "HASKI"),
         "key_set": {
             "keys": [

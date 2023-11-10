@@ -106,6 +106,13 @@ Then:
 
 - Fill the .flaskenv file with the necessary information. For this, use the .flaskenv_template file as a template.
   Note that `DB_PASSWORD` is the password for the database user, not pgAdmin.
+
+  > **_NOTE:_**
+  > LTI_ACTIVITY_ID is the id of the activity in moodle. You can find it in the url of the activity. For example: https://moodle.haski.de/mod/lti/view.php?id=2
+  > CLIENT_ID is obtained in the setup of the LTI tool in moodle. It is the consumer key.
+  > KEY_ID is the key id of the key pair used for signing the JWTs. It is obtained when opening the URL /mod/lti/certs.php
+  > KEY_N_VALUE also optained in the certs page.
+
 - Create the database as explained in [DB Setup](#db-setup)
 - Run the app using `flask run`
 
@@ -130,7 +137,7 @@ Run `python db_clean_up.py` to clean up the database if necessary. Use arg `--dr
 This project includes a Pipeline, that will automatically create a Docker image in the repository when merging into the main branch.
 This Docker image should always be the latest running version.
 Please create a .flaskenv file first locally, so that it can be passed with docker run.
-A template is provided in the .env_template file in this repository. Use the volume flag to mount the keys folder into the container.
+A template is provided in the .flaskenv_template file in this repository. Change the values as needed. Use the volume flag to mount the keys folder into the container.
 Start the Docker image as container with the following command:
 `docker run docker run -v /yourfolder/keys:/app/keys -d -p 5000:5000 --env-file <path/to/.flaskenv-File> ghcr.io/haski-rak/haski-backend:main`
 

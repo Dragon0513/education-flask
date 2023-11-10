@@ -10,6 +10,7 @@ DB_PORT=5432
 BACKEND_URL=https://backend.haski.app
 FRONTEND_URL=https://haski.app
 LMS_URL=http://moodle.haski.app
+LTI_ACTIVITY_ID=2
 # Tool config json
 CLIENT_ID=clientid
 KEY_ID=test_key_id

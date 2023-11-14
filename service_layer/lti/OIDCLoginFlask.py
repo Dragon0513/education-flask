@@ -370,6 +370,10 @@ class OIDCLoginFlask(OIDCLogin):
         )
         # set 🔑 auth 🍪 cookie
         domain = urllib.parse.urlparse(self._request.referrer).hostname
+        if not domain:
+            raise err.ErrorException(message="No domain found", status_code=403)
+        # use only the top domain, for example instead of ke.haski.app use haski.app
+        domain = ".".join(domain.split(".")[-2:])
         secure = True if self._request.referrer.startswith("https") else False
         self._cookie_service.set_cookie(
             response=response,

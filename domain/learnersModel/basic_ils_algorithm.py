@@ -87,7 +87,7 @@ def calculate_ils_understanding(ils_understanding):
             ils_understanding_value = ils_understanding_value - 1
 
     if ils_understanding_value < 0:
-        ils_understanding_dimension = "glb"
+        ils_understanding_dimension = "glo"
     else:
         ils_understanding_dimension = "seq"
 

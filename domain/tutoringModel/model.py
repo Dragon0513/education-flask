@@ -41,10 +41,13 @@ class LearningPath:
         elif algorithm == "aco":
             list_of_les_classifications = self.prepare_le_for_aco(list_of_les)
             coordinates = get_coordinates(learning_style, list_of_les_classifications)
+            start_point = {'Start':(15,15,15,15)}
+            start_point.update(coordinates)
             path = aco.AntColonySolver()
-            result = path.solve(list(coordinates.items()))
+            result = path.solve(list(start_point.items()))
+            
             le_path = ""
-            for ele in result:
+            for ele in result[1:]:
                 le_path = le_path + ele[0] + ", "
             self.path = le_path[:-2]
 

@@ -5,6 +5,8 @@ from domain.domainModel import model as DM
 from domain.learnersModel import model as LM
 from domain.tutoringModel import model as TM
 from domain.tutoringModel import utils
+import numpy as np
+rng = np.random.default_rng(20)
 
 
 def test_prepare_les_for_aco():
@@ -72,11 +74,11 @@ def test_get_coordinates(
                 "id": 1,
                 "characteristic_id": 1,
                 "perception_dimension": "sns",
-                "perception_value": 5,
+                "perception_value": 11,
                 "input_dimension": "vrb",
-                "input_value": 0,
+                "input_value":11,
                 "processing_dimension": "act",
-                "processing_value": 9,
+                "processing_value": 11,
                 "understanding_dimension": "seq",
                 "understanding_value": 11,
             }
@@ -84,22 +86,22 @@ def test_get_coordinates(
         (
             {
                 "id": 1,
-                "characteristic_id": 1,
+                "characteristic_id": 7,
                 "perception_dimension": "int",
                 "perception_value": 1,
                 "input_dimension": "vis",
-                "input_value": 11,
+                "input_value": 1,
                 "processing_dimension": "ref",
                 "processing_value": 1,
                 "understanding_dimension": "glo",
-                "understanding_value": 3,
-            }
+                "understanding_value": 0,
+            }    
         ),
     ],
 )
 def test_prepare_les_for_ga(learning_style):
     list_of_les = []
-    list_of_keys = ["KÜ", "ÜB", "ÜB", "ÜB", "ÜB", "SE", "LZ", "ZL", "AN", "ÜB", "EK"]
+    list_of_keys =  ['KÜ','LZ','ÜB','SE', 'BE', 'AN', 'EK', 'ZL', 'AB','ZF']
     for i, ele_name in enumerate(list_of_keys):
         le = DM.LearningElement(
             lms_id=i,
@@ -118,10 +120,12 @@ def test_prepare_les_for_ga(learning_style):
         _algorithm="ga",
         list_of_les=list_of_les,
     )
+    print("test_prepare_les_for_ga-GA learning")
     result = lp.path
     assert isinstance(result, str)
     assert ", " in result
     result = result.split(", ")
+    print("test_prepare_les_for_ga---result", result)
     assert isinstance(result, list)
     assert result[0] == "KÜ"
     assert result[1] == "EK"
@@ -134,7 +138,7 @@ def test_prepare_les_for_ga(learning_style):
         (
             {
                 "id": 1,
-                "characteristic_id": 3,
+                "characteristic_id": 1,
                 "perception_dimension": "int",
                 "perception_value": 3,
                 "input_dimension": "vis",
@@ -142,7 +146,7 @@ def test_prepare_les_for_ga(learning_style):
                 "processing_dimension": "ref",
                 "processing_value": 7,
                 "understanding_dimension": "glo",
-                "understanding_value": 3,
+                "understanding_value": 1,
             },
             ["KÜ", "ÜB", "ÜB", "ÜB", "ÜB", "SE", "LZ", "ZL", "AN", "EK", "EK"],
         ),
@@ -173,7 +177,7 @@ def test_prepare_les_for_ga(learning_style):
                 "understanding_dimension": "glo",
                 "understanding_value": 5,
             },
-            ["ÜB", "ÜB","LZ", "SE", "BE", "AN", "EK","KÜ", "ZL", "ZF", "ÜB", "ÜB", "ÜB"],
+            ["ÜB", "ÜB","LZ","LZ", "SE", "BE", "AN", "EK","KÜ", "ZL","AB" ,"ZF", "ÜB", "ÜB", "ÜB", "ÜB","ÜB"],
         ),
         (
             {
@@ -191,22 +195,34 @@ def test_prepare_les_for_ga(learning_style):
             [
                 "ÜB",
                 "LZ",
-                "ÜB",
-                "ÜB",
+                "LZ",               
+                "FO",                
                 "FO",
-                "EK",
-                "FO",
-                "SE",
-                "BE",                
-                "BE",
+                "SE",                
                 "AN",
                 "SE",
                 "AN",
                 "LZ",
-                "ZL",
-                "FO",
+                "FO",                
                 "KÜ",
+                "EK"
+                
             ],
+        ),
+        (
+            {
+                "id": 1,
+                "characteristic_id": 11,
+                "perception_dimension": "int",
+                "perception_value": 5,
+                "input_dimension": "vis",
+                "input_value": 3,
+                "processing_dimension": "ref",
+                "processing_value": 1,
+                "understanding_dimension": "glo",
+                "understanding_value": 9,
+            },
+            ["ÜB", "FO", "LZ","SE", "AN", "KÜ", "EK"],
         ),
     ],
 )
@@ -234,8 +250,8 @@ def test_prepare_les_for_ga(learning_style, list_of_keys):
     result = lp.path
     assert isinstance(result, str)
     assert ", " in result
-    result = result.split(", ")
-    print("result",result)
+    result = result.split(", ")    
+    print("result", result)
     assert isinstance(result, list)
     assert result[0] == "KÜ"
     assert result[1] == "EK"
@@ -254,9 +270,23 @@ def test_prepare_les_for_ga(learning_style, list_of_keys):
                 "input_dimension": "vrb",
                 "input_value": 20,
                 "processing_dimension": "act",
-                "processing_value": 5,
+                "processing_value": -50,
                 "understanding_dimension": "seq",
-                "understanding_value": 13,
+                "understanding_value": -13,
+            }
+        ),
+        (
+            {
+                "id": 1,
+                "characteristic_id": 1,
+                "perception_dimension": "sns",
+                "perception_value": 3,
+                "input_dimension": "vrb",
+                "input_value": 5,
+                "processing_dimension": "act",
+                "processing_value": -50,
+                "understanding_dimension": "seq",
+                "understanding_value": -13,
             }
         )
     ],

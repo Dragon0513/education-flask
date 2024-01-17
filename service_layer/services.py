@@ -1755,7 +1755,7 @@ def get_user_by_lms_id(uow: unit_of_work.AbstractUnitOfWork, lms_user_id) -> dic
 def get_moodle_rest_url_for_completion_status(uow: unit_of_work.AbstractUnitOfWork, course_id, student_id) -> dict:
     with uow:
         course = uow.course.get_course_by_id(course_id)
-        moodle_url = "https://ke.moodle.haski.app" #os.envinron.get("LMS_URL", "")
+        moodle_url = os.environ.get("REST_LMS_URL", "")
         moodle_rest = "/webservice/rest/server.php"
         rest_function = "?wsfunction=core_completion_get_activities_completion_status"
         rest_token = "&wstoken=" + os.environ.get("REST_TOKEN", "")
@@ -1763,7 +1763,7 @@ def get_moodle_rest_url_for_completion_status(uow: unit_of_work.AbstractUnitOfWo
         moodle_course_id = "&courseid=" + str(course[0].lms_id)
         moodle_user_id = "&userid=" + str(student_id)
         moodle_rest_request = moodle_url + moodle_rest + rest_function + rest_token + rest_format + moodle_course_id + moodle_user_id
-        return moodle_rest_request
+        return requests.get(moodle_rest_request)
 
 
 def get_activity_status_for_student_for_course(uow: unit_of_work.AbstractUnitOfWork, course_id, student_id) -> dict:

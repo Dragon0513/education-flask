@@ -1,3 +1,4 @@
+import requests
 from flask.wrappers import Request
 
 import errors.errors as err
@@ -9,6 +10,7 @@ from domain.tutoringModel import model as TM
 from domain.userAdministartion import model as UA
 from service_layer import unit_of_work
 from service_layer.lti.OIDCLoginFlask import OIDCLoginFlask
+import os
 
 
 def add_course_creator_to_course(
@@ -1748,6 +1750,53 @@ def get_user_by_lms_id(uow: unit_of_work.AbstractUnitOfWork, lms_user_id) -> dic
             user[0].role_id = None
             result = user[0].serialize()
         return result
+
+
+def get_activity_status_for_student_for_course(uow: unit_of_work.AbstractUnitOfWork, course_id, student_id) -> dict:
+    with uow:
+        course = uow.course.get_course_by_id(course_id)
+        moodleURL = "https://ke.moodle.haski.app"#"http://fakedomain.com:80"
+        moodleRest = "/webservice/rest/server.php"
+        restFunction = "?wsfunction=core_completion_get_activities_completion_status"
+        restToken = "&wstoken=" + os.environ.get("REST_TOKEN", "")
+        restFormat = "&moodlewsrestformat=json"
+        moodleCourseId = "&courseid=" + str(course[0].lms_id)
+        moodleUserId = "&userid=" + str(student_id)
+        moodleRestRequest = moodleURL + moodleRest + restFunction + restToken + restFormat + moodleCourseId + moodleUserId
+        response = requests.get(moodleRestRequest)
+        if response.status_code == 200:
+            jsonResponse = response.json()
+            filtered_statuses = [
+                {"cmid": status["cmid"], "state": status["state"], "timecompleted": status["timecompleted"]}
+                for status in jsonResponse["statuses"]
+            ]
+            return filtered_statuses
+        else:
+            return {}
+
+
+def get_activity_status_for_student_for_learning_element_for_course(uow: unit_of_work.AbstractUnitOfWork, course_id, student_id, learning_element_id) -> dict:
+    with uow:
+        course = uow.course.get_course_by_id(course_id)
+        moodleURL = "https://ke.moodle.haski.app"#"http://fakedomain.com:80"
+        moodleRest = "/webservice/rest/server.php"
+        restFunction = "?wsfunction=core_completion_get_activities_completion_status"
+        restToken = "&wstoken=" + os.environ.get("REST_TOKEN", "")
+        restFormat = "&moodlewsrestformat=json"
+        moodleCourseId = "&courseid=" + str(course[0].lms_id)
+        moodleUserId = "&userid=" + str(student_id)
+        moodleRestRequest = moodleURL + moodleRest + restFunction + restToken + restFormat + moodleCourseId + moodleUserId
+        response = requests.get(moodleRestRequest)
+        if response.status_code == 200:
+            jsonResponse = response.json()
+            filtered_statuses = [
+                {"cmid": status["cmid"], "state": status["state"], "timecompleted": status["timecompleted"]}
+                for status in jsonResponse["statuses"]
+            ]
+            filtered_cmid = [item for item in filtered_statuses if item['cmid'] == int(learning_element_id)]
+            return filtered_cmid
+        else:
+            return {}
 
 
 def get_student_by_user_id(uow: unit_of_work.AbstractUnitOfWork, user_id) -> dict:

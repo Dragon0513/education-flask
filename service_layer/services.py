@@ -1752,23 +1752,28 @@ def get_user_by_lms_id(uow: unit_of_work.AbstractUnitOfWork, lms_user_id) -> dic
         return result
 
 
-def get_activity_status_for_student_for_course(uow: unit_of_work.AbstractUnitOfWork, course_id, student_id) -> dict:
+def get_moodle_rest_url_for_completion_status(uow: unit_of_work.AbstractUnitOfWork, course_id, student_id) -> dict:
     with uow:
         course = uow.course.get_course_by_id(course_id)
-        moodleURL = "https://ke.moodle.haski.app"#"http://fakedomain.com:80"
-        moodleRest = "/webservice/rest/server.php"
-        restFunction = "?wsfunction=core_completion_get_activities_completion_status"
-        restToken = "&wstoken=" + os.environ.get("REST_TOKEN", "")
-        restFormat = "&moodlewsrestformat=json"
-        moodleCourseId = "&courseid=" + str(course[0].lms_id)
-        moodleUserId = "&userid=" + str(student_id)
-        moodleRestRequest = moodleURL + moodleRest + restFunction + restToken + restFormat + moodleCourseId + moodleUserId
-        response = requests.get(moodleRestRequest)
+        moodle_url = "https://ke.moodle.haski.app" #os.envinron.get("LMS_URL", "")
+        moodle_rest = "/webservice/rest/server.php"
+        rest_function = "?wsfunction=core_completion_get_activities_completion_status"
+        rest_token = "&wstoken=" + os.environ.get("REST_TOKEN", "")
+        rest_format = "&moodlewsrestformat=json"
+        moodle_course_id = "&courseid=" + str(course[0].lms_id)
+        moodle_user_id = "&userid=" + str(student_id)
+        moodle_rest_request = moodle_url + moodle_rest + rest_function + rest_token + rest_format + moodle_course_id + moodle_user_id
+        return moodle_rest_request
+
+
+def get_activity_status_for_student_for_course(uow: unit_of_work.AbstractUnitOfWork, course_id, student_id) -> dict:
+    with uow:
+        response = get_moodle_rest_url_for_completion_status(uow, course_id, student_id)
         if response.status_code == 200:
-            jsonResponse = response.json()
+            json_response = response.json()
             filtered_statuses = [
                 {"cmid": status["cmid"], "state": status["state"], "timecompleted": status["timecompleted"]}
-                for status in jsonResponse["statuses"]
+                for status in json_response["statuses"]
             ]
             return filtered_statuses
         else:
@@ -1777,26 +1782,9 @@ def get_activity_status_for_student_for_course(uow: unit_of_work.AbstractUnitOfW
 
 def get_activity_status_for_student_for_learning_element_for_course(uow: unit_of_work.AbstractUnitOfWork, course_id, student_id, learning_element_id) -> dict:
     with uow:
-        course = uow.course.get_course_by_id(course_id)
-        moodleURL = "https://ke.moodle.haski.app"#"http://fakedomain.com:80"
-        moodleRest = "/webservice/rest/server.php"
-        restFunction = "?wsfunction=core_completion_get_activities_completion_status"
-        restToken = "&wstoken=" + os.environ.get("REST_TOKEN", "")
-        restFormat = "&moodlewsrestformat=json"
-        moodleCourseId = "&courseid=" + str(course[0].lms_id)
-        moodleUserId = "&userid=" + str(student_id)
-        moodleRestRequest = moodleURL + moodleRest + restFunction + restToken + restFormat + moodleCourseId + moodleUserId
-        response = requests.get(moodleRestRequest)
-        if response.status_code == 200:
-            jsonResponse = response.json()
-            filtered_statuses = [
-                {"cmid": status["cmid"], "state": status["state"], "timecompleted": status["timecompleted"]}
-                for status in jsonResponse["statuses"]
-            ]
-            filtered_cmid = [item for item in filtered_statuses if item['cmid'] == int(learning_element_id)]
-            return filtered_cmid
-        else:
-            return {}
+        filtered_statuses = get_activity_status_for_student_for_course(uow, course_id, student_id)
+        filtered_cmid = [item for item in filtered_statuses if item['cmid'] == int(learning_element_id)]
+        return filtered_cmid
 
 
 def get_student_by_user_id(uow: unit_of_work.AbstractUnitOfWork, user_id) -> dict:

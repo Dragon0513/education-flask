@@ -1,6 +1,7 @@
 import datetime
 import time
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, patch, Mock
+import os
 
 import pytest
 
@@ -1945,10 +1946,13 @@ def test_create_course():
     )
 
 
-def test_get_moodle_rest_url_for_completion_status():
+def test_get_moodle_rest_url_for_completion_status(mocker):
+    mocker.patch('requests.get', return_value=Mock(status_code=200, json=lambda: {"statuses": []}))
     uow = FakeUnitOfWork()
     create_course_creator_for_tests(uow)
     create_course_for_tests(uow)
+    mocker.patch.dict(os.environ, {'REST_LMS_URL': 'your_mocked_url', 'REST_TOKEN': 'your_mocked_token'})
+
     result = services.get_moodle_rest_url_for_completion_status(
         uow=uow,
         course_id=1,

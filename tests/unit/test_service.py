@@ -1,6 +1,6 @@
 import datetime
 import time
-from unittest.mock import MagicMock, patch, Mock
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -9,8 +9,6 @@ import repositories.repository as repository
 import service_layer.crypto.JWTKeyManagement as JWTKeyManagement
 from domain.userAdministartion import model as UA
 from service_layer import services, unit_of_work
-from service_layer.services import get_moodle_rest_url_for_completion_status, \
-    get_activity_status_for_student_for_course, get_activity_status_for_student_for_learning_element_for_course
 from utils import constants as cons
 
 
@@ -861,45 +859,6 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
             if i.university == university:
                 result.append(i)
         return result
-
-    def mock_unit_of_work(self):
-        return Mock()
-
-    @pytest.fixture
-    def mock_response(self):
-        response = Mock()
-        response.status_code = 200
-        response.json.return_value = {"statuses": [
-            {"cmid":405,"state":1,"timecompleted":1699966649},
-            {"cmid":406,"state":1,"timecompleted":1699966666}
-        ]}
-        return response
-
-    @patch("your_module.requests.get")
-    def test_get_moodle_rest_url_for_completion_status(mock_get, mock_unit_of_work, mock_response):
-        mock_get.return_value = mock_response
-        result = get_moodle_rest_url_for_completion_status(mock_unit_of_work, "course_id", "student_id")
-        assert result == mock_response
-        mock_get.assert_called_once_with(
-            "your_moodle_url/webservice/rest/server.php"
-            "?wsfunction=core_completion_get_activities_completion_status"
-            "&wstoken=your_rest_token&moodlewsrestformat=json&courseid=your_course_id&userid=student_id"
-        )
-
-    @patch("your_module.requests.get")
-    def test_get_activity_status_for_student_for_course(mock_get, mock_unit_of_work, mock_response):
-        mock_get.return_value = mock_response
-        result = get_activity_status_for_student_for_course(mock_unit_of_work, "course_id", "student_id")
-        assert result == []
-        mock_get.assert_called_once()
-
-    @patch("your_module.get_activity_status_for_student_for_course")
-    def test_get_activity_status_for_student_for_learning_element_for_course(mock_get_activity_status, mock_unit_of_work):
-        mock_get_activity_status.return_value = [{"cmid": 1, "state": 1, "timecompleted": 12345}]
-        result = get_activity_status_for_student_for_learning_element_for_course(mock_unit_of_work, "course_id", "student_id", "1")
-        assert result == [{"cmid": 1, "state": 1, "timecompleted": 12345}]
-        mock_get_activity_status.assert_called_once_with(mock_unit_of_work, "course_id", "student_id")
-
 
     def update_course(self, course_id, course):
         to_remove = next((p for p in self.course if p.id == course_id), None)
@@ -1984,6 +1943,18 @@ def test_create_course():
         entries_beginning_course_creator_course + 1
         == entries_after_course_creator_course
     )
+
+
+def test_get_moodle_rest_url_for_completion_status():
+    uow = FakeUnitOfWork()
+    create_course_creator_for_tests(uow)
+    create_course_for_tests(uow)
+    result = services.get_moodle_rest_url_for_completion_status(
+        uow=uow,
+        course_id=1,
+        student_id=1,
+    )
+    print(result)
 
 
 def test_get_course_by_id():

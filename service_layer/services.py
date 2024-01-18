@@ -1763,6 +1763,7 @@ def get_moodle_rest_url_for_completion_status(uow: unit_of_work.AbstractUnitOfWo
         moodle_course_id = "&courseid=" + str(course[0].lms_id)
         moodle_user_id = "&userid=" + str(student_id)
         moodle_rest_request = moodle_url + moodle_rest + rest_function + rest_token + rest_format + moodle_course_id + moodle_user_id
+        print(requests.get(moodle_rest_request))
         return requests.get(moodle_rest_request)
 
 

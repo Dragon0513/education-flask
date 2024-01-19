@@ -2470,6 +2470,34 @@ class TestApi:
         for key in keys_expected:
             assert key in response.keys()
 
+    # Get all learning element statuses for a student for a course
+    #@mock.patch('requests.get', mock.Mock(side_effect=lambda k: (mock.Mock(status_code=200, json=lambda: {"statuses": [{'cmid': 1, 'state': 0, 'timecompleted': 0}, {'cmid': 2, 'state': 0, 'timecompleted': 0}]}))))
+    @pytest.mark.parametrize(
+        "course_id, student_id",
+        [
+            # Working Example
+            (1, 1)
+        ],
+    )
+    def test_get_activity_status_for_student(
+            self, client_class, course_id, student_id
+    ):
+        global user_id_student
+        url = (
+                path_lms_course
+                + "/"
+                + str(course_id)
+                + path_student
+                + "/"
+                + str(student_id)
+                + "/"
+                + path_activity_status
+        )
+        r = client_class.get(url)
+        #assert r.status_code == 200
+        #response = json.loads(r.data.decode("utf-8").strip("\n"))
+        #assert "activity_status" in response.keys()
+
     # PUT METHODS
     # Update the settings of a User
     @pytest.mark.parametrize(
@@ -2990,33 +3018,6 @@ class TestApi:
         response = json.loads(r.data.decode("utf-8").strip("\n"))
         for key in keys_expected:
             assert key in response.keys()
-
-    # Get all learning element statuses for a student for a course
-    @mock.patch('requests.get', mock.Mock(side_effect=lambda k: (mock.Mock(status_code=200, json=lambda: {"statuses": [{'cmid': 1, 'state': 0, 'timecompleted': 0}, {'cmid': 2, 'state': 0, 'timecompleted': 0}]}))))
-    @pytest.mark.parametrize(
-        "course_id, student_id",
-        [
-            # Working Example
-            (1, 1)
-        ],
-    )
-    def test_get_activity_status_for_student(
-            self, client_class, course_id, student_id
-    ):
-        global user_id_student
-        url = (
-                path_lms_course
-                + "/"
-                + str(course_id)
-                + path_student
-                + "/"
-                + str(student_id)
-                + "/"
-                + path_activity_status
-        )
-        r = client_class.get(url)
-        #response = json.loads(r.data.decode("utf-8").strip("\n"))
-        #assert "activity_status" in response.keys()
 
     # DELETE METHODS
     # Reset User Settings

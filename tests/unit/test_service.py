@@ -1960,6 +1960,35 @@ def test_get_moodle_rest_url_for_completion_status():
     assert (result == [{'cmid': 1, 'state': 0, 'timecompleted': 0}])
 
 
+@mock.patch('requests.get', mock.Mock(side_effect=lambda k: (mock.Mock(status_code=200, json=lambda: {"statuses": [{'cmid': 1, 'state': 0, 'timecompleted': 0}, {'cmid': 2, 'state': 0, 'timecompleted': 0}]}))))
+def test_get_activity_status_for_student_for_course():
+    uow = FakeUnitOfWork()
+    create_course_creator_for_tests(uow)
+    create_course_for_tests(uow)
+
+    result = services.get_activity_status_for_student_for_course(
+        uow=uow,
+        course_id=1,
+        student_id=1,
+    )
+    assert (result == [{'cmid': 1, 'state': 0, 'timecompleted': 0}, {'cmid': 2, 'state': 0, 'timecompleted': 0}])
+
+
+@mock.patch('requests.get', mock.Mock(side_effect=lambda k: (mock.Mock(status_code=200, json=lambda: {"statuses": [{'cmid': 1, 'state': 0, 'timecompleted': 0}, {'cmid': 2, 'state': 0, 'timecompleted': 0}]}))))
+def test_get_activity_status_for_student_for_learning_element_for_course():
+    uow = FakeUnitOfWork()
+    create_course_creator_for_tests(uow)
+    create_course_for_tests(uow)
+
+    result = services.get_activity_status_for_student_for_learning_element_for_course(
+        uow=uow,
+        course_id=1,
+        student_id=1,
+        learning_element_id=2,
+    )
+    assert (result == [{'cmid': 2, 'state': 0, 'timecompleted': 0}])
+
+
 def test_get_course_by_id():
     uow = FakeUnitOfWork()
     create_course_creator_for_tests(uow)

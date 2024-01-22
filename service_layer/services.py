@@ -1,3 +1,5 @@
+import os
+
 import requests
 from flask.wrappers import Request
 
@@ -10,7 +12,6 @@ from domain.tutoringModel import model as TM
 from domain.userAdministartion import model as UA
 from service_layer import unit_of_work
 from service_layer.lti.OIDCLoginFlask import OIDCLoginFlask
-import os
 
 
 def add_course_creator_to_course(

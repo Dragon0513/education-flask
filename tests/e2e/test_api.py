@@ -1,5 +1,6 @@
 import json
 from unittest import mock
+
 import pytest
 
 user_id_admin = 0

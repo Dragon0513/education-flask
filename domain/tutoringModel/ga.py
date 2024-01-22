@@ -26,9 +26,9 @@ class GeneticAlgorithm:
         self.n_generation = 100
         self.population: np.ndarray = np.array([])
         self.le_size = 0
-        self.mutate_rate = 0.3
+        self.mutate_rate = 0.4
         self.cross_rate = 0.9
-        self.pop_size = 80
+        self.pop_size = 100
 
         if learning_elements is not None:
             #  convert learning element into

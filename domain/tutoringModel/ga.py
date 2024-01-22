@@ -64,7 +64,7 @@ class GeneticAlgorithm:
         in the Learning path."""
         col_zeros = np.zeros((self.pop_size, 1), dtype=int)
         new_pop = np.concatenate(
-            (col_zeros, self.population[:, 0: self.le_size]), axis=1
+            (col_zeros, self.population[:, 0 : self.le_size]), axis=1
         )
         return new_pop
 

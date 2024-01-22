@@ -1,3 +1,4 @@
+import numpy as np
 import pytest
 
 import errors.errors as err
@@ -5,7 +6,7 @@ from domain.domainModel import model as DM
 from domain.learnersModel import model as LM
 from domain.tutoringModel import model as TM
 from domain.tutoringModel import utils
-import numpy as np
+
 rng = np.random.default_rng(20)
 
 
@@ -76,7 +77,7 @@ def test_get_coordinates(
                 "perception_dimension": "sns",
                 "perception_value": 11,
                 "input_dimension": "vrb",
-                "input_value":11,
+                "input_value": 11,
                 "processing_dimension": "act",
                 "processing_value": 11,
                 "understanding_dimension": "seq",
@@ -95,13 +96,13 @@ def test_get_coordinates(
                 "processing_value": 1,
                 "understanding_dimension": "glo",
                 "understanding_value": 0,
-            }    
+            }
         ),
     ],
 )
 def test_prepare_les_for_ga(learning_style):
     list_of_les = []
-    list_of_keys =  ['KÜ','LZ','ÜB','SE', 'BE', 'AN', 'EK', 'ZL', 'AB','ZF']
+    list_of_keys = ["KÜ", "LZ", "ÜB", "SE", "BE", "AN", "EK", "ZL", "AB", "ZF"]
     for i, ele_name in enumerate(list_of_keys):
         le = DM.LearningElement(
             lms_id=i,
@@ -163,8 +164,9 @@ def test_prepare_les_for_ga(learning_style):
                 "understanding_dimension": "glo",
                 "understanding_value": 5,
             },
-            ["ÜB", "ÜB", "ÜB","LZ", "EK", "SE","EK", "ZL", "ZF", "AN", "KÜ", "EK"],
-        ),   (
+            ["ÜB", "ÜB", "ÜB", "LZ", "EK", "SE", "EK", "ZL", "ZF", "AN", "KÜ", "EK"],
+        ),
+        (
             {
                 "id": 1,
                 "characteristic_id": 7,
@@ -177,7 +179,25 @@ def test_prepare_les_for_ga(learning_style):
                 "understanding_dimension": "glo",
                 "understanding_value": 5,
             },
-            ["ÜB", "ÜB","LZ","LZ", "SE", "BE", "AN", "EK","KÜ", "ZL","AB" ,"ZF", "ÜB", "ÜB", "ÜB", "ÜB","ÜB"],
+            [
+                "ÜB",
+                "ÜB",
+                "LZ",
+                "LZ",
+                "SE",
+                "BE",
+                "AN",
+                "EK",
+                "KÜ",
+                "ZL",
+                "AB",
+                "ZF",
+                "ÜB",
+                "ÜB",
+                "ÜB",
+                "ÜB",
+                "ÜB",
+            ],
         ),
         (
             {
@@ -195,18 +215,17 @@ def test_prepare_les_for_ga(learning_style):
             [
                 "ÜB",
                 "LZ",
-                "LZ",               
-                "FO",                
+                "LZ",
                 "FO",
-                "SE",                
+                "FO",
+                "SE",
                 "AN",
                 "SE",
                 "AN",
                 "LZ",
-                "FO",                
+                "FO",
                 "KÜ",
-                "EK"
-                
+                "EK",
             ],
         ),
         (
@@ -222,7 +241,7 @@ def test_prepare_les_for_ga(learning_style):
                 "understanding_dimension": "glo",
                 "understanding_value": 9,
             },
-            ["ÜB", "FO", "LZ","SE", "AN", "KÜ", "EK"],
+            ["ÜB", "FO", "LZ", "SE", "AN", "KÜ", "EK"],
         ),
     ],
 )
@@ -250,7 +269,7 @@ def test_prepare_les_for_ga(learning_style, list_of_keys):
     result = lp.path
     assert isinstance(result, str)
     assert ", " in result
-    result = result.split(", ")    
+    result = result.split(", ")
     print("result", result)
     assert isinstance(result, list)
     assert result[0] == "KÜ"
@@ -288,7 +307,7 @@ def test_prepare_les_for_ga(learning_style, list_of_keys):
                 "understanding_dimension": "seq",
                 "understanding_value": -13,
             }
-        )
+        ),
     ],
 )
 def test_with_out_of_range_learning_style_for_ga(learning_style):

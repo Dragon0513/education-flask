@@ -100,7 +100,7 @@ def test_get_coordinates(
         ),
     ],
 )
-def test_prepare_les_for_ga(learning_style):
+def test_prepare_les_for_ga_fixed_LE(learning_style):
     list_of_les = []
     list_of_keys = ["KÜ", "LZ", "ÜB", "SE", "BE", "AN", "EK", "ZL", "AB", "ZF"]
     for i, ele_name in enumerate(list_of_keys):

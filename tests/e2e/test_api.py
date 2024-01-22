@@ -2490,13 +2490,12 @@ class TestApi:
                 + path_student
                 + "/"
                 + str(student_id)
-                + "/"
                 + path_activity_status
         )
         r = client_class.get(url)
-        #assert r.status_code == 200
-        #response = json.loads(r.data.decode("utf-8").strip("\n"))
-        #assert "activity_status" in response.keys()
+        assert r.status_code == 200
+        response = json.loads(r.data.decode("utf-8").strip("\n"))
+        assert "cmid" in response.statuses[0].keys()
 
     # PUT METHODS
     # Update the settings of a User

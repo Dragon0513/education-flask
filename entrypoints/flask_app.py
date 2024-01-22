@@ -347,7 +347,6 @@ def get_activity_status_for_student(course_id, student_id):
             activity_status = services.get_activity_status_for_student_for_course(
                 unit_of_work.SqlAlchemyUnitOfWork(), course_id, student_id
             )
-            print(activity_status)
             return jsonify(activity_status), 200
 
 

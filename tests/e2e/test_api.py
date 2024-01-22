@@ -2471,7 +2471,7 @@ class TestApi:
             assert key in response.keys()
 
     # Get all learning element statuses for a student for a course
-    #@mock.patch('requests.get', mock.Mock(side_effect=lambda k: (mock.Mock(status_code=200, json=lambda: {"statuses": [{'cmid': 1, 'state': 0, 'timecompleted': 0}, {'cmid': 2, 'state': 0, 'timecompleted': 0}]}))))
+    @mock.patch('requests.get', mock.Mock(side_effect=lambda k: (mock.Mock(status_code=200, json=lambda: {"statuses": [{'cmid': 1, 'state': 0, 'timecompleted': 0}, {'cmid': 2, 'state': 0, 'timecompleted': 0}]}))))
     @pytest.mark.parametrize(
         "course_id, student_id",
         [

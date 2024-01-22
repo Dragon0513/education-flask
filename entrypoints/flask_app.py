@@ -352,9 +352,10 @@ def get_activity_status_for_student(course_id, student_id):
             return jsonify(activity_status), 200
 
 
-# Endpoint to get activity status for a student for a course for a specific learning element
+# Endpoint to get activity status for a student, course and specific learning element
 @app.route(
-    "/lms/course/<course_id>/student/<student_id>/learningElementId/<learning_element_id>/activitystatus",
+    "/lms/course/<course_id>/student/<student_id>/"
+    +"learningElementId/<learning_element_id>/activitystatus",
     methods=["GET"],
 )
 @cross_origin(supports_credentials=True)
@@ -364,12 +365,13 @@ def get_activity_status_for_student_for_learning_element(
     method = request.method
     match method:
         case "GET":
-            activity_status = services.get_activity_status_for_student_for_learning_element_for_course(
+            activity_status = (services.
+            get_activity_status_for_student_for_learning_element_for_course(
                 unit_of_work.SqlAlchemyUnitOfWork(),
                 course_id,
                 student_id,
                 learning_element_id,
-            )
+            ))
             print(activity_status)
             return jsonify(activity_status), 200
 

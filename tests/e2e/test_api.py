@@ -2500,7 +2500,8 @@ class TestApi:
     # Get all learning element statuses for a student for a course
     @mock.patch('requests.get', mock.Mock(side_effect=lambda k: (mock.Mock(status_code=200, json=lambda: {"statuses": [{'cmid': 1, 'state': 0, 'timecompleted': 0}, {'cmid': 2, 'state': 0, 'timecompleted': 0}]}))))
     @pytest.mark.parametrize(
-        "course_id, student_id",
+        "course_id, student_id, \
+                            learning_element_id",
         [
             # Working Example
             (1, 1, 2)
@@ -2517,9 +2518,9 @@ class TestApi:
                 + path_student
                 + "/"
                 + str(student_id)
+                + "/"
                 + "learningElementId/"
                 + str(learning_element_id)
-                + "/"
                 + path_activity_status
         )
         r = client_class.get(url)

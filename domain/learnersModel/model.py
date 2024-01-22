@@ -65,12 +65,69 @@ class LearningStyle:
 
 
 class LearningStrategy:
-    def __init__(self, characteristic_id) -> None:
+    def __init__(
+        self,
+        characteristic_id,
+        cogn_str=0.00,
+        org=0.00,
+        elab=0.00,
+        crit_rev=0.00,
+        rep=0.00,
+        metacogn_str=0.00,
+        goal_plan=0.00,
+        con=0.00,
+        reg=0.00,
+        int_res_mng_str=0.00,
+        att=0.00,
+        eff=0.00,
+        time=0.00,
+        ext_res_mng_str=0.00,
+        lrn_w_cls=0.00,
+        lit_res=0.00,
+        lrn_env=0.00,
+    ) -> None:
         self.id = None
         self.characteristic_id = characteristic_id
+        self.cogn_str = cogn_str
+        self.org = org
+        self.elab = elab
+        self.crit_rev = crit_rev
+        self.rep = rep
+        self.metacogn_str = metacogn_str
+        self.goal_plan = goal_plan
+        self.con = con
+        self.reg = reg
+        self.int_res_mng_str = int_res_mng_str
+        self.att = att
+        self.eff = eff
+        self.time = time
+        self.ext_res_mng_str = ext_res_mng_str
+        self.lrn_w_cls = lrn_w_cls
+        self.lit_res = lit_res
+        self.lrn_env = lrn_env
 
     def serialize(self):
-        return {"id": self.id, "characteristic_id": self.characteristic_id}
+        return {
+            "id": self.id,
+            "characteristic_id": self.characteristic_id,
+            "cogn_str": self.cogn_str,
+            "org": self.org,
+            "elab": self.elab,
+            "crit_rev": self.crit_rev,
+            "rep": self.rep,
+            "metacogn_str": self.metacogn_str,
+            "goal_plan": self.goal_plan,
+            "con": self.con,
+            "reg": self.reg,
+            "int_res_mng_str": self.int_res_mng_str,
+            "att": self.att,
+            "eff": self.eff,
+            "time": self.time,
+            "ext_res_mng_str": self.ext_res_mng_str,
+            "lrn_w_cls": self.lrn_w_cls,
+            "lit_res": self.lit_res,
+            "lrn_env": self.lrn_env,
+        }
 
 
 class Knowledge:
@@ -90,7 +147,7 @@ class LearningAnalytics:
         return {"id": self.id, "characteristic_id": self.characteristic_id}
 
 
-class Questionnaire:
+class QuestionnaireIls:
     def __init__(self, student_id, learning_style=None, learning_strategy=None) -> None:
         self.id = None
         self.student_id = student_id
@@ -109,7 +166,7 @@ class Questionnaire:
 class IlsInputAnswers:
     def __init__(
         self,
-        questionnaire_id,
+        questionnaire_ils_id,
         vv_2_f7,
         vv_5_f19,
         vv_7_f27,
@@ -123,7 +180,7 @@ class IlsInputAnswers:
         vv_9_f35=None,
     ) -> None:
         self.id = None
-        self.questionnaire_id = questionnaire_id
+        self.questionnaire_ils_id = questionnaire_ils_id
         self.vv_1_f3 = vv_1_f3
         self.vv_2_f7 = vv_2_f7
         self.vv_3_f11 = vv_3_f11
@@ -139,7 +196,7 @@ class IlsInputAnswers:
     def serialize(self):
         return {
             "id": self.id,
-            "questionnaire_id": self.questionnaire_id,
+            "questionnaire_ils_id": self.questionnaire_ils_id,
             "vv_1_f3": self.vv_1_f3,
             "vv_2_f7": self.vv_2_f7,
             "vv_3_f11": self.vv_3_f11,
@@ -157,7 +214,7 @@ class IlsInputAnswers:
 class IlsPerceptionAnswers:
     def __init__(
         self,
-        questionnaire_id,
+        questionnaire_ils_id,
         si_1_f2,
         si_4_f14,
         si_7_f26,
@@ -171,7 +228,7 @@ class IlsPerceptionAnswers:
         si_9_f34=None,
     ) -> None:
         self.id = None
-        self.questionnaire_id = questionnaire_id
+        self.questionnaire_ils_id = questionnaire_ils_id
         self.si_1_f2 = si_1_f2
         self.si_2_f6 = si_2_f6
         self.si_3_f10 = si_3_f10
@@ -187,7 +244,7 @@ class IlsPerceptionAnswers:
     def serialize(self):
         return {
             "id": self.id,
-            "questionnaire_id": self.questionnaire_id,
+            "questionnaire_ils_id": self.questionnaire_ils_id,
             "si_1_f2": self.si_1_f2,
             "si_2_f6": self.si_2_f6,
             "si_3_f10": self.si_3_f10,
@@ -205,7 +262,7 @@ class IlsPerceptionAnswers:
 class IlsProcessingAnswers:
     def __init__(
         self,
-        questionnaire_id,
+        questionnaire_ils_id,
         ar_3_f9,
         ar_4_f13,
         ar_6_f21,
@@ -219,7 +276,7 @@ class IlsProcessingAnswers:
         ar_11_f41=None,
     ) -> None:
         self.id = None
-        self.questionnaire_id = questionnaire_id
+        self.questionnaire_ils_id = questionnaire_ils_id
         self.ar_1_f1 = ar_1_f1
         self.ar_2_f5 = ar_2_f5
         self.ar_3_f9 = ar_3_f9
@@ -235,7 +292,7 @@ class IlsProcessingAnswers:
     def serialize(self):
         return {
             "id": self.id,
-            "questionnaire_id": self.questionnaire_id,
+            "questionnaire_ils_id": self.questionnaire_ils_id,
             "ar_1_f1": self.ar_1_f1,
             "ar_2_f5": self.ar_2_f5,
             "ar_3_f9": self.ar_3_f9,
@@ -253,7 +310,7 @@ class IlsProcessingAnswers:
 class IlsUnderstandingAnswers:
     def __init__(
         self,
-        questionnaire_id,
+        questionnaire_ils_id,
         sg_1_f4,
         sg_2_f8,
         sg_4_f16,
@@ -267,7 +324,7 @@ class IlsUnderstandingAnswers:
         sg_9_f36=None,
     ) -> None:
         self.id = None
-        self.questionnaire_id = questionnaire_id
+        self.questionnaire_ils_id = questionnaire_ils_id
         self.sg_1_f4 = sg_1_f4
         self.sg_2_f8 = sg_2_f8
         self.sg_3_f12 = sg_3_f12
@@ -283,7 +340,7 @@ class IlsUnderstandingAnswers:
     def serialize(self):
         return {
             "id": self.id,
-            "questionnaire_id": self.questionnaire_id,
+            "questionnaire_ils_id": self.questionnaire_ils_id,
             "sg_1_f4": self.sg_1_f4,
             "sg_2_f8": self.sg_2_f8,
             "sg_3_f12": self.sg_3_f12,
@@ -298,133 +355,133 @@ class IlsUnderstandingAnswers:
         }
 
 
-class ListK:
+class QuestionnaireListK:
     def __init__(
         self,
-        questionnaire_id,
+        student_id,
         org1_f1,
         org2_f2,
         org3_f3,
-        ela1_f4,
-        ela2_f5,
-        ela3_f6,
-        krp1_f7,
-        krp2_f8,
-        krp3_f9,
-        wie1_f10,
-        wie2_f11,
-        wie3_f12,
-        zp1_f13,
-        zp2_f14,
-        zp3_f15,
-        kon1_f16,
-        kon2_f17,
-        kon3_f18,
+        elab1_f4,
+        elab2_f5,
+        elab3_f6,
+        crit_rev1_f7,
+        crit_rev2_f8,
+        crit_rev3_f9,
+        rep1_f10,
+        rep2_f11,
+        rep3_f12,
+        goal_plan1_f13,
+        goal_plan2_f14,
+        goal_plan3_f15,
+        con1_f16,
+        con2_f17,
+        con3_f18,
         reg1_f19,
         reg2_f20,
         reg3_f21,
-        auf1_f22,
-        auf2_f23,
-        auf3_f24,
-        ans1_f25,
-        ans2_f26,
-        ans3_f27,
-        zei1_f28,
-        zei2_f29,
-        zei3_f30,
-        lms1_f31,
-        lms2_f32,
-        lms3_f33,
-        lit1_f34,
-        lit2_f35,
-        lit3_f36,
-        lu1_f37,
-        lu2_f38,
-        lu3_f39,
+        att1_f22,
+        att2_f23,
+        att3_f24,
+        eff1_f25,
+        eff2_f26,
+        eff3_f27,
+        time1_f28,
+        time2_f29,
+        time3_f30,
+        lrn_w_cls1_f31,
+        lrn_w_cls2_f32,
+        lrn_w_cls3_f33,
+        lit_res1_f34,
+        lit_res2_f35,
+        lit_res3_f36,
+        lrn_env1_f37,
+        lrn_env2_f38,
+        lrn_env3_f39,
     ) -> None:
         self.id = None
-        self.questionnaire_id = questionnaire_id
+        self.student_id = student_id
         self.org1_f1 = org1_f1
         self.org2_f2 = org2_f2
         self.org3_f3 = org3_f3
-        self.ela1_f4 = ela1_f4
-        self.ela2_f5 = ela2_f5
-        self.ela3_f6 = ela3_f6
-        self.krp1_f7 = krp1_f7
-        self.krp2_f8 = krp2_f8
-        self.krp3_f9 = krp3_f9
-        self.wie1_f10 = wie1_f10
-        self.wie2_f11 = wie2_f11
-        self.wie3_f12 = wie3_f12
-        self.zp1_f13 = zp1_f13
-        self.zp2_f14 = zp2_f14
-        self.zp3_f15 = zp3_f15
-        self.kon1_f16 = kon1_f16
-        self.kon2_f17 = kon2_f17
-        self.kon3_f18 = kon3_f18
+        self.elab1_f4 = elab1_f4
+        self.elab2_f5 = elab2_f5
+        self.elab3_f6 = elab3_f6
+        self.crit_rev1_f7 = crit_rev1_f7
+        self.crit_rev2_f8 = crit_rev2_f8
+        self.crit_rev3_f9 = crit_rev3_f9
+        self.rep1_f10 = rep1_f10
+        self.rep2_f11 = rep2_f11
+        self.rep3_f12 = rep3_f12
+        self.goal_plan1_f13 = goal_plan1_f13
+        self.goal_plan2_f14 = goal_plan2_f14
+        self.goal_plan3_f15 = goal_plan3_f15
+        self.con1_f16 = con1_f16
+        self.con2_f17 = con2_f17
+        self.con3_f18 = con3_f18
         self.reg1_f19 = reg1_f19
         self.reg2_f20 = reg2_f20
         self.reg3_f21 = reg3_f21
-        self.auf1_f22 = auf1_f22
-        self.auf2_f23 = auf2_f23
-        self.auf3_f24 = auf3_f24
-        self.ans1_f25 = ans1_f25
-        self.ans2_f26 = ans2_f26
-        self.ans3_f27 = ans3_f27
-        self.zei1_f28 = zei1_f28
-        self.zei2_f29 = zei2_f29
-        self.zei3_f30 = zei3_f30
-        self.lms1_f31 = lms1_f31
-        self.lms2_f32 = lms2_f32
-        self.lms3_f33 = lms3_f33
-        self.lit1_f34 = lit1_f34
-        self.lit2_f35 = lit2_f35
-        self.lit3_f36 = lit3_f36
-        self.lu1_f37 = lu1_f37
-        self.lu2_f38 = lu2_f38
-        self.lu3_f39 = lu3_f39
+        self.att1_f22 = att1_f22
+        self.att2_f23 = att2_f23
+        self.att3_f24 = att3_f24
+        self.eff1_f25 = eff1_f25
+        self.eff2_f26 = eff2_f26
+        self.eff3_f27 = eff3_f27
+        self.time1_f28 = time1_f28
+        self.time2_f29 = time2_f29
+        self.time3_f30 = time3_f30
+        self.lrn_w_cls1_f31 = lrn_w_cls1_f31
+        self.lrn_w_cls2_f32 = lrn_w_cls2_f32
+        self.lrn_w_cls3_f33 = lrn_w_cls3_f33
+        self.lit_res1_f34 = lit_res1_f34
+        self.lit_res2_f35 = lit_res2_f35
+        self.lit_res3_f36 = lit_res3_f36
+        self.lrn_env1_f37 = lrn_env1_f37
+        self.lrn_env2_f38 = lrn_env2_f38
+        self.lrn_env3_f39 = lrn_env3_f39
 
     def serialize(self):
         return {
             "id": self.id,
-            "questionnaire_id": self.questionnaire_id,
+            "student_id": self.student_id,
             "org1_f1": self.org1_f1,
             "org2_f2": self.org2_f2,
             "org3_f3": self.org3_f3,
-            "ela1_f4": self.ela1_f4,
-            "ela2_f5": self.ela2_f5,
-            "ela3_f6": self.ela3_f6,
-            "krp1_f7": self.krp1_f7,
-            "krp2_f8": self.krp2_f8,
-            "krp3_f9": self.krp3_f9,
-            "wie1_f10": self.wie1_f10,
-            "wie2_f11": self.wie2_f11,
-            "wie3_f12": self.wie3_f12,
-            "zp1_f13": self.zp1_f13,
-            "zp2_f14": self.zp2_f14,
-            "zp3_f15": self.zp3_f15,
-            "kon1_f16": self.kon1_f16,
-            "kon2_f17": self.kon2_f17,
-            "kon3_f18": self.kon3_f18,
+            "elab1_f4": self.elab1_f4,
+            "elab2_f5": self.elab2_f5,
+            "elab3_f6": self.elab3_f6,
+            "crit_rev1_f7": self.crit_rev1_f7,
+            "crit_rev2_f8": self.crit_rev2_f8,
+            "crit_rev3_f9": self.crit_rev3_f9,
+            "rep1_f10": self.rep1_f10,
+            "rep2_f11": self.rep2_f11,
+            "rep3_f12": self.rep3_f12,
+            "goal_plan1_f13": self.goal_plan1_f13,
+            "goal_plan2_f14": self.goal_plan2_f14,
+            "goal_plan3_f15": self.goal_plan3_f15,
+            "con1_f16": self.con1_f16,
+            "con2_f17": self.con2_f17,
+            "con3_f18": self.con3_f18,
             "reg1_f19": self.reg1_f19,
             "reg2_f20": self.reg2_f20,
             "reg3_f21": self.reg3_f21,
-            "auf1_f22": self.auf1_f22,
-            "auf2_f23": self.auf2_f23,
-            "auf3_f24": self.auf3_f24,
-            "ans1_f25": self.ans1_f25,
-            "ans2_f26": self.ans2_f26,
-            "ans3_f27": self.ans3_f27,
-            "zei1_f28": self.zei1_f28,
-            "zei2_f29": self.zei2_f29,
-            "zei3_f30": self.zei3_f30,
-            "lms1_f31": self.lms1_f31,
-            "lms2_f32": self.lms2_f32,
-            "lms3_f33": self.lms3_f33,
-            "lit1_f34": self.lit1_f34,
-            "lit2_f35": self.lit2_f35,
-            "lit3_f36": self.lit3_f36,
-            "lu1_f37": self.lu1_f37,
-            "lu2_f38": self.lu2_f38,
-            "lu3_f39": self.lu3_f39,
+            "att1_f22": self.att1_f22,
+            "att2_f23": self.att2_f23,
+            "att3_f24": self.att3_f24,
+            "eff1_f25": self.eff1_f25,
+            "eff2_f26": self.eff2_f26,
+            "eff3_f27": self.eff3_f27,
+            "time1_f28": self.time1_f28,
+            "time2_f29": self.time2_f29,
+            "time3_f30": self.time3_f30,
+            "lrn_w_cls1_f31": self.lrn_w_cls1_f31,
+            "lrn_w_cls2_f32": self.lrn_w_cls2_f32,
+            "lrn_w_cls3_f33": self.lrn_w_cls3_f33,
+            "lit_res1_f34": self.lit_res1_f34,
+            "lit_res2_f35": self.lit_res2_f35,
+            "lit_res3_f36": self.lit_res3_f36,
+            "lrn_env1_f37": self.lrn_env1_f37,
+            "lrn_env2_f38": self.lrn_env2_f38,
+            "lrn_env3_f39": self.lrn_env3_f39,
         }

@@ -13,9 +13,9 @@ config_file = {
     "https://moodle.haski.app": {
         "default": True,
         "client_id": "VRCKkhKlZtHNHtD",
-        "tool_url": "https://backend.haski.app",
-        "frontend_login_url": "https://haski.app/login",
-        "target_link_uri": "https://backend.haski.app/lti_launch",
+        "tool_url": "https://backend.ke.haski.app",
+        "frontend_login_url": "https://ke.haski.app/login",
+        "target_link_uri": "https://backend.ke.haski.app/lti_launch",
         "auth_login_url": "https://moodle.haski.app/mod/lti/auth.php",
         "auth_token_url": "https://moodle.haski.app/mod/lti/token.php",
         "key_set_url": "https://moodle.haski.app/mod/lti/certs.php",
@@ -48,7 +48,7 @@ form = {
     "client_id": "VRCKkhKlZtHNHtD",
     "login_hint": "student",
     "lti_message_hint": "message_hint",
-    "target_link_uri": "https://backend.haski.app/lti_launch",
+    "target_link_uri": "https://backend.ke.haski.app/lti_launch",
     "lti_deployment_id": "1",
 }
 

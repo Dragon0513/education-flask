@@ -87,12 +87,12 @@ def setup_db(
     cursor.execute("DROP TABLE IF EXISTS learning_path")
     cursor.execute("DROP TABLE IF EXISTS learning_path_topic")
     cursor.execute("DROP TABLE IF EXISTS learning_path_learning_element")
-    cursor.execute("DROP TABLE IF EXISTS questionnaire")
+    cursor.execute("DROP TABLE IF EXISTS questionnaire_ils")
     cursor.execute("DROP TABLE IF EXISTS ils_input_answers")
     cursor.execute("DROP TABLE IF EXISTS ils_perception_answers")
     cursor.execute("DROP TABLE IF EXISTS ils_processing_answers")
     cursor.execute("DROP TABLE IF EXISTS ils_understanding_answers")
-    cursor.execute("DROP TABLE IF EXISTS list_k")
+    cursor.execute("DROP TABLE IF EXISTS questionnaire_list_k")
 
     # Creating table as per requirement
     sql = """
@@ -416,6 +416,23 @@ def setup_db(
             id integer NOT NULL GENERATED ALWAYS AS IDENTITY
             ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
             characteristic_id integer NOT NULL,
+            cogn_str real NOT NULL,
+            org real NOT NULL,
+            elab real NOT NULL,
+            crit_rev real NOT NULL,
+            rep real NOT NULL,
+            metacogn_str real NOT NULL,
+            goal_plan real NOT NULL,
+            con real NOT NULL,
+            reg real NOT NULL,
+            int_res_mng_str real NOT NULL,
+            att real NOT NULL,
+            eff real NOT NULL,
+            time real NOT NULL,
+            ext_res_mng_str real NOT NULL,
+            lrn_w_cls real NOT NULL,
+            lit_res real NOT NULL,
+            lrn_env real NOT NULL,
             CONSTRAINT learning_strategy_pkey PRIMARY KEY (id),
             CONSTRAINT characteristic_id FOREIGN KEY (characteristic_id)
                 REFERENCES public.learning_characteristics (id) MATCH SIMPLE
@@ -774,12 +791,12 @@ def setup_db(
     cursor.execute(sql)
 
     sql = """
-        CREATE TABLE IF NOT EXISTS public.questionnaire
+        CREATE TABLE IF NOT EXISTS public.questionnaire_ils
         (
             id integer NOT NULL GENERATED ALWAYS AS IDENTITY
             ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
             student_id integer NOT NULL,
-            CONSTRAINT questionnaire_pkey PRIMARY KEY (id),
+            CONSTRAINT questionnaire_ils_pkey PRIMARY KEY (id),
             CONSTRAINT student_id FOREIGN KEY (student_id)
                 REFERENCES public.student (id) MATCH SIMPLE
                 ON UPDATE NO ACTION
@@ -788,7 +805,7 @@ def setup_db(
 
         TABLESPACE pg_default;
 
-        ALTER TABLE IF EXISTS public.questionnaire
+        ALTER TABLE IF EXISTS public.questionnaire_ils
             OWNER to postgres;
     """
     cursor.execute(sql)
@@ -798,7 +815,7 @@ def setup_db(
         (
             id integer NOT NULL GENERATED ALWAYS AS IDENTITY
             ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
-            questionnaire_id integer NOT NULL,
+            questionnaire_ils_id integer NOT NULL,
             vv_1_f3 text COLLATE pg_catalog."default",
             vv_2_f7 text COLLATE pg_catalog."default" NOT NULL,
             vv_3_f11 text COLLATE pg_catalog."default",
@@ -811,8 +828,8 @@ def setup_db(
             vv_10_f39 text COLLATE pg_catalog."default" NOT NULL,
             vv_11_f43 text COLLATE pg_catalog."default" NOT NULL,
             CONSTRAINT ils_input_answers_pkey PRIMARY KEY (id),
-            CONSTRAINT questionnaire_id FOREIGN KEY (questionnaire_id)
-                REFERENCES public.questionnaire (id) MATCH SIMPLE
+            CONSTRAINT questionnaire_ils_id FOREIGN KEY (questionnaire_ils_id)
+                REFERENCES public.questionnaire_ils (id) MATCH SIMPLE
                 ON UPDATE NO ACTION
                 ON DELETE NO ACTION
         )
@@ -829,7 +846,7 @@ def setup_db(
         (
             id integer NOT NULL GENERATED ALWAYS AS IDENTITY
             ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
-            questionnaire_id integer NOT NULL,
+            questionnaire_ils_id integer NOT NULL,
             si_1_f2 text COLLATE pg_catalog."default" NOT NULL,
             si_2_f6 text COLLATE pg_catalog."default",
             si_3_f10 text COLLATE pg_catalog."default",
@@ -842,8 +859,8 @@ def setup_db(
             si_10_f38 text COLLATE pg_catalog."default" NOT NULL,
             si_11_f42 text COLLATE pg_catalog."default" NOT NULL,
             CONSTRAINT ils_perception_answers_pkey PRIMARY KEY (id),
-            CONSTRAINT questionnaire_id FOREIGN KEY (questionnaire_id)
-                REFERENCES public.questionnaire (id) MATCH SIMPLE
+            CONSTRAINT questionnaire_ils_id FOREIGN KEY (questionnaire_ils_id)
+                REFERENCES public.questionnaire_ils (id) MATCH SIMPLE
                 ON UPDATE NO ACTION
                 ON DELETE NO ACTION
                 NOT VALID
@@ -861,7 +878,7 @@ def setup_db(
         (
             id integer NOT NULL GENERATED ALWAYS AS IDENTITY
             ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
-            questionnaire_id integer NOT NULL,
+            questionnaire_ils_id integer NOT NULL,
             ar_1_f1 text COLLATE pg_catalog."default",
             ar_2_f5 text COLLATE pg_catalog."default",
             ar_3_f9 text COLLATE pg_catalog."default" NOT NULL,
@@ -874,8 +891,8 @@ def setup_db(
             ar_10_f37 text COLLATE pg_catalog."default",
             ar_11_f41 text COLLATE pg_catalog."default",
             CONSTRAINT ils_processing_answers_pkey PRIMARY KEY (id),
-            CONSTRAINT questionnaire_id FOREIGN KEY (questionnaire_id)
-                REFERENCES public.questionnaire (id) MATCH SIMPLE
+            CONSTRAINT questionnaire_ils_id FOREIGN KEY (questionnaire_ils_id)
+                REFERENCES public.questionnaire_ils (id) MATCH SIMPLE
                 ON UPDATE NO ACTION
                 ON DELETE NO ACTION
         )
@@ -892,7 +909,7 @@ def setup_db(
         (
             id integer NOT NULL GENERATED ALWAYS AS IDENTITY
             ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
-            questionnaire_id integer NOT NULL,
+            questionnaire_ils_id integer NOT NULL,
             sg_1_f4 text COLLATE pg_catalog."default" NOT NULL,
             sg_2_f8 text COLLATE pg_catalog."default" NOT NULL,
             sg_3_f12 text COLLATE pg_catalog."default",
@@ -905,8 +922,8 @@ def setup_db(
             sg_10_f40 text COLLATE pg_catalog."default" NOT NULL,
             sg_11_f44 text COLLATE pg_catalog."default" NOT NULL,
             CONSTRAINT ils_understanding_answers_pkey PRIMARY KEY (id),
-            CONSTRAINT questionnaire_id FOREIGN KEY (questionnaire_id)
-                REFERENCES public.questionnaire (id) MATCH SIMPLE
+            CONSTRAINT questionnaire_ils_id FOREIGN KEY (questionnaire_ils_id)
+                REFERENCES public.questionnaire_ils (id) MATCH SIMPLE
                 ON UPDATE NO ACTION
                 ON DELETE NO ACTION
         )
@@ -919,60 +936,60 @@ def setup_db(
     cursor.execute(sql)
 
     sql = """
-        CREATE TABLE IF NOT EXISTS public.list_k
+        CREATE TABLE IF NOT EXISTS public.questionnaire_list_k
         (
             id integer NOT NULL GENERATED ALWAYS AS IDENTITY
             ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+            student_id integer NOT NULL,
             org1_f1 integer NOT NULL,
             org2_f2 integer NOT NULL,
             org3_f3 integer NOT NULL,
-            ela1_f4 integer NOT NULL,
-            ela2_f5 integer NOT NULL,
-            ela3_f6 integer NOT NULL,
-            krp1_f7 integer NOT NULL,
-            krp2_f8 integer NOT NULL,
-            krp3_f9 integer NOT NULL,
-            wie1_f10 integer NOT NULL,
-            wie2_f11 integer NOT NULL,
-            wie3_f12 integer NOT NULL,
-            zp1_f13 integer NOT NULL,
-            zp2_f14 integer NOT NULL,
-            zp3_f15 integer NOT NULL,
-            kon1_f16 integer NOT NULL,
-            kon2_f17 integer NOT NULL,
-            kon3_f18 integer NOT NULL,
+            elab1_f4 integer NOT NULL,
+            elab2_f5 integer NOT NULL,
+            elab3_f6 integer NOT NULL,
+            crit_rev1_f7 integer NOT NULL,
+            crit_rev2_f8 integer NOT NULL,
+            crit_rev3_f9 integer NOT NULL,
+            rep1_f10 integer NOT NULL,
+            rep2_f11 integer NOT NULL,
+            rep3_f12 integer NOT NULL,
+            goal_plan1_f13 integer NOT NULL,
+            goal_plan2_f14 integer NOT NULL,
+            goal_plan3_f15 integer NOT NULL,
+            con1_f16 integer NOT NULL,
+            con2_f17 integer NOT NULL,
+            con3_f18 integer NOT NULL,
             reg1_f19 integer NOT NULL,
             reg2_f20 integer NOT NULL,
             reg3_f21 integer NOT NULL,
-            auf1_f22 integer NOT NULL,
-            auf2_f23 integer NOT NULL,
-            auf3_f24 integer NOT NULL,
-            ans1_f25 integer NOT NULL,
-            ans2_f26 integer NOT NULL,
-            ans3_f27 integer NOT NULL,
-            zei1_f28 integer NOT NULL,
-            zei2_f29 integer NOT NULL,
-            zei3_f30 integer NOT NULL,
-            lms1_f31 integer NOT NULL,
-            lms2_f32 integer NOT NULL,
-            lms3_f33 integer NOT NULL,
-            lit1_f34 integer NOT NULL,
-            lit2_f35 integer NOT NULL,
-            lit3_f36 integer NOT NULL,
-            lu1_f37 integer NOT NULL,
-            lu2_f38 integer NOT NULL,
-            lu3_f39 integer NOT NULL,
-            questionnaire_id integer NOT NULL,
-            CONSTRAINT list_k_pkey PRIMARY KEY (id),
-            CONSTRAINT questionnaire_id FOREIGN KEY (questionnaire_id)
-                REFERENCES public.questionnaire (id) MATCH SIMPLE
+            att1_f22 integer NOT NULL,
+            att2_f23 integer NOT NULL,
+            att3_f24 integer NOT NULL,
+            eff1_f25 integer NOT NULL,
+            eff2_f26 integer NOT NULL,
+            eff3_f27 integer NOT NULL,
+            time1_f28 integer NOT NULL,
+            time2_f29 integer NOT NULL,
+            time3_f30 integer NOT NULL,
+            lrn_w_cls1_f31 integer NOT NULL,
+            lrn_w_cls2_f32 integer NOT NULL,
+            lrn_w_cls3_f33 integer NOT NULL,
+            lit_res1_f34 integer NOT NULL,
+            lit_res2_f35 integer NOT NULL,
+            lit_res3_f36 integer NOT NULL,
+            lrn_env1_f37 integer NOT NULL,
+            lrn_env2_f38 integer NOT NULL,
+            lrn_env3_f39 integer NOT NULL,
+            CONSTRAINT questionnaire_list_k_pkey PRIMARY KEY (id),
+            CONSTRAINT student_id FOREIGN KEY (student_id)
+                REFERENCES public.student (id) MATCH SIMPLE
                 ON UPDATE NO ACTION
                 ON DELETE NO ACTION
         )
 
         TABLESPACE pg_default;
 
-        ALTER TABLE IF EXISTS public.list_k
+        ALTER TABLE IF EXISTS public.questionnaire_list_k
             OWNER to postgres;
     """
     cursor.execute(sql)

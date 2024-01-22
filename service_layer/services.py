@@ -1753,7 +1753,9 @@ def get_user_by_lms_id(uow: unit_of_work.AbstractUnitOfWork, lms_user_id) -> dic
         return result
 
 
-def get_moodle_rest_url_for_completion_status(uow: unit_of_work.AbstractUnitOfWork, course_id, student_id) -> dict:
+def get_moodle_rest_url_for_completion_status(
+    uow: unit_of_work.AbstractUnitOfWork, course_id, student_id
+) -> dict:
     with uow:
         course = uow.course.get_course_by_id(course_id)
         moodle_url = os.environ.get("REST_LMS_URL", "")
@@ -1763,17 +1765,31 @@ def get_moodle_rest_url_for_completion_status(uow: unit_of_work.AbstractUnitOfWo
         rest_format = "&moodlewsrestformat=json"
         moodle_course_id = "&courseid=" + str(course[0].lms_id)
         moodle_user_id = "&userid=" + str(student_id)
-        moodle_rest_request = moodle_url + moodle_rest + rest_function + rest_token + rest_format + moodle_course_id + moodle_user_id
+        moodle_rest_request = (
+            moodle_url
+            + moodle_rest
+            + rest_function
+            + rest_token
+            + rest_format
+            + moodle_course_id
+            + moodle_user_id
+        )
         return requests.get(moodle_rest_request)
 
 
-def get_activity_status_for_student_for_course(uow: unit_of_work.AbstractUnitOfWork, course_id, student_id) -> dict:
+def get_activity_status_for_student_for_course(
+    uow: unit_of_work.AbstractUnitOfWork, course_id, student_id
+) -> dict:
     with uow:
         response = get_moodle_rest_url_for_completion_status(uow, course_id, student_id)
         if response.status_code == 200:
             json_response = response.json()
             filtered_statuses = [
-                {"cmid": status["cmid"], "state": status["state"], "timecompleted": status["timecompleted"]}
+                {
+                    "cmid": status["cmid"],
+                    "state": status["state"],
+                    "timecompleted": status["timecompleted"],
+                }
                 for status in json_response["statuses"]
             ]
             return filtered_statuses
@@ -1781,10 +1797,18 @@ def get_activity_status_for_student_for_course(uow: unit_of_work.AbstractUnitOfW
             return {}
 
 
-def get_activity_status_for_student_for_learning_element_for_course(uow: unit_of_work.AbstractUnitOfWork, course_id, student_id, learning_element_id) -> dict:
+def get_activity_status_for_student_for_learning_element_for_course(
+    uow: unit_of_work.AbstractUnitOfWork, course_id, student_id, learning_element_id
+) -> dict:
     with uow:
-        filtered_statuses = get_activity_status_for_student_for_course(uow, course_id, student_id)
-        filtered_cmid = [item for item in filtered_statuses if item['cmid'] == int(learning_element_id)]
+        filtered_statuses = get_activity_status_for_student_for_course(
+            uow, course_id, student_id
+        )
+        filtered_cmid = [
+            item
+            for item in filtered_statuses
+            if item["cmid"] == int(learning_element_id)
+        ]
         return filtered_cmid
 
 

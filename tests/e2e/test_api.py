@@ -2495,7 +2495,38 @@ class TestApi:
         r = client_class.get(url)
         assert r.status_code == 200
         response = json.loads(r.data.decode("utf-8").strip("\n"))
-        assert "cmid" in response.statuses[0].keys()
+        assert response ==  [{'cmid': 1, 'state': 0, 'timecompleted': 0}, {'cmid': 2, 'state': 0, 'timecompleted': 0}]
+
+    # Get all learning element statuses for a student for a course
+    @mock.patch('requests.get', mock.Mock(side_effect=lambda k: (mock.Mock(status_code=200, json=lambda: {"statuses": [{'cmid': 1, 'state': 0, 'timecompleted': 0}, {'cmid': 2, 'state': 0, 'timecompleted': 0}]}))))
+    @pytest.mark.parametrize(
+        "course_id, student_id",
+        [
+            # Working Example
+            (1, 1, 2)
+        ],
+    )
+    def test_get_activity_status_for_student_for_learning_element(
+            self, client_class, course_id, student_id, learning_element_id
+    ):
+        global user_id_student
+        url = (
+                path_lms_course
+                + "/"
+                + str(course_id)
+                + path_student
+                + "/"
+                + str(student_id)
+                + "learningElementId/"
+                + str(learning_element_id)
+                + "/"
+                + path_activity_status
+        )
+        r = client_class.get(url)
+        assert r.status_code == 200
+        response = json.loads(r.data.decode("utf-8").strip("\n"))
+        assert response ==  [{'cmid': 2, 'state': 0, 'timecompleted': 0}]
+
 
     # PUT METHODS
     # Update the settings of a User

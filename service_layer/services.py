@@ -1797,7 +1797,7 @@ def get_activity_status_for_student_for_course(
             return {}
 
 
-def get_activity_status_for_student_for_learning_element_for_course(
+def get_activity_status_for_learning_element(
     uow: unit_of_work.AbstractUnitOfWork, course_id, student_id, learning_element_id
 ) -> dict:
     with uow:

@@ -2016,7 +2016,7 @@ def test_get_activity_status_for_student_for_learning_element_for_course():
     create_course_creator_for_tests(uow)
     create_course_for_tests(uow)
 
-    result = services.get_activity_status_for_student_for_learning_element_for_course(
+    result = services.get_activity_status_for_learning_element(
         uow=uow,
         course_id=1,
         student_id=1,

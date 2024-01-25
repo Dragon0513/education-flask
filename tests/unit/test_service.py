@@ -1948,7 +1948,16 @@ def test_create_course():
 
 @mock.patch(
     "requests.get",
-    mock.Mock(side_effect=lambda k: [{"cmid": 1, "state": 0, "timecompleted": 0}]),
+    mock.Mock(
+        side_effect=lambda k: (
+                mock.Mock(
+                    status_code=200,
+                    json=lambda: {
+                        "statuses": [{"cmid": 1, "state": 0, "timecompleted": 0}]
+                    },
+                )
+        )
+    ),
 )
 def test_get_moodle_rest_url_for_completion_status():
     uow = FakeUnitOfWork()
@@ -1960,7 +1969,7 @@ def test_get_moodle_rest_url_for_completion_status():
         course_id=1,
         student_id=1,
     )
-    assert result == [{"cmid": 1, "state": 0, "timecompleted": 0}]
+    assert result == {'statuses': [{"cmid": 1, "state": 0, "timecompleted": 0}]}
 
 
 @mock.patch(

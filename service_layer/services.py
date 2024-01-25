@@ -1778,23 +1778,22 @@ def get_moodle_rest_url_for_completion_status(
         if response.status_code == 200:
             return response.json()
         else:
-            return response.status_code.json()
+            return {}
 
 
 def get_activity_status_for_student_for_course(
     uow: unit_of_work.AbstractUnitOfWork, course_id, student_id
-) -> dict:
+) -> list:
     with uow:
         response = get_moodle_rest_url_for_completion_status(uow, course_id, student_id)
-        if response.status_code == 200:
-            json_response = response.json()
+        if response != {}:
             filtered_statuses = [
                 {
                     "cmid": status["cmid"],
                     "state": status["state"],
                     "timecompleted": status["timecompleted"],
                 }
-                for status in json_response["statuses"]
+                for status in response["statuses"]
             ]
             return filtered_statuses
         else:
@@ -1803,7 +1802,7 @@ def get_activity_status_for_student_for_course(
 
 def get_activity_status_for_learning_element(
     uow: unit_of_work.AbstractUnitOfWork, course_id, student_id, learning_element_id
-) -> dict:
+) -> list:
     with uow:
         filtered_statuses = get_activity_status_for_student_for_course(
             uow, course_id, student_id

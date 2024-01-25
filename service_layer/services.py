@@ -1774,7 +1774,11 @@ def get_moodle_rest_url_for_completion_status(
             + moodle_course_id
             + moodle_user_id
         )
-        return requests.get(moodle_rest_request)
+        response = requests.get(moodle_rest_request)
+        if response.status_code == 200:
+            return response.json()
+        else:
+            return response.status_code.json()
 
 
 def get_activity_status_for_student_for_course(

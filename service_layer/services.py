@@ -1797,7 +1797,7 @@ def get_activity_status_for_student_for_course(
             ]
             return filtered_statuses
         else:
-            return {}
+            return []
 
 
 def get_activity_status_for_learning_element(

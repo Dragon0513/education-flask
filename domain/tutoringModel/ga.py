@@ -256,6 +256,26 @@ class GeneticAlgorithm:
             ]
         )
 
+    def check_abb_learning_element(self, element):
+        abbreviations = [
+            "KÜ",
+            "EK",
+            "RQ",
+            "SE",
+            "FO",
+            "ZL",
+            "AN",
+            "ÜB",
+            "BE",
+            "AB",
+            "ZF",
+            "LZ",
+        ]
+        if element in abbreviations:
+            return True
+        else:
+            return False
+
     def get_learning_element(self, learning_elements):
         """converts the dictionary learning element
         into a list with only the short name LE"""
@@ -271,7 +291,7 @@ class GeneticAlgorithm:
             elif le["classification"] == abb.abbreviation_as:
                 lz_is_present = True
                 lz_element = le["classification"]
-            else:
+            elif self.check_abb_learning_element(le["classification"]):
                 classification_learning_element.append(le["classification"])
 
         if lz_is_present:

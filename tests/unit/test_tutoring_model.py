@@ -295,7 +295,9 @@ def test_prepare_les_for_ga_fixed_LE(learning_style):
                 "RQ",
             ],
         ),
-        # all learning element are in the list, except there is one with an unknown abreviation for example "ZZ"
+        # all learning element are in the list,
+        # except there is one with an unknown
+        # abreviation for example "ZZ"
         (
             None,
             [
@@ -308,7 +310,7 @@ def test_prepare_les_for_ga_fixed_LE(learning_style):
                 "SE",
                 "EK",
                 "SE",
-                "ZL",
+                "ZZ",
                 "AB",
                 "KÜ",
                 "FO",

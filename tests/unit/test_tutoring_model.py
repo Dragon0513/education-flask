@@ -68,7 +68,7 @@ def test_get_coordinates(
 
 
 @pytest.mark.parametrize(
-    "learning_style",
+    "learning_style, list_of_keys",
     [
         (
             {
@@ -82,7 +82,8 @@ def test_get_coordinates(
                 "processing_value": 11,
                 "understanding_dimension": "seq",
                 "understanding_value": 11,
-            }
+            },
+            None,
         ),
         (
             {
@@ -96,44 +97,9 @@ def test_get_coordinates(
                 "processing_value": 1,
                 "understanding_dimension": "glo",
                 "understanding_value": 0,
-            }
+            },
+            None,
         ),
-    ],
-)
-def test_prepare_les_for_ga_fixed_LE(learning_style):
-    list_of_les = []
-    list_of_keys = ["KÜ", "LZ", "ÜB", "SE", "BE", "AN", "EK", "ZL", "AB", "ZF"]
-    for i, ele_name in enumerate(list_of_keys):
-        le = DM.LearningElement(
-            lms_id=i,
-            activity_type="lesson",
-            classification=ele_name,
-            name="Test LE",
-            university="TH-AB",
-            created_by="Max Mustermann",
-            created_at="2023-09-01",
-        )
-        list_of_les.append(le.serialize())
-    lp = TM.LearningPath(student_id=1, course_id=1, based_on="ga")
-    lp.get_learning_path(
-        student_id=1,
-        learning_style=learning_style,
-        _algorithm="ga",
-        list_of_les=list_of_les,
-    )
-    result = lp.path
-    assert isinstance(result, str)
-    assert ", " in result
-    result = result.split(", ")
-    assert isinstance(result, list)
-    assert result[0] == "KÜ"
-    assert result[1] == "EK"
-    assert result[-1] == "LZ"
-
-
-@pytest.mark.parametrize(
-    "learning_style, list_of_keys",
-    [
         (
             {
                 "id": 1,
@@ -335,11 +301,13 @@ def test_prepare_les_for_ga(learning_style, list_of_keys):
             "understanding_dimension": "glo",
             "understanding_value": 9,
         }
+    if list_of_keys is None:
+        list_of_keys = ["KÜ", "LZ", "ÜB", "SE", "BE", "AN", "EK", "ZL", "AB", "ZF"]
 
     for i, ele_name in enumerate(list_of_keys):
         le = DM.LearningElement(
             lms_id=i,
-            activity_type="lesson",
+            activity_type="lesson2",
             classification=ele_name,
             name="Test LE",
             university="TH-AB",

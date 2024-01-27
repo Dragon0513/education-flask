@@ -23,12 +23,12 @@ class GeneticAlgorithm:
         self.learning_style = {}
         self.best_population = []
         self.le_coordinate: np.ndarray = np.array([])
-        self.n_generation = 100
+        self.n_generation = 150
         self.population: np.ndarray = np.array([])
         self.le_size = 0
         self.mutate_rate = 0.4
         self.cross_rate = 0.9
-        self.pop_size = 100
+        self.pop_size = 120
 
         if learning_elements is not None:
             #  convert learning element into
@@ -36,15 +36,13 @@ class GeneticAlgorithm:
             le = self.get_learning_element(learning_elements)
             self.le_size = len(le)
 
-    def create_random_population(self, input_learning_style) -> None:
+    def create_random_population(self, learning_style) -> None:
         """Function for the calculation of the score.
         position a also Initialise some populations
         with Clustering if this is possible.
         param dict_coordinates"""
-        # print("self.learning_elements_1:", self.learning_elements)
-        coordinates = utils.get_coordinates(
-            input_learning_style, self.learning_elements
-        )
+
+        coordinates = utils.get_coordinates(learning_style, self.learning_elements)
         self.dict_coordinate = {"first": (20, 20, 20, 20)}
         self.dict_coordinate.update(coordinates)
 
@@ -144,9 +142,13 @@ class GeneticAlgorithm:
 
         pop_copy = population.copy()
 
-        size = len(population)
-        for i in range(size):
-            parent = population[i]
+        # size = len(population)
+        # for i in range(size):
+        #     parent = population[i]
+        #     child = self.crossover(parent, pop_copy)
+        #     child = self.mutate(child)
+        #     parent[:] = child
+        for parent in population:
             child = self.crossover(parent, pop_copy)
             child = self.mutate(child)
             parent[:] = child
@@ -230,15 +232,14 @@ class GeneticAlgorithm:
     def check_learning_style(self, input_learning_style):
         """Checks if the learning styles
         have values between 0 and 11"""
-        is_not_correct = False
+
         for iterator in input_learning_style:
             if input_learning_style.get(iterator):
                 dimension_number = input_learning_style.get(iterator)
                 if dimension_number < -11 or dimension_number > 11:
-                    is_not_correct = True
-                    break
+                    return False
 
-        return is_not_correct
+        return True
 
     def check_name_learning_style(self, input_learning_style):
         """Check if the names of learning styles are correct."""
@@ -265,6 +266,8 @@ class GeneticAlgorithm:
         for le in learning_elements:
             if le["classification"] == abb.abbreviation_ct:
                 classification_learning_element.insert(0, le["classification"])
+            if le["classification"] == abb.abbreviation_co:
+                classification_learning_element.insert(1, le["classification"])
             elif le["classification"] == abb.abbreviation_as:
                 lz_is_present = True
                 lz_element = le["classification"]
@@ -273,7 +276,6 @@ class GeneticAlgorithm:
 
         if lz_is_present:
             classification_learning_element.append(lz_element)
-
         return classification_learning_element
 
     def get_learning_path(self, input_learning_style=None, input_learning_element=None):
@@ -286,7 +288,7 @@ class GeneticAlgorithm:
             if len(learning_style) != 4:
                 raise err.WrongLearningStyleNumberError()
 
-            if self.check_learning_style(learning_style):
+            if not self.check_learning_style(learning_style):
                 raise err.WrongLearningStyleDimensionError()
 
             if self.check_name_learning_style(learning_style):
@@ -295,9 +297,7 @@ class GeneticAlgorithm:
         if input_learning_element is None:
             raise err.NoValidParameterValueError()
         else:
-            # transforma los LE de laita en vector
             self.learning_elements = self.get_learning_element(input_learning_element)
-            print("\n", "self.learning_elements nach:", self.learning_elements, "\n")
 
         self.create_random_population(input_learning_style)
         result_ga = self.calculate_learning_path_ga()

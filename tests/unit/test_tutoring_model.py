@@ -121,12 +121,10 @@ def test_prepare_les_for_ga_fixed_LE(learning_style):
         _algorithm="ga",
         list_of_les=list_of_les,
     )
-    print("test_prepare_les_for_ga-GA learning")
     result = lp.path
     assert isinstance(result, str)
     assert ", " in result
     result = result.split(", ")
-    print("test_prepare_les_for_ga---result", result)
     assert isinstance(result, list)
     assert result[0] == "KÜ"
     assert result[1] == "EK"
@@ -229,24 +227,112 @@ def test_prepare_les_for_ga_fixed_LE(learning_style):
             ],
         ),
         (
-            {
-                "id": 1,
-                "characteristic_id": 11,
-                "perception_dimension": "int",
-                "perception_value": 5,
-                "input_dimension": "vis",
-                "input_value": 3,
-                "processing_dimension": "ref",
-                "processing_value": 1,
-                "understanding_dimension": "glo",
-                "understanding_value": 9,
-            },
+            None,
             ["ÜB", "FO", "LZ", "SE", "AN", "KÜ", "EK"],
+        ),
+        # only 1 Learning element is in the list
+        # (    None,
+        #     ["SE"],
+        # ),
+        # # only 2 Learning elements are in the list
+        # (
+        #     None,
+        #     ["SE","AN"],
+        # ),
+        # all learning elements are only once in the list
+        (
+            None,
+            ["ZF", "LZ", "ÜB", "SE", "BE", "AN", "EK", "ZL", "AB", "KÜ", "FO", "RQ"],
+        ),
+        # all learning elements are only once, except 1 is multiple times in the list
+        (
+            None,
+            [
+                "ZF",
+                "LZ",
+                "ÜB",
+                "SE",
+                "BE",
+                "AN",
+                "SE",
+                "EK",
+                "SE",
+                "ZL",
+                "AB",
+                "KÜ",
+                "FO",
+                "RQ",
+                "SE",
+            ],
+        ),
+        # all learning elements are multiple times in a list
+        (
+            None,
+            [
+                "ZF",
+                "LZ",
+                "ZF",
+                "LZ",
+                "ÜB",
+                "SE",
+                "ÜB",
+                "SE",
+                "BE",
+                "AN",
+                "BE",
+                "AN",
+                "EK",
+                "ZL",
+                "EK",
+                "ZL",
+                "AB",
+                "KÜ",
+                "AB",
+                "KÜ",
+                "FO",
+                "RQ",
+                "FO",
+                "RQ",
+            ],
+        ),
+        # all learning element are in the list, except there is one with an unknown abreviation for example "ZZ"
+        (
+            None,
+            [
+                "ZF",
+                "LZ",
+                "ÜB",
+                "SE",
+                "BE",
+                "AN",
+                "SE",
+                "EK",
+                "SE",
+                "ZL",
+                "AB",
+                "KÜ",
+                "FO",
+                "RQ",
+                "SE",
+            ],
         ),
     ],
 )
 def test_prepare_les_for_ga(learning_style, list_of_keys):
     list_of_les = []
+    if learning_style is None:
+        learning_style = {
+            "id": 1,
+            "characteristic_id": 11,
+            "perception_dimension": "int",
+            "perception_value": 5,
+            "input_dimension": "vis",
+            "input_value": 3,
+            "processing_dimension": "ref",
+            "processing_value": 1,
+            "understanding_dimension": "glo",
+            "understanding_value": 9,
+        }
 
     for i, ele_name in enumerate(list_of_keys):
         le = DM.LearningElement(

@@ -5,6 +5,7 @@ from domain.domainModel import model as DM
 from domain.learnersModel import model as LM
 from domain.tutoringModel import model as TM
 from domain.tutoringModel import utils
+from domain.tutoringModel.graf import GrafAlgorithm as Graf
 
 
 def test_prepare_les_for_aco():
@@ -244,3 +245,48 @@ def test_learning_style_check(learning_style, error):
     else:
         result = utils.check_learning_style(learning_style)
         assert result
+
+
+@pytest.mark.parametrize(
+    "learning_element, learning_style, expected_result",
+    [
+        (
+            "SE",
+            {
+                "id": 35,
+                "characteristic_id": 35,
+                "perception_dimension": "int",
+                "perception_value": 7,
+                "input_dimension": "vis",
+                "input_value": 11,
+                "processing_dimension": "act",
+                "processing_value": 9,
+                "understanding_dimension": "glo",
+                "understanding_value": 1,
+            },
+            9,
+        ),
+        (
+            "ÜB",
+            {
+                "id": 35,
+                "characteristic_id": 35,
+                "perception_dimension": "sns",
+                "perception_value": 7,
+                "input_dimension": "vrb",
+                "input_value": 11,
+                "processing_dimension": "ref",
+                "processing_value": 9,
+                "understanding_dimension": "seq",
+                "understanding_value": 1,
+            },
+            -2,
+        ),
+    ],
+)
+def test_calculate_variable_score_graf(
+    learning_element, learning_style, expected_result
+):
+    algorithmus = Graf(student_id=1)
+    score = algorithmus.calculate_variable_score(learning_element, learning_style)
+    assert score == expected_result

@@ -76,7 +76,7 @@ class GrafAlgorithm:
                 score
                 + influence[learning_element][3] * learning_style["perception_value"]
             )
-        if learning_style[cons.name_input_dimension] == "act":
+        if learning_style[cons.name_input_dimension] == "vis":
             score = (
                 score
                 + influence[learning_element][4] * learning_style[cons.name_input_value]
@@ -85,7 +85,7 @@ class GrafAlgorithm:
             score = (
                 score + influence[learning_element][5] * learning_style["input_value"]
             )
-        if learning_style[cons.name_understanding_dimension] == "act":
+        if learning_style[cons.name_understanding_dimension] == "seq":
             score = (
                 score
                 + influence[learning_element][6]

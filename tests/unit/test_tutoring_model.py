@@ -4,8 +4,8 @@ import errors.errors as err
 from domain.domainModel import model as DM
 from domain.learnersModel import model as LM
 from domain.tutoringModel import model as TM
-from domain.tutoringModel.graf import GrafAlgorithm as Graf
 from domain.tutoringModel import utils
+from domain.tutoringModel.graf import GrafAlgorithm as Graf
 
 
 def test_prepare_les_for_aco():

@@ -1,7 +1,8 @@
 import numpy as np
-import errors.errors as err
-from Tyche import tyche_utils as t_utils
-from Tyche import tyche_config as t_config
+
+from domain.tutoringModel.Tyche import tyche_utils as t_utils
+from domain.tutoringModel.Tyche import tyche_config as t_config
+from errors import errors as err
 
 
 class TycheAlgorithm:

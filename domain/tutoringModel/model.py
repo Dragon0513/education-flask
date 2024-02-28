@@ -1,6 +1,6 @@
 import time
 
-from domain.tutoringModel import aco, ga, graf
+from domain.tutoringModel import aco, ga, graf, tyche
 from domain.tutoringModel.utils import get_coordinates
 from errors import errors as err
 from utils import constants as cons
@@ -50,13 +50,18 @@ class LearningPath:
             for ele in result[1:]:
                 le_path = le_path + ele[0] + ", "
             self.path = le_path[:-2]
-
         elif algorithm == "ga":
             genetic_alg = ga.GeneticAlgorithm(learning_elements=list_of_les)
             self.path = genetic_alg.get_learning_path(
                 input_learning_style=learning_style, input_learning_element=list_of_les
             )
-
+        elif algorithm == "tyche":
+            tyche_alg = tyche.TycheAlgorithm()
+            self.path = tyche_alg.get_learning_path(
+                input_learning_style=learning_style,
+                input_learning_element=list_of_les,
+                last_element=False
+            )
         else:
             raise err.NoValidAlgorithmError()
 

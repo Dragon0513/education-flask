@@ -1,7 +1,7 @@
 import numpy as np
 
-from domain.tutoringModel.Tyche import tyche_utils as t_utils
 from domain.tutoringModel.Tyche import tyche_config as t_config
+from domain.tutoringModel.Tyche import tyche_utils as t_utils
 from errors import errors as err
 
 

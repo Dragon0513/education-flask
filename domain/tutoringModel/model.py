@@ -60,7 +60,7 @@ class LearningPath:
             self.path = tyche_alg.get_learning_path(
                 input_learning_style=learning_style,
                 input_learning_element=list_of_les,
-                last_element=False
+                last_element=False,
             )
         else:
             raise err.NoValidAlgorithmError()

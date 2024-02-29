@@ -128,6 +128,7 @@ def test_prepare_les_for_ga(learning_style):
     assert result[1] == "EK"
     assert result[-1] == "LZ"
 
+
 @pytest.mark.parametrize(
     "learning_style",
     [
@@ -163,9 +164,20 @@ def test_prepare_les_for_ga(learning_style):
 )
 def test_prepare_les_for_tyche(learning_style):
     list_of_les = []
-    list_of_keys = ["ZF", "KÜ", "SE", "LZ",
-                    "ZL", "AN", "ÜB", "EK",
-                    "RQ", "FO", "AB", "BE"]
+    list_of_keys = [
+        "ZF",
+        "KÜ",
+        "SE",
+        "LZ",
+        "ZL",
+        "AN",
+        "ÜB",
+        "EK",
+        "RQ",
+        "FO",
+        "AB",
+        "BE",
+    ]
     for i, ele_name in enumerate(list_of_keys):
         le = DM.LearningElement(
             lms_id=i,
@@ -202,6 +214,7 @@ def test_prepare_les_for_tyche(learning_style):
                                                 if "BE" in result:
                                                     erg = True
     assert erg
+
 
 @pytest.mark.parametrize(
     "learning_style",

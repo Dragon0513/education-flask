@@ -3,8 +3,10 @@ import numpy as np
 
 def delete_probability(matrix, index):
     # Delete column:
+
     matrix = np.delete(matrix, index, axis=1)
     # Delete row:
+
     matrix = np.delete(matrix, index, axis=0)
     return matrix
 
@@ -15,8 +17,17 @@ def normalize_matrix(matrix):
 
 
 def normalize_row(row):
-    row = [float(i)/sum(row) for i in row]
+    row = [float(i) / sum(row) for i in row]
     return row
+
+
+def check_probability_matrix(les_len, final_prob):
+    tshape = (les_len, les_len)
+    if tshape != final_prob.shape:
+        print("Something went wrong!")
+        return False
+    else:
+        return True
 
 
 def get_startnode(probability, les):
@@ -30,6 +41,7 @@ def get_startnode(probability, les):
     # prob[6] == AAM
     # prob[7] == TAM
     # prob[8] == VAM
+
     probability = probability[0]
     result_prob = np.zeros((11))
 
@@ -54,7 +66,6 @@ def get_startnode(probability, les):
     if "zusatzmaterial_textuell" in les:
         result_prob[9] = probability[7]
     if "animation" in les:
-        temp = 0
         le_weight = [0.75, 0.25]
         le_temp = [probability[8], probability[6]]
         result_prob[10] = np.average(le_temp, weights=le_weight)
@@ -69,28 +80,30 @@ def get_startnode(probability, les):
     # prob[8] == zusammenfassung
     # prob[9] == zusatzmaterial_textuell
     # prob[10] == animation
+
     result_prob = np.delete(result_prob, np.where(result_prob == 0))
 
     if len(result_prob) != len(les):
-        print("Something went wrong at getting probabilities "
-              "for start node! (Function: get_startnode())")
+        print(
+            "Something went wrong at getting probabilities "
+            "for start node! (Function: get_startnode())"
+        )
     # Normalize list:
+
     result_prob = normalize_row(result_prob)
 
     # Get start node:
+
     start_le = np.random.choice(les, p=result_prob)
     # print("First LE:", start_le)
+
     return start_le
 
 
-def get_nextnodes(probability, les, start_node):
-    learningpath = [start_node]
-    le_weight = [0.75, 0.25]
-    les_len = len(les)
-
-    # Transform probability matrix:
+def get_probability_rows(probability, les, le_weight):
     final_prob = []
     # Get rows:
+
     if "kurzuebersicht" in les:
         final_prob.append(probability[0])
     if "lernziele" in les:
@@ -117,8 +130,10 @@ def get_nextnodes(probability, les, start_node):
             le_t = [probability[8][j], probability[6][j]]
             average_temp.append(np.average(le_t, weights=le_weight))
         final_prob.append(np.asarray(average_temp))
+    return final_prob
 
-    # Get columns:
+
+def get_probability_columns(les, le_weight, final_prob):
     final_prob = np.asarray(final_prob)
     flag_manuskript = False
     flag_quiz = False
@@ -126,6 +141,7 @@ def get_nextnodes(probability, les, start_node):
     counter = 0
     if "kurzuebersicht" not in les:
         # for k in range(len(final_prob)):
+
         final_prob = np.delete(final_prob, 0, axis=1)
         counter = counter + 1
     if "lernziele" not in les:
@@ -166,27 +182,26 @@ def get_nextnodes(probability, les, start_node):
         counter = counter + 1
     else:
         flag_animation = True
-
     if flag_animation:  # weighted average of AAM and VAM
         # Get probs of AAM and VAM
+
         colum_sum = []
         if "zusatzmaterial_textuell" in les:
             w = 3
         else:
             w = 2
-
         for i in range(len(final_prob)):
             le_t = [final_prob[i][-1], final_prob[i][-w]]
             colum_sum.append([np.average(le_t, weights=le_weight)])
-
         # Delete probs of AAM and VAM in final_prob
+
         final_prob = np.delete(final_prob, -1, axis=1)
-        final_prob = np.delete(final_prob, ((w-1)*(-1)), axis=1)
+        final_prob = np.delete(final_prob, ((w - 1) * (-1)), axis=1)
 
         # Add column of animation at the end of final_prob:
+
         final_prob = np.append(final_prob, colum_sum, axis=1)
         pass
-
     counter_ms = 0
     index_ms1 = False
     index_ms2 = False
@@ -209,14 +224,13 @@ def get_nextnodes(probability, les, start_node):
             if first_ms_prob > index_ms3:
                 first_ms_prob = index_ms3
         # Insert missing probabilities for manuskript:
+
         if counter_ms > 1:
             duplicate_column = final_prob[:, counter_ms]
             for i in range(counter_ms - 1):
-                final_prob = np.insert(final_prob,
-                                       counter_ms + 1,
-                                       duplicate_column,
-                                       axis=1)
-
+                final_prob = np.insert(
+                    final_prob, counter_ms + 1, duplicate_column, axis=1
+                )
     index_qu1 = False
     index_qu2 = False
     first_qu_prob = -1
@@ -233,22 +247,42 @@ def get_nextnodes(probability, les, start_node):
             if first_qu_prob > index_qu2:
                 first_qu_prob = index_qu2
         # Insert missing probabilities for quiz:
+
         if counter_qu == 2:
             duplicate_column = final_prob[:, counter_qu]
-            final_prob = np.insert(final_prob,
-                                   counter_qu + 1,
-                                   duplicate_column,
-                                   axis=1)
+            final_prob = np.insert(final_prob, counter_qu + 1, duplicate_column, axis=1)
+    return final_prob
+
+
+def get_probability_matrix(probability, les):
+    le_weight = [0.75, 0.25]
+    les_len = len(les)
+
+    # Transform probability matrix:
+    final_prob = get_probability_rows(probability, les, le_weight)
+
+    # Get columns:
+
+    final_prob = get_probability_columns(les, le_weight, final_prob)
 
     # Check probability matrix:
-    tshape = (les_len, les_len)
-    if tshape != final_prob.shape:
-        print("Something went wrong!")
 
+    if not check_probability_matrix(les_len, final_prob):
+        print("Error in matrix generation")
+
+    return final_prob
+
+
+def get_nextnodes(probability, les, start_node):
+    learningpath = [start_node]
+
+    final_prob = get_probability_matrix(probability, les)
     # Normalize probabilities:
+
     probs = normalize_matrix(final_prob)
 
     # Calculate next nodes:
+
     if len(les) == 1:
         learningpath.append(les)
     else:
@@ -257,21 +291,25 @@ def get_nextnodes(probability, les, start_node):
             temp_prob = probs[curr_le_index]
 
             # Delete probability of current start node:
+
             temp_prob = temp_prob.tolist()
             temp_prob.pop(curr_le_index)
             temp_prob = np.asarray(temp_prob)
             temp_prob = normalize_row(temp_prob)
 
             # Delete current start node from les:
+
             les.pop(curr_le_index)
 
             # Get next learning element:
+
             nextn = np.random.choice(les, p=temp_prob)
             learningpath.append(nextn)
 
             # Delete probabilities for current start node:
+
             probs = delete_probability(probs, curr_le_index)
             # Set new start node:
-            start_node = nextn
 
+            start_node = nextn
     return learningpath

@@ -135,12 +135,12 @@ def test_prepare_les_for_ga(learning_style):
         (
             {
                 "id": 1,
-                "characteristic_id": 1,
-                "perception_dimension": "sns",
+                "characteristic_id": 2,
+                "perception_dimension": "int",
                 "perception_value": 5,
                 "input_dimension": "vrb",
                 "input_value": 0,
-                "processing_dimension": "act",
+                "processing_dimension": "ref",
                 "processing_value": 9,
                 "understanding_dimension": "seq",
                 "understanding_value": 11,
@@ -148,13 +148,13 @@ def test_prepare_les_for_ga(learning_style):
         ),
         (
             {
-                "id": 1,
-                "characteristic_id": 1,
-                "perception_dimension": "int",
+                "id": 3,
+                "characteristic_id": 4,
+                "perception_dimension": "sns",
                 "perception_value": 1,
                 "input_dimension": "vis",
                 "input_value": 11,
-                "processing_dimension": "ref",
+                "processing_dimension": "act",
                 "processing_value": 1,
                 "understanding_dimension": "glo",
                 "understanding_value": 3,
@@ -190,7 +190,6 @@ def test_prepare_les_for_tyche(learning_style):
         )
         list_of_les.append(le.serialize())
     lp = TM.LearningPath(student_id=1, course_id=1, based_on="tyche")
-    print(type(list_of_les))
     lp.get_learning_path(
         student_id=1,
         learning_style=learning_style,
@@ -199,20 +198,9 @@ def test_prepare_les_for_tyche(learning_style):
     )
     result = lp.path
     erg = False
+    if all(le in result for le in list_of_keys):
+        erg = True
 
-    if "ZF" in result:
-        if "KÜ" in result:
-            if "SE" in result:
-                if "LZ" in result:
-                    if "ZL" in result:
-                        if "AN" in result:
-                            if "ÜB" in result:
-                                if "EK" in result:
-                                    if "RQ" in result:
-                                        if "FO" in result:
-                                            if "AB" in result:
-                                                if "BE" in result:
-                                                    erg = True
     assert erg
 
 

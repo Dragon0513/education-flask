@@ -58,7 +58,8 @@ class TycheAlgorithm:
                 print("LE", curr_le, "is not part of our set!!")
                 raise err.WrongParameterValueError()
         classification_learning_element = self.set_last_learning_element(
-            classification_learning_element)
+            classification_learning_element
+        )
         result_learning_element = []
         for i in classification_learning_element:
             if i != "none":

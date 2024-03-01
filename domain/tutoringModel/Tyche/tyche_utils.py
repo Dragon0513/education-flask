@@ -3,10 +3,9 @@ import numpy as np
 
 def delete_probability(matrix, index):
     # Delete column:
-
     matrix = np.delete(matrix, index, axis=1)
-    # Delete row:
 
+    # Delete row:
     matrix = np.delete(matrix, index, axis=0)
     return matrix
 
@@ -88,22 +87,20 @@ def get_startnode(probability, les):
             "Something went wrong at getting probabilities "
             "for start node! (Function: get_startnode())"
         )
-    # Normalize list:
 
+    # Normalize list:
     result_prob = normalize_row(result_prob)
 
     # Get start node:
-
     start_le = np.random.choice(les, p=result_prob)
-    # print("First LE:", start_le)
 
     return start_le
 
 
 def get_probability_rows(probability, les, le_weight):
     final_prob = []
-    # Get rows:
 
+    # Get rows:
     if "kurzuebersicht" in les:
         final_prob.append(probability[0])
     if "lernziele" in les:
@@ -133,15 +130,12 @@ def get_probability_rows(probability, les, le_weight):
     return final_prob
 
 
-def get_probability_columns(les, le_weight, final_prob):
-    final_prob = np.asarray(final_prob)
+def set_le_flags(les, final_prob):
     flag_manuskript = False
     flag_quiz = False
     flag_animation = False
     counter = 0
     if "kurzuebersicht" not in les:
-        # for k in range(len(final_prob)):
-
         final_prob = np.delete(final_prob, 0, axis=1)
         counter = counter + 1
     if "lernziele" not in les:
@@ -182,26 +176,10 @@ def get_probability_columns(les, le_weight, final_prob):
         counter = counter + 1
     else:
         flag_animation = True
-    if flag_animation:  # weighted average of AAM and VAM
-        # Get probs of AAM and VAM
+    return flag_manuskript, flag_quiz, flag_animation, final_prob
 
-        colum_sum = []
-        if "zusatzmaterial_textuell" in les:
-            w = 3
-        else:
-            w = 2
-        for i in range(len(final_prob)):
-            le_t = [final_prob[i][-1], final_prob[i][-w]]
-            colum_sum.append([np.average(le_t, weights=le_weight)])
-        # Delete probs of AAM and VAM in final_prob
 
-        final_prob = np.delete(final_prob, -1, axis=1)
-        final_prob = np.delete(final_prob, ((w - 1) * (-1)), axis=1)
-
-        # Add column of animation at the end of final_prob:
-
-        final_prob = np.append(final_prob, colum_sum, axis=1)
-        pass
+def add_ms_probs(flag_manuskript, final_prob, les):
     counter_ms = 0
     index_ms1 = False
     index_ms2 = False
@@ -223,14 +201,18 @@ def get_probability_columns(les, le_weight, final_prob):
             index_ms3 = les.index("manuskript_be")
             if first_ms_prob > index_ms3:
                 first_ms_prob = index_ms3
-        # Insert missing probabilities for manuskript:
 
+        # Insert missing probabilities for manuscript:
         if counter_ms > 1:
             duplicate_column = final_prob[:, counter_ms]
-            for i in range(counter_ms - 1):
+            for _i in range(counter_ms - 1):
                 final_prob = np.insert(
                     final_prob, counter_ms + 1, duplicate_column, axis=1
                 )
+    return final_prob
+
+
+def add_qu_probs(flag_quiz, final_prob, les):
     index_qu1 = False
     index_qu2 = False
     first_qu_prob = -1
@@ -246,11 +228,51 @@ def get_probability_columns(les, le_weight, final_prob):
             index_qu2 = les.index("quiz_se")
             if first_qu_prob > index_qu2:
                 first_qu_prob = index_qu2
-        # Insert missing probabilities for quiz:
 
+        # Insert missing probabilities for quiz:
         if counter_qu == 2:
             duplicate_column = final_prob[:, counter_qu]
             final_prob = np.insert(final_prob, counter_qu + 1, duplicate_column, axis=1)
+    return final_prob
+
+
+def add_animation_probs(flag_animation, final_prob, les, le_weight):
+    if flag_animation:  # weighted average of AAM and VAM
+        # Get probs of AAM and VAM
+        colum_sum = []
+        if "zusatzmaterial_textuell" in les:
+            w = 3
+        else:
+            w = 2
+        for i in range(len(final_prob)):
+            le_t = [final_prob[i][-1], final_prob[i][-w]]
+            colum_sum.append([np.average(le_t, weights=le_weight)])
+
+        # Delete probs of AAM and VAM in final_prob
+        final_prob = np.delete(final_prob, -1, axis=1)
+        final_prob = np.delete(final_prob, ((w - 1) * (-1)), axis=1)
+
+        # Add column of animation at the end of final_prob:
+        final_prob = np.append(final_prob, colum_sum, axis=1)
+        pass
+    return final_prob
+
+
+def get_probability_columns(les, le_weight, final_prob):
+    final_prob = np.asarray(final_prob)
+
+    flag_manuskript, flag_quiz, flag_animation, final_prob = set_le_flags(
+        les, final_prob
+    )
+
+    # Adapt probabilities for animation:
+    final_prob = add_animation_probs(flag_animation, final_prob, les, le_weight)
+
+    # Adapt probabilities for manuskript:
+    final_prob = add_ms_probs(flag_manuskript, final_prob, les)
+
+    # Adapt probabilities for quiz:
+    final_prob = add_qu_probs(flag_quiz, final_prob, les)
     return final_prob
 
 
@@ -262,11 +284,9 @@ def get_probability_matrix(probability, les):
     final_prob = get_probability_rows(probability, les, le_weight)
 
     # Get columns:
-
     final_prob = get_probability_columns(les, le_weight, final_prob)
 
     # Check probability matrix:
-
     if not check_probability_matrix(les_len, final_prob):
         print("Error in matrix generation")
 
@@ -277,39 +297,34 @@ def get_nextnodes(probability, les, start_node):
     learningpath = [start_node]
 
     final_prob = get_probability_matrix(probability, les)
-    # Normalize probabilities:
 
+    # Normalize probabilities:
     probs = normalize_matrix(final_prob)
 
     # Calculate next nodes:
-
     if len(les) == 1:
         learningpath.append(les)
     else:
-        for i in range(len(les) - 1):
+        for _i in range(len(les) - 1):
             curr_le_index = les.index(start_node)
             temp_prob = probs[curr_le_index]
 
             # Delete probability of current start node:
-
             temp_prob = temp_prob.tolist()
             temp_prob.pop(curr_le_index)
             temp_prob = np.asarray(temp_prob)
             temp_prob = normalize_row(temp_prob)
 
             # Delete current start node from les:
-
             les.pop(curr_le_index)
 
             # Get next learning element:
-
             nextn = np.random.choice(les, p=temp_prob)
             learningpath.append(nextn)
 
             # Delete probabilities for current start node:
-
             probs = delete_probability(probs, curr_le_index)
-            # Set new start node:
 
+            # Set new start node:
             start_node = nextn
     return learningpath

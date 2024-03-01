@@ -4,7 +4,7 @@ import errors.errors as err
 from domain.domainModel import model as DM
 from domain.learnersModel import model as LM
 from domain.tutoringModel import model as TM
-from domain.tutoringModel import utils
+from domain.tutoringModel import tyche, utils
 from domain.tutoringModel.graf import GrafAlgorithm as Graf
 
 
@@ -163,6 +163,7 @@ def test_prepare_les_for_ga(learning_style):
     ],
 )
 def test_prepare_les_for_tyche(learning_style):
+    # Test Tyche with success:
     list_of_les = []
     list_of_keys = [
         "ZF",
@@ -173,7 +174,6 @@ def test_prepare_les_for_tyche(learning_style):
         "AN",
         "ÜB",
         "EK",
-        "RQ",
         "FO",
         "AB",
         "BE",
@@ -190,6 +190,7 @@ def test_prepare_les_for_tyche(learning_style):
         )
         list_of_les.append(le.serialize())
     lp = TM.LearningPath(student_id=1, course_id=1, based_on="tyche")
+
     lp.get_learning_path(
         student_id=1,
         learning_style=learning_style,
@@ -200,8 +201,167 @@ def test_prepare_les_for_tyche(learning_style):
     erg = False
     if all(le in result for le in list_of_keys):
         erg = True
-
     assert erg
+
+    tyche_alg = tyche.TycheAlgorithm()
+    last_element = "RQ"
+    tyche_path_success2 = tyche_alg.get_learning_path(
+        learning_style, list_of_les, last_element
+    )
+    print(tyche_path_success2)
+    erg11 = False
+    if all(le in tyche_path_success2 for le in list_of_keys):
+        erg11 = True
+    assert erg11
+
+    list_of_les2 = []
+    list_of_keys2 = [
+        "KÜ",
+        "LZ",
+        "ZL",
+        "ÜB",
+        "FO",
+        "AB",
+        "BE",
+    ]
+    for i, ele_name in enumerate(list_of_keys2):
+        le = DM.LearningElement(
+            lms_id=i,
+            activity_type="lesson",
+            classification=ele_name,
+            name="Test LE",
+            university="TH-AB",
+            created_by="Max Mustermann",
+            created_at="2023-09-01",
+        )
+        list_of_les2.append(le.serialize())
+    lp = TM.LearningPath(student_id=1, course_id=1, based_on="tyche")
+
+    lp.get_learning_path(
+        student_id=1,
+        learning_style=learning_style,
+        _algorithm="tyche",
+        list_of_les=list_of_les2,
+    )
+    result2 = lp.path
+    erg2 = False
+    if all(le in result2 for le in list_of_keys2):
+        erg2 = True
+    assert erg2
+
+    list_of_les3 = []
+    list_of_keys3 = [
+        "ZF",
+        "RQ",
+        "AN",
+        "EK",
+        "BE",
+    ]
+    for i, ele_name in enumerate(list_of_keys3):
+        le = DM.LearningElement(
+            lms_id=i,
+            activity_type="lesson",
+            classification=ele_name,
+            name="Test LE",
+            university="TH-AB",
+            created_by="Max Mustermann",
+            created_at="2023-09-01",
+        )
+        list_of_les3.append(le.serialize())
+    lp = TM.LearningPath(student_id=1, course_id=1, based_on="tyche")
+
+    lp.get_learning_path(
+        student_id=1,
+        learning_style=learning_style,
+        _algorithm="tyche",
+        list_of_les=list_of_les3,
+    )
+    result3 = lp.path
+    erg3 = False
+    if all(le in result3 for le in list_of_keys3):
+        erg3 = True
+    assert erg3
+
+    list_of_les4 = []
+    list_of_keys4 = [
+        "ZF",
+        "RQ",
+        "AN",
+        "EK",
+        "BE",
+    ]
+    for i, ele_name in enumerate(list_of_keys4):
+        le = DM.LearningElement(
+            lms_id=i,
+            activity_type="lesson",
+            classification=ele_name,
+            name="Test LE",
+            university="TH-AB",
+            created_by="Max Mustermann",
+            created_at="2023-09-01",
+        )
+        list_of_les4.append(le.serialize())
+    lp = TM.LearningPath(student_id=1, course_id=1, based_on="tyche")
+
+    lp.get_learning_path(
+        student_id=1,
+        learning_style=learning_style,
+        _algorithm="tyche",
+        list_of_les=list_of_les4,
+    )
+    result4 = lp.path
+    erg4 = False
+    if all(le in result4 for le in list_of_keys4):
+        erg4 = True
+    assert erg4
+
+    # Test invalid error parameter for lp algorithm:
+    with pytest.raises(err.NoValidAlgorithmError):
+        lp.get_learning_path(
+            student_id=1,
+            learning_style=learning_style,
+            _algorithm="foo",
+            list_of_les=list_of_les,
+        )
+
+    # Test Tyche with errors:
+    list_of_les5 = []
+    list_of_keys5 = [
+        "ZF",
+        "KÜ",
+        "SE",
+        "LZ",
+        "ZL",
+        "AN",
+        "ÜB",
+        "EK",
+        "RQ",
+        "FO",
+        "AB",
+        "XX",
+    ]
+    for i, ele_name in enumerate(list_of_keys5):
+        le = DM.LearningElement(
+            lms_id=i,
+            activity_type="lesson",
+            classification=ele_name,
+            name="Test LE",
+            university="TH-AB",
+            created_by="Max Mustermann",
+            created_at="2023-09-01",
+        )
+        list_of_les5.append(le.serialize())
+    with pytest.raises(err.WrongParameterValueError):
+        lp.get_learning_path(
+            student_id=1,
+            learning_style=learning_style,
+            _algorithm="tyche",
+            list_of_les=list_of_les5,
+        )
+    with pytest.raises(err.MissingParameterError):
+        tyche_alg.get_learning_path({}, list_of_les, last_element)
+    with pytest.raises(err.NoValidParameterValueError):
+        tyche_alg.get_learning_path(learning_style, [], last_element)
 
 
 @pytest.mark.parametrize(

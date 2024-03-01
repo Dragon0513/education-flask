@@ -1,19 +1,17 @@
-# Importing Libraries
-import os
-
-# import random
-import sys
-
 import pandas as pd
-from pgmpy.factors.discrete import TabularCPD
 from pgmpy.estimators import ExpectationMaximization as EM
+from pgmpy.factors.discrete import TabularCPD
 from pgmpy.readwrite import XMLBIFWriter
 
 # sys.path.append("Nestor/") # nopep
-sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/..//")
+# sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/..//")
 # from Nestor.nestor_config import *  # nopep8
-from nestor_utils import categorize_lisk_bfi, build_bn  # nopep8
-from nestor_utils import train_bn, extend_bn_to_le  # nopep8
+from domain.tutoringModel.Nestor.nestor_utils import (  # nopep8
+    build_bn,
+    categorize_lisk_bfi,
+    extend_bn_to_le,
+    train_bn,
+)
 
 # Writing all the configuration in training script since
 # there exist so many inputs (25) and

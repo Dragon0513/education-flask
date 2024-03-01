@@ -155,7 +155,7 @@ class Nestor:
         # return bn
         return None
 
-    def get_learning_path(
+    def get_learning_path(  # noqa: C901
         self,
         input_learning_style=None,
         input_learning_elements=None,
@@ -188,6 +188,7 @@ class Nestor:
             "Sequential_Gloabl_Dim": self.ls_map_common_HASKI_to_nestor[
                 input_learning_style["understanding_dimension"]
             ],
+            # the values of BFI and LIST-K are not given as evidences
             # "bfie": str(bfie_val),
             # "bfia": str(bfia_val),
             # "bfin": str(bfin_val),
@@ -208,7 +209,7 @@ class Nestor:
         le_renamed_dict = {}
         # the following list is used to store LE formats from
         # input LE param of this method
-        # Careful! - this list mmight contain duplicate LEs
+        # Careful! - this list might contain duplicate LEs
         le_format_duplicates = []
         # the following list contains no duplicated values
         # if the input LE param of this method has no duplicates natively,
@@ -238,8 +239,7 @@ class Nestor:
         # start inference with BN
         bn = XMLBIFReader(path_to_model).get_model()
         le_infer = VariableElimination(bn)
-        # print("\n****END- Loading PGMPY Model****")
-        # print('\nTime consumed: ', (time.time()-sTime))
+        # looping each le to estimate its probability of recommending
         for le in range(len(self.rgb_le_variables)):
             # To query the joint probabilities
             # query_all = le_infer.query(
@@ -247,7 +247,7 @@ class Nestor:
             #     evidence= evidence_for_inference,
             #     joint= False
             # )
-            # To query the LE format
+            # To query the LE format (übersicht, lernziel, etc.)
             query_map = le_infer.map_query(
                 variables=[self.rgb_le_variables[le]],
                 evidence=evidence_for_inference,

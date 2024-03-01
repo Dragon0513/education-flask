@@ -37,20 +37,15 @@ def categorize_lisk_bfi(input_dataframe, encoding_columns):
 # Helper functions
 
 
-def build_bn(edges_list, extend_structure=False):
+def build_bn(edges_list: int, extend_structure=False):
     """This function reads the edges in form of a List of tuples
     and returns a built Bayesian Network"""
-    try:
-        bn = BayesianNetwork()
-        bn.add_edges_from(ebunch=edges_list)
-    except not isinstance(edges_list, list):
-        print("Input format of edges is not List of Tuples")
-    except not isinstance(edges_list, list):
-        print("Input format of edges is not List of Tuples")
-    else:
-        print("\nType of Network:", type(bn))
-        print("\nSuccess! - Built Bayesian Network with ICERI\n")
-        return bn
+
+    bn = BayesianNetwork()
+    bn.add_edges_from(ebunch=edges_list)
+    print("\nType of Network:", type(bn))
+    print("\nSuccess! - Built Bayesian Network with ICERI\n")
+    return bn
 
 
 def build_bn_multiple_structures(edges_list, data, topology="algorithm"):

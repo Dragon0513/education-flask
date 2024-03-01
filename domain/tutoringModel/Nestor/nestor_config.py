@@ -5,7 +5,7 @@ import pandas as pd
 from pgmpy.factors.discrete import TabularCPD
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/..//")
-from Nestor.nestor_utils import *  # nopep8
+from Nestor.nestor_utils import categorize_lisk_bfi  # nopep8
 
 # VARIABLES START
 le_max_dict = {}

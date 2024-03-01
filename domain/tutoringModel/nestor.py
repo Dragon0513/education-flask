@@ -69,9 +69,7 @@ class Nestor:
             "{'MS': 'Yes'}": random.choices(
                 ["EK", "AB", "BE"], weights=[0.8, 0.1, 0.1]
             ),
-            "{'MS': 'No'}": random.choices(
-                ["EK", "AB", "BE"], weights=[0.8, 0.1, 0.1]
-                ),
+            "{'MS': 'No'}": random.choices(["EK", "AB", "BE"], weights=[0.8, 0.1, 0.1]),
             # "{'QU': 'Yes'}": ["RQ", "SE"],
             # "{'QU': 'No'}": ["RQ", "SE"],
             "{'QU': 'Yes'}": ["RQ"],

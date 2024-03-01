@@ -128,6 +128,7 @@ def test_prepare_les_for_ga(learning_style):
     assert result[1] == "EK"
     assert result[-1] == "LZ"
 
+
 def test_prepare_les_for_nestor(learning_style):
     list_of_les = []
     list_of_keys = [
@@ -168,6 +169,7 @@ def test_prepare_les_for_nestor(learning_style):
         erg = True
 
     assert erg
+
 
 @pytest.mark.parametrize(
     "learning_style",

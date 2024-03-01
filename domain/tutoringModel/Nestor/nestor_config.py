@@ -195,18 +195,10 @@ cpd_param_CT = {
     ],
     "state_names": {
         "CT": ["Yes", "No"],
-        "Active_Reflective_Dim": list(
-            df_data["Active_Reflective_Dim"].unique()
-            ),
-        "Sensory_Intuitive_Dim": list(
-            df_data["Sensory_Intuitive_Dim"].unique()
-            ),
-        "Visual_Verbal_Dim": list(
-            df_data["Visual_Verbal_Dim"].unique()
-            ),
-        "Sequential_Gloabl_Dim": list(
-            df_data["Sequential_Gloabl_Dim"].unique()
-            ),
+        "Active_Reflective_Dim": list(df_data["Active_Reflective_Dim"].unique()),
+        "Sensory_Intuitive_Dim": list(df_data["Sensory_Intuitive_Dim"].unique()),
+        "Visual_Verbal_Dim": list(df_data["Visual_Verbal_Dim"].unique()),
+        "Sequential_Gloabl_Dim": list(df_data["Sequential_Gloabl_Dim"].unique()),
     },
 }
 

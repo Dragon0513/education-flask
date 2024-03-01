@@ -60,8 +60,7 @@ class LearningPath:
         elif algorithm == "nestor":
             nestor_alg = nestor.Nestor()
             self.path = nestor_alg.get_learning_path(
-                input_learning_style=learning_style,
-                input_learning_elements=list_of_les
+                input_learning_style=learning_style, input_learning_elements=list_of_les
             )
 
         else:

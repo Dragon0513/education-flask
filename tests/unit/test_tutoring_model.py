@@ -128,6 +128,46 @@ def test_prepare_les_for_ga(learning_style):
     assert result[1] == "EK"
     assert result[-1] == "LZ"
 
+def test_prepare_les_for_nestor(learning_style):
+    list_of_les = []
+    list_of_keys = [
+        "ZF",
+        "KÜ",
+        "SE",
+        "LZ",
+        "ZL",
+        "AN",
+        "ÜB",
+        "EK",
+        "RQ",
+        "FO",
+        "AB",
+        "BE",
+    ]
+    for i, ele_name in enumerate(list_of_keys):
+        le = DM.LearningElement(
+            lms_id=i,
+            activity_type="lesson",
+            classification=ele_name,
+            name="Test LE",
+            university="TH-AB",
+            created_by="Max Mustermann",
+            created_at="2023-09-01",
+        )
+        list_of_les.append(le.serialize())
+    lp = TM.LearningPath(student_id=1, course_id=1, based_on="nestor")
+    lp.get_learning_path(
+        # student_id=1,
+        learning_style=learning_style,
+        _algorithm="nestor",
+        list_of_les=list_of_les,
+    )
+    result = lp.path
+    erg = False
+    if all(le in result for le in list_of_keys):
+        erg = True
+
+    assert erg
 
 @pytest.mark.parametrize(
     "learning_style",

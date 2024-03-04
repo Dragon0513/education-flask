@@ -25,10 +25,16 @@ columns_to_encode = [
 ]
 
 # path tp the csv file with sample data
-df_data = pd.read_csv(os.path.join("NestorFolder", "FullData_modifiedColumnNames.csv"))
+df_data = pd.read_csv(
+    os.path.join(
+        "domain", "tutoringModel", "NestorFolder", "FullData_modifiedColumnNames.csv"
+    )
+)
 
 # path to save the BN after training
-path_to_trainedmodel = os.path.join("NestorFolder", "saved_model.xml")
+path_to_trainedmodel = os.path.join(
+    "domain", "tutoringModel", "NestorFolder", "saved_model.xml"
+)
 
 # encoding the BFI and LISTK columns to Likert scale
 df_data_categories = categorize_lisk_bfi(

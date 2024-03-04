@@ -4,7 +4,7 @@ import errors.errors as err
 from domain.domainModel import model as DM
 from domain.learnersModel import model as LM
 from domain.tutoringModel import model as TM
-from domain.tutoringModel import utils
+from domain.tutoringModel import nestor, utils
 from domain.tutoringModel.graf import GrafAlgorithm as Graf
 
 
@@ -129,7 +129,42 @@ def test_prepare_les_for_ga(learning_style):
     assert result[-1] == "LZ"
 
 
+# Unit test for Nesor
+@pytest.mark.parametrize(
+    "learning_style",
+    [
+        (
+            {
+                "id": 1,
+                "characteristic_id": 2,
+                "perception_dimension": "int",
+                "perception_value": 5,
+                "input_dimension": "vrb",
+                "input_value": 0,
+                "processing_dimension": "ref",
+                "processing_value": 9,
+                "understanding_dimension": "seq",
+                "understanding_value": 11,
+            }
+        ),
+        (
+            {
+                "id": 3,
+                "characteristic_id": 4,
+                "perception_dimension": "sns",
+                "perception_value": 1,
+                "input_dimension": "vis",
+                "input_value": 11,
+                "processing_dimension": "act",
+                "processing_value": 1,
+                "understanding_dimension": "glo",
+                "understanding_value": 3,
+            }
+        ),
+    ],
+)
 def test_prepare_les_for_nestor(learning_style):
+    # Test nestor with success:
     list_of_les = []
     list_of_keys = [
         "ZF",
@@ -140,7 +175,6 @@ def test_prepare_les_for_nestor(learning_style):
         "AN",
         "ÜB",
         "EK",
-        "RQ",
         "FO",
         "AB",
         "BE",
@@ -157,8 +191,9 @@ def test_prepare_les_for_nestor(learning_style):
         )
         list_of_les.append(le.serialize())
     lp = TM.LearningPath(student_id=1, course_id=1, based_on="nestor")
+
     lp.get_learning_path(
-        # student_id=1,
+        student_id=1,
         learning_style=learning_style,
         _algorithm="nestor",
         list_of_les=list_of_les,
@@ -167,8 +202,165 @@ def test_prepare_les_for_nestor(learning_style):
     erg = False
     if all(le in result for le in list_of_keys):
         erg = True
-
     assert erg
+
+    nestor_alg = nestor.Nestor()
+    # last_element = "RQ"
+    nestor_path_success2 = nestor_alg.get_learning_path(learning_style, list_of_les)
+    print(nestor_path_success2)
+    erg11 = False
+    if all(le in nestor_path_success2 for le in list_of_keys):
+        erg11 = True
+    assert erg11
+
+    list_of_les2 = []
+    list_of_keys2 = [
+        "KÜ",
+        "LZ",
+        "ZL",
+        "ÜB",
+        "FO",
+        "AB",
+        "BE",
+    ]
+    for i, ele_name in enumerate(list_of_keys2):
+        le = DM.LearningElement(
+            lms_id=i,
+            activity_type="lesson",
+            classification=ele_name,
+            name="Test LE",
+            university="TH-AB",
+            created_by="Max Mustermann",
+            created_at="2023-09-01",
+        )
+        list_of_les2.append(le.serialize())
+    lp = TM.LearningPath(student_id=1, course_id=1, based_on="nestor")
+
+    lp.get_learning_path(
+        student_id=1,
+        learning_style=learning_style,
+        _algorithm="nestor",
+        list_of_les=list_of_les2,
+    )
+    result2 = lp.path
+    erg2 = False
+    if all(le in result2 for le in list_of_keys2):
+        erg2 = True
+    assert erg2
+
+    list_of_les3 = []
+    list_of_keys3 = [
+        "ZF",
+        "RQ",
+        "AN",
+        "EK",
+        "BE",
+    ]
+    for i, ele_name in enumerate(list_of_keys3):
+        le = DM.LearningElement(
+            lms_id=i,
+            activity_type="lesson",
+            classification=ele_name,
+            name="Test LE",
+            university="TH-AB",
+            created_by="Max Mustermann",
+            created_at="2023-09-01",
+        )
+        list_of_les3.append(le.serialize())
+    lp = TM.LearningPath(student_id=1, course_id=1, based_on="nestor")
+
+    lp.get_learning_path(
+        student_id=1,
+        learning_style=learning_style,
+        _algorithm="nestor",
+        list_of_les=list_of_les3,
+    )
+    result3 = lp.path
+    erg3 = False
+    if all(le in result3 for le in list_of_keys3):
+        erg3 = True
+    assert erg3
+
+    list_of_les4 = []
+    list_of_keys4 = [
+        "ZF",
+        "RQ",
+        "AN",
+        "EK",
+        "BE",
+    ]
+    for i, ele_name in enumerate(list_of_keys4):
+        le = DM.LearningElement(
+            lms_id=i,
+            activity_type="lesson",
+            classification=ele_name,
+            name="Test LE",
+            university="TH-AB",
+            created_by="Max Mustermann",
+            created_at="2023-09-01",
+        )
+        list_of_les4.append(le.serialize())
+    lp = TM.LearningPath(student_id=1, course_id=1, based_on="nestor")
+
+    lp.get_learning_path(
+        student_id=1,
+        learning_style=learning_style,
+        _algorithm="nestor",
+        list_of_les=list_of_les4,
+    )
+    result4 = lp.path
+    erg4 = False
+    if all(le in result4 for le in list_of_keys4):
+        erg4 = True
+    assert erg4
+
+    # Test invalid error parameter for lp algorithm:
+    with pytest.raises(err.NoValidAlgorithmError):
+        lp.get_learning_path(
+            student_id=1,
+            learning_style=learning_style,
+            _algorithm="foo",
+            list_of_les=list_of_les,
+        )
+
+    # Test Tyche with errors:
+    list_of_les5 = []
+    list_of_keys5 = [
+        "ZF",
+        "KÜ",
+        "SE",
+        "LZ",
+        "ZL",
+        "AN",
+        "ÜB",
+        "EK",
+        "RQ",
+        "FO",
+        "AB",
+        "XX",
+    ]
+    for i, ele_name in enumerate(list_of_keys5):
+        le = DM.LearningElement(
+            lms_id=i,
+            activity_type="lesson",
+            classification=ele_name,
+            name="Test LE",
+            university="TH-AB",
+            created_by="Max Mustermann",
+            created_at="2023-09-01",
+        )
+        list_of_les5.append(le.serialize())
+    with pytest.raises(err.WrongParameterValueError):
+        lp.get_learning_path(
+            student_id=1,
+            learning_style=learning_style,
+            _algorithm="nestor",
+            list_of_les=list_of_les5,
+        )
+    with pytest.raises(err.MissingParameterError):
+        nestor_alg.get_learning_path({}, list_of_les)
+    with pytest.raises(err.NoValidParameterValueError):
+        nestor_alg.get_learning_path(learning_style, [])
 
 
 @pytest.mark.parametrize(

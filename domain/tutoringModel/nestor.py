@@ -4,14 +4,9 @@
 # import time
 import os
 import random
-import sys
 
 from pgmpy.inference import VariableElimination
 from pgmpy.readwrite import XMLBIFReader
-
-sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/..//")
-# import examples_learning_elements as e_le  # nopep8
-# import examples_learning_style as e_ls  # nopep8
 
 # random.seed(143)
 
@@ -155,10 +150,10 @@ class Nestor:
         # return bn
         return None
 
-    def get_learning_path(  # noqa: C901
+    def get_learning_path(
         self,
-        input_learning_style=None,
-        input_learning_elements=None,
+        input_learning_style: dict,
+        input_learning_elements: list,
         path_to_model=os.path.join("Nestor", "name3_saved_bn.xml"),
     ):
         """
@@ -187,8 +182,7 @@ class Nestor:
             ],
             "Sequential_Gloabl_Dim": self.ls_map_common_HASKI_to_nestor[
                 input_learning_style["understanding_dimension"]
-            ],
-            # the values of BFI and LIST-K are not given as evidences
+            ]
             # "bfie": str(bfie_val),
             # "bfia": str(bfia_val),
             # "bfin": str(bfin_val),
@@ -204,13 +198,13 @@ class Nestor:
         # yes_keys = []
         # updated_le_max_dict = {}
         # Initialize an empty dictionary to store the sorted key-value pairs
-        le_sorted_dict = {}
+        # le_sorted_dict = {}
         # updating the LE names with tags used in common HASKI
         le_renamed_dict = {}
         # the following list is used to store LE formats from
         # input LE param of this method
-        # Careful! - this list might contain duplicate LEs
-        le_format_duplicates = []
+        # Careful! - this list mmight contain duplicate LEs
+        # le_format_duplicates = []
         # the following list contains no duplicated values
         # if the input LE param of this method has no duplicates natively,
         # this following list will be an extra operation
@@ -230,37 +224,62 @@ class Nestor:
         # the input param for LEs is a list of LEs (Learning path)
         # Each LE in learning path is a dict. and
         # the "classification" key returns the format of LE
-        for ele_ in input_learning_elements:
-            le_format_duplicates.append(ele_["classification"])
-        # check for duplicate LE formats and remove them
-        for ele_ in le_format_duplicates:
-            if ele_ not in le_format_no_duplicates:
-                le_format_no_duplicates.append(ele_)
+        # Use set to remove duplicates
+        le_format_no_duplicates = list(
+            set(ele["classification"] for ele in input_learning_elements)
+        )
+
+        # #### Start too complex code
+        # for ele_ in input_learning_elements:
+        #     le_format_duplicates.append(ele_["classification"])
+        # # check for duplicate LE formats and remove them
+        # for ele_ in le_format_duplicates:
+        #     if ele_ not in le_format_no_duplicates:
+        #         le_format_no_duplicates.append(ele_)
+        # #### End too complex code
         # start inference with BN
         bn = XMLBIFReader(path_to_model).get_model()
         le_infer = VariableElimination(bn)
-        # looping each le to estimate its probability of recommending
-        for le in range(len(self.rgb_le_variables)):
-            # To query the joint probabilities
-            # query_all = le_infer.query(
-            #     variables=[le_variables[le]],
-            #     evidence= evidence_for_inference,
-            #     joint= False
-            # )
-            # To query the LE format (übersicht, lernziel, etc.)
+        # print("\n****END- Loading PGMPY Model****")
+        # print('\nTime consumed: ', (time.time()-sTime))
+
+        # Simplify the loop and combine queries
+        for le_var in self.rgb_le_variables:
+            # Query both LE format and probability values
             query_map = le_infer.map_query(
-                variables=[self.rgb_le_variables[le]],
-                evidence=evidence_for_inference,
-                show_progress=False,
+                variables=[le_var], evidence=evidence_for_inference, show_progress=False
             )
-            # To query the probability values
-            query_max = le_infer.max_marginal(
-                variables=[self.rgb_le_variables[le]],
-                evidence=evidence_for_inference,
-                show_progress=False,
+            le_max_dict[str(query_map)] = str(
+                le_infer.max_marginal(
+                    variables=[le_var],
+                    evidence=evidence_for_inference,
+                    show_progress=False,
+                )
             )
-            # creating a dict with LE and their probabilities.
-            le_max_dict[str(query_map)] = str(query_max)
+
+        # #### start complex code
+        # for le in range(len(self.rgb_le_variables)):
+        #     # To query the joint probabilities
+        #     # query_all = le_infer.query(
+        #     #     variables=[le_variables[le]],
+        #     #     evidence= evidence_for_inference,
+        #     #     joint= False
+        #     # )
+        #     # To query the LE format
+        #     query_map = le_infer.map_query(
+        #         variables=[self.rgb_le_variables[le]],
+        #         evidence=evidence_for_inference,
+        #         show_progress=False
+        #     )
+        #     # To query the probability values
+        #     query_max = le_infer.max_marginal(
+        #         variables=[self.rgb_le_variables[le]],
+        #         evidence=evidence_for_inference,
+        #         show_progress=False
+        #     )
+        #     # creating a dict with LE and their probabilities.
+        #     le_max_dict[str(query_map)] = str(query_max)
+        # #### end complex code
         # le_max_dict.pop(str({'CT': 'Yes'}))
         # The RGB LEs AAM and VAM are mapped with Animation.
         # 70% of times, AN is VAM and 30% of times AN is AAM
@@ -269,41 +288,76 @@ class Nestor:
         # Workflow as follows:
         # if both AAM and VAM are present in the le_max dict:
         # 70% of times remove AAM and 30% of times remove VAM
-        if str({"VAM": "Yes"}) and str({"AAM": "Yes"}) in le_max_dict:
-            ele_to_remove = random.choices(
-                [str({"VAM": "Yes"}), str({"AAM": "Yes"})], weights=[0.7, 0.3]
-            )
-            try:
-                le_max_dict.pop(ele_to_remove[0])
-            except KeyError:
-                le_max_dict.update(ele_to_remove[0])
-
-        elif str({"VAM": "Yes"}) and str({"AAM": "No"}) in le_max_dict:
+        if str({"VAM": "Yes"}) in le_max_dict:
+            # If VAM is present, remove AAM with 30% probability
             ele_to_remove = random.choices(
                 [str({"VAM": "Yes"}), str({"AAM": "No"})], weights=[0.7, 0.3]
             )
+            remove_key = str(ele_to_remove[0])
             try:
-                le_max_dict.pop(ele_to_remove[0])
+                le_max_dict.pop(remove_key)
             except KeyError:
-                le_max_dict.update(ele_to_remove[0])
+                le_max_dict.update({remove_key: le_max_dict.pop(str({"VAM": "Yes"}))})
 
-        elif str({"VAM": "No"}) and str({"AAM": "Yes"}) in le_max_dict:
+        elif str({"AAM": "Yes"}) in le_max_dict:
+            # If AAM is present and VAM is not, remove AAM with 70% probability
             ele_to_remove = random.choices(
                 [str({"VAM": "No"}), str({"AAM": "Yes"})], weights=[0.7, 0.3]
             )
+            remove_key = str(ele_to_remove[0])
             try:
-                le_max_dict.pop(ele_to_remove[0])
+                le_max_dict.pop(remove_key)
             except KeyError:
-                le_max_dict.update(ele_to_remove[0])
+                le_max_dict.update({remove_key: le_max_dict.pop(str({"AAM": "Yes"}))})
+        # #### Start complex code
+        # if str(
+        #     {'VAM': 'Yes'}) and str(
+        #         {'AAM': 'Yes'}) in le_max_dict:
+        #     ele_to_remove = random.choices(
+        #         [str({'VAM': 'Yes'}), str({'AAM': 'Yes'})],
+        #         weights=[0.7, 0.3]
+        #     )
+        #     try:
+        #         le_max_dict.pop(ele_to_remove[0])
+        #     except KeyError:
+        #         le_max_dict.update(ele_to_remove[0])
 
-        elif str({"VAM": "No"}) and str({"AAM": "No"}) in le_max_dict:
-            ele_to_remove = random.choices(
-                [str({"VAM": "No"}), str({"AAM": "No"})], weights=[0.7, 0.3]
-            )
-            try:
-                le_max_dict.pop(ele_to_remove[0])
-            except KeyError:
-                le_max_dict.update(ele_to_remove[0])
+        # elif str(
+        #         {'VAM': 'Yes'}) and str(
+        #             {'AAM': 'No'}) in le_max_dict:
+        #     ele_to_remove = random.choices(
+        #         [str({'VAM': 'Yes'}), str({'AAM': 'No'})],
+        #         weights=[0.7, 0.3]
+        #     )
+        #     try:
+        #         le_max_dict.pop(ele_to_remove[0])
+        #     except KeyError:
+        #         le_max_dict.update(ele_to_remove[0])
+
+        # elif str(
+        #         {'VAM': 'No'}) and str(
+        #             {'AAM': 'Yes'}) in le_max_dict:
+        #     ele_to_remove = random.choices(
+        #         [str({'VAM': 'No'}), str({'AAM': 'Yes'})],
+        #         weights=[0.7, 0.3]
+        #     )
+        #     try:
+        #         le_max_dict.pop(ele_to_remove[0])
+        #     except KeyError:
+        #         le_max_dict.update(ele_to_remove[0])
+
+        # elif str(
+        #         {'VAM': 'No'}) and str(
+        #             {'AAM': 'No'}) in le_max_dict:
+        #     ele_to_remove = random.choices(
+        #         [str({'VAM': 'No'}), str({'AAM': 'No'})],
+        #         weights=[0.7, 0.3]
+        #     )
+        #     try:
+        #         le_max_dict.pop(ele_to_remove[0])
+        #     except KeyError:
+        #         le_max_dict.update(ele_to_remove[0])
+        # ####### end complex code ##############
         # start - old approach - always map RGB-VAM to Animation.
         # if str({'AAM': 'Yes'}) in le_max_dict:
         #     le_max_dict.pop(str({'AAM': 'Yes'}))
@@ -314,15 +368,25 @@ class Nestor:
         # here the dictionary contains inference with both yes and no
         # The LEs with state 'No' is not removed but
         # probability for state 'yes' is calculated
-        for key in le_max_dict.keys():
-            # if 'Yes' in key:
-            #     yes_keys.append(key)
-            # if there is 'No' in the keys:
-            # subract its value with 1 to find
-            # prob. of recommedning that LE.
-            if "No" in key:
-                le_max_dict[key] = str(round(1 - float(le_max_dict[key]), 1))
-                # yes_keys.append(key)
+        # Simplify the code using dictionary comprehension
+        le_max_dict = {
+            key: str(round(1 - float(val), 1)) if "No" in key else val
+            for key, val in le_max_dict.items()
+        }
+
+        # ## start complex code
+        # for key in le_max_dict.keys():
+        #     # if 'Yes' in key:
+        #     #     yes_keys.append(key)
+        #     # if there is 'No' in the keys:
+        #     # subract its value with 1 to find
+        #     # prob. of recommedning that LE.
+        #     if 'No' in key:
+        #         le_max_dict[key] = str(
+        #             round(1-float(le_max_dict[key]), 1)
+        #         )
+        #         # yes_keys.append(key)
+        # # end complex code
         # for val_ in yes_keys:
         #     le_max_dict[val_]
         #     updated_le_max_dict[val_] = le_max_dict[val_]
@@ -333,33 +397,54 @@ class Nestor:
             le_max_dict.items(), key=lambda item: float(item[1]), reverse=True
         )
         # Iterate through the sorted items and populate the sorted_dict
+        # Simplify renaming and list creation
         for key, value in sorted_items:
-            le_sorted_dict[key] = value
-        # print("\nCheck if the dict is in descending order: ",
-        # le_sorted_dict)
-        # renaming the LE formats to match HASKi common
-        for key, val in le_sorted_dict.items():
             updated_key = random.choice(
-                self.le_name_map_rgb_to_common_HASKI.get(key, key)
+                self.le_name_map_rgb_to_common_HASKI.get(key, [key])
             )
-            le_renamed_dict[updated_key] = val
-        le_renamed = []
-        for key_ in le_renamed_dict:
-            le_renamed.append(key_)
+            le_renamed_dict[updated_key] = value
+
+        le_renamed = list(le_renamed_dict.keys())
+
+        # ## start complex code
+        # for key, value in sorted_items:
+        #     le_sorted_dict[key] = value
+        # # print("\nCheck if the dict is in descending order: ",
+        # # le_sorted_dict)
+        # # renaming the LE formats to match HASKi common
+        # for key, val in le_sorted_dict.items():
+        #     updated_key = random.choice(
+        #         self.le_name_map_rgb_to_common_HASKI.get(key, key)
+        #     )
+        #     le_renamed_dict[updated_key] = val
+        # le_renamed = []
+        # for key_ in le_renamed_dict:
+        #     le_renamed.append(key_)
+        # ### end complex code
         # Removing the learning elements from learning path
         # if they are not present in the HASKI server
         # for ele in le_renamed:
         #     print(ele)
         #     if ele not in le_format_no_duplicates:
         #         le_renamed.remove(ele)
+
         for ele in le_renamed:
-            # for le_ in le_format_duplicates:
             if ele in le_format_no_duplicates:
                 le_path.append(ele)
-        for key_ in le_path:
-            output_string = output_string + key_ + ", "
+
+        output_string = ", ".join(le_path)
+
+        # ### start complex code
+        # for ele in le_renamed:
+        #     # for le_ in le_format_duplicates:
+        #     if ele in le_format_no_duplicates:
+        #         le_path.append(ele)
+        # for key_ in le_path:
+        #     output_string = output_string + key_ + ", "
+
+        # #### end complex code
         # removing last two characters of final string
-        output_string = output_string[:-2]
-        print(output_string)
+        # output_string = output_string[:-2]
+        # return le_renamed_dict
         # return le_renamed_dict
         return output_string

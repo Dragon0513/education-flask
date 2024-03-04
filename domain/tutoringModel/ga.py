@@ -182,29 +182,9 @@ class GeneticAlgorithm:
         learning_path_as_str = ", ".join(self.learning_elements)
         if len(self.learning_elements) == 1:
             learning_path_as_str = self.learning_elements[0] + ", "
-        # result_ga = self.get_learning_path_as_str(self.learning_elements)
+
 
         return learning_path_as_str
-
-    def get_learning_path_as_str(self, result_ga):
-        """Convert the list of learning path into sting"""
-
-        if np.where(result_ga == "EK") is not None:
-            result_ga = np.delete(result_ga, np.where(result_ga == "EK"))
-            result_ga = np.append("EK", result_ga)
-
-        if np.where(result_ga == "KU") is not None:
-            result_ga = np.delete(result_ga, np.where(result_ga == "KU"))
-            result_ga = np.append("KÜ", result_ga)
-
-        if np.where(result_ga == "LZ") is not None:
-            result_ga = np.delete(result_ga, np.where(result_ga == "LZ"))
-            result_ga = np.append(result_ga, "LZ")
-
-        if len(result_ga) == 1:
-            result_ga = np.append(result_ga, ",")
-
-        return ", ".join(result_ga)
 
     def get_learning_style(self, learning_style):
         """Convert the dictionary into another format

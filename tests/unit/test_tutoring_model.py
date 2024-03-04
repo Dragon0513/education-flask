@@ -200,7 +200,7 @@ def test_prepare_les_for_nestor(learning_style):
     )
     result = lp.path
     erg = False
-    if all(le in result for le in list_of_keys):
+    if all(le in list_of_keys for le in result):
         erg = True
     assert erg
 
@@ -209,7 +209,7 @@ def test_prepare_les_for_nestor(learning_style):
     nestor_path_success2 = nestor_alg.get_learning_path(learning_style, list_of_les)
     print(nestor_path_success2)
     erg11 = False
-    if all(le in nestor_path_success2 for le in list_of_keys):
+    if all(le in list_of_keys for le in nestor_path_success2):
         erg11 = True
     assert erg11
 
@@ -244,7 +244,7 @@ def test_prepare_les_for_nestor(learning_style):
     )
     result2 = lp.path
     erg2 = False
-    if all(le in result2 for le in list_of_keys2):
+    if all(le in list_of_keys2 for le in result2):
         erg2 = True
     assert erg2
 
@@ -277,7 +277,7 @@ def test_prepare_les_for_nestor(learning_style):
     )
     result3 = lp.path
     erg3 = False
-    if all(le in result3 for le in list_of_keys3):
+    if all(le in list_of_keys3 for le in result3):
         erg3 = True
     assert erg3
 
@@ -310,7 +310,7 @@ def test_prepare_les_for_nestor(learning_style):
     )
     result4 = lp.path
     erg4 = False
-    if all(le in result4 for le in list_of_keys4):
+    if all(le in list_of_keys4 for le in result4):
         erg4 = True
     assert erg4
 

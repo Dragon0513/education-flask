@@ -150,3 +150,20 @@ For checking the code quality, you can use Sonarqube (https://docs.sonarqube.org
 There shouldn't be any code smells left, when contributing to the project.
 
 After a Pull Request, one of the Code Owners will check and give feedback before the merge is possible.
+
+## Moodle
+
+The functionality to send requests to moodle via REST-API needs to be activated in moodle settings. 
+The following settings are necessary, do not forget so save the changes:
+- Active web service protocols: REST protocol (enable)
+- Enable web services: yes
+- Enable web services for mobile devices: yes
+
+Also it is necessary to create a token for a user with admin rights. 
+- Go to Site administration -> Server -> Manage tokens -> Create token
+- Select an admin user and create a token with the Service "Moodle mobile web service", set the validity to your needs and save the token.
+
+Lastly you have to add the following lines to your .flaskenv file:
+- REST_LMS_URL= "yourmoodleurl" (something like https://moodle.haski.de)
+- REST_TOKEN="yourtoken" (something like f5b78d90cff0bf8f61a5745ce1441e87)
+

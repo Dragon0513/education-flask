@@ -6,6 +6,7 @@ from domain.domainModel import model as DM
 from domain.learnersModel import model as LM
 from domain.tutoringModel import model as TM
 from domain.tutoringModel import utils
+from domain.tutoringModel.graf import GrafAlgorithm as Graf
 
 rng = np.random.default_rng(20)
 
@@ -302,18 +303,17 @@ def test_prepare_les_for_ga_2(learning_style, list_of_keys):
 
 
 @pytest.mark.parametrize(
-    "learning_style, list_of_keys, expected_keys",
+    "learning_style, list_of_keys",
     [
-        (None, ["BE"], None),
+
         # only 1 Learning element is in the list
-        (None, ["BE"], None),
+        (None, ["BE"]),
         # only 2 Learning elements are in the list
-        (None, ["RQ", "EK"], ["EK", "RQ"]),
+        (None, ["RQ", "EK"]),
         # Test 2
         (
             None,
-            ["ÜB", "FO", "LZ", "SE", "AN", "KÜ", "EK"],
-            ["KÜ", "EK", "ÜB", "SE", "AN", "FO", "LZ"],
+            ["ÜB", "FO", "LZ", "SE", "AN", "KÜ", "EK"]
         ),
         # all learning elements are only once in the list
         (
@@ -329,8 +329,8 @@ def test_prepare_les_for_ga_2(learning_style, list_of_keys):
                 "understanding_dimension": "glo",
                 "understanding_value": 9,
             },
-            ["ZF", "LZ", "ÜB", "SE", "BE", "AN", "EK", "ZL", "AB", "KÜ", "FO", "RQ"],
-            ["KÜ", "EK", "ZF", "RQ", "ZL", "BE", "AB", "FO", "AN", "SE", "ÜB", "LZ"],
+            ["ZF", "LZ", "ÜB", "SE", "BE", "AN", "EK", "ZL", "AB", "KÜ", "FO", "RQ"]
+            
         ),
         #  all learning elements are only once, except 1 is multiple times in the list
         (
@@ -363,8 +363,7 @@ def test_prepare_les_for_ga_2(learning_style, list_of_keys):
                 "EK",
                 "RQ",
                 "FO",
-            ],
-            ["KÜ", "EK", "FO", "AN", "SE", "ÜB", "RQ", "ZL", "LZ"],
+            ]
         ),
         #  all learning elements are multiple times in a list
         (
@@ -405,8 +404,7 @@ def test_prepare_les_for_ga_2(learning_style, list_of_keys):
                 "AB",
                 "BE",
                 "BE",
-            ],
-            ["EK", "ZF", "KÜ", "AN", "BE", "AB", "RQ", "ÜB", "ZL", "SE", "FO", "LZ"],
+            ]
         ),
         (
             {
@@ -440,8 +438,7 @@ def test_prepare_les_for_ga_2(learning_style, list_of_keys):
                 "ZL",
                 "AB",
                 "ZF",
-            ],
-            ["KÜ", "EK", "ZF", "ZL", "BE", "AB", "AN", "SE", "ÜB", "LZ"],
+            ]
         ),
         # all learning element are in the list, except
         # there is one with an unknown abreviation for example "ZZ"
@@ -474,12 +471,11 @@ def test_prepare_les_for_ga_2(learning_style, list_of_keys):
                 "FO",
                 "RQ",
                 "SE",
-            ],
-            ["KÜ", "EK", "AN", "SE", "ÜB", "AB", "BE", "RQ", "FO"],
+            ]
         ),
     ],
 )
-def test_prepare_les_for_ga(learning_style, list_of_keys, expected_keys):
+def test_prepare_les_for_ga(learning_style, list_of_keys):
     if learning_style is None:
         learning_style = {
             "id": 1,
@@ -509,3 +505,48 @@ def test_prepare_les_for_ga(learning_style, list_of_keys, expected_keys):
         assert result[0] == "EK" or result[1] == "EK"
     if "LZ" in list_of_keys:
         assert result[-1] == "LZ" or result[-2] == "LZ"
+
+
+@pytest.mark.parametrize(
+    "learning_element, learning_style, expected_result",
+    [
+        (
+            "SE",
+            {
+                "id": 35,
+                "characteristic_id": 35,
+                "perception_dimension": "int",
+                "perception_value": 7,
+                "input_dimension": "vis",
+                "input_value": 11,
+                "processing_dimension": "act",
+                "processing_value": 9,
+                "understanding_dimension": "glo",
+                "understanding_value": 1,
+            },
+            9,
+        ),
+        (
+            "ÜB",
+            {
+                "id": 35,
+                "characteristic_id": 35,
+                "perception_dimension": "sns",
+                "perception_value": 7,
+                "input_dimension": "vrb",
+                "input_value": 11,
+                "processing_dimension": "ref",
+                "processing_value": 9,
+                "understanding_dimension": "seq",
+                "understanding_value": 1,
+            },
+            -2,
+        ),
+    ],
+)
+def test_calculate_variable_score_graf(
+    learning_element, learning_style, expected_result
+):
+    algorithmus = Graf(student_id=1)
+    score = algorithmus.calculate_variable_score(learning_element, learning_style)
+    assert score == expected_result

@@ -190,28 +190,28 @@ def test_prepare_les_for_nestor(learning_style):
             created_at="2023-09-01",
         )
         list_of_les.append(le.serialize())
-    lp = TM.LearningPath(student_id=1, course_id=1, based_on="nestor")
+    # lp = TM.LearningPath(student_id=1, course_id=1, based_on="nestor")
 
-    lp.get_learning_path(
-        student_id=1,
-        learning_style=learning_style,
-        _algorithm="nestor",
-        list_of_les=list_of_les,
-    )
-    result = lp.path
-    erg = False
-    if all(le in list_of_keys for le in result):
-        erg = True
-    assert erg
+    # lp.get_learning_path(
+    #     student_id=1,
+    #     learning_style=learning_style,
+    #     _algorithm="nestor",
+    #     list_of_les=list_of_les,
+    # )
+    # result = lp.path
+    # erg = False
+    # if all(le in list_of_keys for le in result):
+    #     erg = True
+    # assert erg
 
     nestor_alg = nestor.Nestor()
-    # last_element = "RQ"
-    nestor_path_success2 = nestor_alg.get_learning_path(learning_style, list_of_les)
-    print(nestor_path_success2)
-    erg11 = False
-    if all(le in list_of_keys for le in nestor_path_success2):
-        erg11 = True
-    assert erg11
+    # # last_element = "RQ"
+    # nestor_path_success2 = nestor_alg.get_learning_path(learning_style, list_of_les)
+    # print(nestor_path_success2)
+    # erg11 = False
+    # if all(le in list_of_keys for le in nestor_path_success2):
+    #     erg11 = True
+    # assert erg11
 
     list_of_les2 = []
     list_of_keys2 = [

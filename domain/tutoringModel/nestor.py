@@ -154,7 +154,7 @@ class Nestor:
         self,
         input_learning_style: dict,
         input_learning_elements: list,
-        path_to_model=os.path.join("Nestor", "name3_saved_bn.xml"),
+        path_to_model=os.path.join("NestorFolder", "saved_model.xml"),
     ):
         """
         This function reads in pre-processed information

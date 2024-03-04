@@ -24,7 +24,7 @@ from pgmpy.readwrite import XMLBIFWriter
 # sys.path.append("Nestor/") # nopep
 # sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/..//")
 # from Nestor.nestor_config import *  # nopep8
-from domain.tutoringModel.Nestor.nestor_utils import (  # nopep8
+from domain.tutoringModel.NestorFolder.nestor_utils import (  # nopep8
     build_bn,
     extend_bn_to_le,
     train_bn,

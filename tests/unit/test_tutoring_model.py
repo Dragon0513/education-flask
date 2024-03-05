@@ -210,7 +210,7 @@ def test_prepare_les_for_nestor(learning_style):
     )
     # check with errors: result = nestor_lp.path
     print("\n\nNestor Learning Path:" + str(nestor_lp) + "\n\n.")
-    assert isinstance(type(nestor_lp), str)
+    assert type(nestor_lp) == str
     assert len(nestor_lp) != 0
 
     # nestor_path_success2 = nestor_alg.get_learning_path(learning_style, list_of_les)
@@ -361,7 +361,7 @@ def test_prepare_les_for_nestor(learning_style):
         nestor_alg.get_learning_path(
             student_id=1,
             learning_style=learning_style,
-            p_algorithm="nestor",
+            _algorithm="nestor",
             list_of_les=list_of_les5,
         )
     with pytest.raises(err.MissingParameterError):

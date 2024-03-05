@@ -69,7 +69,7 @@ class TycheAlgorithm:
         return result_learning_element
 
     def RGB_postprocessing(self):
-        """converts the learning path to LE conventions 
+        """converts the learning path to LE conventions
         of global HASKI"""
         curr_le = 0
         for i in range(len(self.learningpath)):
@@ -102,8 +102,7 @@ class TycheAlgorithm:
         pass
 
     def set_last_learning_element(self, classification_learning_element):
-        """Set the learning element
-        """
+        """Set the learning element"""
         if self.last_le:
             curr_le = self.last_le
             if curr_le == cons.abbreviation_ct:
@@ -177,9 +176,8 @@ class TycheAlgorithm:
         return lstyle
 
     def get_probabilities(self, lstyle):
-        """Get the probabilities of the learning element
-        """
-    
+        """Get the probabilities of the learning element"""
+
         # Get initial state probability:
         a, b, c, d = 0, 0, 0, 0
 

@@ -1,6 +1,6 @@
 import time
 
-from domain.tutoringModel import aco, ga, graf, tyche, utils
+from domain.tutoringModel import aco, ga, graf, tyche
 from domain.tutoringModel.utils import get_coordinates
 from errors import errors as err
 from utils import constants as cons
@@ -45,7 +45,12 @@ class LearningPath:
             start_point.update(coordinates)
             path = aco.AntColonySolver()
             result = path.solve(list(start_point.items()))
-            self.path = utils.get_learning_path_as_str(result)
+
+            le_path = ""
+            for ele in result[1:]:
+                le_path = le_path + ele[0] + ", "
+            self.path = le_path[:-2]
+
         elif algorithm == "ga":
             genetic_alg = ga.GeneticAlgorithm(learning_elements=list_of_les)
             self.path = genetic_alg.get_learning_path(

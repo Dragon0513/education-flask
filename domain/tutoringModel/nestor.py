@@ -8,6 +8,8 @@ import random
 from pgmpy.inference import VariableElimination
 from pgmpy.readwrite import XMLBIFReader
 
+from errors import errors as err
+
 # random.seed(143)
 
 
@@ -164,7 +166,7 @@ class Nestor:
         to recommend personalized learning paths
         """
         # defining the path to saved BN
-        path_to_model = path_to_model
+        # path_to_model = path_to_model
         # The HASKI Gemeninsam uses the Learning styles naming convention of
         # (act, ref, sen, int, vis, vrb, seq, glo).
         # The Nesor uses a naming convention of
@@ -172,29 +174,34 @@ class Nestor:
         # Visual, Verbal, Sequential, Global)
         # Below a dict is used to map this naming convention for giving
         # the evidence on student to nestor
-        evidence_for_inference = {
-            "Active_Reflective_Dim": self.ls_map_common_HASKI_to_nestor[
-                input_learning_style["processing_dimension"]
-            ],
-            "Sensory_Intuitive_Dim": self.ls_map_common_HASKI_to_nestor[
-                input_learning_style["perception_dimension"]
-            ],
-            "Visual_Verbal_Dim": self.ls_map_common_HASKI_to_nestor[
-                input_learning_style["input_dimension"]
-            ],
-            "Sequential_Gloabl_Dim": self.ls_map_common_HASKI_to_nestor[
-                input_learning_style["understanding_dimension"]
-            ]
-            # "bfie": str(bfie_val),
-            # "bfia": str(bfia_val),
-            # "bfin": str(bfin_val),
-            # "bfic": str(bfic_val),
-            # "bfio": str(bfio_val),
-            # "ks": str(ks_val),
-            # "mks": str(mks_val),
-            # "smir": str(smir_val),
-            # "smer": str(smer_val)
-        }
+        # before, first it is checked if the input learning style is
+        # empty or no to raise errors
+        if not input_learning_style:
+            raise err.MissingParameterError()
+        else:
+            evidence_for_inference = {
+                "Active_Reflective_Dim": self.ls_map_common_HASKI_to_nestor[
+                    input_learning_style["processing_dimension"]
+                ],
+                "Sensory_Intuitive_Dim": self.ls_map_common_HASKI_to_nestor[
+                    input_learning_style["perception_dimension"]
+                ],
+                "Visual_Verbal_Dim": self.ls_map_common_HASKI_to_nestor[
+                    input_learning_style["input_dimension"]
+                ],
+                "Sequential_Gloabl_Dim": self.ls_map_common_HASKI_to_nestor[
+                    input_learning_style["understanding_dimension"]
+                ]
+                # "bfie": str(bfie_val),
+                # "bfia": str(bfia_val),
+                # "bfin": str(bfin_val),
+                # "bfic": str(bfic_val),
+                # "bfio": str(bfio_val),
+                # "ks": str(ks_val),
+                # "mks": str(mks_val),
+                # "smir": str(smir_val),
+                # "smer": str(smer_val)
+            }
         # local variables
         le_max_dict = {}
         # yes_keys = []
@@ -227,10 +234,14 @@ class Nestor:
         # Each LE in learning path is a dict. and
         # the "classification" key returns the format of LE
         # Use set to remove duplicates
-        le_format_no_duplicates = list(
-            set(ele["classification"] for ele in input_learning_elements)
-        )
-
+        # first, if input learning element is an empty value
+        # throw an error
+        if not input_learning_elements:
+            raise err.NoValidParameterValueError()
+        else:
+            le_format_no_duplicates = list(
+                set(ele["classification"] for ele in input_learning_elements)
+            )
         # #### Start too complex code
         # for ele_ in input_learning_elements:
         #     le_format_duplicates.append(ele_["classification"])

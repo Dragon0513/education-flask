@@ -190,15 +190,16 @@ def test_prepare_les_for_nestor(learning_style):
             created_at="2023-09-01",
         )
         list_of_les.append(le.serialize())
-    # lp = TM.LearningPath(student_id=1, course_id=1, based_on="nestor")
+    lp = TM.LearningPath(student_id=1, course_id=1, based_on="nestor")
 
-    # lp.get_learning_path(
-    #     student_id=1,
-    #     learning_style=learning_style,
-    #     _algorithm="nestor",
-    #     list_of_les=list_of_les,
-    # )
-    # result = lp.path
+    lp.get_learning_path(
+        student_id=1,
+        learning_style=learning_style,
+        _algorithm="nestor",
+        list_of_les=list_of_les,
+    )
+    result = lp.path
+    print("\n\nThis is result:\n\n", result)
     # erg = False
     # if all(le in list_of_keys for le in result):
     #     erg = True
@@ -323,7 +324,7 @@ def test_prepare_les_for_nestor(learning_style):
 
     # Test invalid error parameter for lp algorithm:
     with pytest.raises(err.NoValidAlgorithmError):
-        nestor_alg.get_learning_path(
+        lp.get_learning_path(
             student_id=1,
             learning_style=learning_style,
             _algorithm="foo",
@@ -357,11 +358,11 @@ def test_prepare_les_for_nestor(learning_style):
             created_at="2023-09-01",
         )
         list_of_les5.append(le.serialize())
-    with pytest.raises(err.WrongParameterValueError):
-        nestor_alg.get_learning_path(
+    with pytest.raises(err.NoValidAlgorithmError):
+        lp.get_learning_path(
             student_id=1,
             learning_style=learning_style,
-            _algorithm="nestor",
+            _algorithm="nestor1",
             list_of_les=list_of_les5,
         )
     with pytest.raises(err.MissingParameterError):

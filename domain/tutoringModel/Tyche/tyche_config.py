@@ -1,4 +1,4 @@
-from utils import constants as con
+from utils import constants as cons
 
 """Configuration data of Tyche static and Tyche generic.\
    Contains all needed variables.
@@ -21,44 +21,44 @@ from utils import constants as con
 Nodes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
 LE_mapping = {
-    0: "kurzuebersicht",  # BO
-    1: "lernziele",  # LG
-    2: "manuskript",  # MS
-    3: "quiz",  # QU
-    4: "uebung",  # EX
-    5: "zusammenfassung",  # SU
-    6: "zusatzmaterial_auditiv",  # AAM
-    7: "zusatzmaterial_textuell",  # TAM
-    8: "zusatzmaterial_visuell",  # VAM
-    9: "kollaborativ",
+    0: cons.name_kü,  # BO
+    1: cons.name_lz,  # LG
+    2: cons.name_ms,  # MS
+    3: cons.name_qu,  # QU
+    4: cons.name_üb,  # EX
+    5: cons.name_zf,  # SU
+    6: cons.name_za,  # AAM
+    7: cons.name_zl,  # TAM
+    8: cons.name_zv,  # VAM
+    9: cons.name_ko,
 }  # CT
 
 LE_mapping_HASKI = {
-    0: con.name_kü,  # KÜ
-    1: con.name_lz,  # LZ
-    2: con.name_ek,  # EK
-    3: con.name_ab,  # AB
-    4: con.name_be,  # BE
-    5: con.name_rq,  # RQ
-    6: con.name_se,  # SE
-    7: con.name_üb,  # ÜB
-    8: con.name_zf,  # ZF
-    9: con.name_zl,  # ZL
-    10: con.name_an,  # AN
+    0: cons.name_kü,  # KÜ
+    1: cons.name_lz,  # LZ
+    2: cons.name_ek,  # EK
+    3: cons.name_ab,  # AB
+    4: cons.name_be,  # BE
+    5: cons.name_rq,  # RQ
+    6: cons.name_se,  # SE
+    7: cons.name_üb,  # ÜB
+    8: cons.name_zf,  # ZF
+    9: cons.name_zl,  # ZL
+    10: cons.name_an,  # AN
 }
 
 naming_map = {
-    con.abbreviation_ct: "kurzuebersicht",
-    con.abbreviation_as: "lernziele",
-    con.abbreviation_co: "manuskript_ek",
-    con.abbreviation_ra: "manuskript_ab",
-    con.abbreviation_ex: "manuskript_be",
-    con.abbreviation_rq: "quiz_rq",
-    con.abbreviation_se: "quiz_se",
-    con.abbreviation_ec: "uebung",
-    con.abbreviation_cc: "zusammenfassung",
-    con.abbreviation_rm: "zusatzmaterial_textuell",
-    con.abbreviation_an: "animation",
+    cons.abbreviation_ct: cons.name_kü,
+    cons.abbreviation_as: cons.name_lz,
+    cons.abbreviation_co: cons.name_ek,
+    cons.abbreviation_ra: cons.name_ab,
+    cons.abbreviation_ex: cons.name_be,
+    cons.abbreviation_rq: cons.name_rq,
+    cons.abbreviation_se: cons.name_se,
+    cons.abbreviation_ec: cons.name_üb,
+    cons.abbreviation_cc: cons.name_zf,
+    cons.abbreviation_rm: cons.name_zl,
+    cons.abbreviation_an: cons.name_an,
 }
 
 # First node transitions

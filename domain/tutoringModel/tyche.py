@@ -1,8 +1,10 @@
 import numpy as np
 
+from domain.tutoringModel import utils
 from domain.tutoringModel.Tyche import tyche_config as t_config
 from domain.tutoringModel.Tyche import tyche_utils as t_utils
 from errors import errors as err
+from utils import constants as cons
 
 
 class TycheAlgorithm:
@@ -30,30 +32,30 @@ class TycheAlgorithm:
             # Map learning elements:
 
             curr_le = le["classification"]
-            if curr_le == "KÜ":
-                classification_learning_element[0] = "kurzuebersicht"
-            elif curr_le == "LZ":
-                classification_learning_element[1] = "lernziele"
-            elif curr_le == "EK":
-                classification_learning_element[2] = "manuskript_ek"
-            elif curr_le == "AB":
-                classification_learning_element[3] = "manuskript_ab"
-            elif curr_le == "BE":
-                classification_learning_element[4] = "manuskript_be"
-            elif curr_le == "RQ":
-                classification_learning_element[5] = "quiz_rq"
-            elif curr_le == "SE":
-                classification_learning_element[6] = "quiz_se"
-            elif curr_le == "ÜB":
-                classification_learning_element[7] = "uebung"
-            elif curr_le == "ZF":
-                classification_learning_element[8] = "zusammenfassung"
-            elif curr_le == "ZL":
-                classification_learning_element[9] = "zusatzmaterial_textuell"
-            elif curr_le == "FO":
-                classification_learning_element[10] = "kollaborativ"
-            elif curr_le == "AN":
-                classification_learning_element[11] = "animation"
+            if curr_le == cons.abbreviation_ct:
+                classification_learning_element[0] = cons.name_kü
+            elif curr_le == cons.abbreviation_as:
+                classification_learning_element[1] = cons.name_lz
+            elif curr_le == cons.abbreviation_co:
+                classification_learning_element[2] = cons.name_ek
+            elif curr_le == cons.abbreviation_ra:
+                classification_learning_element[3] = cons.name_ab
+            elif curr_le == cons.abbreviation_ex:
+                classification_learning_element[4] = cons.name_be
+            elif curr_le == cons.abbreviation_rq:
+                classification_learning_element[5] = cons.name_rq
+            elif curr_le == cons.abbreviation_se:
+                classification_learning_element[6] = cons.name_se
+            elif curr_le == cons.abbreviation_ec:
+                classification_learning_element[7] = cons.name_üb
+            elif curr_le == cons.abbreviation_cc:
+                classification_learning_element[8] = cons.name_zf
+            elif curr_le == cons.abbreviation_rm:
+                classification_learning_element[9] = cons.name_zl
+            elif curr_le == cons.abbreviation_fo:
+                classification_learning_element[10] = cons.name_ko
+            elif curr_le == cons.abbreviation_an:
+                classification_learning_element[11] = cons.name_an
             else:
                 print("LE", curr_le, "is not part of our set!!")
                 raise err.WrongParameterValueError()
@@ -67,72 +69,77 @@ class TycheAlgorithm:
         return result_learning_element
 
     def RGB_postprocessing(self):
+        """converts the learning path to LE conventions 
+        of global HASKI"""
         curr_le = 0
         for i in range(len(self.learningpath)):
             curr_le = self.learningpath[i]
-            if curr_le == "kurzuebersicht":
-                curr_le = "KÜ"
-            elif curr_le == "lernziele":
-                curr_le = "LZ"
-            elif curr_le == "manuskript_ek":
-                curr_le = "EK"
-            elif curr_le == "manuskript_ab":
-                curr_le = "AB"
-            elif curr_le == "manuskript_be":
-                curr_le = "BE"
-            elif curr_le == "quiz_rq":
-                curr_le = "RQ"
-            elif curr_le == "quiz_se":
-                curr_le = "SE"
-            elif curr_le == "uebung":
-                curr_le = "ÜB"
-            elif curr_le == "zusammenfassung":
-                curr_le = "ZF"
-            elif curr_le == "zusatzmaterial_textuell":
-                curr_le = "ZL"
-            elif curr_le == "animation":
-                curr_le = "AN"
+            if curr_le == cons.name_kü:
+                curr_le = cons.abbreviation_ct
+            elif curr_le == cons.name_lz:
+                curr_le = cons.abbreviation_as
+            elif curr_le == cons.name_ek:
+                curr_le = cons.abbreviation_co
+            elif curr_le == cons.name_ab:
+                curr_le = cons.abbreviation_ra
+            elif curr_le == cons.name_be:
+                curr_le = cons.abbreviation_ex
+            elif curr_le == cons.name_rq:
+                curr_le = cons.abbreviation_rq
+            elif curr_le == cons.name_se:
+                curr_le = cons.abbreviation_se
+            elif curr_le == cons.name_üb:
+                curr_le = cons.abbreviation_ec
+            elif curr_le == cons.name_zf:
+                curr_le = cons.abbreviation_cc
+            elif curr_le == cons.name_zl:
+                curr_le = cons.abbreviation_rm
+            elif curr_le == cons.name_an:
+                curr_le = cons.abbreviation_an
             else:
                 print("Current learning element", curr_le, "is not part of our set!")
             self.learningpath[i] = curr_le
         pass
 
     def set_last_learning_element(self, classification_learning_element):
+        """Set the learning element
+        """
         if self.last_le:
             curr_le = self.last_le
-            if curr_le == "KÜ":
-                classification_learning_element[0] = "kurzuebersicht"
-            elif curr_le == "LZ":
-                classification_learning_element[1] = "lernziele"
-            elif curr_le == "EK":
-                classification_learning_element[2] = "manuskript_ek"
-            elif curr_le == "AB":
-                classification_learning_element[3] = "manuskript_ab"
-            elif curr_le == "BE":
-                classification_learning_element[4] = "manuskript_be"
-            elif curr_le == "RQ":
-                classification_learning_element[5] = "quiz_rq"
-            elif curr_le == "SE":
-                classification_learning_element[6] = "quiz_se"
-            elif curr_le == "ÜB":
-                classification_learning_element[7] = "uebung"
-            elif curr_le == "ZF":
-                classification_learning_element[8] = "zusammenfassung"
-            elif curr_le == "ZL":
-                classification_learning_element[9] = "zusatzmaterial_textuell"
-            elif curr_le == "FO":
-                classification_learning_element[10] = "kollaborativ"
-            elif curr_le == "AN":
-                classification_learning_element[11] = "animation"
+            if curr_le == cons.abbreviation_ct:
+                classification_learning_element[0] = cons.name_kü
+            elif curr_le == cons.abbreviation_as:
+                classification_learning_element[1] = cons.name_lz
+            elif curr_le == cons.abbreviation_co:
+                classification_learning_element[2] = cons.name_ek
+            elif curr_le == cons.abbreviation_ra:
+                classification_learning_element[3] = cons.name_ab
+            elif curr_le == cons.abbreviation_ex:
+                classification_learning_element[4] = cons.name_be
+            elif curr_le == cons.abbreviation_rq:
+                classification_learning_element[5] = cons.name_rq
+            elif curr_le == cons.abbreviation_se:
+                classification_learning_element[6] = cons.name_se
+            elif curr_le == cons.abbreviation_ec:
+                classification_learning_element[7] = cons.name_üb
+            elif curr_le == cons.abbreviation_cc:
+                classification_learning_element[8] = cons.name_zf
+            elif curr_le == cons.abbreviation_rm:
+                classification_learning_element[9] = cons.name_zl
+            elif curr_le == cons.abbreviation_fo:
+                classification_learning_element[10] = cons.name_ko
+            elif curr_le == cons.abbreviation_an:
+                classification_learning_element[11] = cons.name_an
             else:
                 print("LE", curr_le, "is not part of our set!!")
         return classification_learning_element
 
     def get_learning_style(self):
+        """Set the learning style in the format that
+        Tyche needs"""
         lstyle = [0, 0, 0, 0]
 
         # Active-Reflective Dimension:
-
         dim1 = self.learning_style["processing_dimension"]
         if dim1 == "act":
             lstyle[0] = "active"
@@ -140,8 +147,8 @@ class TycheAlgorithm:
             lstyle[0] = "reflective"
         else:
             print("Invalid value!")
-        # Visual-Verbal Dimension:
 
+        # Visual-Verbal Dimension:
         dim2 = self.learning_style["input_dimension"]
         if dim2 == "vis":
             lstyle[1] = "visual"
@@ -149,8 +156,8 @@ class TycheAlgorithm:
             lstyle[1] = "verbal"
         else:
             print("Invalid value!")
-        # Sensing-Intuitive Dimension:
 
+        # Sensing-Intuitive Dimension:
         dim3 = self.learning_style["perception_dimension"]
         if dim3 == "sns":
             lstyle[2] = "sensing"
@@ -158,8 +165,8 @@ class TycheAlgorithm:
             lstyle[2] = "intuitive"
         else:
             print("Invalid value!")
-        # Sequential-Global Dimension:
 
+        # Sequential-Global Dimension:
         dim4 = self.learning_style["understanding_dimension"]
         if dim4 == "seq":
             lstyle[3] = "sequential"
@@ -170,11 +177,13 @@ class TycheAlgorithm:
         return lstyle
 
     def get_probabilities(self, lstyle):
+        """Get the probabilities of the learning element
+        """
+    
         # Get initial state probability:
-
         a, b, c, d = 0, 0, 0, 0
-        # Get further states probabilities:
 
+        # Get further states probabilities:
         e, f, g, h = 0, 0, 0, 0  # Generic
         i, j, k, m = 0, 0, 0, 0  # Static
         if "active" in lstyle:
@@ -209,8 +218,8 @@ class TycheAlgorithm:
             d = np.array(t_config.Global_ini)
             h = np.array(t_config.Global_g)
             m = np.array(t_config.Global_static)
-        # Arithmetic means:
 
+        # Arithmetic means:
         init_config = np.add(a, b)
         init_config = np.add(init_config, c)
         init_config = np.add(init_config, d)
@@ -229,23 +238,12 @@ class TycheAlgorithm:
         self.init_probabilities = init_config
         self.probabilities = g_config
 
-    def get_learning_path_as_str(self):
-        """Convert the list of learning path into sting"""
-        str_learning_path = ""
-        contain_le = False
-        for ele in self.learningpath:
-            str_learning_path = str_learning_path + ele + ", "
-            contain_le = True
-        if contain_le:
-            str_learning_path = str_learning_path[:-2]
-        return str_learning_path
-
     def get_learning_path(
         self, input_learning_style={}, input_learning_element=[], last_element=False
     ):
         """Inital method to start generating the learning path"""
-        # Get learning style parameters:
 
+        # Get learning style parameters:
         if input_learning_style == {}:
             raise err.MissingParameterError()
         else:
@@ -253,8 +251,8 @@ class TycheAlgorithm:
         lstyle = self.get_learning_style()
         if 0 in lstyle:
             raise err.WrongParameterValueError()
-        # Get learning elements:
 
+        # Get learning elements:
         self.last_le = last_element
         if input_learning_element == []:
             raise err.NoValidParameterValueError()
@@ -264,40 +262,36 @@ class TycheAlgorithm:
         les = self.learning_elements
 
         # Get probabilities:
-
         self.get_probabilities(lstyle)
 
         # Set Forum as last learning element:
-
         FO = False
-        if "kollaborativ" in les:
+        if cons.name_ko in les:
             FO = True
-            les.remove("kollaborativ")
-        # Calculate first node:
+            les.remove(cons.name_ko)
 
+        # Calculate first node:
         if self.last_le:
             self.last_le = t_config.naming_map[self.last_le]
             start_node = self.last_le
         else:
             start_node = t_utils.get_startnode(self.init_probabilities, les)
             self.learningpath.append(start_node)
-        # Calculate next nodes:
 
+        # Calculate next nodes:
         lpath = t_utils.get_nextnodes(self.probabilities, les, start_node)
         if self.last_le:
             # delete last processed learning element from lpath:
-
             lpath = lpath[1:]
-        # Map learning path to HASKI:
 
+        # Map learning path to HASKI:
         self.learningpath = lpath
         self.RGB_postprocessing()
 
         # Add Forum as last learning element in learning path:
-
         if FO:
-            self.learningpath.append("FO")
-        # Return learning path:
+            self.learningpath.append(cons.abbreviation_fo)
 
-        learningpath = self.get_learning_path_as_str()
-        return learningpath
+        # Return learning path:
+        learningpath_return = utils.get_learning_path_as_str(self.learningpath)
+        return learningpath_return

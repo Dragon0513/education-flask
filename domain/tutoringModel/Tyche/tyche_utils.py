@@ -1,7 +1,12 @@
 import numpy as np
 
+from ..utils import rng
+
 
 def delete_probability(matrix, index):
+    """Delete a probability by deleting the row and
+    the column of a matrix
+    """
     # Delete column:
     matrix = np.delete(matrix, index, axis=1)
 
@@ -11,16 +16,19 @@ def delete_probability(matrix, index):
 
 
 def normalize_matrix(matrix):
+    """Normalise the whole matrix that each row sum up to 1"""
     normalized_matrix = matrix / np.sum(matrix, axis=1, keepdims=True)
     return normalized_matrix
 
 
 def normalize_row(row):
+    """Normalise a single row"""
     row = [float(i) / sum(row) for i in row]
     return row
 
 
 def check_probability_matrix(les_len, final_prob):
+    """Check if the probability matrix has the correct shape"""
     tshape = (les_len, les_len)
     if tshape != final_prob.shape:
         print("Something went wrong!")
@@ -30,6 +38,7 @@ def check_probability_matrix(les_len, final_prob):
 
 
 def get_startnode(probability, les):
+    """Calculates the start node of the learning path"""
     # LEs and their initial probabilities:
     # prob[0] == kurzuebersicht
     # prob[1] == lernziele
@@ -80,7 +89,7 @@ def get_startnode(probability, les):
     # prob[9] == zusatzmaterial_textuell
     # prob[10] == animation
 
-    result_prob = np.delete(result_prob, np.where(result_prob == 0))
+    result_prob = result_prob[np.nonzero(result_prob)]
 
     if len(result_prob) != len(les):
         print(
@@ -92,12 +101,14 @@ def get_startnode(probability, les):
     result_prob = normalize_row(result_prob)
 
     # Get start node:
-    start_le = np.random.choice(les, p=result_prob)
+    # start_le = np.random.choice(les, p=result_prob)
+    start_le = rng.choice(les, p=result_prob)
 
     return start_le
 
 
 def get_probability_rows(probability, les, le_weight):
+    """Calculates the rows of the probability matrix"""
     final_prob = []
 
     # Get rows:
@@ -131,6 +142,9 @@ def get_probability_rows(probability, les, le_weight):
 
 
 def set_le_flags(les, final_prob):
+    """Sets the learning elements flags for MS, QU, AN to true
+    if they are available.
+    """
     flag_manuskript = False
     flag_quiz = False
     flag_animation = False
@@ -180,6 +194,7 @@ def set_le_flags(les, final_prob):
 
 
 def add_ms_probs(flag_manuskript, final_prob, les):
+    """Adds rows of manuscript probabilities if needed"""
     counter_ms = 0
     index_ms1 = False
     index_ms2 = False
@@ -213,6 +228,7 @@ def add_ms_probs(flag_manuskript, final_prob, les):
 
 
 def add_qu_probs(flag_quiz, final_prob, les):
+    """Adds rows of quiz probabilities if needed"""
     index_qu1 = False
     index_qu2 = False
     first_qu_prob = -1
@@ -237,6 +253,7 @@ def add_qu_probs(flag_quiz, final_prob, les):
 
 
 def add_animation_probs(flag_animation, final_prob, les, le_weight):
+    """Adds rows of animation probabilities if needed"""
     if flag_animation:  # weighted average of AAM and VAM
         # Get probs of AAM and VAM
         colum_sum = []
@@ -259,6 +276,9 @@ def add_animation_probs(flag_animation, final_prob, les, le_weight):
 
 
 def get_probability_columns(les, le_weight, final_prob):
+    """Calculates the columns of the probability matrix.
+    Deletes columns if needed.
+    """
     final_prob = np.asarray(final_prob)
 
     flag_manuskript, flag_quiz, flag_animation, final_prob = set_le_flags(
@@ -277,6 +297,7 @@ def get_probability_columns(les, le_weight, final_prob):
 
 
 def get_probability_matrix(probability, les):
+    """Main function for setting up the probability matrix"""
     le_weight = [0.75, 0.25]
     les_len = len(les)
 
@@ -294,6 +315,7 @@ def get_probability_matrix(probability, les):
 
 
 def get_nextnodes(probability, les, start_node):
+    """Calculates all further nodes with a given start node"""
     learningpath = [start_node]
 
     final_prob = get_probability_matrix(probability, les)
@@ -319,7 +341,8 @@ def get_nextnodes(probability, les, start_node):
             les.pop(curr_le_index)
 
             # Get next learning element:
-            nextn = np.random.choice(les, p=temp_prob)
+            # nextn = np.random.choice(les, p=temp_prob)
+            nextn = rng.choice(les, p=temp_prob)
             learningpath.append(nextn)
 
             # Delete probabilities for current start node:

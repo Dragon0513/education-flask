@@ -1,17 +1,21 @@
+from utils import constants as con
+
 """Configuration data of Tyche static and Tyche generic.\
    Contains all needed variables.
+
+   General config:
+   Nodes, LE_mapping
+
+    Init state of tyche:
+    Visual_ini, Verbal_ini,
+    Intuitive_ini, Sensing_ini,
+    Active_ini, Reflective_ini,
+    Sequential_ini, Global_ini
+
+    Static tyche
+
+    Generic tyche
 """
-
-# General config:
-# Nodes, LE_mapping
-
-# Init state of tyche:
-# Visual_ini, Verbal_ini,
-# Intuitive_ini, Sensing_ini,
-# Active_ini, Reflective_ini,
-# Sequential_ini, Global_ini
-# Static tyche
-# Generic tyche
 
 
 Nodes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
@@ -30,31 +34,31 @@ LE_mapping = {
 }  # CT
 
 LE_mapping_HASKI = {
-    0: "kurzuebersicht",  # KÜ
-    1: "lernziele",  # LZ
-    2: "manuskript_ek",  # EK
-    3: "manuskript_ab",  # AB
-    4: "manuskript_be",  # BE
-    5: "quiz_rq",  # RQ
-    6: "quiz_se",  # SE
-    7: "uebung",  # ÜB
-    8: "zusammenfassung",  # ZF
-    9: "zusatzmaterial_textuell",  # ZL
-    10: "animation",
-}  # AN
+    0: con.name_kü,  # KÜ
+    1: con.name_lz,  # LZ
+    2: con.name_ek,  # EK
+    3: con.name_ab,  # AB
+    4: con.name_be,  # BE
+    5: con.name_rq,  # RQ
+    6: con.name_se,  # SE
+    7: con.name_üb,  # ÜB
+    8: con.name_zf,  # ZF
+    9: con.name_zl,  # ZL
+    10: con.name_an,  # AN
+}
 
 naming_map = {
-    "KÜ": "kurzuebersicht",
-    "LZ": "lernziele",
-    "EK": "manuskript_ek",
-    "AB": "manuskript_ab",
-    "BE": "manuskript_be",
-    "RQ": "quiz_rq",
-    "SE": "quiz_se",
-    "ÜB": "uebung",
-    "ZF": "zusammenfassung",
-    "ZL": "zusatzmaterial_textuell",
-    "AN": "animation",
+    con.abbreviation_ct: "kurzuebersicht",
+    con.abbreviation_as: "lernziele",
+    con.abbreviation_co: "manuskript_ek",
+    con.abbreviation_ra: "manuskript_ab",
+    con.abbreviation_ex: "manuskript_be",
+    con.abbreviation_rq: "quiz_rq",
+    con.abbreviation_se: "quiz_se",
+    con.abbreviation_ec: "uebung",
+    con.abbreviation_cc: "zusammenfassung",
+    con.abbreviation_rm: "zusatzmaterial_textuell",
+    con.abbreviation_an: "animation",
 }
 
 # First node transitions

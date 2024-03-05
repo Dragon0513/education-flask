@@ -6,6 +6,7 @@ from domain.learnersModel import model as LM
 from domain.tutoringModel import model as TM
 from domain.tutoringModel import tyche, utils
 from domain.tutoringModel.graf import GrafAlgorithm as Graf
+from utils import constants as cons
 
 
 def test_prepare_les_for_aco():
@@ -163,20 +164,24 @@ def test_prepare_les_for_ga(learning_style):
     ],
 )
 def test_prepare_les_for_tyche(learning_style):
+    """Test function for Tyche algorithm with successfull and
+    error outcomes.
+    """
+
     # Test Tyche with success:
     list_of_les = []
     list_of_keys = [
-        "ZF",
-        "KÜ",
-        "SE",
-        "LZ",
-        "ZL",
-        "AN",
-        "ÜB",
-        "EK",
-        "FO",
-        "AB",
-        "BE",
+        cons.abbreviation_cc,
+        cons.abbreviation_ct,
+        cons.abbreviation_se,
+        cons.abbreviation_as,
+        cons.abbreviation_rm,
+        cons.abbreviation_an,
+        cons.abbreviation_ec,
+        cons.abbreviation_co,
+        cons.abbreviation_fo,
+        cons.abbreviation_ra,
+        cons.abbreviation_ex,
     ]
     for i, ele_name in enumerate(list_of_keys):
         le = DM.LearningElement(
@@ -204,7 +209,7 @@ def test_prepare_les_for_tyche(learning_style):
     assert erg
 
     tyche_alg = tyche.TycheAlgorithm()
-    last_element = "RQ"
+    last_element = cons.abbreviation_rq
     tyche_path_success2 = tyche_alg.get_learning_path(
         learning_style, list_of_les, last_element
     )
@@ -216,13 +221,13 @@ def test_prepare_les_for_tyche(learning_style):
 
     list_of_les2 = []
     list_of_keys2 = [
-        "KÜ",
-        "LZ",
-        "ZL",
-        "ÜB",
-        "FO",
-        "AB",
-        "BE",
+        cons.abbreviation_ct,
+        cons.abbreviation_as,
+        cons.abbreviation_rm,
+        cons.abbreviation_ec,
+        cons.abbreviation_fo,
+        cons.abbreviation_ra,
+        cons.abbreviation_ex,
     ]
     for i, ele_name in enumerate(list_of_keys2):
         le = DM.LearningElement(
@@ -251,11 +256,11 @@ def test_prepare_les_for_tyche(learning_style):
 
     list_of_les3 = []
     list_of_keys3 = [
-        "ZF",
-        "RQ",
-        "AN",
-        "EK",
-        "BE",
+        cons.abbreviation_cc,
+        cons.abbreviation_rq,
+        cons.abbreviation_an,
+        cons.abbreviation_co,
+        cons.abbreviation_ex,
     ]
     for i, ele_name in enumerate(list_of_keys3):
         le = DM.LearningElement(
@@ -284,11 +289,11 @@ def test_prepare_les_for_tyche(learning_style):
 
     list_of_les4 = []
     list_of_keys4 = [
-        "ZF",
-        "RQ",
-        "AN",
-        "EK",
-        "BE",
+        cons.abbreviation_cc,
+        cons.abbreviation_rq,
+        cons.abbreviation_an,
+        cons.abbreviation_co,
+        cons.abbreviation_ex,
     ]
     for i, ele_name in enumerate(list_of_keys4):
         le = DM.LearningElement(
@@ -327,17 +332,17 @@ def test_prepare_les_for_tyche(learning_style):
     # Test Tyche with errors:
     list_of_les5 = []
     list_of_keys5 = [
-        "ZF",
-        "KÜ",
-        "SE",
-        "LZ",
-        "ZL",
-        "AN",
-        "ÜB",
-        "EK",
-        "RQ",
-        "FO",
-        "AB",
+        cons.abbreviation_cc,
+        cons.abbreviation_ct,
+        cons.abbreviation_se,
+        cons.abbreviation_as,
+        cons.abbreviation_rm,
+        cons.abbreviation_an,
+        cons.abbreviation_ec,
+        cons.abbreviation_co,
+        cons.abbreviation_rq,
+        cons.abbreviation_fo,
+        cons.abbreviation_ra,
         "XX",
     ]
     for i, ele_name in enumerate(list_of_keys5):

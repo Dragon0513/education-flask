@@ -145,3 +145,16 @@ def check_learning_style(input_learning_style):
         raise err.WrongLearningStyleDimensionError()
     else:
         return True
+
+
+def get_learning_path_as_str(result_ga):
+    """Convert the list of learning path into sting"""
+    str_learning_path = ""
+    contain_le = False
+    for ele in result_ga:
+        str_learning_path = str_learning_path + ele + ", "
+        contain_le = True
+    if contain_le:
+        str_learning_path = str_learning_path[:-2]
+
+    return str_learning_path

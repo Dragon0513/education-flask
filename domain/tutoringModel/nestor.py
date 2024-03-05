@@ -192,6 +192,7 @@ class Nestor:
                 "Sequential_Gloabl_Dim": self.ls_map_common_HASKI_to_nestor[
                     input_learning_style["understanding_dimension"]
                 ]
+                # no bfi and listk are used
                 # "bfie": str(bfie_val),
                 # "bfia": str(bfia_val),
                 # "bfin": str(bfin_val),
@@ -204,19 +205,9 @@ class Nestor:
             }
         # local variables
         le_max_dict = {}
-        # yes_keys = []
-        # updated_le_max_dict = {}
-        # Initialize an empty dictionary to store the sorted key-value pairs
-        # le_sorted_dict = {}
         # updating the LE names with tags used in common HASKI
         le_renamed_dict = {}
         # the following list is used to store LE formats from
-        # input LE param of this method
-        # Careful! - this list mmight contain duplicate LEs
-        # le_format_duplicates = []
-        # the following list contains no duplicated values
-        # if the input LE param of this method has no duplicates natively,
-        # this following list will be an extra operation
         le_format_no_duplicates = []
         # In mapping HASKI LEs with RGB LEs,
         # more than one HASKI LEs are mapped to a few RGB LEs
@@ -227,13 +218,10 @@ class Nestor:
         # post processing the learning path to a sting
         output_string = ""
         # Inference Start
-        # print("\n****START- Loading PGMPY Model****")
-        # sTime = time.time()
         # preparing the learning elements
         # the input param for LEs is a list of LEs (Learning path)
         # Each LE in learning path is a dict. and
         # the "classification" key returns the format of LE
-        # Use set to remove duplicates
         # first, if input learning element is an empty value
         # throw an error
         if not input_learning_elements:
@@ -242,21 +230,11 @@ class Nestor:
             le_format_no_duplicates = list(
                 set(ele["classification"] for ele in input_learning_elements)
             )
-        # #### Start too complex code
-        # for ele_ in input_learning_elements:
-        #     le_format_duplicates.append(ele_["classification"])
-        # # check for duplicate LE formats and remove them
-        # for ele_ in le_format_duplicates:
-        #     if ele_ not in le_format_no_duplicates:
-        #         le_format_no_duplicates.append(ele_)
-        # #### End too complex code
+
         # start inference with BN
         bn = XMLBIFReader(path_to_model).get_model()
         le_infer = VariableElimination(bn)
-        # print("\n****END- Loading PGMPY Model****")
-        # print('\nTime consumed: ', (time.time()-sTime))
 
-        # Simplify the loop and combine queries
         for le_var in self.rgb_le_variables:
             # Query both LE format and probability values
             query_map = le_infer.map_query(
@@ -270,30 +248,6 @@ class Nestor:
                 )
             )
 
-        # #### start complex code
-        # for le in range(len(self.rgb_le_variables)):
-        #     # To query the joint probabilities
-        #     # query_all = le_infer.query(
-        #     #     variables=[le_variables[le]],
-        #     #     evidence= evidence_for_inference,
-        #     #     joint= False
-        #     # )
-        #     # To query the LE format
-        #     query_map = le_infer.map_query(
-        #         variables=[self.rgb_le_variables[le]],
-        #         evidence=evidence_for_inference,
-        #         show_progress=False
-        #     )
-        #     # To query the probability values
-        #     query_max = le_infer.max_marginal(
-        #         variables=[self.rgb_le_variables[le]],
-        #         evidence=evidence_for_inference,
-        #         show_progress=False
-        #     )
-        #     # creating a dict with LE and their probabilities.
-        #     le_max_dict[str(query_map)] = str(query_max)
-        # #### end complex code
-        # le_max_dict.pop(str({'CT': 'Yes'}))
         # The RGB LEs AAM and VAM are mapped with Animation.
         # 70% of times, AN is VAM and 30% of times AN is AAM
         # Removing the AAM from recommending since it has
@@ -322,95 +276,21 @@ class Nestor:
                 le_max_dict.pop(remove_key)
             except KeyError:
                 le_max_dict.update({remove_key: le_max_dict.pop(str({"AAM": "Yes"}))})
-        # #### Start complex code
-        # if str(
-        #     {'VAM': 'Yes'}) and str(
-        #         {'AAM': 'Yes'}) in le_max_dict:
-        #     ele_to_remove = random.choices(
-        #         [str({'VAM': 'Yes'}), str({'AAM': 'Yes'})],
-        #         weights=[0.7, 0.3]
-        #     )
-        #     try:
-        #         le_max_dict.pop(ele_to_remove[0])
-        #     except KeyError:
-        #         le_max_dict.update(ele_to_remove[0])
 
-        # elif str(
-        #         {'VAM': 'Yes'}) and str(
-        #             {'AAM': 'No'}) in le_max_dict:
-        #     ele_to_remove = random.choices(
-        #         [str({'VAM': 'Yes'}), str({'AAM': 'No'})],
-        #         weights=[0.7, 0.3]
-        #     )
-        #     try:
-        #         le_max_dict.pop(ele_to_remove[0])
-        #     except KeyError:
-        #         le_max_dict.update(ele_to_remove[0])
-
-        # elif str(
-        #         {'VAM': 'No'}) and str(
-        #             {'AAM': 'Yes'}) in le_max_dict:
-        #     ele_to_remove = random.choices(
-        #         [str({'VAM': 'No'}), str({'AAM': 'Yes'})],
-        #         weights=[0.7, 0.3]
-        #     )
-        #     try:
-        #         le_max_dict.pop(ele_to_remove[0])
-        #     except KeyError:
-        #         le_max_dict.update(ele_to_remove[0])
-
-        # elif str(
-        #         {'VAM': 'No'}) and str(
-        #             {'AAM': 'No'}) in le_max_dict:
-        #     ele_to_remove = random.choices(
-        #         [str({'VAM': 'No'}), str({'AAM': 'No'})],
-        #         weights=[0.7, 0.3]
-        #     )
-        #     try:
-        #         le_max_dict.pop(ele_to_remove[0])
-        #     except KeyError:
-        #         le_max_dict.update(ele_to_remove[0])
-        # ####### end complex code ##############
-        # start - old approach - always map RGB-VAM to Animation.
-        # if str({'AAM': 'Yes'}) in le_max_dict:
-        #     le_max_dict.pop(str({'AAM': 'Yes'}))
-        # elif str({'AAM': 'No'}) in le_max_dict:
-        #     le_max_dict.pop(str({'AAM': 'No'}))
-        # end old approach
-        # print('\nPrinting the keys with yes and no', le_max_dict)
         # here the dictionary contains inference with both yes and no
         # The LEs with state 'No' is not removed but
         # probability for state 'yes' is calculated
-        # Simplify the code using dictionary comprehension
         le_max_dict = {
             key: str(round(1 - float(val), 1)) if "No" in key else val
             for key, val in le_max_dict.items()
         }
 
-        # ## start complex code
-        # for key in le_max_dict.keys():
-        #     # if 'Yes' in key:
-        #     #     yes_keys.append(key)
-        #     # if there is 'No' in the keys:
-        #     # subract its value with 1 to find
-        #     # prob. of recommedning that LE.
-        #     if 'No' in key:
-        #         le_max_dict[key] = str(
-        #             round(1-float(le_max_dict[key]), 1)
-        #         )
-        #         # yes_keys.append(key)
-        # # end complex code
-        # for val_ in yes_keys:
-        #     le_max_dict[val_]
-        #     updated_le_max_dict[val_] = le_max_dict[val_]
-        # arraning dict in decending order
         # Get items from the input_dict and
         # sort them based on the numerical values in descending order
         sorted_items = sorted(
             le_max_dict.items(), key=lambda item: float(item[1]), reverse=True
         )
         # Iterate through the sorted items and populate the sorted_dict
-        # Simplify renaming and list creation
         for key, value in sorted_items:
             updated_key = random.choice(
                 self.le_name_map_rgb_to_common_HASKI.get(key, [key])
@@ -419,45 +299,10 @@ class Nestor:
 
         le_renamed = list(le_renamed_dict.keys())
 
-        # ## start complex code
-        # for key, value in sorted_items:
-        #     le_sorted_dict[key] = value
-        # # print("\nCheck if the dict is in descending order: ",
-        # # le_sorted_dict)
-        # # renaming the LE formats to match HASKi common
-        # for key, val in le_sorted_dict.items():
-        #     updated_key = random.choice(
-        #         self.le_name_map_rgb_to_common_HASKI.get(key, key)
-        #     )
-        #     le_renamed_dict[updated_key] = val
-        # le_renamed = []
-        # for key_ in le_renamed_dict:
-        #     le_renamed.append(key_)
-        # ### end complex code
-        # Removing the learning elements from learning path
-        # if they are not present in the HASKI server
-        # for ele in le_renamed:
-        #     print(ele)
-        #     if ele not in le_format_no_duplicates:
-        #         le_renamed.remove(ele)
-
         for ele in le_renamed:
             if ele in le_format_no_duplicates:
                 le_path.append(ele)
 
         output_string = ", ".join(le_path)
 
-        # ### start complex code
-        # for ele in le_renamed:
-        #     # for le_ in le_format_duplicates:
-        #     if ele in le_format_no_duplicates:
-        #         le_path.append(ele)
-        # for key_ in le_path:
-        #     output_string = output_string + key_ + ", "
-
-        # #### end complex code
-        # removing last two characters of final string
-        # output_string = output_string[:-2]
-        # return le_renamed_dict
-        # return le_renamed_dict
         return output_string

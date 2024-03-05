@@ -164,6 +164,9 @@ def test_prepare_les_for_ga(learning_style):
     ],
 )
 def test_prepare_les_for_nestor(learning_style):
+    """
+    First the Nestor is checked for expected learning paths
+    and next the possible errors"""
     # Test nestor with success:
     list_of_les = []
     list_of_keys = [
@@ -198,129 +201,15 @@ def test_prepare_les_for_nestor(learning_style):
         _algorithm="nestor",
         list_of_les=list_of_les,
     )
-    result = lp.path
-    print("\n\nThis is result:\n\n", result)
-    # erg = False
-    # if all(le in list_of_keys for le in result):
-    #     erg = True
-    # assert erg
+    # check later: result = lp.path
 
     nestor_alg = nestor.Nestor()
     nestor_lp = nestor_alg.get_learning_path(
         input_learning_style=learning_style, input_learning_elements=list_of_les
     )
     # check with errors: result = nestor_lp.path
-    print("\n\nNestor Learning Path:" + str(nestor_lp) + "\n\n.")
     assert type(nestor_lp) == str
     assert len(nestor_lp) != 0
-
-    # nestor_path_success2 = nestor_alg.get_learning_path(learning_style, list_of_les)
-    # print(nestor_path_success2)
-    # erg11 = False
-    # if all(le in list_of_keys for le in nestor_path_success2):
-    #     erg11 = True
-    # assert erg11
-
-    # list_of_les2 = []
-    # list_of_keys2 = [
-    #     "KÜ",
-    #     "LZ",
-    #     "ZL",
-    #     "ÜB",
-    #     "FO",
-    #     "AB",
-    #     "BE",
-    # ]
-    # for i, ele_name in enumerate(list_of_keys2):
-    #     le = DM.LearningElement(
-    #         lms_id=i,
-    #         activity_type="lesson",
-    #         classification=ele_name,
-    #         name="Test LE",
-    #         university="TH-AB",
-    #         created_by="Max Mustermann",
-    #         created_at="2023-09-01",
-    #     )
-    #     list_of_les2.append(le.serialize())
-    # lp = TM.LearningPath(student_id=1, course_id=1, based_on="nestor")
-
-    # lp.get_learning_path(
-    #     student_id=1,
-    #     learning_style=learning_style,
-    #     _algorithm="nestor",
-    #     list_of_les=list_of_les2,
-    # )
-    # result2 = lp.path
-    # erg2 = False
-    # if all(le in list_of_keys2 for le in result2):
-    #     erg2 = True
-    # assert erg2
-
-    # list_of_les3 = []
-    # list_of_keys3 = [
-    #     "ZF",
-    #     "RQ",
-    #     "AN",
-    #     "EK",
-    #     "BE",
-    # ]
-    # for i, ele_name in enumerate(list_of_keys3):
-    #     le = DM.LearningElement(
-    #         lms_id=i,
-    #         activity_type="lesson",
-    #         classification=ele_name,
-    #         name="Test LE",
-    #         university="TH-AB",
-    #         created_by="Max Mustermann",
-    #         created_at="2023-09-01",
-    #     )
-    #     list_of_les3.append(le.serialize())
-    # lp = TM.LearningPath(student_id=1, course_id=1, based_on="nestor")
-
-    # lp.get_learning_path(
-    #     student_id=1,
-    #     learning_style=learning_style,
-    #     _algorithm="nestor",
-    #     list_of_les=list_of_les3,
-    # )
-    # result3 = lp.path
-    # erg3 = False
-    # if all(le in list_of_keys3 for le in result3):
-    #     erg3 = True
-    # assert erg3
-
-    # list_of_les4 = []
-    # list_of_keys4 = [
-    #     "ZF",
-    #     "RQ",
-    #     "AN",
-    #     "EK",
-    #     "BE",
-    # ]
-    # for i, ele_name in enumerate(list_of_keys4):
-    #     le = DM.LearningElement(
-    #         lms_id=i,
-    #         activity_type="lesson",
-    #         classification=ele_name,
-    #         name="Test LE",
-    #         university="TH-AB",
-    #         created_by="Max Mustermann",
-    #         created_at="2023-09-01",
-    #     )
-    #     list_of_les4.append(le.serialize())
-    # lp = TM.LearningPath(student_id=1, course_id=1, based_on="nestor")
-
-    # lp.get_learning_path(
-    #     student_id=1,
-    #     learning_style=learning_style,
-    #     _algorithm="nestor",
-    #     list_of_les=list_of_les4,
-    # )
-    # result4 = lp.path
-    # erg4 = False
-    # if all(le in list_of_keys4 for le in result4):
-    #     erg4 = True
-    # assert erg4
 
     # Test invalid error parameter for lp algorithm:
     with pytest.raises(err.NoValidAlgorithmError):

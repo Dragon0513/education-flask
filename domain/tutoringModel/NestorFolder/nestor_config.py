@@ -3,8 +3,7 @@ import os
 import pandas as pd
 from pgmpy.factors.discrete import TabularCPD
 
-# sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/..//")
-from domain.tutoringModel.NestorFolder.nestor_utils import categorize_lisk_bfi  # nopep8
+from domain.tutoringModel.NestorFolder.nestor_utils import categorize_lisk_bfi
 
 # VARIABLES START
 le_max_dict = {}
@@ -26,14 +25,12 @@ columns_to_encode = [
 
 # path tp the csv file with sample data
 df_data = pd.read_csv(
-    os.path.join(
-        "domain", "tutoringModel", "NestorFolder", "FullData_modifiedColumnNames.csv"
-    )
+    os.path.join("domain", "tutoringModel", "NestorFolder", "fakeTrainData.csv")
 )
 
 # path to save the BN after training
 path_to_trainedmodel = os.path.join(
-    "domain", "tutoringModel", "NestorFolder", "saved_model.xml"
+    "domain", "tutoringModel", "NestorFolder", "fake_saved_model.xml"
 )
 
 # encoding the BFI and LISTK columns to Likert scale

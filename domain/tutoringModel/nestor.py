@@ -157,7 +157,7 @@ class Nestor:
         input_learning_style: dict,
         input_learning_elements: list,
         path_to_model=os.path.join(
-            "domain", "tutoringModel", "NestorFolder", "saved_model.xml"
+            "domain", "tutoringModel", "NestorFolder", "backup_saved_model.xml"
         ),
     ):
         """

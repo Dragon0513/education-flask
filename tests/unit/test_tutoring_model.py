@@ -1,4 +1,7 @@
+import os
+
 import pytest
+from pgmpy.models import BayesianNetwork
 
 import errors.errors as err
 from domain.domainModel import model as DM
@@ -6,6 +9,10 @@ from domain.learnersModel import model as LM
 from domain.tutoringModel import model as TM
 from domain.tutoringModel import nestor, utils
 from domain.tutoringModel.graf import GrafAlgorithm as Graf
+from domain.tutoringModel.NestorFolder.nestor_config import path_to_trainedmodel
+from domain.tutoringModel.NestorFolder.nestor_training import (
+    build_train_save_nestor as nestor_training,
+)
 
 
 def test_prepare_les_for_aco():
@@ -201,14 +208,24 @@ def test_prepare_les_for_nestor(learning_style):
         _algorithm="nestor",
         list_of_les=list_of_les,
     )
-    # check later: result = lp.path
+    # for output of Nestor, the most suitable LE for
+    # all Learning styles is Forum
+    # Unit testing the result for dummy LS and LE
+    result = lp.path
+    assert result[:2] == "FO"
 
     nestor_alg = nestor.Nestor()
+    # unit test for empty train nestor function in
+    # nestor inference script
+    nestor_train = nestor_alg.train_nestor()
+    assert nestor_train is None
+
+    # unit test for learning path returned from nestor inference
     nestor_lp = nestor_alg.get_learning_path(
         input_learning_style=learning_style, input_learning_elements=list_of_les
     )
     # check with errors: result = nestor_lp.path
-    assert type(nestor_lp) == str
+    assert isinstance(nestor_lp, str)
     assert len(nestor_lp) != 0
 
     # Test invalid error parameter for lp algorithm:
@@ -258,6 +275,18 @@ def test_prepare_les_for_nestor(learning_style):
         nestor_alg.get_learning_path({}, list_of_les)
     with pytest.raises(err.NoValidParameterValueError):
         nestor_alg.get_learning_path(learning_style, [])
+
+
+def test_training_nestor():
+    """
+    This script targets to test the
+    utility functions used in Nestor training
+    and training of the nestor
+    """
+    # with fake data
+    bn = nestor_training()
+    assert isinstance(bn, BayesianNetwork)
+    assert os.path.exists(os.path.join(path_to_trainedmodel))
 
 
 @pytest.mark.parametrize(

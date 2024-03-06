@@ -8,9 +8,8 @@ import random
 from pgmpy.inference import VariableElimination
 from pgmpy.readwrite import XMLBIFReader
 
+from domain.tutoringModel.utils import ran_seed
 from errors import errors as err
-
-random.seed(5)
 
 
 class Nestor:
@@ -24,6 +23,7 @@ class Nestor:
         All the global values used in Nestor
         are initiated here.
         """
+        random.seed(ran_seed)
         # the following are the LE formats used in RGB
         self.rgb_le_variables = [
             "CT",
@@ -165,6 +165,7 @@ class Nestor:
         of learner
         to recommend personalized learning paths
         """
+        random.seed(ran_seed)
         # defining the path to saved BN
         # path_to_model = path_to_model
         # The HASKI Gemeninsam uses the Learning styles naming convention of

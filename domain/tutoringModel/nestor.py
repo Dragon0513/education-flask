@@ -10,7 +10,7 @@ from pgmpy.readwrite import XMLBIFReader
 
 from errors import errors as err
 
-# random.seed(143)
+random.seed(5)
 
 
 class Nestor:

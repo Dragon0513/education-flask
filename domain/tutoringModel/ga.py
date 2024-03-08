@@ -199,6 +199,7 @@ class GeneticAlgorithm:
         if len(self.learning_elements) == 1:
             learning_path_as_str = self.learning_elements[0] + ", "
 
+
         return learning_path_as_str
 
     def valide_elementen(self, learning_elements):

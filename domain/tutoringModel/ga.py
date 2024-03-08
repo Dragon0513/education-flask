@@ -213,7 +213,7 @@ class GeneticAlgorithm:
 
     def seach_learning_elements(self, fitness):
         """This function searches for the best learning elements"""
-        best_sample = []       
+        best_sample = []
         print(self.population[:15])
         for idx in self.population:
             if not self.valide_elementen(self.learning_elements[np.insert(idx, 0, 0)]):

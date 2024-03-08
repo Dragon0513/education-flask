@@ -305,12 +305,16 @@ def test_prepare_les_for_ga_2(learning_style, list_of_keys):
 @pytest.mark.parametrize(
     "learning_style, list_of_keys",
     [
+
         # only 1 Learning element is in the list
         (None, ["BE"]),
         # only 2 Learning elements are in the list
         (None, ["RQ", "EK"]),
         # Test 2
-        (None, ["ÜB", "FO", "LZ", "SE", "AN", "KÜ", "EK"]),
+        (
+            None,
+            ["ÜB", "FO", "LZ", "SE", "AN", "KÜ", "EK"]
+        ),
         # all learning elements are only once in the list
         (
             {
@@ -325,7 +329,8 @@ def test_prepare_les_for_ga_2(learning_style, list_of_keys):
                 "understanding_dimension": "glo",
                 "understanding_value": 9,
             },
-            ["ZF", "LZ", "ÜB", "SE", "BE", "AN", "EK", "ZL", "AB", "KÜ", "FO", "RQ"],
+            ["ZF", "LZ", "ÜB", "SE", "BE", "AN", "EK", "ZL", "AB", "KÜ", "FO", "RQ"]
+            
         ),
         #  all learning elements are only once, except 1 is multiple times in the list
         (
@@ -358,7 +363,7 @@ def test_prepare_les_for_ga_2(learning_style, list_of_keys):
                 "EK",
                 "RQ",
                 "FO",
-            ],
+            ]
         ),
         #  all learning elements are multiple times in a list
         (
@@ -399,7 +404,7 @@ def test_prepare_les_for_ga_2(learning_style, list_of_keys):
                 "AB",
                 "BE",
                 "BE",
-            ],
+            ]
         ),
         (
             {
@@ -433,7 +438,7 @@ def test_prepare_les_for_ga_2(learning_style, list_of_keys):
                 "ZL",
                 "AB",
                 "ZF",
-            ],
+            ]
         ),
         # all learning element are in the list, except
         # there is one with an unknown abreviation for example "ZZ"
@@ -466,7 +471,7 @@ def test_prepare_les_for_ga_2(learning_style, list_of_keys):
                 "FO",
                 "RQ",
                 "SE",
-            ],
+            ]
         ),
     ],
 )

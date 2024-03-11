@@ -21,20 +21,6 @@ from utils import constants as cons
 Nodes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
 
-LE_mapping_HASKI = {
-    0: cons.name_kü,  # KÜ
-    1: cons.name_lz,  # LZ
-    2: cons.name_ek,  # EK
-    3: cons.name_ab,  # AB
-    4: cons.name_be,  # BE
-    5: cons.name_rq,  # RQ
-    6: cons.name_se,  # SE
-    7: cons.name_üb,  # ÜB
-    8: cons.name_zf,  # ZF
-    9: cons.name_zl,  # ZL
-    10: cons.name_an,  # AN
-}
-
 naming_map = {
     cons.abbreviation_ct: cons.name_kü,
     cons.abbreviation_as: cons.name_lz,

@@ -137,6 +137,7 @@ def get_probability_rows(probability, les, le_weight):
     if cons.name_zl in les:
         final_prob.append(probability[7])
     if cons.name_an in les:
+        # Calculate weighted average if AN is available:
         average_temp = []
         for j in range(len(probability[8])):
             le_t = [probability[8][j], probability[6][j]]
@@ -147,7 +148,11 @@ def get_probability_rows(probability, les, le_weight):
 
 def set_le_flags(les, final_prob):
     """Sets the learning elements flags for MS, QU, AN to true
-    if they are available.
+    if they are available. Probabilities of original Tyche are
+    available for KÜ, LG, MS, QU, EX, SU, AAM, TAM, and VAM.
+    HASKI offers EK, AB, and BE for MS, AAM and VAM for AN, and
+    RQ, and SE for QU. Therefore, the probability matrix has to
+    be extended.
     """
     flag_manuskript = False
     flag_quiz = False

@@ -202,10 +202,14 @@ def test_prepare_les_for_tyche(learning_style):
         _algorithm="tyche",
         list_of_les=list_of_les,
     )
-    result = lp.path
     erg = False
+    result = lp.path
+    if not result:
+        assert result
     if all(le in result for le in list_of_keys):
         erg = True
+    else:
+        erg = False
     assert erg
 
     tyche_alg = tyche.TycheAlgorithm()
@@ -214,9 +218,13 @@ def test_prepare_les_for_tyche(learning_style):
         learning_style, list_of_les, last_element
     )
     print(tyche_path_success2)
+    if not tyche_path_success2:
+        assert tyche_path_success2
     erg11 = False
     if all(le in tyche_path_success2 for le in list_of_keys):
         erg11 = True
+    else:
+        erg11 = False
     assert erg11
 
     list_of_les2 = []
@@ -249,9 +257,13 @@ def test_prepare_les_for_tyche(learning_style):
         list_of_les=list_of_les2,
     )
     result2 = lp.path
+    if not result2:
+        assert result2
     erg2 = False
     if all(le in result2 for le in list_of_keys2):
         erg2 = True
+    else:
+        erg2 = False
     assert erg2
 
     list_of_les3 = []
@@ -282,9 +294,13 @@ def test_prepare_les_for_tyche(learning_style):
         list_of_les=list_of_les3,
     )
     result3 = lp.path
+    if not result3:
+        assert result3
     erg3 = False
     if all(le in result3 for le in list_of_keys3):
         erg3 = True
+    else:
+        erg3 = False
     assert erg3
 
     list_of_les4 = []
@@ -315,9 +331,13 @@ def test_prepare_les_for_tyche(learning_style):
         list_of_les=list_of_les4,
     )
     result4 = lp.path
+    if not result4:
+        assert result4
     erg4 = False
     if all(le in result4 for le in list_of_keys4):
         erg4 = True
+    else:
+        erg4 = False
     assert erg4
 
     # Test invalid error parameter for lp algorithm:

@@ -20,18 +20,6 @@ from utils import constants as cons
 
 Nodes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
-LE_mapping = {
-    0: cons.name_kü,  # BO
-    1: cons.name_lz,  # LG
-    2: cons.name_ms,  # MS
-    3: cons.name_qu,  # QU
-    4: cons.name_üb,  # EX
-    5: cons.name_zf,  # SU
-    6: cons.name_za,  # AAM
-    7: cons.name_zl,  # TAM
-    8: cons.name_zv,  # VAM
-    9: cons.name_ko,
-}  # CT
 
 LE_mapping_HASKI = {
     0: cons.name_kü,  # KÜ

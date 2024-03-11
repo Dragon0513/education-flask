@@ -1,5 +1,8 @@
 import numpy as np
 
+from errors import errors as err
+from utils import constants as cons
+
 from ..utils import rng
 
 
@@ -112,27 +115,27 @@ def get_probability_rows(probability, les, le_weight):
     final_prob = []
 
     # Get rows:
-    if "kurzuebersicht" in les:
+    if cons.name_kü in les:
         final_prob.append(probability[0])
-    if "lernziele" in les:
+    if cons.name_lz in les:
         final_prob.append(probability[1])
-    if "manuskript_ek" in les:
+    if cons.name_ek in les:
         final_prob.append(probability[2])
-    if "manuskript_ab" in les:
+    if cons.name_ab in les:
         final_prob.append(probability[2])
-    if "manuskript_be" in les:
+    if cons.name_be in les:
         final_prob.append(probability[2])
-    if "quiz_rq" in les:
+    if cons.name_rq in les:
         final_prob.append(probability[3])
-    if "quiz_se" in les:
+    if cons.name_se in les:
         final_prob.append(probability[3])
-    if "uebung" in les:
+    if cons.name_üb in les:
         final_prob.append(probability[4])
-    if "zusammenfassung" in les:
+    if cons.name_zf in les:
         final_prob.append(probability[5])
-    if "zusatzmaterial_textuell" in les:
+    if cons.name_zl in les:
         final_prob.append(probability[7])
-    if "animation" in les:
+    if cons.name_an in les:
         average_temp = []
         for j in range(len(probability[8])):
             le_t = [probability[8][j], probability[6][j]]
@@ -151,15 +154,15 @@ def set_le_flags(les, final_prob):
     counter = 0
     if "kurzuebersicht" not in les:
         final_prob = np.delete(final_prob, 0, axis=1)
-        counter = counter + 1
+        counter += 1
     if "lernziele" not in les:
         final_prob = np.delete(final_prob, 1 - counter, axis=1)
-        counter = counter + 1
+        counter += 1
     if "manuskript_ek" not in les:
         if "manuskript_ab" not in les:
             if "manuskript_be" not in les:
                 final_prob = np.delete(final_prob, 2 - counter, axis=1)
-                counter = counter + 1
+                counter += 1
             else:
                 flag_manuskript = True
         else:
@@ -169,7 +172,7 @@ def set_le_flags(les, final_prob):
     if "quiz_rq" not in les:
         if "quiz_se" not in les:
             final_prob = np.delete(final_prob, 3 - counter, axis=1)
-            counter = counter + 1
+            counter += 1
         else:
             flag_quiz = True
     else:
@@ -178,16 +181,16 @@ def set_le_flags(les, final_prob):
         final_prob = np.delete(final_prob, 4 - counter, axis=1)
     if "zusammenfassung" not in les:
         final_prob = np.delete(final_prob, 5 - counter, axis=1)
-        counter = counter + 1
+        counter += 1
     if "animation" not in les:
         final_prob = np.delete(final_prob, 6 - counter, axis=1)
-        counter = counter + 1
+        counter += 1
     if "zusatzmaterial_textuell" not in les:
         final_prob = np.delete(final_prob, 7 - counter, axis=1)
-        counter = counter + 1
+        counter += 1
     if "animation" not in les:
         final_prob = np.delete(final_prob, 8 - counter, axis=1)
-        counter = counter + 1
+        counter += 1
     else:
         flag_animation = True
     return flag_manuskript, flag_quiz, flag_animation, final_prob
@@ -196,26 +199,13 @@ def set_le_flags(les, final_prob):
 def add_ms_probs(flag_manuskript, final_prob, les):
     """Adds rows of manuscript probabilities if needed"""
     counter_ms = 0
-    index_ms1 = False
-    index_ms2 = False
-    index_ms3 = False
-    first_ms_prob = -1
     if flag_manuskript:
         if "manuskript_ek" in les:
-            counter_ms = counter_ms + 1
-            index_ms1 = les.index("manuskript_ek")
-            if first_ms_prob > index_ms1:
-                first_ms_prob = index_ms1
+            counter_ms += 1
         if "manuskript_ab" in les:
-            counter_ms = counter_ms + 1
-            index_ms2 = les.index("manuskript_ab")
-            if first_ms_prob > index_ms2:
-                first_ms_prob = index_ms2
+            counter_ms += 1
         if "manuskript_be" in les:
-            counter_ms = counter_ms + 1
-            index_ms3 = les.index("manuskript_be")
-            if first_ms_prob > index_ms3:
-                first_ms_prob = index_ms3
+            counter_ms += 1
 
         # Insert missing probabilities for manuscript:
         if counter_ms > 1:
@@ -229,21 +219,13 @@ def add_ms_probs(flag_manuskript, final_prob, les):
 
 def add_qu_probs(flag_quiz, final_prob, les):
     """Adds rows of quiz probabilities if needed"""
-    index_qu1 = False
-    index_qu2 = False
-    first_qu_prob = -1
     if flag_quiz:
         counter_qu = 0
         if "quiz_rq" in les:
-            counter_qu = counter_qu + 1
-            index_qu1 = les.index("quiz_rq")
-            if first_qu_prob > index_qu1:
-                first_qu_prob = index_qu1
+            counter_qu += 1
+
         if "quiz_se" in les:
-            counter_qu = counter_qu + 1
-            index_qu2 = les.index("quiz_se")
-            if first_qu_prob > index_qu2:
-                first_qu_prob = index_qu2
+            counter_qu += 1
 
         # Insert missing probabilities for quiz:
         if counter_qu == 2:
@@ -257,7 +239,7 @@ def add_animation_probs(flag_animation, final_prob, les, le_weight):
     if flag_animation:  # weighted average of AAM and VAM
         # Get probs of AAM and VAM
         colum_sum = []
-        if "zusatzmaterial_textuell" in les:
+        if cons.name_zl in les:
             w = 3
         else:
             w = 2
@@ -271,7 +253,6 @@ def add_animation_probs(flag_animation, final_prob, les, le_weight):
 
         # Add column of animation at the end of final_prob:
         final_prob = np.append(final_prob, colum_sum, axis=1)
-        pass
     return final_prob
 
 
@@ -309,7 +290,8 @@ def get_probability_matrix(probability, les):
 
     # Check probability matrix:
     if not check_probability_matrix(les_len, final_prob):
-        print("Error in matrix generation")
+        errmsg = "Error in matrix generation"
+        raise err.ErrorException(message=errmsg)
 
     return final_prob
 

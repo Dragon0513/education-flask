@@ -23,7 +23,7 @@ class TycheAlgorithm:
         self.learningpath = []
         self.last_le = False
 
-    def RGB_preprocessing(self):
+    def rgb_preprocessing(self):
         """converts the dictionary learning element
         into a list with only the short name of the LE"""
         classification_learning_element = ["none"] * 12
@@ -57,8 +57,8 @@ class TycheAlgorithm:
             elif curr_le == cons.abbreviation_an:
                 classification_learning_element[11] = cons.name_an
             else:
-                print("LE", curr_le, "is not part of our set!!")
-                raise err.WrongParameterValueError()
+                errormsg = "LE" + curr_le + "is not part of our set!!"
+                raise err.WrongParameterValueError(message=errormsg)
         classification_learning_element = self.set_last_learning_element(
             classification_learning_element
         )
@@ -68,7 +68,7 @@ class TycheAlgorithm:
                 result_learning_element.append(i)
         return result_learning_element
 
-    def RGB_postprocessing(self):
+    def rgb_postprocessing(self):
         """converts the learning path to LE conventions
         of global HASKI"""
         curr_le = 0
@@ -96,10 +96,7 @@ class TycheAlgorithm:
                 curr_le = cons.abbreviation_rm
             elif curr_le == cons.name_an:
                 curr_le = cons.abbreviation_an
-            else:
-                print("Current learning element", curr_le, "is not part of our set!")
             self.learningpath[i] = curr_le
-        pass
 
     def set_last_learning_element(self, classification_learning_element):
         """Set the learning element"""
@@ -237,7 +234,7 @@ class TycheAlgorithm:
         self.probabilities = g_config
 
     def get_learning_path(
-        self, input_learning_style={}, input_learning_element=[], last_element=False
+        self, input_learning_style=None, input_learning_element=None, last_element=None
     ):
         """Inital method to start generating the learning path"""
 
@@ -256,7 +253,7 @@ class TycheAlgorithm:
             raise err.NoValidParameterValueError()
         else:
             self.learning_elements = input_learning_element
-        self.learning_elements = self.RGB_preprocessing()
+        self.learning_elements = self.rgb_preprocessing()
         les = self.learning_elements
 
         # Get probabilities:
@@ -284,7 +281,7 @@ class TycheAlgorithm:
 
         # Map learning path to HASKI:
         self.learningpath = lpath
-        self.RGB_postprocessing()
+        self.rgb_postprocessing()
 
         # Add Forum as last learning element in learning path:
         if FO:

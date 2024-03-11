@@ -21,16 +21,16 @@ class GeneticAlgorithm:
         self.learning_elements = learning_elements
         self.learning_style = {}
         self.best_population = []
+        self.max_generation = 100
         self.le_coordinate: np.ndarray = np.array([])
         self.population: np.ndarray = np.array([])
-        self.n_generation = 100
+        self.initial_individuals = []
+        self.n_generation = 50
         self.le_size = 0
-        self.mutate_rate = 0.4
+        self.mutate_rate = 0.6
         self.cross_rate = 0.9
         self.pop_size = 100
-        #
-        # My New Commentary
-        #
+        self.first_is_present = False
 
         if learning_elements is not None:
             #  convert learning element into
@@ -45,20 +45,25 @@ class GeneticAlgorithm:
         param dict_coordinates"""
 
         coordinates = utils.get_coordinates(learning_style, self.learning_elements)
-        self.dict_coordinate = {"first": (20, 20, 20, 20)}
-        self.dict_coordinate.update(coordinates)
+
+        if not any(np.char.equal(self.learning_elements, "KÜ")):
+            self.dict_coordinate = {"first": (15, 15, 15, 15)}
+            self.dict_coordinate.update(coordinates)
+            self.first_is_present = True
+        else:
+            self.dict_coordinate = coordinates
 
         self.le_coordinate = np.array(list(self.dict_coordinate.values()))
         self.learning_elements = np.array(list(self.dict_coordinate.keys()))
-
         self.le_size = len(self.learning_elements)
 
-        # learning_elements sorted by the x-coordinate of the first learning element
-        idx = np.argsort(self.le_coordinate[:, 0])
-        idx = np.flip(idx, axis=0)
-        self.le_coordinate = self.le_coordinate[idx]
-        self.learning_elements = self.learning_elements[idx]
+        sume = np.sum(self.le_coordinate, 1)
+        sume_sort_idx = np.flip(np.argsort(sume))
+        self.le_coordinate = self.le_coordinate[sume_sort_idx]
+        self.learning_elements = self.learning_elements[sume_sort_idx]
+
         self.population = utils.permutation_generator(self.le_size, self.pop_size)
+        self.initial_individuals = np.arange(0, self.le_size)
 
     def valide_population(self):
         """Function to add validation: First Learning Element is fixed
@@ -102,7 +107,7 @@ class GeneticAlgorithm:
         # to inherit a part of their solution to their child.
 
         if utils.rng.random() < self.cross_rate:
-            samples = 2
+            samples = 5
             i_ = utils.random_generator(samples, size=1, type_="int")
             # choose crossover learning elements
             temp = self.le_size - 1
@@ -132,25 +137,25 @@ class GeneticAlgorithm:
         the aptitude of each individual, those that will be selected
         of each individual, those that are
         most suitable to evolve will be selected."""
-        best_samples = 5
+        best_samples = 3
         if self.pop_size > 50:
-            self.population[20:25, :] = best_sample
-
+            self.population[20:25, :] = best_sample.copy()
         idx = np.argsort(fitness)
         population = self.population[idx]
-
         pop_copy = population.copy()
         for parent in population:
             child = self.crossover(parent, pop_copy)
             child = self.mutate(child)
             parent[:] = child
+        population[8:13] = self.initial_individuals[1:]
         self.population[best_samples:] = population[:-best_samples].copy()
 
     def calculate_learning_path_ga(self):
         """This function calculates the learning path with Genetic algorithm"""
-        best_total_score = 300
-
-        for i in range(self.n_generation):
+        best_total_score = np.inf
+        i = 0
+        valid = False
+        while i < self.n_generation or valid:
             new_pop = self.valide_population()
             lx, ly, lz, lk = self.get_lines_paths(new_pop)
             fitness = self.get_fitness(lx, ly, lz, lk)
@@ -165,28 +170,58 @@ class GeneticAlgorithm:
             self.population = new_pop
             best_sample = new_pop[0]
 
-            if best_score < best_total_score and i < self.n_generation:
+            if best_score < best_total_score:
                 best_total_score = best_score
                 self.best_population = best_sample
+                np.insert(best_sample, 0, 0)
+
+            i += 1
 
             # evolution
             self.evolve(fitness, best_sample)
 
-        population = self.valide_population()
-        idx = population[0]
+            if i > self.max_generation:
+                best_sample = self.seach_learning_elements(fitness)
+
+            valid = self.valide_elementen(
+                self.learning_elements[np.insert(best_sample, 0, 0)]
+            )
+
+        # add the first element to the population
+        if not self.first_is_present:
+            best_sample = np.insert(best_sample, 0, 0)
 
         # sort the learning elements
-        self.learning_elements = self.learning_elements[idx]
-        self.le_coordinate = self.le_coordinate[idx]
-
-        # eliminate the first elements
-        self.learning_elements = self.learning_elements[1:]
+        self.learning_elements = self.learning_elements[best_sample]
+        self.le_coordinate = self.le_coordinate[best_sample]
 
         learning_path_as_str = ", ".join(self.learning_elements)
         if len(self.learning_elements) == 1:
             learning_path_as_str = self.learning_elements[0] + ", "
 
         return learning_path_as_str
+
+    def valide_elementen(self, learning_elements):
+        result = learning_elements
+        if "KÜ" in result and not result[0] == "KÜ":
+            return True
+        if "EK" in result and not (result[0] == "EK" or result[1] == "EK"):
+            return True
+        if "LZ" in result and not result[-1] == "LZ":
+            return True
+        return False
+
+    def seach_learning_elements(self, fitness):
+        """This function searches for the best learning elements"""
+        best_sample = []
+        print(self.population[:15])
+        for idx in self.population:
+            if not self.valide_elementen(self.learning_elements[np.insert(idx, 0, 0)]):
+                best_sample = idx
+                break
+        if len(best_sample) == 0:
+            best_sample = self.initial_individuals[1:]
+        return best_sample
 
     def get_learning_style(self, learning_style):
         """Convert the dictionary into another format

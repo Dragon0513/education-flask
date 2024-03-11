@@ -28,6 +28,9 @@ class GeneticAlgorithm:
         self.mutate_rate = 0.4
         self.cross_rate = 0.9
         self.pop_size = 100
+        #
+        # My New Commentary
+        #
 
         if learning_elements is not None:
             #  convert learning element into

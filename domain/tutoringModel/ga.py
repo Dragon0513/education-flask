@@ -181,7 +181,7 @@ class GeneticAlgorithm:
             self.evolve(fitness, best_sample)
 
             if i > self.max_generation:
-                best_sample = self.seach_learning_elements(fitness)
+                best_sample = self.seach_learning_elements()
 
             valid = self.valide_elementen(
                 self.learning_elements[np.insert(best_sample, 0, 0)]
@@ -203,18 +203,17 @@ class GeneticAlgorithm:
 
     def valide_elementen(self, learning_elements):
         result = learning_elements
-        if "KÜ" in result and not result[0] == "KÜ":
+        if "KÜ" in result and result[0] != "KÜ":
             return True
         if "EK" in result and not (result[0] == "EK" or result[1] == "EK"):
             return True
-        if "LZ" in result and not result[-1] == "LZ":
+        if "LZ" in result and result[-1] != "LZ":
             return True
         return False
 
-    def seach_learning_elements(self, fitness):
+    def seach_learning_elements(self):
         """This function searches for the best learning elements"""
         best_sample = []
-        print(self.population[:15])
         for idx in self.population:
             if not self.valide_elementen(self.learning_elements[np.insert(idx, 0, 0)]):
                 best_sample = idx

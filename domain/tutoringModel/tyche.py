@@ -134,6 +134,7 @@ class TycheAlgorithm:
         """Set the learning style in the format that
         Tyche needs"""
         lstyle = [0, 0, 0, 0]
+        str_invalid_val = "Invalid value!"
 
         # Active-Reflective Dimension:
         dim1 = self.learning_style["processing_dimension"]
@@ -142,7 +143,7 @@ class TycheAlgorithm:
         elif dim1 == "ref":
             lstyle[0] = "reflective"
         else:
-            print("Invalid value!")
+            print(str_invalid_val)
 
         # Visual-Verbal Dimension:
         dim2 = self.learning_style["input_dimension"]
@@ -151,7 +152,7 @@ class TycheAlgorithm:
         elif dim2 == "vrb":
             lstyle[1] = "verbal"
         else:
-            print("Invalid value!")
+            print(str_invalid_val)
 
         # Sensing-Intuitive Dimension:
         dim3 = self.learning_style["perception_dimension"]
@@ -160,7 +161,7 @@ class TycheAlgorithm:
         elif dim3 == "int":
             lstyle[2] = "intuitive"
         else:
-            print("Invalid value!")
+            print(str_invalid_val)
 
         # Sequential-Global Dimension:
         dim4 = self.learning_style["understanding_dimension"]
@@ -169,7 +170,7 @@ class TycheAlgorithm:
         elif dim4 == "glo":
             lstyle[3] = "global"
         else:
-            print("Invalid value!")
+            print(str_invalid_val)
         return lstyle
 
     def get_probabilities(self, lstyle):

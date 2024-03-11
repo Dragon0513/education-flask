@@ -102,7 +102,8 @@ def permutation_generator(le_size, pop_size):
     positions = np.arange(1, le_size)
     perm = rng.permutation(positions)
     population = np.tile(perm, (pop_size, 1))
-    population[0:20] = positions
+    population[0:5] = positions
+
     return population
 
 

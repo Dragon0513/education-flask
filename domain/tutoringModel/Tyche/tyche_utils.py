@@ -56,27 +56,27 @@ def get_startnode(probability, les):
     probability = probability[0]
     result_prob = np.zeros((11))
 
-    if "kurzuebersicht" in les:
+    if cons.name_kü in les:
         result_prob[0] = probability[0]
-    if "lernziele" in les:
+    if cons.name_lz in les:
         result_prob[1] = probability[1]
-    if "manuskript_ek" in les:
+    if cons.name_ek in les:
         result_prob[2] = probability[2]
-    if "manuskript_ab" in les:
+    if cons.name_ab in les:
         result_prob[3] = probability[2]
-    if "manuskript_be" in les:
+    if cons.name_be in les:
         result_prob[4] = probability[2]
-    if "quiz_rq" in les:
+    if cons.name_rq in les:
         result_prob[5] = probability[3]
-    if "quiz_se" in les:
+    if cons.name_se in les:
         result_prob[6] = probability[3]
-    if "uebung" in les:
+    if cons.name_üb in les:
         result_prob[7] = probability[4]
-    if "zusammenfassung" in les:
+    if cons.name_zf in les:
         result_prob[8] = probability[5]
-    if "zusatzmaterial_textuell" in les:
+    if cons.name_zl in les:
         result_prob[9] = probability[7]
-    if "animation" in les:
+    if cons.name_an in les:
         le_weight = [0.75, 0.25]
         le_temp = [probability[8], probability[6]]
         result_prob[10] = np.average(le_temp, weights=le_weight)
@@ -95,10 +95,11 @@ def get_startnode(probability, les):
     result_prob = result_prob[np.nonzero(result_prob)]
 
     if len(result_prob) != len(les):
-        print(
+        errmsg = (
             "Something went wrong at getting probabilities "
             "for start node! (Function: get_startnode())"
         )
+        raise err.ErrorException(message=errmsg)
 
     # Normalize list:
     result_prob = normalize_row(result_prob)
@@ -152,15 +153,15 @@ def set_le_flags(les, final_prob):
     flag_quiz = False
     flag_animation = False
     counter = 0
-    if "kurzuebersicht" not in les:
+    if cons.name_kü not in les:
         final_prob = np.delete(final_prob, 0, axis=1)
         counter += 1
-    if "lernziele" not in les:
+    if cons.name_lz not in les:
         final_prob = np.delete(final_prob, 1 - counter, axis=1)
         counter += 1
-    if "manuskript_ek" not in les:
-        if "manuskript_ab" not in les:
-            if "manuskript_be" not in les:
+    if cons.name_ek not in les:
+        if cons.name_ab not in les:
+            if cons.name_be not in les:
                 final_prob = np.delete(final_prob, 2 - counter, axis=1)
                 counter += 1
             else:
@@ -169,26 +170,26 @@ def set_le_flags(les, final_prob):
             flag_manuskript = True
     else:
         flag_manuskript = True
-    if "quiz_rq" not in les:
-        if "quiz_se" not in les:
+    if cons.name_rq not in les:
+        if cons.name_se not in les:
             final_prob = np.delete(final_prob, 3 - counter, axis=1)
             counter += 1
         else:
             flag_quiz = True
     else:
         flag_quiz = True
-    if "uebung" not in les:
+    if cons.name_üb not in les:
         final_prob = np.delete(final_prob, 4 - counter, axis=1)
-    if "zusammenfassung" not in les:
+    if cons.name_zf not in les:
         final_prob = np.delete(final_prob, 5 - counter, axis=1)
         counter += 1
-    if "animation" not in les:
+    if cons.name_an not in les:
         final_prob = np.delete(final_prob, 6 - counter, axis=1)
         counter += 1
-    if "zusatzmaterial_textuell" not in les:
+    if cons.name_zl not in les:
         final_prob = np.delete(final_prob, 7 - counter, axis=1)
         counter += 1
-    if "animation" not in les:
+    if cons.name_an not in les:
         final_prob = np.delete(final_prob, 8 - counter, axis=1)
         counter += 1
     else:
@@ -200,11 +201,11 @@ def add_ms_probs(flag_manuskript, final_prob, les):
     """Adds rows of manuscript probabilities if needed"""
     counter_ms = 0
     if flag_manuskript:
-        if "manuskript_ek" in les:
+        if cons.name_ek in les:
             counter_ms += 1
-        if "manuskript_ab" in les:
+        if cons.name_ab in les:
             counter_ms += 1
-        if "manuskript_be" in les:
+        if cons.name_be in les:
             counter_ms += 1
 
         # Insert missing probabilities for manuscript:
@@ -221,10 +222,10 @@ def add_qu_probs(flag_quiz, final_prob, les):
     """Adds rows of quiz probabilities if needed"""
     if flag_quiz:
         counter_qu = 0
-        if "quiz_rq" in les:
+        if cons.name_rq in les:
             counter_qu += 1
 
-        if "quiz_se" in les:
+        if cons.name_se in les:
             counter_qu += 1
 
         # Insert missing probabilities for quiz:

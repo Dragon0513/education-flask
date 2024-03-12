@@ -122,34 +122,6 @@ class Nestor:
             "The scripts used for training is stored in a seperate folder"
             "along with helper functions and configuration variables"
         )
-        # Building the Topology of BN for Psychological models
-        # bn = build_bn(edges_list=edges_list_only_psy_models)
-
-        # # Training the BN for leanring the CPDs
-        # train_bn(data=df_data_categories, model_bn=bn,
-        #          state_names=state_names_bn_training_psy_model,
-        #          estimator=EM)
-
-        # # Extending the Topology of BN to LEs
-        # bn = extend_bn_to_le(
-        #     network=bn,
-        #     edges_active_reflective=edges_list_active_reflective,
-        #     edges_sensory_intuitive=edges_list_sensory_intuitive,
-        #     edges_visual_verbal=edges_list_visual_verbal,
-        #     edges_sequential_global=edges_list_sequential_global
-        #                      )
-
-        # # Defining the CPDs manually for LEs
-        # bn.add_cpds(
-        #     cpd_ct, cpd_bo, cpd_lg, cpd_ms, cpd_qu,
-        #     cpd_ex, cpd_su, cpd_aam, cpd_tam, cpd_vam
-        #             )
-
-        # print("\nWriting trained BN to local folder\n")
-        # # Writing the BN to a local folder
-        # writer = XMLBIFWriter(bn)
-        # writer.write_xmlbif(filename=path_to_trainedmodel)
-        # return bn
         return None
 
     def get_learning_path(

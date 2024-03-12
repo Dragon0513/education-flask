@@ -171,21 +171,9 @@ class GeneticAlgorithm:
         idx = population[0]
         result_ga_lp = ga_path[idx]
 
-        learning_path = self.get_learning_path_as_str(result_ga_lp)
+        learning_path = utils.get_learning_path_as_str(result_ga_lp)
 
         return learning_path
-
-    def get_learning_path_as_str(self, result_ga):
-        """Convert the list of learning path into sting"""
-        str_learning_path = ""
-        contain_le = False
-        for ele in result_ga:
-            str_learning_path = str_learning_path + ele + ", "
-            contain_le = True
-        if contain_le:
-            str_learning_path = str_learning_path[:-2]
-
-        return str_learning_path
 
     def get_learning_style(self, learning_style):
         """Convert the dictionary into another format

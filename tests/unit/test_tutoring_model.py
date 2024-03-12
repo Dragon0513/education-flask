@@ -7,12 +7,9 @@ import errors.errors as err
 from domain.domainModel import model as DM
 from domain.learnersModel import model as LM
 from domain.tutoringModel import model as TM
-from domain.tutoringModel import nestor, utils
+from domain.tutoringModel import tyche, utils
 from domain.tutoringModel.graf import GrafAlgorithm as Graf
-from domain.tutoringModel.NestorFolder.nestor_config import path_to_trainedmodel
-from domain.tutoringModel.NestorFolder.nestor_training import (
-    build_train_save_nestor as nestor_training,
-)
+from utils import constants as cons
 
 
 def test_prepare_les_for_aco():
@@ -136,7 +133,6 @@ def test_prepare_les_for_ga(learning_style):
     assert result[-1] == "LZ"
 
 
-# Unit test for Nesor
 @pytest.mark.parametrize(
     "learning_style",
     [
@@ -170,24 +166,25 @@ def test_prepare_les_for_ga(learning_style):
         ),
     ],
 )
-def test_prepare_les_for_nestor(learning_style):
+def test_prepare_les_for_tyche(learning_style):
+    """Test function for Tyche algorithm with successfull and
+    error outcomes.
     """
-    First the Nestor is checked for expected learning paths
-    and next the possible errors"""
-    # Test nestor with success:
+
+    # Test Tyche with success:
     list_of_les = []
     list_of_keys = [
-        "ZF",
-        "KÜ",
-        "SE",
-        "LZ",
-        "ZL",
-        "AN",
-        "ÜB",
-        "EK",
-        "FO",
-        "AB",
-        "BE",
+        cons.abbreviation_cc,
+        cons.abbreviation_ct,
+        cons.abbreviation_se,
+        cons.abbreviation_as,
+        cons.abbreviation_rm,
+        cons.abbreviation_an,
+        cons.abbreviation_ec,
+        cons.abbreviation_co,
+        cons.abbreviation_fo,
+        cons.abbreviation_ra,
+        cons.abbreviation_ex,
     ]
     for i, ele_name in enumerate(list_of_keys):
         le = DM.LearningElement(
@@ -200,33 +197,151 @@ def test_prepare_les_for_nestor(learning_style):
             created_at="2023-09-01",
         )
         list_of_les.append(le.serialize())
-    lp = TM.LearningPath(student_id=1, course_id=1, based_on="nestor")
+    lp = TM.LearningPath(student_id=1, course_id=1, based_on="tyche")
 
     lp.get_learning_path(
         student_id=1,
         learning_style=learning_style,
-        _algorithm="nestor",
+        _algorithm="tyche",
         list_of_les=list_of_les,
     )
-    # for output of Nestor, the most suitable LE for
-    # all Learning styles is Forum
-    # Unit testing the result for dummy LS and LE
+    erg = False
     result = lp.path
-    assert result[:2] == "FO"
+    if not result:
+        assert result
+    if all(le in result for le in list_of_keys):
+        erg = True
+    else:
+        erg = False
+    assert erg
 
-    nestor_alg = nestor.Nestor()
-    # unit test for empty train nestor function in
-    # nestor inference script
-    nestor_train = nestor_alg.train_nestor()
-    assert nestor_train is None
-
-    # unit test for learning path returned from nestor inference
-    nestor_lp = nestor_alg.get_learning_path(
-        input_learning_style=learning_style, input_learning_elements=list_of_les
+    tyche_alg = tyche.TycheAlgorithm()
+    last_element = cons.abbreviation_rq
+    tyche_path_success2 = tyche_alg.get_learning_path(
+        learning_style, list_of_les, last_element
     )
-    # check with errors: result = nestor_lp.path
-    assert isinstance(nestor_lp, str)
-    assert len(nestor_lp) != 0
+    print(tyche_path_success2)
+    if not tyche_path_success2:
+        assert tyche_path_success2
+    erg11 = False
+    if all(le in tyche_path_success2 for le in list_of_keys):
+        erg11 = True
+    else:
+        erg11 = False
+    assert erg11
+
+    list_of_les2 = []
+    list_of_keys2 = [
+        cons.abbreviation_ct,
+        cons.abbreviation_as,
+        cons.abbreviation_rm,
+        cons.abbreviation_ec,
+        cons.abbreviation_fo,
+        cons.abbreviation_ra,
+        cons.abbreviation_ex,
+    ]
+    for i, ele_name in enumerate(list_of_keys2):
+        le = DM.LearningElement(
+            lms_id=i,
+            activity_type="lesson",
+            classification=ele_name,
+            name="Test LE",
+            university="TH-AB",
+            created_by="Max Mustermann",
+            created_at="2023-09-01",
+        )
+        list_of_les2.append(le.serialize())
+    lp = TM.LearningPath(student_id=1, course_id=1, based_on="tyche")
+
+    lp.get_learning_path(
+        student_id=1,
+        learning_style=learning_style,
+        _algorithm="tyche",
+        list_of_les=list_of_les2,
+    )
+    result2 = lp.path
+    if not result2:
+        assert result2
+    erg2 = False
+    if all(le in result2 for le in list_of_keys2):
+        erg2 = True
+    else:
+        erg2 = False
+    assert erg2
+
+    list_of_les3 = []
+    list_of_keys3 = [
+        cons.abbreviation_cc,
+        cons.abbreviation_rq,
+        cons.abbreviation_an,
+        cons.abbreviation_co,
+        cons.abbreviation_ex,
+    ]
+    for i, ele_name in enumerate(list_of_keys3):
+        le = DM.LearningElement(
+            lms_id=i,
+            activity_type="lesson",
+            classification=ele_name,
+            name="Test LE",
+            university="TH-AB",
+            created_by="Max Mustermann",
+            created_at="2023-09-01",
+        )
+        list_of_les3.append(le.serialize())
+    lp = TM.LearningPath(student_id=1, course_id=1, based_on="tyche")
+
+    lp.get_learning_path(
+        student_id=1,
+        learning_style=learning_style,
+        _algorithm="tyche",
+        list_of_les=list_of_les3,
+    )
+    result3 = lp.path
+    if not result3:
+        assert result3
+    erg3 = False
+    if all(le in result3 for le in list_of_keys3):
+        erg3 = True
+    else:
+        erg3 = False
+    assert erg3
+
+    list_of_les4 = []
+    list_of_keys4 = [
+        cons.abbreviation_cc,
+        cons.abbreviation_rq,
+        cons.abbreviation_an,
+        cons.abbreviation_co,
+        cons.abbreviation_ex,
+    ]
+    for i, ele_name in enumerate(list_of_keys4):
+        le = DM.LearningElement(
+            lms_id=i,
+            activity_type="lesson",
+            classification=ele_name,
+            name="Test LE",
+            university="TH-AB",
+            created_by="Max Mustermann",
+            created_at="2023-09-01",
+        )
+        list_of_les4.append(le.serialize())
+    lp = TM.LearningPath(student_id=1, course_id=1, based_on="tyche")
+
+    lp.get_learning_path(
+        student_id=1,
+        learning_style=learning_style,
+        _algorithm="tyche",
+        list_of_les=list_of_les4,
+    )
+    result4 = lp.path
+    if not result4:
+        assert result4
+    erg4 = False
+    if all(le in result4 for le in list_of_keys4):
+        erg4 = True
+    else:
+        erg4 = False
+    assert erg4
 
     # Test invalid error parameter for lp algorithm:
     with pytest.raises(err.NoValidAlgorithmError):
@@ -237,20 +352,20 @@ def test_prepare_les_for_nestor(learning_style):
             list_of_les=list_of_les,
         )
 
-    # Test Nestor with errors:
+    # Test Tyche with errors:
     list_of_les5 = []
     list_of_keys5 = [
-        "ZF",
-        "KÜ",
-        "SE",
-        "LZ",
-        "ZL",
-        "AN",
-        "ÜB",
-        "EK",
-        "RQ",
-        "FO",
-        "AB",
+        cons.abbreviation_cc,
+        cons.abbreviation_ct,
+        cons.abbreviation_se,
+        cons.abbreviation_as,
+        cons.abbreviation_rm,
+        cons.abbreviation_an,
+        cons.abbreviation_ec,
+        cons.abbreviation_co,
+        cons.abbreviation_rq,
+        cons.abbreviation_fo,
+        cons.abbreviation_ra,
         "XX",
     ]
     for i, ele_name in enumerate(list_of_keys5):
@@ -264,29 +379,17 @@ def test_prepare_les_for_nestor(learning_style):
             created_at="2023-09-01",
         )
         list_of_les5.append(le.serialize())
-    with pytest.raises(err.NoValidAlgorithmError):
+    with pytest.raises(err.WrongParameterValueError):
         lp.get_learning_path(
             student_id=1,
             learning_style=learning_style,
-            _algorithm="nestor1",
+            _algorithm="tyche",
             list_of_les=list_of_les5,
         )
     with pytest.raises(err.MissingParameterError):
-        nestor_alg.get_learning_path({}, list_of_les)
+        tyche_alg.get_learning_path({}, list_of_les, last_element)
     with pytest.raises(err.NoValidParameterValueError):
-        nestor_alg.get_learning_path(learning_style, [])
-
-
-def test_training_nestor():
-    """
-    This script targets to test the
-    utility functions used in Nestor training
-    and training of the nestor
-    """
-    # with fake data
-    bn = nestor_training()
-    assert isinstance(bn, BayesianNetwork)
-    assert os.path.exists(os.path.join(path_to_trainedmodel))
+        tyche_alg.get_learning_path(learning_style, [], last_element)
 
 
 @pytest.mark.parametrize(

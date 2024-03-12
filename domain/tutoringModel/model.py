@@ -1,6 +1,6 @@
 import time
 
-from domain.tutoringModel import aco, ga, graf, nestor
+from domain.tutoringModel import aco, ga, graf, tyche
 from domain.tutoringModel.utils import get_coordinates
 from errors import errors as err
 from utils import constants as cons
@@ -56,13 +56,13 @@ class LearningPath:
             self.path = genetic_alg.get_learning_path(
                 input_learning_style=learning_style, input_learning_element=list_of_les
             )
-
-        elif algorithm == "nestor":
-            nestor_alg = nestor.Nestor()
-            self.path = nestor_alg.get_learning_path(
-                input_learning_style=learning_style, input_learning_elements=list_of_les
+        elif algorithm == "tyche":
+            tyche_alg = tyche.TycheAlgorithm()
+            self.path = tyche_alg.get_learning_path(
+                input_learning_style=learning_style,
+                input_learning_element=list_of_les,
+                last_element=None,
             )
-
         else:
             raise err.NoValidAlgorithmError()
 

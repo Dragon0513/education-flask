@@ -9,7 +9,7 @@ from domain.tutoringModel import tyche, utils
 from domain.tutoringModel.graf import GrafAlgorithm as Graf
 from utils import constants as cons
 
-rng = np.random.default_rng(20)
+rng = np.random.default_rng(11)
 
 
 def test_prepare_les_for_aco():
@@ -585,13 +585,9 @@ def test_prepare_les_for_ga_2(learning_style, list_of_keys):
 @pytest.mark.parametrize(
     "learning_style, list_of_keys",
     [
-        # only 1 Learning element is in the list
         (None, ["BE"]),
-        # only 2 Learning elements are in the list
         (None, ["RQ", "EK"]),
-        # Test 2
         (None, ["ÜB", "FO", "LZ", "SE", "AN", "KÜ", "EK"]),
-        # all learning elements are only once in the list
         (
             {
                 "id": 1,
@@ -607,7 +603,6 @@ def test_prepare_les_for_ga_2(learning_style, list_of_keys):
             },
             ["ZF", "LZ", "ÜB", "SE", "BE", "AN", "EK", "ZL", "AB", "KÜ", "FO", "RQ"],
         ),
-        #  all learning elements are only once, except 1 is multiple times in the list
         (
             {
                 "id": 1,
@@ -640,7 +635,6 @@ def test_prepare_les_for_ga_2(learning_style, list_of_keys):
                 "FO",
             ],
         ),
-        #  all learning elements are multiple times in a list
         (
             {
                 "id": 1,
@@ -715,8 +709,6 @@ def test_prepare_les_for_ga_2(learning_style, list_of_keys):
                 "ZF",
             ],
         ),
-        # all learning element are in the list, except
-        # there is one with an unknown abreviation for example "ZZ"
         (
             {
                 "id": 1,

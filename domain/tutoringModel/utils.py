@@ -190,7 +190,7 @@ def get_learning_element(learning_elements):
 
 
 def get_learning_path_as_str(result_ga):
-    """Convert the list of learning path into sting"""
+    """Convert the list of learning path into string"""
     str_learning_path = ""
     contain_le = False
     for ele in result_ga:

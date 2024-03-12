@@ -65,7 +65,7 @@ class GeneticAlgorithm:
         self.population = utils.permutation_generator(self.le_size, self.pop_size)
         self.initial_individuals = np.arange(0, self.le_size)
 
-    def valide_population(self):
+    def valid_population(self):
         """Function to add validation: First Learning Element is fixed
         in the Learning path."""
 
@@ -156,7 +156,7 @@ class GeneticAlgorithm:
         i = 0
         valid = False
         while i < self.n_generation or valid:
-            new_pop = self.valide_population()
+            new_pop = self.valid_population()
             lx, ly, lz, lk = self.get_lines_paths(new_pop)
             fitness = self.get_fitness(lx, ly, lz, lk)
 
@@ -183,7 +183,7 @@ class GeneticAlgorithm:
             if i > self.max_generation:
                 best_sample = self.search_learning_elements()
 
-            valid = self.valide_elementen(
+            valid = self.valid_elements(
                 self.learning_elements[np.insert(best_sample, 0, 0)]
             )
 
@@ -201,11 +201,11 @@ class GeneticAlgorithm:
 
         return learning_path_as_str
 
-    def valide_elementen(self, learning_elements):
+    def valid_elements(self, learning_elements):
         result = learning_elements
         if "KÜ" in result and result[0] != "KÜ":
             return True
-        if "EK" in result and not (result[0] == "EK" or result[1] == "EK"):
+        if "EK" in result and result[0] != "EK" and result[1] != "EK":
             return True
         if "LZ" in result and result[-1] != "LZ":
             return True
@@ -215,7 +215,7 @@ class GeneticAlgorithm:
         """This function searches for the best learning elements"""
         best_sample = []
         for idx in self.population:
-            if not self.valide_elementen(self.learning_elements[np.insert(idx, 0, 0)]):
+            if not self.valid_elements(self.learning_elements[np.insert(idx, 0, 0)]):
                 best_sample = idx
                 break
         if len(best_sample) == 0:

@@ -11,6 +11,7 @@ from utils import constants as cons
 
 rng = np.random.default_rng(20)
 
+
 def test_prepare_les_for_aco():
     list_of_les = []
     list_of_keys = ["BE", "FO", "KÜ", "SE", "LZ", "EK", "ÜB"]
@@ -489,7 +490,7 @@ def test_calculate_variable_score_graf(
     score = algorithmus.calculate_variable_score(learning_element, learning_style)
     assert score == expected_result
 
-#--------------------------------------------------
+
 def get_learning_path_ga(learning_style, list_of_elements):
     list_of_les = []
     for i, ele_name in enumerate(list_of_elements):
@@ -778,8 +779,4 @@ def test_prepare_les_for_ga(learning_style, list_of_keys):
     if "EK" in list_of_keys:
         assert result[0] == "EK" or result[1] == "EK"
     if "LZ" in list_of_keys:
-        assert result[-1] == "LZ" 
-
-
-
-
+        assert result[-1] == "LZ"

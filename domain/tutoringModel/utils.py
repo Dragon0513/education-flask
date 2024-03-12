@@ -187,3 +187,16 @@ def get_learning_element(learning_elements):
     if lz_is_present:
         classification_learning_element.append(lz_element)
     return classification_learning_element
+
+
+def get_learning_path_as_str(result_ga):
+    """Convert the list of learning path into sting"""
+    str_learning_path = ""
+    contain_le = False
+    for ele in result_ga:
+        str_learning_path = str_learning_path + ele + ", "
+        contain_le = True
+    if contain_le:
+        str_learning_path = str_learning_path[:-2]
+
+    return str_learning_path

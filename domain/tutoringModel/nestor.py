@@ -21,6 +21,7 @@ class Nestor:
         All the global values used in Nestor
         are initiated here.
         """
+        random.seed(ran_seed)
         # the following dict maps
         # output variables' states of the
         # trained BN with their respective

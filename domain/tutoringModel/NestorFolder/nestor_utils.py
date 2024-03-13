@@ -1,8 +1,6 @@
 from pgmpy.estimators import ExpectationMaximization as EM
 from pgmpy.models import BayesianNetwork
 
-from utils.constants import likert_scale as likert_map
-
 # Helper functions
 
 
@@ -11,6 +9,15 @@ def categorize_lisk_bfi(input_dataframe, encoding_columns):
     This function decodes the nuerical responses of list-k and bfi
     to categories and suit PGMPY inference methods
     """
+    # In case of BFI and/or LIST-k
+    # this dict is used to decode the numerical values
+    likert_map = {
+        1: "strong_disagree",
+        2: "disagree",
+        3: "neither_agree_disagree",
+        4: "agree",
+        5: "strong_agree",
+    }
     # looping through rows
     for row in range(len(input_dataframe)):
         # looping through columns

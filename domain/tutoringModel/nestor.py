@@ -7,7 +7,7 @@ from pgmpy.readwrite import XMLBIFReader
 
 from domain.tutoringModel.utils import ran_seed
 from errors import errors as err
-from utils.constants import ls_map_common_HASKI_to_nestor, rgb_le_variables
+from utils import constants as cons
 
 
 class Nestor:
@@ -21,30 +21,6 @@ class Nestor:
         All the global values used in Nestor
         are initiated here.
         """
-        # # TODO Start - Remove before Merge
-        # random.seed(ran_seed)
-        # the following are the LE formats used in RGB
-        # self.rgb_le_variables = [
-        #     "CT",
-        #     "BO",
-        #     "LG",
-        #     "MS",
-        #     "QU",
-        #     "EX",
-        #     "SU",
-        #     "AAM",
-        #     "VAM",
-        #     "TAM",
-        # ]
-        # # In case BFI and/or LIST-k is used
-        # # this dict is used to decode the numerical values
-        # self.likert_scale = {
-        #     1: "strong_disagree",
-        #     2: "disagree",
-        #     3: "neither_agree_disagree",
-        #     4: "agree",
-        #     5: "strong_agree",
-        # }
         # the following dict maps
         # output variables' states of the
         # trained BN with their respective
@@ -52,63 +28,66 @@ class Nestor:
         # A random seed with unix timestamp is used to choose
         # map LEs, in case of multiple mappings
         self.le_name_map_rgb_to_common_HASKI = {
-            "{'CT': 'Yes'}": ["FO"],
-            "{'CT': 'No'}": ["FO"],
-            "{'BO': 'Yes'}": ["KÜ"],
-            "{'BO': 'No'}": ["KÜ"],
-            "{'LG': 'Yes'}": ["LZ"],
-            "{'LG': 'No'}": ["LZ"],
+            "{'CT': 'Yes'}": [cons.abbreviation_fo],
+            "{'CT': 'No'}": [cons.abbreviation_fo],
+            "{'BO': 'Yes'}": [cons.abbreviation_ct],
+            "{'BO': 'No'}": [cons.abbreviation_ct],
+            "{'LG': 'Yes'}": [cons.abbreviation_as],
+            "{'LG': 'No'}": [cons.abbreviation_as],
             # the manuscript is mapped with three LE from common HASKI
             # so a random weighted selection of this LE is made below
             "{'MS': 'Yes'}": random.choices(
-                ["EK", "AB", "BE"], weights=[0.8, 0.1, 0.1]
+                [cons.abbreviation_co, cons.abbreviation_ra, cons.abbreviation_ex],
+                weights=[0.8, 0.1, 0.1],
             ),
-            "{'MS': 'No'}": random.choices(["EK", "AB", "BE"], weights=[0.8, 0.1, 0.1]),
+            "{'MS': 'No'}": random.choices(
+                [cons.abbreviation_co, cons.abbreviation_ra, cons.abbreviation_ex],
+                weights=[0.8, 0.1, 0.1],
+            ),
             # "{'QU': 'Yes'}": ["RQ", "SE"],
             # "{'QU': 'No'}": ["RQ", "SE"],
-            "{'QU': 'Yes'}": ["RQ"],
-            "{'QU': 'No'}": ["RQ"],
-            "{'EX': 'Yes'}": ["ÜB"],
-            "{'EX': 'No'}": ["ÜB"],
-            "{'SU': 'Yes'}": ["ZF"],
-            "{'SU': 'No'}": ["ZF"],
+            "{'QU': 'Yes'}": [cons.abbreviation_rq],
+            "{'QU': 'No'}": [cons.abbreviation_rq],
+            "{'EX': 'Yes'}": [cons.abbreviation_ec],
+            "{'EX': 'No'}": [cons.abbreviation_ec],
+            "{'SU': 'Yes'}": [cons.abbreviation_cc],
+            "{'SU': 'No'}": [cons.abbreviation_cc],
             # the additional auditive material states
             # are not mapped to any LE formats
-            # "{'AAM': 'Yes'}": ["AN"],
-            # "{'AAM': 'No'}": ["AN"],
-            "{'VAM': 'Yes'}": ["AN"],
-            "{'VAM': 'No'}": ["AN"],
-            "{'TAM': 'Yes'}": ["ZL"],
-            "{'TAM': 'No'}": ["ZL"],
+            # "{'AAM': 'Yes'}": [cons.abbreviation_an],
+            # "{'AAM': 'No'}": [cons.abbreviation_an],
+            "{'VAM': 'Yes'}": [cons.abbreviation_an],
+            "{'VAM': 'No'}": [cons.abbreviation_an],
+            "{'TAM': 'Yes'}": [cons.abbreviation_rm],
+            "{'TAM': 'No'}": [cons.abbreviation_rm],
         }
-        # # this dict maps output variable states of BN
-        # # to RGB LE formats
-        # self.le_name_map = {
-        #     "{'CT': 'Yes'}": "kollaborativ",
-        #     "{'BO': 'Yes'}": "kurzuebersicht",
-        #     "{'LG': 'Yes'}": "lernziele",
-        #     "{'MS': 'Yes'}": "manuskript",
-        #     "{'QU': 'Yes'}": "quiz",
-        #     "{'EX': 'Yes'}": "uebung",
-        #     "{'SU': 'Yes'}": "zusammenfassung",
-        #     "{'AAM': 'Yes'}": "zusatzmaterial_auditiv",
-        #     "{'VAM': 'Yes'}": "zusatzmaterial_visuell",
-        #     "{'TAM': 'Yes'}": "zusatzmaterial_textuell",
-        # }
-        # # this dict maps FSLSM model learning style nomenclature
-        # # used in HASKI to nomenclature
-        # # used in training Nestor.
-        # self.ls_map_common_HASKI_to_nestor = {
-        #     "act": "Active",
-        #     "ref": "Reflective",
-        #     "sns": "Sensory",
-        #     "int": "Intuitive",
-        #     "vis": "Visual",
-        #     "vrb": "Verbal",
-        #     "seq": "Sequential",
-        #     "glo": "Global",
-        # }
-        # # TODO End Before Merge
+
+        # the following are the LE formats used in Nestor Inference
+        self.rgb_le_variables = [
+            "CT",
+            "BO",
+            "LG",
+            "MS",
+            "QU",
+            "EX",
+            "SU",
+            "AAM",
+            "VAM",
+            "TAM",
+        ]
+        # this dict maps FSLSM model learning style nomenclature
+        # used in HASKI to nomenclature
+        # used in trained Nestor.
+        self.ls_map_common_HASKI_to_nestor = {
+            "act": "Active",
+            "ref": "Reflective",
+            "sns": "Sensory",
+            "int": "Intuitive",
+            "vis": "Visual",
+            "vrb": "Verbal",
+            "seq": "Sequential",
+            "glo": "Global",
+        }
 
     def get_learning_path(
         self,
@@ -140,16 +119,16 @@ class Nestor:
             raise err.MissingParameterError()
         else:
             evidence_for_inference = {
-                "Active_Reflective_Dim": ls_map_common_HASKI_to_nestor[
+                "Active_Reflective_Dim": self.ls_map_common_HASKI_to_nestor[
                     input_learning_style["processing_dimension"]
                 ],
-                "Sensory_Intuitive_Dim": ls_map_common_HASKI_to_nestor[
+                "Sensory_Intuitive_Dim": self.ls_map_common_HASKI_to_nestor[
                     input_learning_style["perception_dimension"]
                 ],
-                "Visual_Verbal_Dim": ls_map_common_HASKI_to_nestor[
+                "Visual_Verbal_Dim": self.ls_map_common_HASKI_to_nestor[
                     input_learning_style["input_dimension"]
                 ],
-                "Sequential_Gloabl_Dim": ls_map_common_HASKI_to_nestor[
+                "Sequential_Gloabl_Dim": self.ls_map_common_HASKI_to_nestor[
                     input_learning_style["understanding_dimension"]
                 ],
             }
@@ -185,7 +164,7 @@ class Nestor:
         bn = XMLBIFReader(path_to_model).get_model()
         le_infer = VariableElimination(bn)
 
-        for le_var in rgb_le_variables:
+        for le_var in self.rgb_le_variables:
             # Query both LE format and probability values
             query_map = le_infer.map_query(
                 variables=[le_var], evidence=evidence_for_inference, show_progress=False

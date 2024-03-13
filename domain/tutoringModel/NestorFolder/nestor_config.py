@@ -8,7 +8,6 @@ from domain.tutoringModel.NestorFolder.nestor_utils import categorize_lisk_bfi
 # VARIABLES START
 le_max_dict = {}
 le_max_prob_val = []
-# random.seed(143)
 yes_keys = []
 
 columns_to_encode = [
@@ -38,8 +37,6 @@ df_data_categories = categorize_lisk_bfi(
     input_dataframe=df_data, encoding_columns=columns_to_encode
 )
 
-# print("\nThe following data is used to train the Network:\n",
-#       df_data_categories.head(10))
 
 # Start - Variables required for training BN
 edges_list_only_psy_models = [

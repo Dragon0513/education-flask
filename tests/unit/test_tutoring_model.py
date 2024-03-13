@@ -475,11 +475,6 @@ def test_prepare_les_for_nestor(learning_style):
     assert result[:2] == "FO"
 
     nestor_alg = nestor.Nestor()
-    # unit test for empty train nestor function in
-    # nestor inference script
-    nestor_train = nestor_alg.train_nestor()
-    assert nestor_train is None
-
     # unit test for learning path returned from nestor inference
     nestor_lp = nestor_alg.get_learning_path(
         input_learning_style=learning_style, input_learning_elements=list_of_les

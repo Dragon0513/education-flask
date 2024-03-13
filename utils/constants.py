@@ -41,3 +41,56 @@ name_perception_value = "perception_value"
 name_input_value = "input_value"
 name_processing_value = "processing_value"
 name_understanding_value = "understanding_value"
+
+# the following are the LE formats used in RGB
+rgb_le_variables = [
+    "CT",
+    "BO",
+    "LG",
+    "MS",
+    "QU",
+    "EX",
+    "SU",
+    "AAM",
+    "VAM",
+    "TAM",
+]
+
+# this dict maps output variable states of BN
+# to RGB LE formats
+le_name_map = {
+    "{'CT': 'Yes'}": "kollaborativ",
+    "{'BO': 'Yes'}": "kurzuebersicht",
+    "{'LG': 'Yes'}": "lernziele",
+    "{'MS': 'Yes'}": "manuskript",
+    "{'QU': 'Yes'}": "quiz",
+    "{'EX': 'Yes'}": "uebung",
+    "{'SU': 'Yes'}": "zusammenfassung",
+    "{'AAM': 'Yes'}": "zusatzmaterial_auditiv",
+    "{'VAM': 'Yes'}": "zusatzmaterial_visuell",
+    "{'TAM': 'Yes'}": "zusatzmaterial_textuell",
+}
+
+# this dict maps FSLSM model learning style nomenclature
+# used in HASKI to nomenclature
+# used in trained Nestor.
+ls_map_common_HASKI_to_nestor = {
+    "act": "Active",
+    "ref": "Reflective",
+    "sns": "Sensory",
+    "int": "Intuitive",
+    "vis": "Visual",
+    "vrb": "Verbal",
+    "seq": "Sequential",
+    "glo": "Global",
+}
+
+# In case of BFI and/or LIST-k
+# this dict is used to decode the numerical values
+likert_scale = {
+    1: "strong_disagree",
+    2: "disagree",
+    3: "neither_agree_disagree",
+    4: "agree",
+    5: "strong_agree",
+}

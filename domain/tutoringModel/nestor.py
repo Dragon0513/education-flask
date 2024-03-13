@@ -1,7 +1,4 @@
 # LIBARIES:
-# import argparse
-# import sys
-# import time
 import os
 import random
 
@@ -10,6 +7,7 @@ from pgmpy.readwrite import XMLBIFReader
 
 from domain.tutoringModel.utils import ran_seed
 from errors import errors as err
+from utils.constants import ls_map_common_HASKI_to_nestor, rgb_le_variables
 
 
 class Nestor:
@@ -23,37 +21,36 @@ class Nestor:
         All the global values used in Nestor
         are initiated here.
         """
-        random.seed(ran_seed)
+        # # TODO Start - Remove before Merge
+        # random.seed(ran_seed)
         # the following are the LE formats used in RGB
-        self.rgb_le_variables = [
-            "CT",
-            "BO",
-            "LG",
-            "MS",
-            "QU",
-            "EX",
-            "SU",
-            "AAM",
-            "VAM",
-            "TAM",
-        ]
-        # Loading the saved BN from local disk
-        # self.path_to_model = os.path.join(
-        #     "Nestor",
-        #     "name3_saved_bn.xml"
-        # )
-        # In case BFI and/or LIST-k is used
-        # this dict is used to decode the numerical values
-        self.likert_scale = {
-            1: "strong_disagree",
-            2: "disagree",
-            3: "neither_agree_disagree",
-            4: "agree",
-            5: "strong_agree",
-        }
-        # the following dict is used to map
-        # output variables' states of trained BN with LE formats
-        # used in HASKI.
+        # self.rgb_le_variables = [
+        #     "CT",
+        #     "BO",
+        #     "LG",
+        #     "MS",
+        #     "QU",
+        #     "EX",
+        #     "SU",
+        #     "AAM",
+        #     "VAM",
+        #     "TAM",
+        # ]
+        # # In case BFI and/or LIST-k is used
+        # # this dict is used to decode the numerical values
+        # self.likert_scale = {
+        #     1: "strong_disagree",
+        #     2: "disagree",
+        #     3: "neither_agree_disagree",
+        #     4: "agree",
+        #     5: "strong_agree",
+        # }
+        # the following dict maps
+        # output variables' states of the
+        # trained BN with their respective
+        # LE formats which are used in common HASKI.
+        # A random seed with unix timestamp is used to choose
+        # map LEs, in case of multiple mappings
         self.le_name_map_rgb_to_common_HASKI = {
             "{'CT': 'Yes'}": ["FO"],
             "{'CT': 'No'}": ["FO"],
@@ -84,45 +81,34 @@ class Nestor:
             "{'TAM': 'Yes'}": ["ZL"],
             "{'TAM': 'No'}": ["ZL"],
         }
-        # this dict maps output variable states of BN
-        # to RGB LE formats
-        self.le_name_map = {
-            "{'CT': 'Yes'}": "kollaborativ",
-            "{'BO': 'Yes'}": "kurzuebersicht",
-            "{'LG': 'Yes'}": "lernziele",
-            "{'MS': 'Yes'}": "manuskript",
-            "{'QU': 'Yes'}": "quiz",
-            "{'EX': 'Yes'}": "uebung",
-            "{'SU': 'Yes'}": "zusammenfassung",
-            "{'AAM': 'Yes'}": "zusatzmaterial_auditiv",
-            "{'VAM': 'Yes'}": "zusatzmaterial_visuell",
-            "{'TAM': 'Yes'}": "zusatzmaterial_textuell",
-        }
-        # this dict maps FSLSM model learning style nomenclature
-        # used in HASKI to nomenclature
-        # used in training Nestor.
-        self.ls_map_common_HASKI_to_nestor = {
-            "act": "Active",
-            "ref": "Reflective",
-            "sns": "Sensory",
-            "int": "Intuitive",
-            "vis": "Visual",
-            "vrb": "Verbal",
-            "seq": "Sequential",
-            "glo": "Global",
-        }
-        # self.random_seed = random.seed(143)
-
-    def train_nestor(self):
-        """This function is used to train the BN and save weights locally
-        The saved weights are further used by the get_learning_path method
-        to return the learning path
-        """
-        print(
-            "The scripts used for training is stored in a seperate folder"
-            "along with helper functions and configuration variables"
-        )
-        return None
+        # # this dict maps output variable states of BN
+        # # to RGB LE formats
+        # self.le_name_map = {
+        #     "{'CT': 'Yes'}": "kollaborativ",
+        #     "{'BO': 'Yes'}": "kurzuebersicht",
+        #     "{'LG': 'Yes'}": "lernziele",
+        #     "{'MS': 'Yes'}": "manuskript",
+        #     "{'QU': 'Yes'}": "quiz",
+        #     "{'EX': 'Yes'}": "uebung",
+        #     "{'SU': 'Yes'}": "zusammenfassung",
+        #     "{'AAM': 'Yes'}": "zusatzmaterial_auditiv",
+        #     "{'VAM': 'Yes'}": "zusatzmaterial_visuell",
+        #     "{'TAM': 'Yes'}": "zusatzmaterial_textuell",
+        # }
+        # # this dict maps FSLSM model learning style nomenclature
+        # # used in HASKI to nomenclature
+        # # used in training Nestor.
+        # self.ls_map_common_HASKI_to_nestor = {
+        #     "act": "Active",
+        #     "ref": "Reflective",
+        #     "sns": "Sensory",
+        #     "int": "Intuitive",
+        #     "vis": "Visual",
+        #     "vrb": "Verbal",
+        #     "seq": "Sequential",
+        #     "glo": "Global",
+        # }
+        # # TODO End Before Merge
 
     def get_learning_path(
         self,
@@ -141,42 +127,33 @@ class Nestor:
         # defining the path to saved BN
         # path_to_model = path_to_model
         # The HASKI Gemeninsam uses the Learning styles naming convention of
-        # (act, ref, sen, int, vis, vrb, seq, glo).
+        # act, ref, sen, int, vis, vrb, seq, glo.
         # The Nesor uses a naming convention of
-        # (Active, Reflective, Sensory, Intuitive,
-        # Visual, Verbal, Sequential, Global)
-        # Below a dict is used to map this naming convention for giving
-        # the evidence on student to nestor
-        # before, first it is checked if the input learning style is
+        # Active, Reflective, Sensory, Intuitive,
+        # Visual, Verbal, Sequential, Global
+        # First it is checked if the input learning style is
         # empty or no to raise errors
+        # The dictionary defined in constants file is used
+        # to to map this naming convention and
+        # set evidence to Nestor.
         if not input_learning_style:
             raise err.MissingParameterError()
         else:
             evidence_for_inference = {
-                "Active_Reflective_Dim": self.ls_map_common_HASKI_to_nestor[
+                "Active_Reflective_Dim": ls_map_common_HASKI_to_nestor[
                     input_learning_style["processing_dimension"]
                 ],
-                "Sensory_Intuitive_Dim": self.ls_map_common_HASKI_to_nestor[
+                "Sensory_Intuitive_Dim": ls_map_common_HASKI_to_nestor[
                     input_learning_style["perception_dimension"]
                 ],
-                "Visual_Verbal_Dim": self.ls_map_common_HASKI_to_nestor[
+                "Visual_Verbal_Dim": ls_map_common_HASKI_to_nestor[
                     input_learning_style["input_dimension"]
                 ],
-                "Sequential_Gloabl_Dim": self.ls_map_common_HASKI_to_nestor[
+                "Sequential_Gloabl_Dim": ls_map_common_HASKI_to_nestor[
                     input_learning_style["understanding_dimension"]
-                ]
-                # no bfi and listk are used
-                # "bfie": str(bfie_val),
-                # "bfia": str(bfia_val),
-                # "bfin": str(bfin_val),
-                # "bfic": str(bfic_val),
-                # "bfio": str(bfio_val),
-                # "ks": str(ks_val),
-                # "mks": str(mks_val),
-                # "smir": str(smir_val),
-                # "smer": str(smer_val)
+                ],
             }
-        # local variables
+        # local variables for nestor inference
         le_max_dict = {}
         # updating the LE names with tags used in common HASKI
         le_renamed_dict = {}
@@ -208,7 +185,7 @@ class Nestor:
         bn = XMLBIFReader(path_to_model).get_model()
         le_infer = VariableElimination(bn)
 
-        for le_var in self.rgb_le_variables:
+        for le_var in rgb_le_variables:
             # Query both LE format and probability values
             query_map = le_infer.map_query(
                 variables=[le_var], evidence=evidence_for_inference, show_progress=False

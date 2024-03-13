@@ -21,7 +21,7 @@ from domain.tutoringModel.NestorFolder.nestor_config import (
     path_to_trainedmodel,
     state_names_bn_training_psy_model,
 )
-from domain.tutoringModel.NestorFolder.nestor_utils import (  # nopep8
+from domain.tutoringModel.NestorFolder.nestor_utils import (
     build_bn,
     extend_bn_to_le,
     train_bn,
@@ -33,9 +33,6 @@ def build_train_save_nestor():
     saves Causal Nestor model to local directory"""
     # Building the Topology of BN for Psychological models
     bn = build_bn(edges_list=edges_list_only_psy_models)
-
-    # Visualizing the Topology of BN
-    # visualize_bn(bn)
 
     # Training the BN for leanring the CPDs
     train_bn(
@@ -53,9 +50,6 @@ def build_train_save_nestor():
         edges_visual_verbal=edges_list_visual_verbal,
         edges_sequential_global=edges_list_sequential_global,
     )
-
-    # visualize the Built Bayesian Network
-    # visualize_bn(bn)
 
     # Defining the CPDs manually for LEs
     bn.add_cpds(

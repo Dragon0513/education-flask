@@ -186,7 +186,8 @@ class Nestor:
         # if both AAM and VAM are present in the le_max dict:
         # 70% of times remove AAM and 30% of times remove VAM
         if str({"VAM": "Yes"}) in le_max_dict:
-            # If VAM is present, remove AAM with 30% probability
+            # If VAM is present or VAM and AAM are present,
+            # remove AAM with 30% probability
             ele_to_remove = random.choices(
                 [str({"VAM": "Yes"}), str({"AAM": "No"})], weights=[0.7, 0.3]
             )
@@ -195,17 +196,6 @@ class Nestor:
                 le_max_dict.pop(remove_key)
             except KeyError:
                 le_max_dict.update({remove_key: le_max_dict.pop(str({"VAM": "Yes"}))})
-
-        elif str({"AAM": "Yes"}) in le_max_dict:
-            # If AAM is present and VAM is not, remove AAM with 70% probability
-            ele_to_remove = random.choices(
-                [str({"VAM": "No"}), str({"AAM": "Yes"})], weights=[0.7, 0.3]
-            )
-            remove_key = str(ele_to_remove[0])
-            try:
-                le_max_dict.pop(remove_key)
-            except KeyError:
-                le_max_dict.update({remove_key: le_max_dict.pop(str({"AAM": "Yes"}))})
 
         # here the dictionary contains inference with both yes and no
         # The LEs with state 'No' is not removed but

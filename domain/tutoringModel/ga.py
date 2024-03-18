@@ -25,7 +25,7 @@ class GeneticAlgorithm:
         self.le_coordinate: np.ndarray = np.array([])
         self.population: np.ndarray = np.array([])
         self.initial_individuals = []
-        self.n_generation = 50
+        self.n_generation = 25
         self.le_size = 0
         self.mutate_rate = 0.6
         self.cross_rate = 0.9

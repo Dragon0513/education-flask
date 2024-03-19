@@ -68,3 +68,4 @@ wincertstore==0.2
 WTForms==3.0.1
 jwcrypto==1.4.2
 psycopg==3.0.0
+pgmpy==0.1.24

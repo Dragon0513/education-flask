@@ -956,7 +956,7 @@ def test_prepare_les_for_ga(learning_style, list_of_keys):
     ],
 )
 def test_prepare_les_for_ga_for_all(list_of_keys):
-    numbers = [3, 1, 0]
+    numbers = [1, 9]
     all_combination = np.array(
         [
             [i, j, k, v]

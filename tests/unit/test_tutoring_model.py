@@ -982,10 +982,8 @@ def test_prepare_les_for_ga_for_all(list_of_keys):
             for v in understanding_types
         ]
     )
-
-    total = len(dimensions) * len(all_combinations)
     for dim in dimensions:
-        for i, test in enumerate(all_combinations):
+        for test in all_combinations:
             learning_style = {
                 "id": 1,
                 "characteristic_id": 77,

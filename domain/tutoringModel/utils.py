@@ -1,4 +1,5 @@
 import math
+from datetime import datetime
 
 import numpy as np
 
@@ -6,6 +7,8 @@ import errors.errors as err
 from utils import constants as cons
 
 rng = np.random.default_rng(5)
+
+ran_seed = int(datetime.timestamp(datetime.now()))
 
 # Interpretation of Graf et al. for Learning Elements
 # -1: negative Influence; 0: neutral; 1: positive Influence

@@ -1,0 +1,299 @@
+<?xml version='1.0' encoding='utf-8'?>
+<BIF VERSION="0.3">
+  <NETWORK>
+    <NAME>UNTITLED</NAME>
+    <VARIABLE TYPE="nature">
+      <NAME>AAM</NAME>
+      <OUTCOME>Yes</OUTCOME>
+      <OUTCOME>No</OUTCOME>
+      <PROPERTY />
+    </VARIABLE>
+    <VARIABLE TYPE="nature">
+      <NAME>Active_Reflective_Dim</NAME>
+      <OUTCOME>Active</OUTCOME>
+      <OUTCOME>Reflective</OUTCOME>
+      <PROPERTY />
+    </VARIABLE>
+    <VARIABLE TYPE="nature">
+      <NAME>BO</NAME>
+      <OUTCOME>Yes</OUTCOME>
+      <OUTCOME>No</OUTCOME>
+      <PROPERTY />
+    </VARIABLE>
+    <VARIABLE TYPE="nature">
+      <NAME>CT</NAME>
+      <OUTCOME>Yes</OUTCOME>
+      <OUTCOME>No</OUTCOME>
+      <PROPERTY />
+    </VARIABLE>
+    <VARIABLE TYPE="nature">
+      <NAME>EX</NAME>
+      <OUTCOME>Yes</OUTCOME>
+      <OUTCOME>No</OUTCOME>
+      <PROPERTY />
+    </VARIABLE>
+    <VARIABLE TYPE="nature">
+      <NAME>LG</NAME>
+      <OUTCOME>Yes</OUTCOME>
+      <OUTCOME>No</OUTCOME>
+      <PROPERTY />
+    </VARIABLE>
+    <VARIABLE TYPE="nature">
+      <NAME>MS</NAME>
+      <OUTCOME>Yes</OUTCOME>
+      <OUTCOME>No</OUTCOME>
+      <PROPERTY />
+    </VARIABLE>
+    <VARIABLE TYPE="nature">
+      <NAME>QU</NAME>
+      <OUTCOME>Yes</OUTCOME>
+      <OUTCOME>No</OUTCOME>
+      <PROPERTY />
+    </VARIABLE>
+    <VARIABLE TYPE="nature">
+      <NAME>SU</NAME>
+      <OUTCOME>Yes</OUTCOME>
+      <OUTCOME>No</OUTCOME>
+      <PROPERTY />
+    </VARIABLE>
+    <VARIABLE TYPE="nature">
+      <NAME>Sensory_Intuitive_Dim</NAME>
+      <OUTCOME>Intuitive</OUTCOME>
+      <OUTCOME>Sensory</OUTCOME>
+      <PROPERTY />
+    </VARIABLE>
+    <VARIABLE TYPE="nature">
+      <NAME>Sequential_Gloabl_Dim</NAME>
+      <OUTCOME>Global</OUTCOME>
+      <OUTCOME>Sequential</OUTCOME>
+      <PROPERTY />
+    </VARIABLE>
+    <VARIABLE TYPE="nature">
+      <NAME>TAM</NAME>
+      <OUTCOME>Yes</OUTCOME>
+      <OUTCOME>No</OUTCOME>
+      <PROPERTY />
+    </VARIABLE>
+    <VARIABLE TYPE="nature">
+      <NAME>VAM</NAME>
+      <OUTCOME>Yes</OUTCOME>
+      <OUTCOME>No</OUTCOME>
+      <PROPERTY />
+    </VARIABLE>
+    <VARIABLE TYPE="nature">
+      <NAME>Visual_Verbal_Dim</NAME>
+      <OUTCOME>Visual</OUTCOME>
+      <PROPERTY />
+    </VARIABLE>
+    <VARIABLE TYPE="nature">
+      <NAME>bfia</NAME>
+      <OUTCOME>agree</OUTCOME>
+      <OUTCOME>disagree</OUTCOME>
+      <OUTCOME>neither_agree_disagree</OUTCOME>
+      <PROPERTY />
+    </VARIABLE>
+    <VARIABLE TYPE="nature">
+      <NAME>bfic</NAME>
+      <OUTCOME>agree</OUTCOME>
+      <OUTCOME>disagree</OUTCOME>
+      <OUTCOME>neither_agree_disagree</OUTCOME>
+      <OUTCOME>strong_agree</OUTCOME>
+      <PROPERTY />
+    </VARIABLE>
+    <VARIABLE TYPE="nature">
+      <NAME>bfie</NAME>
+      <OUTCOME>agree</OUTCOME>
+      <OUTCOME>disagree</OUTCOME>
+      <OUTCOME>strong_agree</OUTCOME>
+      <PROPERTY />
+    </VARIABLE>
+    <VARIABLE TYPE="nature">
+      <NAME>bfin</NAME>
+      <OUTCOME>agree</OUTCOME>
+      <OUTCOME>disagree</OUTCOME>
+      <OUTCOME>strong_agree</OUTCOME>
+      <OUTCOME>strong_disagree</OUTCOME>
+      <PROPERTY />
+    </VARIABLE>
+    <VARIABLE TYPE="nature">
+      <NAME>bfio</NAME>
+      <OUTCOME>agree</OUTCOME>
+      <OUTCOME>disagree</OUTCOME>
+      <OUTCOME>strong_agree</OUTCOME>
+      <PROPERTY />
+    </VARIABLE>
+    <VARIABLE TYPE="nature">
+      <NAME>ks</NAME>
+      <OUTCOME>agree</OUTCOME>
+      <OUTCOME>neither_agree_disagree</OUTCOME>
+      <PROPERTY />
+    </VARIABLE>
+    <VARIABLE TYPE="nature">
+      <NAME>mks</NAME>
+      <OUTCOME>disagree</OUTCOME>
+      <OUTCOME>neither_agree_disagree</OUTCOME>
+      <PROPERTY />
+    </VARIABLE>
+    <VARIABLE TYPE="nature">
+      <NAME>smer</NAME>
+      <OUTCOME>agree</OUTCOME>
+      <OUTCOME>neither_agree_disagree</OUTCOME>
+      <PROPERTY />
+    </VARIABLE>
+    <VARIABLE TYPE="nature">
+      <NAME>smir</NAME>
+      <OUTCOME>agree</OUTCOME>
+      <OUTCOME>disagree</OUTCOME>
+      <OUTCOME>neither_agree_disagree</OUTCOME>
+      <OUTCOME>strong_disagree</OUTCOME>
+      <PROPERTY />
+    </VARIABLE>
+    <DEFINITION>
+      <FOR>AAM</FOR>
+      <GIVEN>Active_Reflective_Dim</GIVEN>
+      <GIVEN>Sensory_Intuitive_Dim</GIVEN>
+      <GIVEN>Visual_Verbal_Dim</GIVEN>
+      <GIVEN>Sequential_Gloabl_Dim</GIVEN>
+      <TABLE>0.5 0.5 0.5 0.5 0.2 0.8 0.2 0.8 0.5 0.5 0.5 0.5 0.2 0.8 0.2 0.8 0.67 0.33 0.67 0.33 0.5 0.5 0.5 0.5 0.67 0.33 0.67 0.33 0.5 0.5 0.5 0.5 </TABLE>
+    </DEFINITION>
+    <DEFINITION>
+      <FOR>Active_Reflective_Dim</FOR>
+      <TABLE>0.5555555555555556 0.4444444444444444 </TABLE>
+    </DEFINITION>
+    <DEFINITION>
+      <FOR>BO</FOR>
+      <GIVEN>Active_Reflective_Dim</GIVEN>
+      <GIVEN>Sensory_Intuitive_Dim</GIVEN>
+      <GIVEN>Visual_Verbal_Dim</GIVEN>
+      <GIVEN>Sequential_Gloabl_Dim</GIVEN>
+      <TABLE>0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 </TABLE>
+    </DEFINITION>
+    <DEFINITION>
+      <FOR>CT</FOR>
+      <GIVEN>Active_Reflective_Dim</GIVEN>
+      <GIVEN>Sensory_Intuitive_Dim</GIVEN>
+      <GIVEN>Visual_Verbal_Dim</GIVEN>
+      <GIVEN>Sequential_Gloabl_Dim</GIVEN>
+      <TABLE>1.0 0.0 1.0 0.0 1.0 0.0 1.0 0.0 1.0 0.0 1.0 0.0 1.0 0.0 1.0 0.0 1.0 0.0 1.0 0.0 1.0 0.0 1.0 0.0 1.0 0.0 1.0 0.0 1.0 0.0 1.0 0.0 </TABLE>
+    </DEFINITION>
+    <DEFINITION>
+      <FOR>EX</FOR>
+      <GIVEN>Active_Reflective_Dim</GIVEN>
+      <GIVEN>Sensory_Intuitive_Dim</GIVEN>
+      <GIVEN>Visual_Verbal_Dim</GIVEN>
+      <GIVEN>Sequential_Gloabl_Dim</GIVEN>
+      <TABLE>0.2 0.8 0.4 0.6 0.4 0.6 0.6 0.4 0.4 0.6 0.5 0.5 0.6 0.4 0.8 0.2 0.2 0.8 0.4 0.6 0.4 0.6 0.6 0.4 0.4 0.6 0.6 0.4 0.6 0.4 0.8 0.2 </TABLE>
+    </DEFINITION>
+    <DEFINITION>
+      <FOR>LG</FOR>
+      <GIVEN>Active_Reflective_Dim</GIVEN>
+      <GIVEN>Sensory_Intuitive_Dim</GIVEN>
+      <GIVEN>Visual_Verbal_Dim</GIVEN>
+      <TABLE>0.67 0.33 0.33 0.67 0.33 0.67 0.0 1.0 1.0 0.0 0.67 0.33 0.67 0.33 0.33 0.67 </TABLE>
+    </DEFINITION>
+    <DEFINITION>
+      <FOR>MS</FOR>
+      <GIVEN>Active_Reflective_Dim</GIVEN>
+      <GIVEN>Sensory_Intuitive_Dim</GIVEN>
+      <GIVEN>Visual_Verbal_Dim</GIVEN>
+      <GIVEN>Sequential_Gloabl_Dim</GIVEN>
+      <TABLE>0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 </TABLE>
+    </DEFINITION>
+    <DEFINITION>
+      <FOR>QU</FOR>
+      <GIVEN>Active_Reflective_Dim</GIVEN>
+      <GIVEN>Sensory_Intuitive_Dim</GIVEN>
+      <GIVEN>Visual_Verbal_Dim</GIVEN>
+      <GIVEN>Sequential_Gloabl_Dim</GIVEN>
+      <TABLE>0.5 0.5 0.33 0.67 0.67 0.33 0.5 0.5 0.5 0.5 0.33 0.67 0.67 0.33 0.5 0.5 0.5 0.5 0.33 0.67 0.67 0.33 0.5 0.5 0.5 0.5 0.33 0.67 0.67 0.33 0.5 0.5 </TABLE>
+    </DEFINITION>
+    <DEFINITION>
+      <FOR>SU</FOR>
+      <GIVEN>Active_Reflective_Dim</GIVEN>
+      <GIVEN>Sequential_Gloabl_Dim</GIVEN>
+      <TABLE>0.5 0.5 0.0 1.0 1.0 0.0 0.5 0.5 </TABLE>
+    </DEFINITION>
+    <DEFINITION>
+      <FOR>Sensory_Intuitive_Dim</FOR>
+      <TABLE>0.3333333333333333 0.6666666666666666 </TABLE>
+    </DEFINITION>
+    <DEFINITION>
+      <FOR>Sequential_Gloabl_Dim</FOR>
+      <TABLE>0.4444444444444444 0.5555555555555556 </TABLE>
+    </DEFINITION>
+    <DEFINITION>
+      <FOR>TAM</FOR>
+      <GIVEN>Active_Reflective_Dim</GIVEN>
+      <GIVEN>Sensory_Intuitive_Dim</GIVEN>
+      <GIVEN>Visual_Verbal_Dim</GIVEN>
+      <GIVEN>Sequential_Gloabl_Dim</GIVEN>
+      <TABLE>0.5 0.5 0.5 0.5 0.2 0.8 0.2 0.8 0.5 0.5 0.5 0.5 0.2 0.8 0.2 0.8 0.67 0.33 0.67 0.33 0.5 0.5 0.5 0.5 0.67 0.33 0.67 0.33 0.5 0.5 0.5 0.5 </TABLE>
+    </DEFINITION>
+    <DEFINITION>
+      <FOR>VAM</FOR>
+      <GIVEN>Active_Reflective_Dim</GIVEN>
+      <GIVEN>Sensory_Intuitive_Dim</GIVEN>
+      <GIVEN>Visual_Verbal_Dim</GIVEN>
+      <GIVEN>Sequential_Gloabl_Dim</GIVEN>
+      <TABLE>0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 </TABLE>
+    </DEFINITION>
+    <DEFINITION>
+      <FOR>Visual_Verbal_Dim</FOR>
+      <TABLE>1.0 </TABLE>
+    </DEFINITION>
+    <DEFINITION>
+      <FOR>bfia</FOR>
+      <TABLE>0.4444444444444444 0.3333333333333333 0.2222222222222222 </TABLE>
+    </DEFINITION>
+    <DEFINITION>
+      <FOR>bfic</FOR>
+      <TABLE>0.2222222222222222 0.4444444444444444 0.1111111111111111 0.2222222222222222 </TABLE>
+    </DEFINITION>
+    <DEFINITION>
+      <FOR>bfie</FOR>
+      <GIVEN>Active_Reflective_Dim</GIVEN>
+      <TABLE>0.4 0.4 0.2 0.0 1.0 0.0 </TABLE>
+    </DEFINITION>
+    <DEFINITION>
+      <FOR>bfin</FOR>
+      <GIVEN>Visual_Verbal_Dim</GIVEN>
+      <GIVEN>bfie</GIVEN>
+      <TABLE>0.5 0.5 0.0 0.0 0.5 0.16666666666666666 0.16666666666666666 0.16666666666666666 0.0 1.0 0.0 0.0 </TABLE>
+    </DEFINITION>
+    <DEFINITION>
+      <FOR>bfio</FOR>
+      <GIVEN>Active_Reflective_Dim</GIVEN>
+      <GIVEN>Sensory_Intuitive_Dim</GIVEN>
+      <TABLE>0.0 1.0 0.0 0.5 0.25 0.25 0.0 0.5 0.5 0.5 0.0 0.5 </TABLE>
+    </DEFINITION>
+    <DEFINITION>
+      <FOR>ks</FOR>
+      <GIVEN>Active_Reflective_Dim</GIVEN>
+      <GIVEN>Sensory_Intuitive_Dim</GIVEN>
+      <GIVEN>bfic</GIVEN>
+      <GIVEN>bfin</GIVEN>
+      <TABLE>0.0 1.0 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 1.0 0.0 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.0 1.0 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 1.0 0.0 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.0 1.0 0.5 0.5 0.5 0.5 0.5 0.5 1.0 0.0 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 1.0 0.0 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.0 1.0 </TABLE>
+    </DEFINITION>
+    <DEFINITION>
+      <FOR>mks</FOR>
+      <GIVEN>Sequential_Gloabl_Dim</GIVEN>
+      <GIVEN>ks</GIVEN>
+      <TABLE>0.0 1.0 0.0 1.0 0.3333333333333333 0.6666666666666666 0.0 1.0 </TABLE>
+    </DEFINITION>
+    <DEFINITION>
+      <FOR>smer</FOR>
+      <GIVEN>Active_Reflective_Dim</GIVEN>
+      <GIVEN>bfia</GIVEN>
+      <GIVEN>bfic</GIVEN>
+      <GIVEN>bfie</GIVEN>
+      <GIVEN>bfio</GIVEN>
+      <GIVEN>smir</GIVEN>
+      <TABLE>0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 1.0 0.0 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 1.0 0.0 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.0 1.0 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.0 1.0 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.0 1.0 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 1.0 0.0 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 1.0 0.0 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.0 1.0 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 1.0 0.0 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 </TABLE>
+    </DEFINITION>
+    <DEFINITION>
+      <FOR>smir</FOR>
+      <GIVEN>bfic</GIVEN>
+      <TABLE>0.0 0.0 1.0 0.0 0.0 0.25 0.5 0.25 0.0 0.0 1.0 0.0 0.5 0.0 0.5 0.0 </TABLE>
+    </DEFINITION>
+  </NETWORK>
+</BIF>

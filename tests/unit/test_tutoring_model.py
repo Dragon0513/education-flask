@@ -957,7 +957,7 @@ def test_prepare_les_for_ga(learning_style, list_of_keys):
 )
 def test_prepare_les_for_ga_for_all(list_of_keys):
     numbers = [1, 9]
-    all_combination = np.array(
+    all_combinations = np.array(
         [
             [i, j, k, v]
             for i in numbers
@@ -966,7 +966,7 @@ def test_prepare_les_for_ga_for_all(list_of_keys):
             for v in numbers
         ]
     )
-    all_combination = all_combination.reshape(len(all_combination), 4)
+    all_combinations = all_combinations.reshape(len(all_combinations), 4)
 
     input_types = ["vrb", "vis"]
     perception_types = ["sns", "int"]
@@ -983,9 +983,9 @@ def test_prepare_les_for_ga_for_all(list_of_keys):
         ]
     )
 
-    total = len(dimensions) * len(all_combination)
+    total = len(dimensions) * len(all_combinations)
     for dim in dimensions:
-        for i, test in enumerate(all_combination):
+        for i, test in enumerate(all_combinations):
             learning_style = {
                 "id": 1,
                 "characteristic_id": 77,
@@ -998,13 +998,11 @@ def test_prepare_les_for_ga_for_all(list_of_keys):
                 "understanding_dimension": dim[3],
                 "understanding_value": test[3],
             }
-            print("Learning path:", i, "von:", total, " :%", ((i / total) * 100))
             result = get_learning_path_ga(learning_style, list_of_keys)
             assert isinstance(result, str)
             assert ", " in result
             result = result.split(", ")
             assert isinstance(result, list)
-            print("OUTPUT:", result, "\n")
             if "KÜ" in list_of_keys:
                 assert result[0] == "KÜ"
             if "EK" in list_of_keys:

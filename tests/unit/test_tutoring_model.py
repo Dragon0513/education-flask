@@ -1,5 +1,6 @@
 import os
 
+import numpy as np
 import pytest
 from pgmpy.models import BayesianNetwork
 
@@ -14,6 +15,8 @@ from domain.tutoringModel.NestorFolder.nestor_training import (
     build_train_save_nestor as nestor_training,
 )
 from utils import constants as cons
+
+rng = np.random.default_rng(11)
 
 
 def test_prepare_les_for_aco():
@@ -71,70 +74,6 @@ def test_get_coordinates(
     assert result["KÜ"] == (13, 13, 13, 13)
     assert result["EK"] == (12, 12, 12, 12)
     assert result["LZ"] == (-12, -12, -12, -12)
-
-
-@pytest.mark.parametrize(
-    "learning_style",
-    [
-        (
-            {
-                "id": 1,
-                "characteristic_id": 1,
-                "perception_dimension": "sns",
-                "perception_value": 5,
-                "input_dimension": "vrb",
-                "input_value": 0,
-                "processing_dimension": "act",
-                "processing_value": 9,
-                "understanding_dimension": "seq",
-                "understanding_value": 11,
-            }
-        ),
-        (
-            {
-                "id": 1,
-                "characteristic_id": 1,
-                "perception_dimension": "int",
-                "perception_value": 1,
-                "input_dimension": "vis",
-                "input_value": 11,
-                "processing_dimension": "ref",
-                "processing_value": 1,
-                "understanding_dimension": "glo",
-                "understanding_value": 3,
-            }
-        ),
-    ],
-)
-def test_prepare_les_for_ga(learning_style):
-    list_of_les = []
-    list_of_keys = ["ZF", "KÜ", "SE", "LZ", "ZL", "AN", "ÜB", "EK"]
-    for i, ele_name in enumerate(list_of_keys):
-        le = DM.LearningElement(
-            lms_id=i,
-            activity_type="lesson",
-            classification=ele_name,
-            name="Test LE",
-            university="TH-AB",
-            created_by="Max Mustermann",
-            created_at="2023-09-01",
-        )
-        list_of_les.append(le.serialize())
-    lp = TM.LearningPath(student_id=1, course_id=1, based_on="ga")
-    lp.get_learning_path(
-        student_id=1,
-        learning_style=learning_style,
-        _algorithm="ga",
-        list_of_les=list_of_les,
-    )
-    result = lp.path
-    assert isinstance(result, str)
-    assert ", " in result
-    result = result.split(", ")
-    assert isinstance(result, list)
-    assert result[0] == "KÜ"
-    assert result[1] == "EK"
-    assert result[-1] == "LZ"
 
 
 @pytest.mark.parametrize(
@@ -705,3 +644,366 @@ def test_calculate_variable_score_graf(
     algorithmus = Graf(student_id=1)
     score = algorithmus.calculate_variable_score(learning_element, learning_style)
     assert score == expected_result
+
+
+def get_learning_path_ga(learning_style, list_of_elements):
+    list_of_les = []
+    for i, ele_name in enumerate(list_of_elements):
+        le = DM.LearningElement(
+            lms_id=i,
+            activity_type="lesson",
+            classification=ele_name,
+            name="Test LE",
+            university="TH-AB",
+            created_by="Max Mustermann",
+            created_at="2023-09-01",
+        )
+        list_of_les.append(le.serialize())
+    lp = TM.LearningPath(student_id=1, course_id=1, based_on="ga")
+    lp.get_learning_path(
+        student_id=1,
+        learning_style=learning_style,
+        _algorithm="ga",
+        list_of_les=list_of_les,
+    )
+    return lp.path
+
+
+@pytest.mark.parametrize(
+    "learning_style, list_of_keys",
+    [
+        (
+            {
+                "id": 1,
+                "characteristic_id": 11,
+                "perception_dimension": "int",
+                "perception_value": 5,
+                "input_dimension": "vis",
+                "input_value": 9,
+                "processing_dimension": "ref",
+                "processing_value": 5,
+                "understanding_dimension": "glo",
+                "understanding_value": 9,
+            },
+            np.array(
+                [
+                    "ZF",
+                    "LZ",
+                    "ÜB",
+                    "ÜB",
+                    "ÜB",
+                    "SE",
+                    "BE",
+                    "AN",
+                    "EK",
+                    "EK",
+                    "EK",
+                    "ZL",
+                    "AB",
+                    "KÜ",
+                    "FO",
+                    "RQ",
+                    "LZ",
+                    "FOO",
+                    "FOO",
+                    "",
+                    "None",
+                    "$%/==+",
+                ],
+            ),
+        ),
+    ],
+)
+def test_prepare_les_for_ga_2(learning_style, list_of_keys):
+    num_of_test = 10
+    list_of_le_size = rng.integers(2, 50, size=num_of_test)
+
+    for i in range(num_of_test):
+        le_position = rng.integers(2, len(list_of_keys), size=list_of_le_size[i])
+        list_of_elements = list_of_keys[le_position]
+        list_of_elements = rng.permutation(list_of_elements)
+
+        result = get_learning_path_ga(learning_style, list_of_elements)
+        assert isinstance(result, str)
+        assert ", " in result
+        result = result.split(", ")
+        assert isinstance(result, list)
+        print("OUTPUT:", result, "\n")
+        if "KÜ" in list_of_elements:
+            assert result[0] == "KÜ"
+        if "EK" in list_of_elements:
+            assert result[0] == "EK" or result[1] == "EK"
+        if "LZ" in list_of_elements:
+            assert result[-1] == "LZ"
+
+
+@pytest.mark.parametrize(
+    "learning_style, list_of_keys",
+    [
+        (None, ["BE"]),
+        (None, ["RQ", "EK"]),
+        (None, ["ÜB", "FO", "LZ", "SE", "AN", "KÜ", "EK"]),
+        (
+            {
+                "id": 1,
+                "characteristic_id": 1,
+                "perception_dimension": "int",
+                "perception_value": 7,
+                "input_dimension": "vis",
+                "input_value": 9,
+                "processing_dimension": "ref",
+                "processing_value": 5,
+                "understanding_dimension": "glo",
+                "understanding_value": 9,
+            },
+            ["ZF", "LZ", "ÜB", "SE", "BE", "AN", "EK", "ZL", "AB", "KÜ", "FO", "RQ"],
+        ),
+        (
+            {
+                "id": 1,
+                "characteristic_id": 1,
+                "perception_dimension": "sns",
+                "perception_value": 9,
+                "input_dimension": "vrb",
+                "input_value": 11,
+                "processing_dimension": "act",
+                "processing_value": 5,
+                "understanding_dimension": "seq",
+                "understanding_value": 11,
+            },
+            [
+                "ÜB",
+                "ÜB",
+                "ÜB",
+                "ÜB",
+                "ÜB",
+                "ÜB",
+                "ÜB",
+                "ÜB",
+                "SE",
+                "LZ",
+                "ZL",
+                "KÜ",
+                "AN",
+                "EK",
+                "RQ",
+                "FO",
+            ],
+        ),
+        (
+            {
+                "id": 1,
+                "characteristic_id": 7,
+                "perception_dimension": "int",
+                "perception_value": 9,
+                "input_dimension": "vis",
+                "input_value": 11,
+                "processing_dimension": "ref",
+                "processing_value": 1,
+                "understanding_dimension": "glo",
+                "understanding_value": 5,
+            },
+            [
+                "ÜB",
+                "ÜB",
+                "LZ",
+                "LZ",
+                "ZF",
+                "ZF",
+                "SE",
+                "SE",
+                "ZL",
+                "ZL",
+                "EK",
+                "EK",
+                "AN",
+                "AN",
+                "KÜ",
+                "KÜ",
+                "FO",
+                "FO",
+                "RQ",
+                "RQ",
+                "AB",
+                "AB",
+                "BE",
+                "BE",
+            ],
+        ),
+        (
+            {
+                "id": 1,
+                "characteristic_id": 1,
+                "perception_dimension": "int",
+                "perception_value": 3,
+                "input_dimension": "vis",
+                "input_value": 5,
+                "processing_dimension": "ref",
+                "processing_value": 7,
+                "understanding_dimension": "glo",
+                "understanding_value": 1,
+            },
+            [
+                "ÜB",
+                "ÜB",
+                "ÜB",
+                "AB",
+                "AB",
+                "ÜB",
+                "ÜB",
+                "ÜB",
+                "LZ",
+                "LZ",
+                "SE",
+                "BE",
+                "AN",
+                "EK",
+                "KÜ",
+                "ZL",
+                "AB",
+                "ZF",
+            ],
+        ),
+        (
+            {
+                "id": 1,
+                "characteristic_id": 1,
+                "perception_dimension": "sns",
+                "perception_value": 5,
+                "input_dimension": "vis",
+                "input_value": 9,
+                "processing_dimension": "act",
+                "processing_value": 3,
+                "understanding_dimension": "seq",
+                "understanding_value": 5,
+            },
+            [
+                "ZT",
+                "WW",
+                "ÜB",
+                "se",
+                "BE",
+                "AN",
+                "SE",
+                "EK",
+                "SE",
+                "ZZ",
+                "AB",
+                "KÜ",
+                "FO",
+                "RQ",
+                "SE",
+            ],
+        ),
+    ],
+)
+def test_prepare_les_for_ga(learning_style, list_of_keys):
+    if learning_style is None:
+        learning_style = {
+            "id": 1,
+            "characteristic_id": 1,
+            "perception_dimension": "int",
+            "perception_value": 11,
+            "input_dimension": "vis",
+            "input_value": 3,
+            "processing_dimension": "ref",
+            "processing_value": 7,
+            "understanding_dimension": "glo",
+            "understanding_value": 9,
+        }
+    result = get_learning_path_ga(learning_style, list_of_keys)
+
+    assert isinstance(result, str)
+    if len(result) > 2:
+        assert ", " in result
+    result = result.split(", ")
+    print("Input", list_of_keys)
+    print("result", result, "GA")
+    assert isinstance(result, list)
+
+    if "KÜ" in list_of_keys:
+        assert result[0] == "KÜ"
+    if "EK" in list_of_keys:
+        assert result[0] == "EK" or result[1] == "EK"
+    if "LZ" in list_of_keys:
+        assert result[-1] == "LZ"
+
+
+@pytest.mark.parametrize(
+    "list_of_keys",
+    [
+        np.array(
+            [
+                "ZF",
+                "LZ",
+                "ÜB",
+                "ÜB",
+                "ÜB",
+                "SE",
+                "BE",
+                "AN",
+                "EK",
+                "EK",
+                "EK",
+                "ZL",
+                "AB",
+                "KÜ",
+                "FO",
+                "RQ",
+                "LZ",
+            ],
+        ),
+    ],
+)
+def test_prepare_les_for_ga_for_all(list_of_keys):
+    numbers = [1, 9]
+    all_combinations = np.array(
+        [
+            [i, j, k, v]
+            for i in numbers
+            for j in numbers
+            for k in numbers
+            for v in numbers
+        ]
+    )
+    all_combinations = all_combinations.reshape(len(all_combinations), 4)
+
+    input_types = ["vrb", "vis"]
+    perception_types = ["sns", "int"]
+    processing_types = ["act", "ref"]
+    understanding_types = ["glo", "seq"]
+
+    dimensions = np.array(
+        [
+            [i, j, k, v]
+            for i in perception_types
+            for j in input_types
+            for k in processing_types
+            for v in understanding_types
+        ]
+    )
+    for dim in dimensions:
+        for test in all_combinations:
+            learning_style = {
+                "id": 1,
+                "characteristic_id": 77,
+                "perception_dimension": dim[0],
+                "perception_value": test[0],
+                "input_dimension": dim[1],
+                "input_value": test[1],
+                "processing_dimension": dim[2],
+                "processing_value": test[2],
+                "understanding_dimension": dim[3],
+                "understanding_value": test[3],
+            }
+            result = get_learning_path_ga(learning_style, list_of_keys)
+            assert isinstance(result, str)
+            assert ", " in result
+            result = result.split(", ")
+            assert isinstance(result, list)
+            if "KÜ" in list_of_keys:
+                assert result[0] == "KÜ"
+            if "EK" in list_of_keys:
+                assert result[0] == "EK" or result[1] == "EK"
+            if "LZ" in list_of_keys:
+                assert result[-1] == "LZ"

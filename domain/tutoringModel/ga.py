@@ -1,7 +1,6 @@
 import numpy as np
 
 import errors.errors as err
-import utils.constants as abb
 from domain.tutoringModel import utils
 
 
@@ -22,53 +21,71 @@ class GeneticAlgorithm:
         self.learning_elements = learning_elements
         self.learning_style = {}
         self.best_population = []
+        self.max_generation = 100
         self.le_coordinate: np.ndarray = np.array([])
-        self.n_generation = 100
         self.population: np.ndarray = np.array([])
+        self.initial_individuals = []
+        self.n_generation = 25
         self.le_size = 0
-        self.mutate_rate = 0.3
+        self.mutate_rate = 0.6
         self.cross_rate = 0.9
-        self.pop_size = 80
+        self.pop_size = 100
+        self.first_is_present = False
+
         if learning_elements is not None:
             #  convert learning element into
             #  a list with the short name of learning element
-            le = self.get_learning_element(learning_elements)
+            le = utils.get_learning_element(learning_elements)
             self.le_size = len(le)
 
-    def create_random_population(self, dict_coordinates) -> None:
+    def create_random_population(self, learning_style) -> None:
         """Function for the calculation of the score.
         position a also Initialise some populations
         with Clustering if this is possible.
         param dict_coordinates"""
-        self.le_coordinate = np.array(
-            [dict_coordinates[key] for key in dict_coordinates]
-        )
-        self.le_coordinate.reshape((len(dict_coordinates), 4))
-        self.population = utils.permutation_generator(self.le_size, self.pop_size)
 
-    def valide_population(self):
+        coordinates = utils.get_coordinates(learning_style, self.learning_elements)
+
+        if not any(np.char.equal(self.learning_elements, "KÜ")):
+            self.dict_coordinate = {"first": (15, 15, 15, 15)}
+            self.dict_coordinate.update(coordinates)
+            self.first_is_present = True
+        else:
+            self.dict_coordinate = coordinates
+
+        self.le_coordinate = np.array(list(self.dict_coordinate.values()))
+        self.learning_elements = np.array(list(self.dict_coordinate.keys()))
+        self.le_size = len(self.learning_elements)
+
+        sume = np.sum(self.le_coordinate, 1)
+        sume_sort_idx = np.flip(np.argsort(sume))
+        self.le_coordinate = self.le_coordinate[sume_sort_idx]
+        self.learning_elements = self.learning_elements[sume_sort_idx]
+
+        self.population = utils.permutation_generator(self.le_size, self.pop_size)
+        self.initial_individuals = np.arange(0, self.le_size)
+
+    def valid_population(self):
         """Function to add validation: First Learning Element is fixed
         in the Learning path."""
-        new_pop = np.zeros((self.pop_size, self.le_size), dtype=int)
-        new_pop[:, 0] = 0
-        new_pop[:, 1 : self.le_size] = self.population.copy()
+
+        col_zeros = np.zeros((self.pop_size, 1), dtype=int)
+        new_pop = np.concatenate(
+            (col_zeros, self.population[:, 0 : self.le_size]), axis=1
+        )
         return new_pop
 
     def get_lines_paths(self, new_pop):
         """This function extract all the positions X,Y,Z,K.
         in the space of the generated trajectories"""
-        line_x = np.empty_like(new_pop, dtype=np.float64)
-        line_y = np.empty_like(new_pop, dtype=np.float64)
-        line_z = np.empty_like(new_pop, dtype=np.float64)
-        line_k = np.empty_like(new_pop, dtype=np.float64)
-
-        for i, j in enumerate(new_pop):
-            le_coord = self.le_coordinate[j]
-            line_x[i, :] = le_coord[:, 0]
-            line_y[i, :] = le_coord[:, 1]
-            line_z[i, :] = le_coord[:, 2]
-            line_k[i, :] = le_coord[:, 3]
-        return line_x, line_y, line_z, line_k
+        le_coord = self.le_coordinate[new_pop]
+        line_x, line_y, line_z, line_k = (
+            le_coord[:, :, 0],
+            le_coord[:, :, 1],
+            le_coord[:, :, 2],
+            le_coord[:, :, 3],
+        )
+        return (line_x, line_y, line_z, line_k)
 
     def get_fitness(self, line_x, line_y, line_z, line_k):
         """Function to calculate the fitness function for GA"""
@@ -80,7 +97,7 @@ class GeneticAlgorithm:
             + np.square(np.diff(line_z))
             + np.square(np.diff(line_k))
         )
-        fitness = np.sqrt(np.sum(total_sum, 1))
+        fitness = np.sum(np.sqrt(total_sum), 1)
         return fitness
 
     def crossover(self, parent, pop):
@@ -90,7 +107,7 @@ class GeneticAlgorithm:
         # to inherit a part of their solution to their child.
 
         if utils.rng.random() < self.cross_rate:
-            samples = 2
+            samples = 5
             i_ = utils.random_generator(samples, size=1, type_="int")
             # choose crossover learning elements
             temp = self.le_size - 1
@@ -105,10 +122,9 @@ class GeneticAlgorithm:
         from having the same approximation, a percentage
         probability is set at which an offspring will receive
         a mutation"""
-        # In this case, two points within the pathway
-        # are exchanged. This creates a new pathway that
-        # may not appear in the previous generation
-        temp = self.le_size - 2
+        temp = 0
+        if self.le_size > 2:
+            temp = self.le_size - 2
         for point in range(temp):
             if utils.rng.random() < self.mutate_rate:
                 swap_point = utils.random_generator(2, temp, "int")
@@ -121,31 +137,26 @@ class GeneticAlgorithm:
         the aptitude of each individual, those that will be selected
         of each individual, those that are
         most suitable to evolve will be selected."""
-        best_samples = 7
+        best_samples = 3
         if self.pop_size > 50:
-            self.population[20:-3, :] = best_sample
-
+            self.population[20:25, :] = best_sample.copy()
         idx = np.argsort(fitness)
         population = self.population[idx]
-
         pop_copy = population.copy()
-
         for parent in population:
             child = self.crossover(parent, pop_copy)
             child = self.mutate(child)
             parent[:] = child
+        population[8:13] = self.initial_individuals[1:]
+        self.population[best_samples:] = population[:-best_samples].copy()
 
-        self.population[best_samples:] = population[best_samples:].copy()
-
-    def calculate_learning_path_ga(self, learning_style):
+    def calculate_learning_path_ga(self):
         """This function calculates the learning path with Genetic algorithm"""
-        best_total_score = 300
-        le_coordinate = utils.get_coordinates(learning_style, self.learning_elements)
-
-        self.create_random_population(le_coordinate)
-
-        for i in range(self.n_generation):
-            new_pop = self.valide_population()
+        best_total_score = np.inf
+        i = 0
+        valid = False
+        while i < self.n_generation or valid:
+            new_pop = self.valid_population()
             lx, ly, lz, lk = self.get_lines_paths(new_pop)
             fitness = self.get_fitness(lx, ly, lz, lk)
 
@@ -155,25 +166,61 @@ class GeneticAlgorithm:
             best_score = fitness[0]
 
             # update population
-            new_pop = self.population[best_index].copy()
-            self.population = new_pop.copy()
+            new_pop = self.population[best_index]
+            self.population = new_pop
             best_sample = new_pop[0]
 
-            if best_score < best_total_score and i < self.n_generation:
+            if best_score < best_total_score:
                 best_total_score = best_score
                 self.best_population = best_sample
+                np.insert(best_sample, 0, 0)
+
+            i += 1
 
             # evolution
             self.evolve(fitness, best_sample)
 
-        ga_path = np.array(self.learning_elements)
-        population = self.valide_population()
-        idx = population[0]
-        result_ga_lp = ga_path[idx]
+            if i > self.max_generation:
+                best_sample = self.search_learning_elements()
 
-        learning_path = utils.get_learning_path_as_str(result_ga_lp)
+            valid = self.valid_elements(
+                self.learning_elements[np.insert(best_sample, 0, 0)]
+            )
 
-        return learning_path
+        # add the first element to the population
+        if not self.first_is_present:
+            best_sample = np.insert(best_sample, 0, 0)
+
+        # sort the learning elements
+        self.learning_elements = self.learning_elements[best_sample]
+        self.le_coordinate = self.le_coordinate[best_sample]
+
+        learning_path_as_str = ", ".join(self.learning_elements)
+        if len(self.learning_elements) == 1:
+            learning_path_as_str = self.learning_elements[0] + ", "
+
+        return learning_path_as_str
+
+    def valid_elements(self, learning_elements):
+        result = learning_elements
+        if "KÜ" in result and result[0] != "KÜ":
+            return True
+        if "EK" in result and result[0] != "EK" and result[1] != "EK":
+            return True
+        if "LZ" in result and result[-1] != "LZ":
+            return True
+        return False
+
+    def search_learning_elements(self):
+        """This function searches for the best learning elements"""
+        best_sample = []
+        for idx in self.population:
+            if not self.valid_elements(self.learning_elements[np.insert(idx, 0, 0)]):
+                best_sample = idx
+                break
+        if len(best_sample) == 0:
+            best_sample = self.initial_individuals[1:]
+        return best_sample
 
     def get_learning_style(self, learning_style):
         """Convert the dictionary into another format
@@ -203,15 +250,13 @@ class GeneticAlgorithm:
     def check_learning_style(self, input_learning_style):
         """Checks if the learning styles
         have values between 0 and 11"""
-        is_correct = False
         for iterator in input_learning_style:
             if input_learning_style.get(iterator):
                 dimension_number = input_learning_style.get(iterator)
-                if dimension_number < 0 or dimension_number > 11:
-                    is_correct = True
-                    break
+                if dimension_number < -11 or dimension_number > 11:
+                    return False
 
-        return is_correct
+        return True
 
     def check_name_learning_style(self, input_learning_style):
         """Check if the names of learning styles are correct."""
@@ -228,48 +273,33 @@ class GeneticAlgorithm:
             ]
         )
 
-    def get_learning_element(self, learning_elements):
-        """converts the dictionary learning element
-        into a list with only the short name LE"""
-        classification_learning_element = []
-        lz_is_present = False
-        lz_element = ""
-
-        for le in learning_elements:
-            if le["classification"] == abb.abbreviation_ct:
-                classification_learning_element.insert(0, le["classification"])
-            elif le["classification"] == abb.abbreviation_as:
-                lz_is_present = True
-                lz_element = le["classification"]
-            else:
-                classification_learning_element.append(le["classification"])
-
-        if lz_is_present:
-            classification_learning_element.append(lz_element)
-
-        return classification_learning_element
-
     def get_learning_path(self, input_learning_style=None, input_learning_element=None):
         """calculates and verifies the learning path the genetic algorithm"""
+
         result_ga = []
         if input_learning_style is None:
             raise err.MissingParameterError()
         else:
             learning_style = self.get_learning_style(input_learning_style)
+            # Wrong  Number input_learning_style
             if len(learning_style) != 4:
                 raise err.WrongLearningStyleNumberError()
 
-            if self.check_learning_style(learning_style):
+            if not self.check_learning_style(learning_style):
+                # Wrong  Dimension input_learning_style
                 raise err.WrongLearningStyleDimensionError()
-
-            if self.check_name_learning_style(learning_style):
-                raise err.WrongParameterValueError()
 
         if input_learning_element is None:
             raise err.NoValidParameterValueError()
         else:
-            self.learning_elements = self.get_learning_element(input_learning_element)
-            self.le_size = len(self.learning_elements)
+            self.learning_elements = utils.get_learning_element(input_learning_element)
 
-        result_ga = self.calculate_learning_path_ga(input_learning_style)
+        if len(self.learning_elements) == 0:
+            raise err.NoValidParameterValueError()
+
+        if len(self.learning_elements) == 1:
+            return self.learning_elements[0]
+
+        self.create_random_population(input_learning_style)
+        result_ga = self.calculate_learning_path_ga()
         return result_ga

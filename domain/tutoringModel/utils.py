@@ -105,6 +105,7 @@ def permutation_generator(le_size, pop_size):
     positions = np.arange(1, le_size)
     perm = rng.permutation(positions)
     population = np.tile(perm, (pop_size, 1))
+    population[0:20] = positions
     return population
 
 
@@ -150,8 +151,49 @@ def check_learning_style(input_learning_style):
         return True
 
 
+def check_cons_learning_element(element):
+    abbreviations = [
+        cons.abbreviation_ct,  # "KÜ",
+        cons.abbreviation_co,  # "EK"
+        cons.abbreviation_rq,  # "RQ"
+        cons.abbreviation_se,  # "SE"
+        cons.abbreviation_fo,  # "FO"
+        cons.abbreviation_rm,  # "ZL"
+        cons.abbreviation_an,  # "AN"
+        cons.abbreviation_ec,  # "ÜB"
+        cons.abbreviation_ex,  # "BE"
+        cons.abbreviation_ra,  # "AB"
+        cons.abbreviation_cc,  # "ZF"
+        cons.abbreviation_as,  # "LZ"
+    ]
+    if element in abbreviations:
+        return True
+    else:
+        return False
+
+
+def get_learning_element(learning_elements):
+    """converts the dictionary learning element
+    into a list with only the short name LE"""
+    classification_learning_element = []
+    lz_is_present = False
+    lz_element = ""
+
+    for le in learning_elements:
+        if le["classification"] == cons.abbreviation_ct:
+            classification_learning_element.insert(0, le["classification"])
+        elif le["classification"] == cons.abbreviation_as:
+            lz_is_present = True
+            lz_element = le["classification"]
+        elif check_cons_learning_element(le["classification"]):
+            classification_learning_element.append(le["classification"])
+    if lz_is_present:
+        classification_learning_element.append(lz_element)
+    return classification_learning_element
+
+
 def get_learning_path_as_str(result_ga):
-    """Convert the list of learning path into sting"""
+    """Convert the list of learning path into string"""
     str_learning_path = ""
     contain_le = False
     for ele in result_ga:

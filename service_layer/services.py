@@ -1727,6 +1727,25 @@ def create_contact_form(
         return result
 
 
+def get_news(
+    uow: unit_of_work.AbstractUnitOfWork,
+    news_content,
+    expiration_date,
+    date,
+) -> dict:
+    with uow:
+        if news_content == {}:
+            return NULL
+        else:
+            news = UA.News(
+                news_content, expiration_date, date
+            )
+            uow.news.get_news(news)
+            uow.commit()
+            result = news.serialize()
+        return result
+
+
 def get_user_by_id(uow: unit_of_work.AbstractUnitOfWork, user_id, lms_user_id) -> dict:
     with uow:
         user = uow.user.get_user_by_id(user_id, lms_user_id)

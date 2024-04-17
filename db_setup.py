@@ -168,6 +168,7 @@ def setup_db(
         (
             id integer NOT NULL GENERATED ALWAYS AS IDENTITY
             ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+            language_id text COLLATE pg_catalog."default",
             news_content text COLLATE pg_catalog."default",
             expiration_date timestamp without time zone NOT NULL,
             date timestamp without time zone NOT NULL,

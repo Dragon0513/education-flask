@@ -735,6 +735,13 @@ def delete_contact_form(uow: unit_of_work.AbstractUnitOfWork, user_id):
         return {}
 
 
+def delete_news(uow: unit_of_work.AbstractUnitOfWork):
+    with uow:
+        uow.news.delete_news()
+        uow.commit()
+        return {}
+
+
 def delete_course(uow: unit_of_work.AbstractUnitOfWork, course_id):
     with uow:
         delete_course_topic_by_course(uow, course_id)
@@ -1729,6 +1736,7 @@ def create_contact_form(
 
 def get_news(
     uow: unit_of_work.AbstractUnitOfWork,
+    language_id,
     news_content,
     expiration_date,
     date,
@@ -1738,7 +1746,7 @@ def get_news(
             result = {}
         else:
             news = UA.News(
-                news_content, expiration_date, date
+                language_id, news_content, expiration_date, date
             )
             uow.news.get_news(news)
             uow.commit()

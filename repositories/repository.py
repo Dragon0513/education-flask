@@ -174,6 +174,10 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
+    def delete_news(self):
+        raise NotImplementedError
+
+    @abc.abstractmethod
     def delete_course(self, course_id):
         raise NotImplementedError
 
@@ -875,6 +879,9 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
 
     def delete_contact_form(self, user_id):
         self.session.query(UA.ContactForm).filter_by(user_id=user_id).delete()
+
+    def delete_news(self):
+        self.session.query(UA.News).delete()
 
     def delete_course(self, course_id):
         course = self.get_course_by_id(course_id)

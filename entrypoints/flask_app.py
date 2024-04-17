@@ -1484,6 +1484,7 @@ def news(data: Dict[str, Any], expiration_date):
 
     result = services.get_news(
         unit_of_work.SqlAlchemyUnitOfWork(),
+        data["language_id"],
         data["news_content"],
         expiration_date,
         datetime.today(),
@@ -1491,6 +1492,13 @@ def news(data: Dict[str, Any], expiration_date):
 
     status_code = 201
     return jsonify(result), status_code
+
+
+@app.route("/news", methods=["DELETE"])
+@cross_origin(supports_credentials=True)
+def delete_news():
+    services.delete_news(unit_of_work.SqlAlchemyUnitOfWork())
+    return "ok", 201
 
 
 # Log Endpoints

@@ -319,6 +319,15 @@ contact_form = Table(
     Column("date", Date, nullable=False),
 )
 
+news = Table(
+    "news",
+    mapper_registry.metadata,
+    Column("id", Integer, primary_key=True, autoincrement=True),
+    Column("news_content", Integer, nullable=False),
+    Column("expiration_date", Date, nullable=True),
+    Column("date", Date, nullable=False),
+)
+
 student = Table(
     "student",
     mapper_registry.metadata,
@@ -521,6 +530,11 @@ def start_mappers():
     mapper_registry.map_imperatively(
         UA.ContactForm,
         contact_form,
+    )
+
+    mapper_registry.map_imperatively(
+        UA.News,
+        news,
     )
 
     mapper_registry.map_imperatively(

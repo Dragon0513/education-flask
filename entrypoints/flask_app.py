@@ -1474,6 +1474,25 @@ def delete_contact_form(user_id, lms_user_id):
     return "ok", 201
 
 
+@app.route("/news", methods=["GET"])
+@cross_origin(supports_credentials=True)
+@json_only()
+def news(data: Dict[str, Any], expiration_date):
+    for el in ["news_content"]:
+        if el not in data:
+            raise err.MissingParameterError()
+
+    result = services.get_news(
+        unit_of_work.SqlAlchemyUnitOfWork(),
+        data["news_content"],
+        expiration_date,
+        datetime.today(),
+    )
+
+    status_code = 201
+    return jsonify(result), status_code
+
+
 # Log Endpoints
 @app.route("/logs/frontend", methods=["POST"])
 @cross_origin(supports_credentials=True)

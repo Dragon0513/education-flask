@@ -1735,7 +1735,7 @@ def get_news(
 ) -> dict:
     with uow:
         if news_content == {}:
-            return NULL
+            result = {}
         else:
             news = UA.News(
                 news_content, expiration_date, date

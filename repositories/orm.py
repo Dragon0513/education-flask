@@ -323,7 +323,8 @@ news = Table(
     "news",
     mapper_registry.metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
-    Column("news_content", Integer, nullable=False),
+    Column("language_id", String, nullable=False),
+    Column("news_content", String, nullable=False),
     Column("expiration_date", Date, nullable=True),
     Column("date", Date, nullable=False),
 )

@@ -1476,18 +1476,15 @@ def delete_contact_form(user_id, lms_user_id):
 
 @app.route("/news", methods=["GET"])
 @cross_origin(supports_credentials=True)
-@json_only()
-def news(data: Dict[str, Any], expiration_date):
-    for el in ["news_content"]:
-        if el not in data:
-            raise err.MissingParameterError()
+#@json_only()
+def news():
+    lang = request.args.get("language_id")
 
     result = services.get_news(
         unit_of_work.SqlAlchemyUnitOfWork(),
-        data["language_id"],
-        data["news_content"],
-        expiration_date,
-        datetime.today(),
+        lang,
+        "KE",
+        datetime.today()
     )
 
     status_code = 201

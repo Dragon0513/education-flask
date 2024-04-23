@@ -105,13 +105,14 @@ class ContactForm:
 
 class News:
     def __init__(
-        self, language_id, news_content, expiration_date, date
+        self, language_id, news_content, expiration_date, date, university
     ) -> None:
         self.id = None
         self.language_id = language_id
         self.news_content = news_content
         self.expiration_date = expiration_date
         self.date = date
+        self.university = university
 
     def serialize(self):
         return {
@@ -120,4 +121,5 @@ class News:
             "news_content": self.news_content,
             "expiration_date": self.expiration_date,
             "date": self.date,
+            #"university": self.university
         }

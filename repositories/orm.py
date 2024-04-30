@@ -325,6 +325,7 @@ news = Table(
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("language_id", String, nullable=False),
     Column("news_content", String, nullable=False),
+    Column("university", String, nullable=False),
     Column("expiration_date", Date, nullable=True),
     Column("date", Date, nullable=False),
 )

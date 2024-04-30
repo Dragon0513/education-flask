@@ -1479,11 +1479,9 @@ def delete_contact_form(user_id, lms_user_id):
 #@json_only()
 def news():
     lang = request.args.get("language_id")
-
     result = services.get_news(
         unit_of_work.SqlAlchemyUnitOfWork(),
         lang,
-        "KE",
         datetime.today()
     )
 

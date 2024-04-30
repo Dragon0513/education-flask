@@ -400,9 +400,16 @@ def test_prepare_les_for_nestor(learning_style):
         )
         list_of_les.append(le.serialize())
     lp = TM.LearningPath(student_id=1, course_id=1, based_on="nestor")
+    lp2 = TM.LearningPath(student_id=3, course_id=1, based_on="nestor")
 
     lp.get_learning_path(
         student_id=1,
+        learning_style=learning_style,
+        _algorithm="nestor",
+        list_of_les=list_of_les,
+    )
+    lp2.get_learning_path(
+        student_id=3,
         learning_style=learning_style,
         _algorithm="nestor",
         list_of_les=list_of_les,
@@ -411,7 +418,12 @@ def test_prepare_les_for_nestor(learning_style):
     # all Learning styles is Forum
     # Unit testing the result for dummy LS and LE
     result = lp.path
-    assert result[:2] == "FO"
+    # Unit test result to check if the LP's elements occur in retrived result
+    result2 = lp2.path
+
+    assert result[:2] in ("LZ", "FO")
+    for ele in result2:
+        assert ele in ("FO, ÜB, KÜ, ZF, EK, AN, ZL, LZ")
 
     nestor_alg = nestor.Nestor()
     # unit test for learning path returned from nestor inference

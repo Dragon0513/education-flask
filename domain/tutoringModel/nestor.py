@@ -5,7 +5,7 @@ import random
 from pgmpy.inference import VariableElimination
 from pgmpy.readwrite import XMLBIFReader
 
-from domain.tutoringModel.utils import ran_seed
+from domain.tutoringModel.NestorFolder import nestor_utils
 from errors import errors as err
 from utils import constants as cons
 
@@ -21,7 +21,7 @@ class Nestor:
         All the global values used in Nestor
         are initiated here.
         """
-        random.seed(ran_seed)
+        # random.seed(ran_seed)
         # the following dict maps
         # output variables' states of the
         # trained BN with their respective
@@ -103,7 +103,7 @@ class Nestor:
         of learner
         to recommend personalized learning paths
         """
-        random.seed(ran_seed)
+        # random.seed(ran_seed)
         # defining the path to saved BN
         # path_to_model = path_to_model
         # The HASKI Gemeninsam uses the Learning styles naming convention of
@@ -199,12 +199,13 @@ class Nestor:
 
         # here the dictionary contains inference with both yes and no
         # The LEs with state 'No' is not removed but
-        # probability for state 'yes' is calculated
+        # probability for state to be 'yes' is calculated
         le_max_dict = {
             key: str(round(1 - float(val), 1)) if "No" in key else val
             for key, val in le_max_dict.items()
         }
-
+        # soring LEs in descending order, randomizing same value LEs
+        le_max_dict = nestor_utils.randomize_same_values(le_max_dict)
         # Get items from the input_dict and
         # sort them based on the numerical values in descending order
         sorted_items = sorted(

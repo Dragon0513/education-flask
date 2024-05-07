@@ -1570,9 +1570,8 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
     def get_news(self, language, university, date) -> UA.News:
         try:
             result = (self.session.query(UA.News)
-                .filter_by(language_id=language)
+                .filter_by(language_id=language, university=university)
                 .filter(UA.News.expiration_date>=date)
-                .filter(university=university)
                 .all()
             )
             return result

@@ -121,5 +121,5 @@ class News:
             "news_content": self.news_content,
             "expiration_date": self.expiration_date,
             "date": self.date,
-            "university": self.university
+            "university": self.university,
         }

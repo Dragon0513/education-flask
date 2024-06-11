@@ -138,7 +138,7 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
     @abc.abstractmethod
     def create_contact_form(self, contact_form: UA.ContactForm) -> UA.ContactForm:
         raise NotImplementedError
-    
+
     @abc.abstractmethod
     def get_news(self,  language, university, date) -> UA.News:
         raise NotImplementedError

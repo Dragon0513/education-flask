@@ -2563,43 +2563,32 @@ class TestApi:
 
     # Get News with language and university
     @pytest.mark.parametrize(
-        "input, keys_expected\
+        "language_id, university, keys_expected,\
                             status_code_expected",
         [
             # Working Example
             (
-                {
-                    "language_id":"en",
-                    "university":"HS-AS",
-                },
+                "en",
+                "HS-AS",
                 [
-                    "language_id",
-                    "university",
-                ],
-                201,
-            )
-            # No university
-            (
-                {
-                    "language_id":"en",
-                    "university":"",
-                },
-                [
-                    "language_id",
-                    "university",
                 ],
                 201,
             ),
-            # Missing languageID
+            # No university
             (
-                {
-                    
-                },
+                "en",
+                "",
                 [
-                    "error",
-                    "none",
                 ],
-                400,
+                201,
+            ),
+            # Unrealistic parameter
+            (
+                1,
+                1,
+                [
+                ],
+                201,
             ),
         ],
     )

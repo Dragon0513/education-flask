@@ -1742,7 +1742,7 @@ def get_news(
 ) -> dict:
     with uow:
         backend_response_university = []
-        if not university is None:
+        if university is not None:
             backend_response_university = uow.news.get_news(
                 language_id, university, date
             )

@@ -2568,27 +2568,15 @@ class TestApi:
         [
             # Working Example
             (
-                "en",
-                "HS-AS",
-                [
-                ],
-                201,
+                "en", "HS-AS", [], 201,
             ),
             # No university
             (
-                "en",
-                "",
-                [
-                ],
-                201,
+                "en", "", [], 201,
             ),
             # Unrealistic parameter
             (
-                1,
-                1,
-                [
-                ],
-                201,
+                1, 1, [], 201,
             ),
         ],
     )

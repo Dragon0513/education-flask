@@ -1476,7 +1476,7 @@ def delete_contact_form(user_id, lms_user_id):
 
 @app.route("/news", methods=["GET"])
 @cross_origin(supports_credentials=True)
-#@json_only()
+@json_only()
 def news():
     lang = request.args.get("language_id")
     uni = request.args.get("university")

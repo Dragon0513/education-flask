@@ -732,9 +732,11 @@ def post_student_topic_visit(data: Dict[str, Any], student_id, lms_user_id, topi
                         student_id,
                         topic_id,
                         visit_start,
-                        data["previous_topic_id"]
-                        if "previous_topic_id" in data
-                        else None,
+                        (
+                            data["previous_topic_id"]
+                            if "previous_topic_id" in data
+                            else None
+                        ),
                     )
                     status_code = 201
                     return jsonify(result), status_code
@@ -1481,10 +1483,7 @@ def news():
     lang = request.args.get("language_id")
     uni = request.args.get("university")
     result = services.get_news(
-        unit_of_work.SqlAlchemyUnitOfWork(),
-        lang,
-        uni,
-        datetime.today()
+        unit_of_work.SqlAlchemyUnitOfWork(), lang, uni, datetime.today()
     )
 
     status_code = 201

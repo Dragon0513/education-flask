@@ -1743,11 +1743,15 @@ def get_news(
     with uow:
         backend_response_university = []
         if not university is None:
-            backend_response_university = uow.news.get_news(language_id, university, date)
+            backend_response_university = uow.news.get_news(
+                language_id, university, date
+            )
         backend_response = uow.news.get_news(language_id, None, date)
 
         result = dict()
-        result["news"] = [news.serialize() for news in backend_response + backend_response_university]
+        result["news"] = [
+            news.serialize() for news in backend_response + backend_response_university
+        ]
         return result
 
 

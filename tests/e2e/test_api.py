@@ -22,7 +22,7 @@ path_admin = "/admin"
 path_activity_status = "/activitystatus"
 path_course = "/course"
 path_contactform = "/contactform"
-path_news="/news"
+path_news = "/news"
 path_knowledge = "/knowledge"
 path_logs = "/logs"
 path_frontend_logs = "/logs/frontend"
@@ -2568,15 +2568,24 @@ class TestApi:
         [
             # Working Example
             (
-                "en", "HS-AS", [], 201,
+                "en",
+                "HS-AS",
+                [],
+                201,
             ),
             # No university
             (
-                "en", "", [], 201,
+                "en",
+                "",
+                [],
+                201,
             ),
             # Unrealistic parameter
             (
-                1, 1, [], 201,
+                1,
+                1,
+                [],
+                201,
             ),
         ],
     )
@@ -2586,9 +2595,9 @@ class TestApi:
         url = (
             path_news
             + "?language_id="
-            +str(language_id)
-            +"?university="
-            +str(university)
+            + str(language_id)
+            + "?university="
+            + str(university)
         )
         r = client_class.get(url)
         assert r.status_code == status_code_expected

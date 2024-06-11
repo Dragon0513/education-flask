@@ -2561,6 +2561,64 @@ class TestApi:
         response = json.loads(r.data.decode("utf-8").strip("\n"))
         assert response == [{"cmid": 2, "state": 0, "timecompleted": 0}]
 
+    # Get News with language and university
+    @pytest.mark.parametrize(
+        "input, keys_expected\
+                            status_code_expected",
+        [
+            # Working Example
+            (
+                {
+                    "language_id":"en",
+                    "university":"HS-AS",
+                },
+                [
+                    "language_id",
+                    "university",
+                ],
+                201,
+            )
+            # No university
+            (
+                {
+                    "language_id":"en",
+                    "university":"",
+                },
+                [
+                    "language_id",
+                    "university",
+                ],
+                201,
+            ),
+            # Missing languageID
+            (
+                {
+                    
+                },
+                [
+                    "error",
+                    "none",
+                ],
+                400,
+            ),
+        ],
+    )
+    def test_get_news(
+        self, client_class, language_id, university, keys_expected, status_code_expected
+    ):
+        url = (
+            path_news
+            + "?language_id="
+            +str(language_id)
+            +"?university="
+            +str(university)
+        )
+        r = client_class.get(url)
+        assert r.status_code == status_code_expected
+        response = json.loads(r.data.decode("utf-8").strip("\n"))
+        for key in keys_expected:
+            assert key in response.keys()
+
     # PUT METHODS
     # Update the settings of a User
     @pytest.mark.parametrize(

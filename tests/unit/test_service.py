@@ -42,6 +42,7 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
         learning_path_topic=[],
         learning_strategy=[],
         learning_style=[],
+        news=[],
         questionnaire_list_k=[],
         questionnaire_ils=[],
         settings=[],
@@ -77,6 +78,7 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
         self.learning_path_topic = set(learning_path_topic)
         self.learning_strategy = set(learning_strategy)
         self.learning_style = set(learning_style)
+        self.news = set(news)
         self.questionnaire_list_k = set(questionnaire_list_k)
         self.questionnaire_ils = set(questionnaire_ils)
         self.settings = set(settings)
@@ -1026,6 +1028,7 @@ class FakeUnitOfWork(unit_of_work.AbstractUnitOfWork):  # pragma: no cover
         self.learning_path_topic = FakeRepository()
         self.learning_strategy = FakeRepository()
         self.learning_style = FakeRepository()
+        self.news = FakeRepository()
         self.questionnaire_list_k = FakeRepository()
         self.questionnaire_ils = FakeRepository()
         self.settings = FakeRepository()

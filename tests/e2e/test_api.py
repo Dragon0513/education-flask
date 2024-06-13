@@ -2583,14 +2583,12 @@ class TestApi:
             (
                 "en",
                 "",
-                [],
-                201,
-            ),
-            # Unrealistic parameter
-            (
-                1,
-                1,
-                [],
+                [   "date",
+                    "expiration_date",
+                    "language_id",
+                    "news_content",
+                    "university",
+                ],
                 201,
             ),
         ],
@@ -2609,9 +2607,9 @@ class TestApi:
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))
         assert "news" in response.keys()
-        # assert len(response["news"]) >= 1
         for key in keys_expected:
-            assert key in response["news"][0].keys()
+            for entry in response["news"]:
+                assert key in entry.keys()
 
     # PUT METHODS
     # Update the settings of a User

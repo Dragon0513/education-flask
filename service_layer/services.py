@@ -722,7 +722,12 @@ def create_user(
 
 
 def create_news(
-        uow: unit_of_work.AbstractUnitOfWork, university, language_id, date, news_content, expiration_date,
+    uow: unit_of_work.AbstractUnitOfWork,
+    university,
+    language_id,
+    date,
+    news_content,
+    expiration_date,
 ) -> dict:
     with uow:
         news = UA.News(language_id, news_content, expiration_date, date, university)
@@ -730,8 +735,6 @@ def create_news(
         uow.commit()
         result = news.serialize()
         return result
-
-        
 
 
 def delete_admin(uow: unit_of_work.AbstractUnitOfWork, user_id):

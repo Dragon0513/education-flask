@@ -1515,12 +1515,14 @@ def test_create_learning_analytics():
 def test_create_news():
     uow = FakeUnitOfWork()
     entries_beginning = len(uow.news.news)
-    result = services.create_news(uow=uow, 
-                                  university="HS-AS", 
-                                  language_id="en", 
-                                  date=datetime.datetime.now(), 
-                                  news_content="idk", 
-                                  expiration_date=datetime.datetime(2027, 2, 15, 18, 54, 58, 291224))
+    result = services.create_news(
+        uow=uow,
+        university="HS-AS",
+        language_id="en",
+        date=datetime.datetime.now(),
+        news_content="idk",
+        expiration_date=datetime.datetime(2027, 2, 15, 18, 54, 58, 291224),
+    )
     assert type(result) is dict
     assert result != {}
     entries_after = len(uow.news.news)
@@ -1662,9 +1664,7 @@ def test_create_contact_form():
 def test_get_news():
     uow = FakeUnitOfWork()
     create_news_for_tests(uow)
-    result = services.get_news(
-        uow, "en", "HS-AS", datetime.datetime.now()
-    )
+    result = services.get_news(uow, "en", "HS-AS", datetime.datetime.now())
     assert type(result) == dict
     assert result != {}
     keys_expected = [

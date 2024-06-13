@@ -1675,8 +1675,9 @@ def test_get_news():
         "university",
     ]
     for key in keys_expected:
-        assert key in result["news"].keys()
-        assert result["news"] is not None
+        for entry in result["news"]:
+            assert key in result["news"][entry].keys()
+            assert result["news"] is not None
 
 
 def test_get_learning_characteristics():

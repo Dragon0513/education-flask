@@ -226,6 +226,10 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
         user.id = len(self.user) + 1
         self.user.add(user)
 
+    def create_news(self, news):
+        news.id = len(self.news) + 1
+        self.news.add(news)
+
     def delete_admin(self, user_id):
         to_remove = []
         for i in self.admin:
@@ -505,6 +509,14 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
                 to_remove.append(i)
         for remove in to_remove:
             self.user.remove(remove)
+
+    def delete_news(self, language_id, university):
+        to_remove = []
+        for i in self.news:
+            if i.language_id == language_id and i.university == university:
+                to_remove.append(i)
+        for remove in to_remove:
+            self.news.remove(remove)
 
     def get_admin_by_id(self, user_id):
         result = []
@@ -860,6 +872,13 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
         result = []
         for i in self.user:
             if i.university == university:
+                result.append(i)
+        return result
+
+    def get_news(self, language, university, date):
+        result = []
+        for i in self.news:
+            if i.language == language & i.university == university:
                 result.append(i)
         return result
 
@@ -1612,6 +1631,25 @@ def test_create_contact_form():
     )
     assert type(result) == dict
     assert result != {}
+
+
+def test_get_news():
+    uow = FakeUnitOfWork()
+    result = services.get_news(
+        uow, "en", "HS-AS", datetime.datetime.now()
+    )
+    assert type(result) == dict
+    assert result != {}
+    keys_expected = [
+        "date",
+        "expiration_date",
+        "language_id",
+        "news_content",
+        "university",
+    ]
+    for key in keys_expected:
+        assert key in result.keys()
+        assert result[key] is not None
 
 
 def test_get_learning_characteristics():

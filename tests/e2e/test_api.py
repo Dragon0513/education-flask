@@ -2570,7 +2570,13 @@ class TestApi:
             (
                 "en",
                 "HS-AS",
-                [],
+                [
+                    "date",
+                    "expiration_date",
+                    "language_id",
+                    "news_content",
+                    "university",
+                ],
                 201,
             ),
             # No university
@@ -2602,8 +2608,10 @@ class TestApi:
         r = client_class.get(url)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))
+        assert "news" in response.keys()
+        #assert len(response["news"]) >= 1
         for key in keys_expected:
-            assert key in response.keys()
+            assert key in response["news"][0].keys()
 
     # PUT METHODS
     # Update the settings of a User

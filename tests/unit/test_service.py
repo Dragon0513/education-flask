@@ -1676,7 +1676,7 @@ def test_get_news():
     ]
     for key in keys_expected:
         for entry in result["news"]:
-            assert key in result["news"][entry].keys()
+            assert key in entry.keys()
             assert result["news"] is not None
 
 

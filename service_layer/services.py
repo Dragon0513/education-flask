@@ -721,6 +721,19 @@ def create_user(
     return result
 
 
+def create_news(
+        uow: unit_of_work.AbstractUnitOfWork, university, language_id, date, news_content, expiration_date,
+) -> dict:
+    with uow:
+        news = UA.News(language_id, news_content, expiration_date, date, university)
+        uow.news.create_news(news)
+        uow.commit()
+        result = news.serialize()
+        return result
+
+        
+
+
 def delete_admin(uow: unit_of_work.AbstractUnitOfWork, user_id):
     with uow:
         uow.admin.delete_admin(user_id)

@@ -875,10 +875,10 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
                 result.append(i)
         return result
 
-    def get_news(self, language, university, date):
+    def get_news(self, language_id, university, date=None):
         result = []
         for i in self.news:
-            if i.language == language & i.university == university:
+            if i.language_id == language_id and i.university == university:
                 result.append(i)
         return result
 
@@ -1338,6 +1338,17 @@ def create_learning_path_for_tests_ga(uow):
     )
 
 
+def create_news_for_tests(uow):
+    return services.create_news(
+        uow=uow,
+        university="HS-AS",
+        language_id="en",
+        date=datetime.datetime.now(),
+        news_content="random text",
+        expiration_date=datetime.datetime(2027, 2, 15, 18, 54, 58, 291224),
+    )
+
+
 def add_student_to_course_for_tests(uow):
     services.add_student_to_course(uow=uow, student_id=1, course_id=1)
 
@@ -1501,6 +1512,21 @@ def test_create_learning_analytics():
     assert entries_beginning + 1 == entries_after
 
 
+def test_create_news():
+    uow = FakeUnitOfWork()
+    entries_beginning = len(uow.news.news)
+    result = services.create_news(uow=uow, 
+                                  university="HS-AS", 
+                                  language_id="en", 
+                                  date=datetime.datetime.now(), 
+                                  news_content="idk", 
+                                  expiration_date=datetime.datetime(2027, 2, 15, 18, 54, 58, 291224))
+    assert type(result) is dict
+    assert result != {}
+    entries_after = len(uow.news.news)
+    assert entries_beginning + 1 == entries_after
+
+
 def test_delete_admin():
     uow = FakeUnitOfWork()
     create_admin_for_tests(uow)
@@ -1635,6 +1661,7 @@ def test_create_contact_form():
 
 def test_get_news():
     uow = FakeUnitOfWork()
+    create_news_for_tests(uow)
     result = services.get_news(
         uow, "en", "HS-AS", datetime.datetime.now()
     )
@@ -1648,8 +1675,8 @@ def test_get_news():
         "university",
     ]
     for key in keys_expected:
-        assert key in result.keys()
-        assert result[key] is not None
+        assert key in result["news"].keys()
+        assert result["news"] is not None
 
 
 def test_get_learning_characteristics():

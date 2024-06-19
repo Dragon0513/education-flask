@@ -140,7 +140,7 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_news(self, language, university, date) -> UA.News:
+    def create_news(self, news: UA.News) -> UA.News:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -516,6 +516,10 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
+    def get_news(self, language, university, date) -> UA.News:
+        raise NotImplementedError
+
+    @abc.abstractmethod
     def update_course(self, course_id, course) -> DM.Course:
         raise NotImplementedError
 
@@ -817,6 +821,12 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
     def create_contact_form(self, contact_form: UA.ContactForm) -> UA.ContactForm:
         try:
             self.session.add(contact_form)
+        except Exception:
+            raise err.CreationError()
+
+    def create_news(self, news: UA.News) -> UA.News:
+        try:
+            self.session.add(news)
         except Exception:
             raise err.CreationError()
 

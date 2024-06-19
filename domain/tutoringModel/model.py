@@ -68,7 +68,11 @@ class LearningPath:
                 input_learning_style=learning_style, input_learning_elements=list_of_les
             )
         elif algorithm == "standard" and standard_learning_path is not None:
-            self.path = ", ".join(standard_learning_path)
+            learning_path = []
+            for element in standard_learning_path:
+              learning_path.append(element["classification"])
+            print(learning_path) # TODO: position muss eingearbeitet werden
+            self.path = ", ".join(learning_path)
         else:
             raise err.NoValidAlgorithmError()
 

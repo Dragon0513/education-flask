@@ -417,8 +417,8 @@ def create_learning_path(
                     learning_element_id=le["learning_element_id"],
                 )
                 list_of_les.append(element)
-            student = uow.student.get_student_by_student_id(student_id)
-            standard_learning_path = get_standard_learning_path_by_university(uow, student[0].university)
+            user = get_user_by_id(uow, user_id, lms_user_id)
+            standard_learning_path = get_standard_learning_path_by_university(uow, user["university"])
             learning_path.get_learning_path(
                 student_id=student_id,
                 learning_style=learning_style,
@@ -1431,7 +1431,7 @@ def get_learning_style_by_student_id(
         return result
     
 def get_standard_learning_path_by_university(
-        uow: unit_of_work.AbstractUnitOfWork, university
+        uow: unit_of_work.AbstractUnitOfWork, university: str
 ) -> list:
     with uow:
       path = uow.standard_learning_path.get_standard_learning_path_by_university(university)

@@ -1343,9 +1343,9 @@ class TestApi:
                 {
                     "university": "HS-AS",
                     "language_id": "en",
-                    "date": "2024, 2, 15, 18, 54, 58, 291224",
-                    "expiration_date": "2028, 2, 15, 18, 54, 58, 291224",
+                    "date": "2023-08-01T13:37:42Z",
                     "news_content": "This is news",
+                    "expiration_date": "2028-08-01T13:37:42Z",
                 },
                 [
                     "id",
@@ -1360,15 +1360,7 @@ class TestApi:
         ],
     )
     def test_post_news(self, client_class, input, keys_expected, status_code_expected):
-        language_id = "en"
-        university = "HS-AS"
-        url = (
-            path_news
-            + "?language_id="
-            + str(language_id)
-            + "?university="
-            + str(university)
-        )
+        url = path_news
         r = client_class.post(url, json=input)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))

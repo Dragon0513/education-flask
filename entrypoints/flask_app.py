@@ -1479,7 +1479,7 @@ def delete_contact_form(user_id, lms_user_id):
 @app.route("/news", methods=["POST"])
 @cross_origin(supports_credentials=True)
 @json_only()
-def news(data: Dict[str, Any]):
+def news_creation(data: Dict[str, Any]):
     for el in ["language_id", "news_content", "expiration_date"]:
         if el not in data:
             raise err.MissingParameterError()
@@ -1488,9 +1488,11 @@ def news(data: Dict[str, Any]):
         unit_of_work.SqlAlchemyUnitOfWork(),
         data["university"],
         data["language_id"],
-        datetime.today(),
+        datetime.today().date(),
         data["news_content"],
-        data["expiration_date"],
+        datetime.strptime(
+                            data["expiration_date"], cons.date_format
+                        ).date(),
     )
 
     if result is None:
@@ -1502,14 +1504,12 @@ def news(data: Dict[str, Any]):
 
 @app.route("/news", methods=["GET"])
 @cross_origin(supports_credentials=True)
-@json_only()
 def news():
     lang = request.args.get("language_id")
     uni = request.args.get("university")
     result = services.get_news(
-        unit_of_work.SqlAlchemyUnitOfWork(), lang, uni, datetime.today()
+        unit_of_work.SqlAlchemyUnitOfWork(), lang, uni, datetime.today().date()
     )
-
     status_code = 201
     return jsonify(result), status_code
 

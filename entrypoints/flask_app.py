@@ -1490,9 +1490,7 @@ def news_creation(data: Dict[str, Any]):
         data["language_id"],
         datetime.today().date(),
         data["news_content"],
-        datetime.strptime(
-                            data["expiration_date"], cons.date_format
-                        ).date(),
+        datetime.strptime(data["expiration_date"], cons.date_format).date(),
     )
 
     if result is None:

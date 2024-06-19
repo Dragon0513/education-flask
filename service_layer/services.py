@@ -417,11 +417,14 @@ def create_learning_path(
                     learning_element_id=le["learning_element_id"],
                 )
                 list_of_les.append(element)
+            student = uow.student.get_student_by_student_id(student_id)
+            standard_learning_path = get_standard_learning_path_by_university(uow, student[0].university)
             learning_path.get_learning_path(
                 student_id=student_id,
                 learning_style=learning_style,
                 _algorithm=algorithm.lower(),
                 list_of_les=list_of_les,
+                standard_learning_path=standard_learning_path,
             )
             result = learning_path.serialize()
             for i, le in enumerate(result["path"].replace(",", "").split()):
@@ -1426,7 +1429,16 @@ def get_learning_style_by_student_id(
         characteristic = get_learning_characteristics(uow, student_id)
         result = characteristic["learning_style"]
         return result
-
+    
+def get_standard_learning_path_by_university(
+        uow: unit_of_work.AbstractUnitOfWork, university
+) -> list:
+    with uow:
+      path = uow.standard_learning_path.get_standard_learning_path_by_university(university)
+      results = []
+      for elements in path:
+          results.append(elements.serialize())
+      return results
 
 def get_sub_topic_by_topic_id(
     uow: unit_of_work.AbstractUnitOfWork,

@@ -1343,7 +1343,7 @@ def learning_path_administration(
             condition1 = data is not None
             condition2 = "algorithm" in data
             if condition1 and condition2:
-                available_algorithms = ["graf", "aco", "ga"]
+                available_algorithms = ["graf", "aco", "ga", "standard"]
                 condition3 = type(data["algorithm"]) is str
                 condition4 = data["algorithm"].lower() in available_algorithms
                 if condition3 and condition4:

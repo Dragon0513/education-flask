@@ -35,6 +35,21 @@ class LearningElement:
             "last_updated": self.last_updated,
             "student_learning_element": self.student_learning_element,
         }
+    
+class StandardLearningPath:
+    def __init__(self, classification, position, university) -> None:
+        self.id = None
+        self.classification = classification
+        self.position = position
+        self.university = university
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "classification": self.classification,
+            "position": self.position,
+            "university": self.university
+        }
 
 
 class Course:

@@ -430,6 +430,10 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
     @abc.abstractmethod
     def get_settings(self, user_id):
         raise NotImplementedError
+    
+    @abc.abstractmethod
+    def get_standard_learning_path_by_university(self, university: str) -> list[DM.LearningElement]:
+        raise NotImplementedError
 
     @abc.abstractmethod
     def get_student_by_id(self, user_id) -> UA.Student:
@@ -1398,6 +1402,15 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
             raise err.NoValidIdError()
         else:
             return result
+        
+    def get_standard_learning_path_by_university(self, university: str) -> list[DM.StandardLearningPath]:
+        result = self.session.query(DM.StandardLearningPath).filter_by(university=university).all()
+        print(result)
+        try:
+          return self.session.query(DM.StandardLearningPath).filter_by(university=university).all()
+        except Exception:
+            raise err.DatabaseQueryError()
+            
 
     def get_student_by_id(self, user_id) -> UA.Student:
         result = self.session.query(UA.Student).filter_by(user_id=user_id).all()

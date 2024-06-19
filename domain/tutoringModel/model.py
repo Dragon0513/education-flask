@@ -5,7 +5,6 @@ from domain.tutoringModel.utils import get_coordinates
 from errors import errors as err
 from utils import constants as cons
 
-
 class LearningPath:
     def __init__(
         self, student_id, course_id, based_on, topic_id=None, path=None
@@ -30,7 +29,7 @@ class LearningPath:
             "calculated_on": self.calculated_on,
         }
 
-    def get_learning_path(self, student_id, learning_style, _algorithm, list_of_les):
+    def get_learning_path(self, student_id, learning_style, _algorithm, list_of_les, standard_learning_path=None):
         algorithm = _algorithm.lower()
         if algorithm == "graf":
             path = graf.GrafAlgorithm(student_id=student_id)
@@ -68,6 +67,8 @@ class LearningPath:
             self.path = nestor_alg.get_learning_path(
                 input_learning_style=learning_style, input_learning_elements=list_of_les
             )
+        elif algorithm == "standard" and standard_learning_path is not None:
+            self.path = ", ".join(standard_learning_path)
         else:
             raise err.NoValidAlgorithmError()
 

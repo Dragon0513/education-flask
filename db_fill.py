@@ -1918,6 +1918,115 @@ sql = """
 """
 cursor.execute(sql)
 
+# Create default learning path for HS-KE
+sql = """
+    INSERT INTO default_learning_path (classification, position, university)
+    VALUES ('KÜ', 1, 'HS-KE')
+"""
+cursor.execute(sql)
+
+sql = """
+    INSERT INTO default_learning_path (classification, position, university)
+    VALUES ('EK', 2, 'HS-KE')
+"""
+cursor.execute(sql)
+
+sql = """
+    INSERT INTO default_learning_path (classification, position, university)
+    VALUES ('AN', 3, 'HS-KE')
+"""
+cursor.execute(sql)
+
+sql = """
+    INSERT INTO default_learning_path (classification, position, university)
+    VALUES ('SE', 4, 'HS-KE')
+"""
+cursor.execute(sql)
+
+sql = """
+    INSERT INTO default_learning_path (classification, position, university)
+    VALUES ('BE', 5, 'HS-KE')
+"""
+cursor.execute(sql)
+
+sql = """
+    INSERT INTO default_learning_path (classification, position, university)
+    VALUES ('ÜB', 6, 'HS-KE')
+"""
+cursor.execute(sql)
+
+sql = """
+    INSERT INTO default_learning_path (classification, position, university)
+    VALUES ('ZF', 7, 'HS-KE')
+"""
+cursor.execute(sql)
+
+sql = """
+    INSERT INTO default_learning_path (classification, position, university)
+    VALUES ('ZL', 8, 'HS-KE')
+"""
+cursor.execute(sql)
+
+# Create default learning path for HS-AS
+sql = """
+    INSERT INTO default_learning_path (classification, position, university)
+    VALUES ('KÜ', 1, 'HS-AS')
+"""
+cursor.execute(sql)
+
+sql = """
+    INSERT INTO default_learning_path (classification, position, university)
+    VALUES ('ZL', 2, 'HS-AS')
+"""
+cursor.execute(sql)
+
+sql = """
+    INSERT INTO default_learning_path (classification, position, university)
+    VALUES ('EK', 3, 'HS-AS')
+"""
+cursor.execute(sql)
+
+sql = """
+    INSERT INTO default_learning_path (classification, position, university)
+    VALUES ('AN', 4, 'HS-AS')
+"""
+cursor.execute(sql)
+
+sql = """
+    INSERT INTO default_learning_path (classification, position, university)
+    VALUES ('BE', 5, 'HS-AS')
+"""
+cursor.execute(sql)
+
+sql = """
+    INSERT INTO default_learning_path (classification, position, university)
+    VALUES ('SE', 6, 'HS-AS')
+"""
+cursor.execute(sql)
+
+sql = """
+    INSERT INTO default_learning_path (classification, position, university)
+    VALUES ('AB', 7, 'HS-AS')
+"""
+cursor.execute(sql)
+
+sql = """
+    INSERT INTO default_learning_path (classification, position, university)
+    VALUES ('ÜB', 8, 'HS-AS')
+"""
+cursor.execute(sql)
+
+sql = """
+    INSERT INTO default_learning_path (classification, position, university)
+    VALUES ('LZ', 9, 'HS-AS')
+"""
+cursor.execute(sql)
+
+sql = """
+    INSERT INTO default_learning_path (classification, position, university)
+    VALUES ('ZF', 10, 'HS-AS')
+"""
+cursor.execute(sql)
 
 conn.commit()
 # Closing the connection

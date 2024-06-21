@@ -319,8 +319,8 @@ contact_form = Table(
     Column("date", Date, nullable=False),
 )
 
-standard_learning_path = Table(
-    "standard_learning_path",
+default_learning_path = Table(
+    "default_learning_path",
     mapper_registry.metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("classification", String, nullable=False),
@@ -533,8 +533,8 @@ def start_mappers():
     )
 
     mapper_registry.map_imperatively(
-        DM.StandardLearningPath,
-        standard_learning_path
+        DM.DefaultLearningPath,
+        default_learning_path
     )
 
     mapper_registry.map_imperatively(

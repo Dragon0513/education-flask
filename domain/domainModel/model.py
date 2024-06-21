@@ -36,7 +36,7 @@ class LearningElement:
             "student_learning_element": self.student_learning_element,
         }
     
-class StandardLearningPath:
+class DefaultLearningPath:
     def __init__(self, classification: str, position: int, university: str) -> None:
         self.id = None
         self.classification = classification

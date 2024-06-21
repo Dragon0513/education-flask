@@ -432,7 +432,7 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
         raise NotImplementedError
     
     @abc.abstractmethod
-    def get_standard_learning_path_by_university(self, university: str) -> list[DM.StandardLearningPath]:
+    def get_default_learning_path_by_university(self, university: str) -> list[DM.DefaultLearningPath]:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -1403,10 +1403,10 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         else:
             return result
         
-    def get_standard_learning_path_by_university(self, university: str) -> list[DM.StandardLearningPath]:
-        self.session.query(DM.StandardLearningPath).filter_by(university=university).all()
+    def get_default_learning_path_by_university(self, university: str) -> list[DM.DefaultLearningPath]:
+        self.session.query(DM.DefaultLearningPath).filter_by(university=university).all()
         try:
-          return self.session.query(DM.StandardLearningPath).filter_by(university=university).all()
+          return self.session.query(DM.DefaultLearningPath).filter_by(university=university).all()
         except Exception:
             raise err.DatabaseQueryError()
             

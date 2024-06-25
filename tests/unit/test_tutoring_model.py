@@ -146,7 +146,7 @@ def test_prepare_les_for_tyche(learning_style):
         student_id=1,
         learning_style=learning_style,
         _algorithm="tyche",
-        list_of_les=list_of_les,
+        list_of_les=list_of_les
     )
     erg = False
     result = lp.path
@@ -600,6 +600,84 @@ def test_learning_style_check(learning_style, error):
         result = utils.check_learning_style(learning_style)
         assert result
 
+
+
+def get_learning_path_default(learning_style, list_of_elements, default_learning_path):
+    list_of_les = []
+    for i, ele_name in enumerate(list_of_elements):
+        le = DM.LearningElement(
+            lms_id=i,
+            activity_type="lesson",
+            classification=ele_name,
+            name="Test LE",
+            university="TH-AB",
+            created_by="Max Mustermann",
+            created_at="2023-09-01",
+        )
+        list_of_les.append(le.serialize())
+    lp = TM.LearningPath(student_id=1, course_id=1, based_on="default")
+    lp.get_learning_path(
+        student_id=1,
+        learning_style=learning_style,
+        _algorithm="default",
+        list_of_les=list_of_les,
+        default_learning_path=default_learning_path
+    )
+    return lp.path
+
+
+@pytest.mark.parametrize(
+    "learning_style, default_learning_path, list_of_keys",
+    [(
+        {
+
+        },   ['KÜ', 'ZL', 'EK', 'AN', 'BE', 'SE', 'AB', 'ÜB', 'LZ', 'ZF'],
+        np.array(
+                [
+                    "ZF",
+                    "LZ",
+                    "ÜB",
+                    "ÜB",
+                    "ÜB",
+                    "SE",
+                    "BE",
+                    "AN",
+                    "EK",
+                    "EK",
+                    "EK",
+                    "ZL",
+                    "AB",
+                    "KÜ",
+                    "FO",
+                    "RQ",
+                    "LZ",
+                ],
+            ),
+    )
+    ]
+)
+
+def test_get_learning_path_default(learning_style, default_learning_path, list_of_keys):
+    num_of_test = 10
+    list_of_le_size = rng.integers(2, 50, size=num_of_test)
+
+    for i in range(num_of_test):
+        le_position = rng.integers(2, len(list_of_keys), size=list_of_le_size[i])
+        list_of_elements = list_of_keys[le_position]
+        list_of_elements = rng.permutation(list_of_elements)
+
+        result = get_learning_path_default(learning_style, list_of_elements, default_learning_path)
+        assert isinstance(result, str)
+        assert ", " in result
+        result = result.split(", ")
+        assert isinstance(result, list)
+        print("OUTPUT:", result, "\n")
+        if "KÜ" in list_of_elements:
+            assert result[0] == "KÜ"
+        if "EK" in list_of_elements:
+            assert result[0] == "EK" or result[1] == "EK"
+        if "LZ" in list_of_elements:
+            assert result[-1] == "LZ"
 
 @pytest.mark.parametrize(
     "learning_element, learning_style, expected_result",

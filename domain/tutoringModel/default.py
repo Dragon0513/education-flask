@@ -6,7 +6,7 @@ class DefaultAlgorithm:
         # Get all classifications from list of le
         classifications = [le["classification"] for le in list_of_le]
 
-        # Filter the default learning by classification and sort it afterwards by position
+        # Filter the default learning by classification and sort it afterwards by pos
         filtered_sorted_path = sorted(
             (
                 element

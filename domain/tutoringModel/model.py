@@ -30,7 +30,14 @@ class LearningPath:
             "calculated_on": self.calculated_on,
         }
 
-    def get_learning_path(self, student_id, learning_style, _algorithm, list_of_les, default_learning_path=None):
+    def get_learning_path(
+        self,
+        student_id,
+        learning_style,
+        _algorithm,
+        list_of_les,
+        default_learning_path=None,
+    ):
         algorithm = _algorithm.lower()
         if algorithm == "graf":
             path = graf.GrafAlgorithm(student_id=student_id)

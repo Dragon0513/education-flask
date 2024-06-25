@@ -1005,7 +1005,7 @@ def setup_db(
             university text NOT NULL
         )
         """
-    
+
     cursor.execute(sql)
 
     conn.commit()

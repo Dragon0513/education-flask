@@ -717,7 +717,7 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
             if i.user_id == user_id:
                 result.append(i)
         return result
-    
+
     def get_default_learning_path_by_university(self, university):
         result = []
         for i in self.learning_path:
@@ -2604,11 +2604,15 @@ def test_get_learning_style_by_student_id():
     assert type(result) is dict
     assert result != {}
 
+
 def test_get_default_learning_path_by_university():
     uow = FakeUnitOfWork()
-    result = services.get_default_learning_path_by_university(uow=uow, university=university_example)
+    result = services.get_default_learning_path_by_university(
+        uow=uow, university=university_example
+    )
     assert type(result) is dict
     assert result != {}
+
 
 def test_get_learning_strategy_by_student_id():
     uow = FakeUnitOfWork()

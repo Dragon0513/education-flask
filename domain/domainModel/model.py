@@ -35,7 +35,8 @@ class LearningElement:
             "last_updated": self.last_updated,
             "student_learning_element": self.student_learning_element,
         }
-    
+
+
 class DefaultLearningPath:
     def __init__(self, classification: str, position: int, university: str) -> None:
         self.id = None
@@ -48,7 +49,7 @@ class DefaultLearningPath:
             "id": self.id,
             "classification": self.classification,
             "position": self.position,
-            "university": self.university
+            "university": self.university,
         }
 
 

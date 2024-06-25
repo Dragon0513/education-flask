@@ -418,7 +418,9 @@ def create_learning_path(
                 )
                 list_of_les.append(element)
             user = get_user_by_id(uow, user_id, lms_user_id)
-            default_learning_path = get_default_learning_path_by_university(uow, user["university"])
+            default_learning_path = get_default_learning_path_by_university(
+                uow, user["university"]
+            )
             learning_path.get_learning_path(
                 student_id=student_id,
                 learning_style=learning_style,
@@ -1429,16 +1431,20 @@ def get_learning_style_by_student_id(
         characteristic = get_learning_characteristics(uow, student_id)
         result = characteristic["learning_style"]
         return result
-    
+
+
 def get_default_learning_path_by_university(
-        uow: unit_of_work.AbstractUnitOfWork, university: str
+    uow: unit_of_work.AbstractUnitOfWork, university: str
 ) -> list:
     with uow:
-      path = uow.default_learning_path.get_default_learning_path_by_university(university)
-      results = []
-      for elements in path:
-          results.append(elements.serialize())
-      return results
+        path = uow.default_learning_path.get_default_learning_path_by_university(
+            university
+        )
+        results = []
+        for elements in path:
+            results.append(elements.serialize())
+        return results
+
 
 def get_sub_topic_by_topic_id(
     uow: unit_of_work.AbstractUnitOfWork,

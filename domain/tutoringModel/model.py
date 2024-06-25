@@ -1,9 +1,10 @@
 import time
 
-from domain.tutoringModel import aco, ga, graf, nestor, tyche, default
+from domain.tutoringModel import aco, default, ga, graf, nestor, tyche
 from domain.tutoringModel.utils import get_coordinates
 from errors import errors as err
 from utils import constants as cons
+
 
 class LearningPath:
     def __init__(

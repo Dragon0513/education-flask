@@ -8,6 +8,7 @@ venv/
 coverage.xml
 .env
 .coverage
+.coverage.*
 .vscode/
 keys/
 .flaskenv

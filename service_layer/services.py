@@ -182,6 +182,23 @@ def create_course_topic(
         return result
 
 
+def create_default_learning_path_element(
+    uow: unit_of_work.AbstractUnitOfWork,
+    classification: str,
+    position: int,
+    university: str,
+) -> dict:
+    with uow:
+        default_learning_path_element = DM.DefaultLearningPath(
+            classification=classification, position=position, university=university
+        )
+        uow.default_learning_path.create_default_learning_path_element(
+            default_learning_path_element
+        )
+        uow.commit()
+        return default_learning_path_element.serialize()
+
+
 def create_ils_input_answers(
     uow: unit_of_work.AbstractUnitOfWork, questionnaire_ils_id, answers
 ) -> dict:
@@ -1435,7 +1452,7 @@ def get_learning_style_by_student_id(
 
 def get_default_learning_path_by_university(
     uow: unit_of_work.AbstractUnitOfWork, university: str
-) -> list:
+) -> list[dict]:
     with uow:
         path = uow.default_learning_path.get_default_learning_path_by_university(
             university

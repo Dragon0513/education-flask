@@ -15,6 +15,7 @@ class AbstractUnitOfWork(abc.ABC):
     course_creator: repository.AbstractRepository
     course_creator_course: repository.AbstractRepository
     course_topic: repository.AbstractRepository
+    default_learning_path: repository.AbstractRepository
     user: repository.AbstractRepository
     ils_input_answers: repository.AbstractRepository
     ils_perception_answers: repository.AbstractRepository
@@ -34,7 +35,6 @@ class AbstractUnitOfWork(abc.ABC):
     questionnaire_list_k: repository.AbstractRepository
     settings: repository.AbstractRepository
     contact_form: repository.AbstractRepository
-    default_learning_path: repository.AbstractRepository
     student: repository.AbstractRepository
     student_course: repository.AbstractRepository
     student_learning_element: repository.AbstractRepository

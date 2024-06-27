@@ -614,7 +614,9 @@ def get_learning_path_default(learning_style, list_of_elements, default_learning
             created_at="2023-09-01",
         )
         list_of_les.append(le.serialize())
+
     lp = TM.LearningPath(student_id=1, course_id=1, based_on="default")
+
     lp.get_learning_path(
         student_id=1,
         learning_style=learning_style,
@@ -626,11 +628,10 @@ def get_learning_path_default(learning_style, list_of_elements, default_learning
 
 
 @pytest.mark.parametrize(
-    "learning_style, default_learning_path, list_of_keys",
+    "learning_style, list_of_keys",
     [
         (
             {},
-            ["KÜ", "ZL", "EK", "AN", "BE", "SE", "AB", "ÜB", "LZ", "ZF"],
             np.array(
                 [
                     "ZF",
@@ -655,7 +656,7 @@ def get_learning_path_default(learning_style, list_of_elements, default_learning
         )
     ],
 )
-def test_get_learning_path_default(learning_style, default_learning_path, list_of_keys):
+def test_get_learning_path_default(learning_style, list_of_keys):
     num_of_test = 10
     list_of_le_size = rng.integers(2, 50, size=num_of_test)
 
@@ -663,6 +664,19 @@ def test_get_learning_path_default(learning_style, default_learning_path, list_o
         le_position = rng.integers(2, len(list_of_keys), size=list_of_le_size[i])
         list_of_elements = list_of_keys[le_position]
         list_of_elements = rng.permutation(list_of_elements)
+
+        default_learning_path = [
+            {"classification": "KÜ", "position": 1},
+            {"classification": "ZL", "position": 2},
+            {"classification": "EK", "position": 3},
+            {"classification": "AN", "position": 4},
+            {"classification": "BE", "position": 5},
+            {"classification": "SE", "position": 6},
+            {"classification": "AB", "position": 7},
+            {"classification": "ÜB", "position": 8},
+            {"classification": "LZ", "position": 9},
+            {"classification": "ZF", "position": 10},
+        ]
 
         result = get_learning_path_default(
             learning_style, list_of_elements, default_learning_path
@@ -674,10 +688,10 @@ def test_get_learning_path_default(learning_style, default_learning_path, list_o
         print("OUTPUT:", result, "\n")
         if "KÜ" in list_of_elements:
             assert result[0] == "KÜ"
-        if "EK" in list_of_elements:
-            assert result[0] == "EK" or result[1] == "EK"
-        if "LZ" in list_of_elements:
-            assert result[-1] == "LZ"
+        if "ZL" in list_of_elements:
+            assert result[0] == "ZL" or result[1] == "ZL"
+        if "ZF" in list_of_elements:
+            assert result[-1] == "ZF"
 
 
 @pytest.mark.parametrize(

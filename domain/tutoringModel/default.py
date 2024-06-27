@@ -1,5 +1,5 @@
 class DefaultAlgorithm:
-    def __init__(self, default_learning_path: list):
+    def __init__(self, default_learning_path: list[dict]):
         self.default_learning_path = default_learning_path
 
     def get_learning_path(self, list_of_le: list) -> str:

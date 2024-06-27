@@ -60,6 +60,12 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
+    def create_default_learning_path_element(
+        self, default_learning_path_element: DM.DefaultLearningPath
+    ) -> None:
+        raise NotImplementedError
+
+    @abc.abstractmethod
     def create_ils_input_answers(
         self, ils_input_answers: LM.IlsInputAnswers
     ) -> LM.IlsInputAnswers:
@@ -673,6 +679,14 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
     def create_course_topic(self, course_topic: DM.CourseTopic) -> DM.CourseTopic:
         try:
             self.session.add(course_topic)
+        except Exception:
+            raise err.CreationError()
+
+    def create_default_learning_path_element(
+        self, default_learning_path_element: DM.DefaultLearningPath
+    ) -> None:
+        try:
+            self.session.add(default_learning_path_element)
         except Exception:
             raise err.CreationError()
 

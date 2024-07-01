@@ -95,7 +95,7 @@ cursor.execute(sql)
 
 sql = """
     INSERT INTO haski_user (name, university, lms_user_id, role)
-    VALUES ('Marc Normann', 'HS-AS', 5, 'course creator')
+    VALUES ('Marc Normann', 'TH-AB', 5, 'course creator')
 """
 cursor.execute(sql)
 
@@ -133,7 +133,7 @@ cursor.execute(sql)
 # Create student user
 sql = """
     INSERT INTO haski_user (name, university, lms_user_id, role)
-    VALUES ('Emily Johnson', 'HS-AS', 7, 'student')
+    VALUES ('Emily Johnson', 'TH-AB', 7, 'student')
 """
 cursor.execute(sql)
 
@@ -189,7 +189,7 @@ cursor.execute(sql)
 # Create teacher user
 sql = """
     INSERT INTO haski_user (name, university, lms_user_id, role)
-    VALUES ('Emma Johnson', 'HS-AS', 10, 'teacher')
+    VALUES ('Emma Johnson', 'TH-AB', 10, 'teacher')
 """
 cursor.execute(sql)
 
@@ -250,7 +250,7 @@ cursor.execute(sql)
 
 sql = """
     INSERT INTO course (lms_id, name, university)
-    VALUES (3, 'Software Architecture', 'HS-AS')
+    VALUES (3, 'Software Architecture', 'TH-AB')
 """
 cursor.execute(sql)
 
@@ -296,7 +296,7 @@ cursor.execute(sql)
 sql = """
     INSERT INTO topic (lms_id, is_topic, contains_le, name, university,\
     created_by, created_at, last_updated)
-    VALUES (4, true, true, 'General', 'HS-AS', 'Marc Normann',\
+    VALUES (4, true, true, 'General', 'TH-AB', 'Marc Normann',\
     '2023-07-13 16:00:00', '2023-07-20 20:00:00')
 """
 cursor.execute(sql)
@@ -304,7 +304,7 @@ cursor.execute(sql)
 sql = """
     INSERT INTO topic (lms_id, is_topic, contains_le, name, university,\
     created_by, created_at, last_updated)
-    VALUES (5, true, true, 'Design Pattern', 'HS-AS', 'Marc Normann',\
+    VALUES (5, true, true, 'Design Pattern', 'TH-AB', 'Marc Normann',\
     '2023-07-13 16:00:00', '2023-07-20 20:00:00')
 """
 cursor.execute(sql)
@@ -312,7 +312,7 @@ cursor.execute(sql)
 sql = """
     INSERT INTO topic (lms_id, is_topic, contains_le, name, university,\
     created_by, created_at, last_updated)
-    VALUES (6, true, false, 'Nothing else', 'HS-AS', 'Marc Normann',\
+    VALUES (6, true, false, 'Nothing else', 'TH-AB', 'Marc Normann',\
     '2023-07-13 16:00:00', '2023-07-20 20:00:00')
 """
 cursor.execute(sql)
@@ -1918,6 +1918,115 @@ sql = """
 """
 cursor.execute(sql)
 
+# Create default learning path for HS-KE
+sql = """
+    INSERT INTO default_learning_path (classification, position, university)
+    VALUES ('KÜ', 1, 'HS-KE')
+"""
+cursor.execute(sql)
+
+sql = """
+    INSERT INTO default_learning_path (classification, position, university)
+    VALUES ('EK', 2, 'HS-KE')
+"""
+cursor.execute(sql)
+
+sql = """
+    INSERT INTO default_learning_path (classification, position, university)
+    VALUES ('AN', 3, 'HS-KE')
+"""
+cursor.execute(sql)
+
+sql = """
+    INSERT INTO default_learning_path (classification, position, university)
+    VALUES ('SE', 4, 'HS-KE')
+"""
+cursor.execute(sql)
+
+sql = """
+    INSERT INTO default_learning_path (classification, position, university)
+    VALUES ('BE', 5, 'HS-KE')
+"""
+cursor.execute(sql)
+
+sql = """
+    INSERT INTO default_learning_path (classification, position, university)
+    VALUES ('ÜB', 6, 'HS-KE')
+"""
+cursor.execute(sql)
+
+sql = """
+    INSERT INTO default_learning_path (classification, position, university)
+    VALUES ('ZF', 7, 'HS-KE')
+"""
+cursor.execute(sql)
+
+sql = """
+    INSERT INTO default_learning_path (classification, position, university)
+    VALUES ('ZL', 8, 'HS-KE')
+"""
+cursor.execute(sql)
+
+# Create default learning path for TH-AB
+sql = """
+    INSERT INTO default_learning_path (classification, position, university)
+    VALUES ('KÜ', 1, 'TH-AB')
+"""
+cursor.execute(sql)
+
+sql = """
+    INSERT INTO default_learning_path (classification, position, university)
+    VALUES ('ZL', 2, 'TH-AB')
+"""
+cursor.execute(sql)
+
+sql = """
+    INSERT INTO default_learning_path (classification, position, university)
+    VALUES ('EK', 3, 'TH-AB')
+"""
+cursor.execute(sql)
+
+sql = """
+    INSERT INTO default_learning_path (classification, position, university)
+    VALUES ('AN', 4, 'TH-AB')
+"""
+cursor.execute(sql)
+
+sql = """
+    INSERT INTO default_learning_path (classification, position, university)
+    VALUES ('BE', 5, 'TH-AB')
+"""
+cursor.execute(sql)
+
+sql = """
+    INSERT INTO default_learning_path (classification, position, university)
+    VALUES ('SE', 6, 'TH-AB')
+"""
+cursor.execute(sql)
+
+sql = """
+    INSERT INTO default_learning_path (classification, position, university)
+    VALUES ('AB', 7, 'TH-AB')
+"""
+cursor.execute(sql)
+
+sql = """
+    INSERT INTO default_learning_path (classification, position, university)
+    VALUES ('ÜB', 8, 'TH-AB')
+"""
+cursor.execute(sql)
+
+sql = """
+    INSERT INTO default_learning_path (classification, position, university)
+    VALUES ('LZ', 9, 'TH-AB')
+"""
+cursor.execute(sql)
+
+sql = """
+    INSERT INTO default_learning_path (classification, position, university)
+    VALUES ('ZF', 10, 'TH-AB')
+"""
+cursor.execute(sql)
 
 conn.commit()
 # Closing the connection

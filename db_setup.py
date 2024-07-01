@@ -93,6 +93,7 @@ def setup_db(
     cursor.execute("DROP TABLE IF EXISTS ils_processing_answers")
     cursor.execute("DROP TABLE IF EXISTS ils_understanding_answers")
     cursor.execute("DROP TABLE IF EXISTS questionnaire_list_k")
+    cursor.execute("DROP TABLE IF EXISTS default_learning_path")
 
     # Creating table as per requirement
     sql = """
@@ -992,6 +993,19 @@ def setup_db(
         ALTER TABLE IF EXISTS public.questionnaire_list_k
             OWNER to postgres;
     """
+    cursor.execute(sql)
+
+    sql = """
+        CREATE TABLE IF NOT EXISTS public.default_learning_path
+        (
+            id integer NOT NULL GENERATED ALWAYS AS IDENTITY
+            ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+            classification text NOT NULL,
+            position integer NOT NULL,
+            university text NOT NULL
+        )
+        """
+
     cursor.execute(sql)
 
     conn.commit()

@@ -28,6 +28,7 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
         course_creator=[],
         course_creator_course=[],
         course_topic=[],
+        default_learning_path=[],
         ils_input_answers=[],
         ils_perception_answers=[],
         ils_processing_answers=[],
@@ -63,6 +64,7 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
         self.course_creator = set(course_creator)
         self.course_creator_course = set(course_creator_course)
         self.course_topic = set(course_topic)
+        self.default_learning_path = set(default_learning_path)
         self.knowledge = set(knowledge)
         self.ils_input_answers = set(ils_input_answers)
         self.ils_perception_answers = set(ils_perception_answers)
@@ -135,6 +137,10 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
     def create_course_topic(self, course_topic):
         course_topic.id = len(self.course_topic) + 1
         self.course_topic.add(course_topic)
+
+    def create_default_learning_path_element(self, default_learning_path_element):
+        default_learning_path_element.id = len(self.default_learning_path) + 1
+        self.default_learning_path.add(default_learning_path_element)
 
     def create_ils_input_answers(self, ils_input_answers):
         ils_input_answers.id = len(self.ils_input_answers) + 1
@@ -718,6 +724,13 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
                 result.append(i)
         return result
 
+    def get_default_learning_path_by_university(self, university):
+        result = []
+        for i in self.default_learning_path:
+            if i.university == university:
+                result.append(i)
+        return result
+
     def get_student_by_id(self, user_id):
         result = []
         for i in self.student:
@@ -1012,6 +1025,7 @@ class FakeUnitOfWork(unit_of_work.AbstractUnitOfWork):  # pragma: no cover
         self.course_creator = FakeRepository()
         self.course_creator_course = FakeRepository()
         self.course_topic = FakeRepository()
+        self.default_learning_path = FakeRepository()
         self.ils_input_answers = FakeRepository()
         self.ils_perception_answers = FakeRepository()
         self.ils_processing_answers = FakeRepository()
@@ -1302,6 +1316,14 @@ def create_learning_path_for_tests(uow, algorithm="aco"):
         topic_id=1,
         algorithm=algorithm,
     )
+
+
+def create_default_learning_path_for_tests(uow):
+    classifications = ["KÜ", "ZL", "EK", "AN", "BE", "SE", "AB", "ÜB", "LZ", "ZF"]
+    for index, classification in enumerate(classifications):
+        services.create_default_learning_path_element(
+            uow=uow, classification=classification, position=index, university="TH-AB"
+        )
 
 
 def create_learning_path_for_tests_ga(uow):
@@ -2596,6 +2618,16 @@ def test_get_learning_style_by_student_id():
     result = services.get_learning_style_by_student_id(uow=uow, student_id=1)
     assert type(result) is dict
     assert result != {}
+
+
+def test_get_default_learning_path_by_university():
+    uow = FakeUnitOfWork()
+    create_default_learning_path_for_tests(uow)
+    result = services.get_default_learning_path_by_university(
+        uow=uow, university=university_example
+    )
+    assert isinstance(result, list)
+    assert result != []
 
 
 def test_get_learning_strategy_by_student_id():

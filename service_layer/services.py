@@ -189,7 +189,7 @@ def create_default_learning_path_element(
     university: str,
 ) -> dict:
     with uow:
-        default_learning_path_element = DM.DefaultLearningPath(
+        default_learning_path_element = DM.DefaultLearningPathElement(
             classification=classification, position=position, university=university
         )
         uow.default_learning_path.create_default_learning_path_element(

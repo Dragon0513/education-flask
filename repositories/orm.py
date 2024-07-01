@@ -532,7 +532,7 @@ def start_mappers():
         contact_form,
     )
 
-    mapper_registry.map_imperatively(DM.DefaultLearningPath, default_learning_path)
+    mapper_registry.map_imperatively(DM.DefaultLearningPathElement, default_learning_path)
 
     mapper_registry.map_imperatively(
         UA.Student,

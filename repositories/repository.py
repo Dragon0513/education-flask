@@ -61,7 +61,7 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
 
     @abc.abstractmethod
     def create_default_learning_path_element(
-        self, default_learning_path_element: DM.DefaultLearningPath
+        self, default_learning_path_element: DM.DefaultLearningPathElement
     ) -> None:
         raise NotImplementedError
 
@@ -440,7 +440,7 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
     @abc.abstractmethod
     def get_default_learning_path_by_university(
         self, university: str
-    ) -> list[DM.DefaultLearningPath]:
+    ) -> list[DM.DefaultLearningPathElement]:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -683,7 +683,7 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
             raise err.CreationError()
 
     def create_default_learning_path_element(
-        self, default_learning_path_element: DM.DefaultLearningPath
+        self, default_learning_path_element: DM.DefaultLearningPathElement
     ) -> None:
         try:
             self.session.add(default_learning_path_element)
@@ -1421,13 +1421,13 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
 
     def get_default_learning_path_by_university(
         self, university: str
-    ) -> list[DM.DefaultLearningPath]:
-        self.session.query(DM.DefaultLearningPath).filter_by(
+    ) -> list[DM.DefaultLearningPathElement]:
+        self.session.query(DM.DefaultLearningPathElement).filter_by(
             university=university
         ).all()
         try:
             return (
-                self.session.query(DM.DefaultLearningPath)
+                self.session.query(DM.DefaultLearningPathElement)
                 .filter_by(university=university)
                 .all()
             )

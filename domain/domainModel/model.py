@@ -37,7 +37,7 @@ class LearningElement:
         }
 
 
-class DefaultLearningPath:
+class DefaultLearningPathElement:
     def __init__(self, classification: str, position: int, university: str) -> None:
         self.id = None
         self.classification = classification

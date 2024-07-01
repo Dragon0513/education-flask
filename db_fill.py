@@ -569,7 +569,7 @@ cursor.execute(sql)
 
 # create news
 sql = """
-    INSERT INTO news (language_id, news_content, expiration_date, date)
+    INSERT INTO news (language_id, news_content, expiration_date, created_at)
     VALUES ('de', 'Wir testen gerade die Seite', \
     '2025-04-20 16:00:00',\
     '2023-07-13 16:00:00')
@@ -577,7 +577,7 @@ sql = """
 cursor.execute(sql)
 
 sql = """
-    INSERT INTO news (language_id, news_content, expiration_date, date)
+    INSERT INTO news (language_id, news_content, expiration_date, created_at)
     VALUES ('en', 'Test for eng news', \
     '2025-04-15 16:00:00',\
     '2023-07-13 16:00:00')
@@ -585,7 +585,7 @@ sql = """
 cursor.execute(sql)
 
 sql = """
-    INSERT INTO news (language_id, news_content, university, expiration_date, date)
+    INSERT INTO news (language_id, news_content, university, expiration_date, created_at)
     VALUES ('en', 'Test in en and with Kempten university', \
     'HS-KE', '2025-04-20 16:00:00',\
     '2023-07-13 16:00:00')
@@ -593,7 +593,7 @@ sql = """
 cursor.execute(sql)
 
 sql = """
-    INSERT INTO news (language_id, news_content, university, expiration_date, date)
+    INSERT INTO news (language_id, news_content, university, expiration_date, created_at)
     VALUES ('en', 'Test in eng and with Aschaffenburg university', \
     'HS-AS', '2025-04-15 16:00:00',\
     '2023-07-13 16:00:00')

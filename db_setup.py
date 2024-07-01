@@ -172,7 +172,7 @@ def setup_db(
             news_content text COLLATE pg_catalog."default",
             university text COLLATE pg_catalog."default",
             expiration_date timestamp without time zone NOT NULL,
-            date timestamp without time zone NOT NULL,
+            created_at timestamp without time zone NOT NULL,
             CONSTRAINT news_pkey PRIMARY KEY (id)
         )
 

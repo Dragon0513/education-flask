@@ -1343,14 +1343,14 @@ class TestApi:
                 {
                     "university": "HS-AS",
                     "language_id": "en",
-                    "date": "2023-08-01T13:37:42Z",
+                    "created_at": "2023-08-01T13:37:42Z",
                     "news_content": "This is news",
                     "expiration_date": "2028-08-01T13:37:42Z",
                 },
                 [
                     "id",
                     "university",
-                    "date",
+                    "created_at",
                     "language_id",
                     "expiration_date",
                     "news_content",
@@ -2605,7 +2605,7 @@ class TestApi:
                 "en",
                 "HS-AS",
                 [
-                    "date",
+                    "created_at",
                     "expiration_date",
                     "language_id",
                     "news_content",
@@ -2618,7 +2618,7 @@ class TestApi:
                 "en",
                 "",
                 [
-                    "date",
+                    "created_at",
                     "expiration_date",
                     "language_id",
                     "news_content",

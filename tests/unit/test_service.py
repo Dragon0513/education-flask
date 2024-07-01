@@ -875,7 +875,7 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
                 result.append(i)
         return result
 
-    def get_news(self, language_id, university, date=None):
+    def get_news(self, language_id, university, created_at=None):
         result = []
         for i in self.news:
             if i.language_id == language_id and i.university == university:
@@ -1343,9 +1343,9 @@ def create_news_for_tests(uow):
         uow=uow,
         university="HS-AS",
         language_id="en",
-        date=datetime.datetime.now(),
+        created_at=datetime.datetime.now(),
         news_content="random text",
-        expiration_date=datetime.datetime(2027, 2, 15, 18, 54, 58, 291224),
+        expiration_date=datetime.datetime(3027, 2, 15, 18, 54, 58, 291224),
     )
 
 
@@ -1519,9 +1519,9 @@ def test_create_news():
         uow=uow,
         university="HS-AS",
         language_id="en",
-        date=datetime.datetime.now(),
+        created_at=datetime.datetime.now(),
         news_content="idk",
-        expiration_date=datetime.datetime(2027, 2, 15, 18, 54, 58, 291224),
+        expiration_date=datetime.datetime(3027, 2, 15, 18, 54, 58, 291224),
     )
     assert type(result) is dict
     assert result != {}
@@ -1668,7 +1668,7 @@ def test_get_news():
     assert type(result) == dict
     assert result != {}
     keys_expected = [
-        "date",
+        "created_at",
         "expiration_date",
         "language_id",
         "news_content",

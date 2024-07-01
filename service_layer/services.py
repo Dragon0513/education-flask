@@ -725,12 +725,14 @@ def create_news(
     uow: unit_of_work.AbstractUnitOfWork,
     university,
     language_id,
-    date,
+    created_at,
     news_content,
     expiration_date,
 ) -> dict:
     with uow:
-        news = UA.News(language_id, news_content, expiration_date, date, university)
+        news = UA.News(
+            language_id, news_content, expiration_date, created_at, university
+        )
         uow.news.create_news(news)
         uow.commit()
         result = news.serialize()
@@ -1754,15 +1756,15 @@ def get_news(
     uow: unit_of_work.AbstractUnitOfWork,
     language_id,
     university,
-    date,
+    created_at,
 ) -> dict:
     with uow:
         backend_response_university = []
         if university is not None:
             backend_response_university = uow.news.get_news(
-                language_id, university, date
+                language_id, university, created_at
             )
-        backend_response = uow.news.get_news(language_id, None, date)
+        backend_response = uow.news.get_news(language_id, None, created_at)
 
         result = dict()
         result["news"] = [

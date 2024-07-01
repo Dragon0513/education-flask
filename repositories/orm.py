@@ -327,7 +327,7 @@ news = Table(
     Column("news_content", String, nullable=False),
     Column("university", String, nullable=True),
     Column("expiration_date", Date, nullable=True),
-    Column("date", Date, nullable=False),
+    Column("created_at", Date, nullable=False),
 )
 
 student = Table(

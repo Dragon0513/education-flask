@@ -516,7 +516,7 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_news(self, language, university, date) -> UA.News:
+    def get_news(self, language, university, created_at) -> UA.News:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -1577,12 +1577,12 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         except Exception as e:
             raise err.DatabaseQueryError(exception=e)
 
-    def get_news(self, language, university, date) -> UA.News:
+    def get_news(self, language, university, created_at) -> UA.News:
         try:
             result = (
                 self.session.query(UA.News)
                 .filter_by(language_id=language, university=university)
-                .filter(UA.News.expiration_date >= date)
+                .filter(UA.News.expiration_date >= created_at)
                 .all()
             )
             return result

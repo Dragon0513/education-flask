@@ -251,7 +251,7 @@ class NewsError(AException):
     def __init__(
         self,
         exception: Exception | None = None,
-        message="Something went wrong when sending the News.",
+        message="Something went wrong sending the News.",
         status_code=400,
     ):
         super().__init__(exception, message, status_code)

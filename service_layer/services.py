@@ -182,6 +182,23 @@ def create_course_topic(
         return result
 
 
+def create_default_learning_path_element(
+    uow: unit_of_work.AbstractUnitOfWork,
+    classification: str,
+    position: int,
+    university: str,
+) -> dict:
+    with uow:
+        default_learning_path_element = DM.DefaultLearningPathElement(
+            classification=classification, position=position, university=university
+        )
+        uow.default_learning_path.create_default_learning_path_element(
+            default_learning_path_element
+        )
+        uow.commit()
+        return default_learning_path_element.serialize()
+
+
 def create_ils_input_answers(
     uow: unit_of_work.AbstractUnitOfWork, questionnaire_ils_id, answers
 ) -> dict:
@@ -417,11 +434,16 @@ def create_learning_path(
                     learning_element_id=le["learning_element_id"],
                 )
                 list_of_les.append(element)
+            user = get_user_by_id(uow, user_id, lms_user_id)
+            default_learning_path = get_default_learning_path_by_university(
+                uow, user["university"]
+            )
             learning_path.get_learning_path(
                 student_id=student_id,
                 learning_style=learning_style,
                 _algorithm=algorithm.lower(),
                 list_of_les=list_of_les,
+                default_learning_path=default_learning_path,
             )
             result = learning_path.serialize()
             for i, le in enumerate(result["path"].replace(",", "").split()):
@@ -1451,6 +1473,19 @@ def get_learning_style_by_student_id(
         characteristic = get_learning_characteristics(uow, student_id)
         result = characteristic["learning_style"]
         return result
+
+
+def get_default_learning_path_by_university(
+    uow: unit_of_work.AbstractUnitOfWork, university: str
+) -> list[dict]:
+    with uow:
+        path = uow.default_learning_path.get_default_learning_path_by_university(
+            university
+        )
+        results = []
+        for elements in path:
+            results.append(elements.serialize())
+        return results
 
 
 def get_sub_topic_by_topic_id(

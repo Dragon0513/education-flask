@@ -330,6 +330,15 @@ news = Table(
     Column("created_at", Date, nullable=False),
 )
 
+default_learning_path = Table(
+    "default_learning_path",
+    mapper_registry.metadata,
+    Column("id", Integer, primary_key=True, autoincrement=True),
+    Column("classification", String, nullable=False),
+    Column("position", Integer, nullable=False),
+    Column("university", String, nullable=False),
+)
+
 student = Table(
     "student",
     mapper_registry.metadata,
@@ -537,6 +546,10 @@ def start_mappers():
     mapper_registry.map_imperatively(
         UA.News,
         news,
+    )
+    
+    mapper_registry.map_imperatively(
+        DM.DefaultLearningPathElement, default_learning_path
     )
 
     mapper_registry.map_imperatively(

@@ -547,7 +547,7 @@ def start_mappers():
         UA.News,
         news,
     )
-    
+
     mapper_registry.map_imperatively(
         DM.DefaultLearningPathElement, default_learning_path
     )

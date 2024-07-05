@@ -61,7 +61,7 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
 
     @abc.abstractmethod
     def create_default_learning_path_element(
-        self, default_learning_path_element: DM.DefaultLearningPathElement
+        self, default_learning_path_element: TM.DefaultLearningPathElement
     ) -> None:
         raise NotImplementedError
 
@@ -110,6 +110,10 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
     @abc.abstractmethod
     def create_learning_path(self, learning_path) -> TM.LearningPath:
         raise NotImplementedError
+    
+    @abc.abstractmethod
+    def create_learning_path_algorithm(self, learning_path_algorithm: TM.LearningPathAlgorithm) -> None:
+        raise NotImplementedError
 
     @abc.abstractmethod
     def create_learning_path_learning_element(
@@ -147,6 +151,10 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
 
     @abc.abstractmethod
     def create_student(self, student: UA.Student) -> UA.Student:
+        raise NotImplementedError
+    
+    @abc.abstractmethod
+    def create_student_learning_path_learning_element_algorithm(self, student_learning_path_learning_element_algorithm: DM.StudentLearningPathLearningElementAlgorithm) -> None:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -400,6 +408,10 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
     @abc.abstractmethod
     def get_learning_paths(self, student_id):
         raise NotImplementedError
+    
+    @abc.abstractmethod
+    def get_learning_path_algorithm_by_id(self, id) -> TM.LearningPathAlgorithm:
+        raise NotImplementedError
 
     @abc.abstractmethod
     def get_learning_path_learning_element(
@@ -440,7 +452,7 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
     @abc.abstractmethod
     def get_default_learning_path_by_university(
         self, university: str
-    ) -> list[DM.DefaultLearningPathElement]:
+    ) -> list[TM.DefaultLearningPathElement]:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -463,6 +475,10 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
     def get_student_learning_element(
         self, student_id, learning_element_id
     ) -> DM.StudentLearningElement:
+        raise NotImplementedError
+    
+    @abc.abstractmethod
+    def get_student_learning_path_learning_element_algorithm(self, student_id, topic_id) -> DM.StudentLearningPathLearningElementAlgorithm:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -683,10 +699,12 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
             raise err.CreationError()
 
     def create_default_learning_path_element(
-        self, default_learning_path_element: DM.DefaultLearningPathElement
+        self, default_learning_path_element: TM.DefaultLearningPathElement
     ) -> None:
         try:
             self.session.add(default_learning_path_element)
+        except IntegrityError:
+            raise err.ForeignKeyViolation()
         except Exception:
             raise err.CreationError()
 
@@ -785,6 +803,14 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
             raise err.ForeignKeyViolation()
         except Exception:
             raise err.CreationError()
+        
+    def create_learning_path_algorithm(self, learning_path_algorithm: TM.LearningPathAlgorithm) -> None:
+        try:
+            self.session.add(learning_path_algorithm)
+        except IntegrityError:
+            raise err.ForeignKeyViolation()
+        except Exception:
+            raise err.CreationError()
 
     def create_learning_strategy(self, learning_strategy) -> LM.LearningStrategy:
         try:
@@ -835,6 +861,14 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
     def create_student(self, student: UA.Student) -> UA.Student:
         try:
             self.session.add(student)
+        except IntegrityError:
+            raise err.ForeignKeyViolation()
+        except Exception:
+            raise err.CreationError()
+        
+    def create_student_learning_path_learning_element_algorithm(self, student_learning_path_learning_element_algorithm: DM.StudentLearningPathLearningElementAlgorithm) -> None:
+        try:
+            self.session.add(student_learning_path_learning_element_algorithm)
         except IntegrityError:
             raise err.ForeignKeyViolation()
         except Exception:
@@ -1277,6 +1311,12 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
             self.session.query(TM.LearningPath).filter_by(student_id=student_id).all()
         )
         return result
+    
+    def get_learning_path_algorithm_by_id(self, id) -> TM.LearningPathAlgorithm:
+        try:
+            return (self.session.query(TM.LearningPathAlgorithm).filter_by(id=id).all())
+        except Exception:
+            raise err.DatabaseQueryError()
 
     def get_learning_path_learning_element(
         self, learning_path_id
@@ -1421,13 +1461,10 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
 
     def get_default_learning_path_by_university(
         self, university: str
-    ) -> list[DM.DefaultLearningPathElement]:
-        self.session.query(DM.DefaultLearningPathElement).filter_by(
-            university=university
-        ).all()
+    ) -> list[TM.DefaultLearningPathElement]:
         try:
             return (
-                self.session.query(DM.DefaultLearningPathElement)
+                self.session.query(TM.DefaultLearningPathElement)
                 .filter_by(university=university)
                 .all()
             )
@@ -1464,6 +1501,12 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
                 .filter_by(learning_element_id=learning_element_id)
                 .all()
             )
+        except Exception:
+            raise err.DatabaseQueryError()
+        
+    def get_student_learning_path_learning_element_algorithm(self, student_id, topic_id) -> DM.StudentLearningPathLearningElementAlgorithm:
+        try:
+            return (self.session.query(DM.StudentLearningPathLearningElementAlgorithm).filter_by(student_id=student_id).filter_by(topic_id=topic_id).all())
         except Exception:
             raise err.DatabaseQueryError()
 

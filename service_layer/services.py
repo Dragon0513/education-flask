@@ -189,7 +189,7 @@ def create_default_learning_path_element(
     university: str,
 ) -> dict:
     with uow:
-        default_learning_path_element = DM.DefaultLearningPathElement(
+        default_learning_path_element = TM.DefaultLearningPathElement(
             classification=classification, position=position, university=university
         )
         uow.default_learning_path.create_default_learning_path_element(
@@ -461,6 +461,20 @@ def create_learning_path(
                             create_learning_path_learning_element(path_element)
         uow.commit()
         return result
+    
+def create_learning_path_algorithm(
+    uow: unit_of_work.AbstractUnitOfWork,
+    short_name: str,
+    full_name: str = '') -> dict:
+    with uow:
+        learning_path_algorithm = TM.LearningPathAlgorithm(
+            short_name=short_name, full_name=full_name
+        )
+        uow.learning_path_algorithm.create_learning_path_algorithm(
+            learning_path_algorithm
+        )
+        uow.commit()
+        return learning_path_algorithm.serialize()
 
 
 def create_learning_strategy(
@@ -666,6 +680,14 @@ def create_student(uow: unit_of_work.AbstractUnitOfWork, user) -> dict:
         create_learning_characteristics(uow, student.id)
         result = student.serialize()
         return result
+
+
+def create_student_learning_path_learning_element_algorithm(uow: unit_of_work.AbstractUnitOfWork, student_id: int, topic_id: int, algorithm_id: int) -> dict:
+    with uow:
+        algorithm = DM.StudentLearningPathLearningElementAlgorithm(student_id, topic_id, algorithm_id)
+        uow.student_learning_path_learning_element_algorithm.create_student_learning_path_learning_element_algorithm(algorithm)
+        uow.commit()
+        return algorithm.serialize()
 
 
 def create_teacher(uow: unit_of_work.AbstractUnitOfWork, user) -> dict:
@@ -1407,6 +1429,15 @@ def get_learning_paths(uow: unit_of_work.AbstractUnitOfWork, student_id) -> list
             result.append(path.serialize())
         return result
 
+def get_learning_path_algorithm_by_id(uow: unit_of_work.AbstractUnitOfWork, id: int) -> dict:
+    with uow:
+        learning_path_algorithm = uow.learning_path_algorithm.get_learning_path_algorithm_by_id(id)
+        if learning_path_algorithm == []:
+            result = {}
+        else:
+            result = learning_path_algorithm[0].serialize()
+        return result
+    
 
 def get_learning_strategy(
     uow: unit_of_work.AbstractUnitOfWork, characteristic_id
@@ -1736,6 +1767,16 @@ def get_settings_for_user(uow: unit_of_work.AbstractUnitOfWork, user_id) -> dict
             result = {}
         else:
             result = settings[0].serialize()
+        return result
+
+
+def get_student_learning_path_learning_element_algorithm(uow: unit_of_work.AbstractUnitOfWork, student_id: int, topic_id: int) -> dict:
+    with uow:
+        algorithm = uow.student_learning_path_learning_element_algorithm.get_student_learning_path_learning_element_algorithm(student_id, topic_id)
+        if algorithm == []:
+            result = {}
+        else:
+            result = algorithm[0].serialize()
         return result
 
 

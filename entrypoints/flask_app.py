@@ -1362,6 +1362,53 @@ def learning_path_administration(
                     raise err.WrongParameterValueError()
             else:
                 raise err.MissingParameterError()
+            
+
+@app.route(
+    "/user/<user_id>/<lms_user_id>/learningPath",
+    methods=["POST"],
+)
+@cross_origin(supports_credentials=True)
+@json_only()
+def post_calculate_learning_path(_: Dict[str, Any], user_id, lms_user_id):
+    match request.method:
+        case "POST":
+
+            # Get unit of work.
+            uow = unit_of_work.SqlAlchemyUnitOfWork()
+
+            # Get student and their courses.
+            student = services.get_student_by_user_id(uow, user_id)
+            courses = services.get_courses_by_student_id(uow, user_id, lms_user_id, student["id"])
+
+            for course in courses["courses"]:
+                # Get every available topic in all course.
+                topics = [
+                    topic
+                    for topic in services.get_topics_by_student_and_course_id(uow, user_id, lms_user_id, student["id"], course["id"])["topics"]
+                ]
+
+                results = []
+                for topic in topics:
+                    # Get algorithm for the topic.
+                    student_algorithm = services.get_student_learning_path_learning_element_algorithm(uow, student["id"], topic["id"])
+                    algorithm = services.get_learning_path_algorithm_by_id(uow, student_algorithm["id"])
+                    algorithm_name = algorithm["short_name"]
+
+                    # Create learning path.
+                    results.append(services.create_learning_path(
+                                unit_of_work.SqlAlchemyUnitOfWork(),
+                                user_id,
+                                lms_user_id,
+                                student["id"],
+                                course["id"],
+                                topic["id"],
+                                algorithm_name.lower(),
+                            ))
+                    
+            # Return results with status code.
+            status_code = 201
+            return jsonify(results), status_code
 
 
 @app.route(

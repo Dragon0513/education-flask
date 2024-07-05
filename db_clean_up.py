@@ -105,6 +105,9 @@ def clean_up_db(
     cursor.execute("DELETE FROM settings")
     cursor.execute("DELETE FROM contact_form")
     cursor.execute("DELETE FROM haski_user")
+    cursor.execute("DELETE FROM default_learning_path")
+    cursor.execute("DELETE FROM student_learning_path_learning_element_algorithm")
+    cursor.execute("DELETE FROM learning_path_algorithm")
 
     conn.commit()
 

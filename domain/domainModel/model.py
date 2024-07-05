@@ -37,22 +37,6 @@ class LearningElement:
         }
 
 
-class DefaultLearningPathElement:
-    def __init__(self, classification: str, position: int, university: str) -> None:
-        self.id = None
-        self.classification = classification
-        self.position = position
-        self.university = university
-
-    def serialize(self):
-        return {
-            "id": self.id,
-            "classification": self.classification,
-            "position": self.position,
-            "university": self.university,
-        }
-
-
 class Course:
     def __init__(
         self,
@@ -302,6 +286,21 @@ class StudentLearningElementVisit:
             "learning_element_id": self.learning_element_id,
             "visit_start": self.visit_start,
             "visit_end": self.visit_end,
+        }
+    
+class StudentLearningPathLearningElementAlgorithm:
+    def __init__(self, student_id, topic_id, algorithm_id) -> None:
+        self.id = None
+        self.student_id = student_id
+        self.topic_id = topic_id
+        self.algorithm_id = algorithm_id
+
+    def serialize(self) -> dict:
+        return {
+            "id": self.id,
+            "student_id": self.student_id,
+            "topic_id": self.topic_id,
+            "algorithm_id": self.algorithm_id,
         }
 
 

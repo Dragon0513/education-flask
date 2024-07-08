@@ -1,6 +1,12 @@
+import random
+from collections import defaultdict
+
 from pgmpy.estimators import ExpectationMaximization as EM
 from pgmpy.models import BayesianNetwork
 
+from domain.tutoringModel.utils import ran_seed
+
+random.seed(ran_seed)
 # Helper functions
 
 
@@ -28,6 +34,37 @@ def categorize_lisk_bfi(input_dataframe, encoding_columns):
                 ]
 
     return input_dataframe
+
+
+def randomize_same_values(sorted_dict):
+    """
+    This function takes a dictionary sorted in descending order by its values.
+    It randomizes the order of keys that have the same value while maintaining
+    the overall descending order of different values.
+    """
+    # the probability values have string datatype
+    # Convert string values to floats for comparison and sorting
+    float_dict = {k: float(v) for k, v in sorted_dict.items()}
+
+    # Group keys by their float values into a defaultdict(list)
+    value_groups = defaultdict(list)
+    for key, value in float_dict.items():
+        value_groups[value].append(key)
+
+    # Shuffle the keys within each group of the same value
+    for key_group in value_groups.values():
+        random.shuffle(key_group)
+
+    # Reconstruct the dictionary in descending order by value,
+    # keeping the randomized order within groups
+    randomized_sorted_dict = {}
+    # Sort and iterate in descending order
+    for value in sorted(value_groups.keys(), reverse=True):
+        for key in value_groups[value]:
+            # Convert values back to strings
+            randomized_sorted_dict[key] = str(value)
+
+    return randomized_sorted_dict
 
 
 def build_bn(edges_list):

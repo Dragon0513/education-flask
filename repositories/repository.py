@@ -110,9 +110,11 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
     @abc.abstractmethod
     def create_learning_path(self, learning_path) -> TM.LearningPath:
         raise NotImplementedError
-    
+
     @abc.abstractmethod
-    def create_learning_path_algorithm(self, learning_path_algorithm: TM.LearningPathAlgorithm) -> None:
+    def create_learning_path_algorithm(
+        self, learning_path_algorithm: TM.LearningPathAlgorithm
+    ) -> None:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -152,9 +154,12 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
     @abc.abstractmethod
     def create_student(self, student: UA.Student) -> UA.Student:
         raise NotImplementedError
-    
+
     @abc.abstractmethod
-    def create_student_learning_path_learning_element_algorithm(self, student_learning_path_learning_element_algorithm: DM.StudentLearningPathLearningElementAlgorithm) -> None:
+    def add_student_lpath_le_algorithm(
+        self,
+        student_lpath_le_algorithm: DM.StudentLearningPathLearningElementAlgorithm,
+    ) -> None:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -408,9 +413,15 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
     @abc.abstractmethod
     def get_learning_paths(self, student_id):
         raise NotImplementedError
-    
+
     @abc.abstractmethod
-    def get_learning_path_algorithm_by_id(self, id) -> TM.LearningPathAlgorithm:
+    def get_learning_path_algorithm_by_id(self, id: int) -> TM.LearningPathAlgorithm:
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def get_learning_path_algorithm_by_short_name(
+        self, short_name: str
+    ) -> TM.LearningPathAlgorithm:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -476,9 +487,11 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
         self, student_id, learning_element_id
     ) -> DM.StudentLearningElement:
         raise NotImplementedError
-    
+
     @abc.abstractmethod
-    def get_student_learning_path_learning_element_algorithm(self, student_id, topic_id) -> DM.StudentLearningPathLearningElementAlgorithm:
+    def get_student_lpath_le_algorithm(
+        self, student_id, topic_id
+    ) -> DM.StudentLearningPathLearningElementAlgorithm:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -803,8 +816,10 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
             raise err.ForeignKeyViolation()
         except Exception:
             raise err.CreationError()
-        
-    def create_learning_path_algorithm(self, learning_path_algorithm: TM.LearningPathAlgorithm) -> None:
+
+    def create_learning_path_algorithm(
+        self, learning_path_algorithm: TM.LearningPathAlgorithm
+    ) -> None:
         try:
             self.session.add(learning_path_algorithm)
         except IntegrityError:
@@ -865,10 +880,13 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
             raise err.ForeignKeyViolation()
         except Exception:
             raise err.CreationError()
-        
-    def create_student_learning_path_learning_element_algorithm(self, student_learning_path_learning_element_algorithm: DM.StudentLearningPathLearningElementAlgorithm) -> None:
+
+    def add_student_lpath_le_algorithm(
+        self,
+        student_lpath_le_algorithm: DM.StudentLearningPathLearningElementAlgorithm,
+    ) -> None:
         try:
-            self.session.add(student_learning_path_learning_element_algorithm)
+            self.session.add(student_lpath_le_algorithm)
         except IntegrityError:
             raise err.ForeignKeyViolation()
         except Exception:
@@ -1311,10 +1329,22 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
             self.session.query(TM.LearningPath).filter_by(student_id=student_id).all()
         )
         return result
-    
-    def get_learning_path_algorithm_by_id(self, id) -> TM.LearningPathAlgorithm:
+
+    def get_learning_path_algorithm_by_id(self, id: int) -> TM.LearningPathAlgorithm:
         try:
-            return (self.session.query(TM.LearningPathAlgorithm).filter_by(id=id).all())
+            return self.session.query(TM.LearningPathAlgorithm).filter_by(id=id).all()
+        except Exception:
+            raise err.DatabaseQueryError()
+
+    def get_learning_path_algorithm_by_short_name(
+        self, short_name: str
+    ) -> TM.LearningPathAlgorithm:
+        try:
+            return (
+                self.session.query(TM.LearningPathAlgorithm)
+                .filter_by(short_name=short_name)
+                .all()
+            )
         except Exception:
             raise err.DatabaseQueryError()
 
@@ -1503,10 +1533,17 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
             )
         except Exception:
             raise err.DatabaseQueryError()
-        
-    def get_student_learning_path_learning_element_algorithm(self, student_id, topic_id) -> DM.StudentLearningPathLearningElementAlgorithm:
+
+    def get_student_lpath_le_algorithm(
+        self, student_id, topic_id
+    ) -> DM.StudentLearningPathLearningElementAlgorithm:
         try:
-            return (self.session.query(DM.StudentLearningPathLearningElementAlgorithm).filter_by(student_id=student_id).filter_by(topic_id=topic_id).all())
+            return (
+                self.session.query(DM.StudentLearningPathLearningElementAlgorithm)
+                .filter_by(student_id=student_id)
+                .filter_by(topic_id=topic_id)
+                .all()
+            )
         except Exception:
             raise err.DatabaseQueryError()
 

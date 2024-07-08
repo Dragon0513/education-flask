@@ -224,9 +224,15 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
         student.id = len(self.student) + 1
         self.student.add(student)
 
-    def create_student_learning_path_learning_element_algorithm(self, student_learning_path_learning_element_algorithm):
-        student_learning_path_learning_element_algorithm.id = len(self.student_learning_path_learning_element_algorithm) + 1
-        self.student_learning_path_learning_element_algorithm.add(student_learning_path_learning_element_algorithm)
+    def add_student_lpath_le_algorithm(
+        self, student_learning_path_learning_element_algorithm
+    ):
+        student_learning_path_learning_element_algorithm.id = (
+            len(self.student_learning_path_learning_element_algorithm) + 1
+        )
+        self.student_learning_path_learning_element_algorithm.add(
+            student_learning_path_learning_element_algorithm
+        )
 
     def create_teacher(self, teacher):
         teacher.id = len(self.teacher) + 1
@@ -681,11 +687,18 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
             if i.student_id == student_id:
                 result.append(i)
         return result
-    
-    def get_learning_path_algorithm_by_id(self, id):
+
+    def get_learning_path_algorithm_by_id(self, id: int):
         result = []
         for i in self.learning_path_algorithm:
             if i.id == id:
+                result.append(i)
+        return result
+
+    def get_learning_path_algorithm_by_short_name(self, short_name: str):
+        result = []
+        for i in self.learning_path_algorithm:
+            if i.short_name == short_name:
                 result.append(i)
         return result
 
@@ -782,8 +795,8 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
             ):
                 result.append(i)
         return result
-    
-    def get_student_learning_path_learning_element_algorithm(self, student_id, topic_id):
+
+    def get_student_lpath_le_algorithm(self, student_id, topic_id):
         result = []
         for i in self.student_learning_path_learning_element_algorithm:
             if i.student_id == student_id and i.topic_id == topic_id:
@@ -1076,7 +1089,7 @@ class FakeUnitOfWork(unit_of_work.AbstractUnitOfWork):  # pragma: no cover
         self.student_course = FakeRepository()
         self.student_learning_element = FakeRepository()
         self.student_learning_element_visit = FakeRepository()
-        self.student_learning_path_learning_element_algorithm = FakeRepository()
+        self.student_lpath_le_algorithm = FakeRepository()
         self.student_topic = FakeRepository()
         self.student_topic_visit = FakeRepository()
         self.teacher = FakeRepository()
@@ -1220,8 +1233,9 @@ def create_student_for_tests(uow):
         role="student",
     )
 
+
 def create_student_learning_path_learning_element_algorithm_for_tests(uow):
-    services.create_student_learning_path_learning_element_algorithm(
+    services.add_student_lpath_le_algorithm(
         uow=uow,
         student_id=1,
         topic_id=1,
@@ -1355,11 +1369,12 @@ def create_learning_path_for_tests(uow, algorithm="aco"):
         algorithm=algorithm,
     )
 
+
 def create_learning_path_algorithm_for_tests(uow):
     return services.create_learning_path_algorithm(
         uow=uow,
-        short_name='aco',
-        full_name='Ant Colony Optimization',
+        short_name="aco",
+        full_name="Ant Colony Optimization",
     )
 
 
@@ -1456,14 +1471,21 @@ def test_create_student():
     assert characteristic_entries_beginning + 1 == characteristic_entries_after
     assert style_entries_beginning + 1 == style_entries_after
 
+
 def test_student_learning_path_learning_element_algorithm():
     uow = FakeUnitOfWork()
     create_student_learning_path_learning_element_algorithm_for_tests(uow)
-    initial_entries = len(uow.student_learning_path_learning_element_algorithm.student_learning_path_learning_element_algorithm)
-    result = services.create_student_learning_path_learning_element_algorithm(uow=uow, student_id=1, topic_id=1, algorithm_id=1)
+    initial_entries = len(
+        uow.student_lpath_le_algorithm.student_learning_path_learning_element_algorithm
+    )
+    result = services.add_student_lpath_le_algorithm(
+        uow=uow, student_id=1, topic_id=1, algorithm_id=1
+    )
     assert isinstance(result, dict)
     assert result != {}
-    entries = len(uow.student_learning_path_learning_element_algorithm.student_learning_path_learning_element_algorithm)
+    entries = len(
+        uow.student_lpath_le_algorithm.student_learning_path_learning_element_algorithm
+    )
     assert initial_entries + 1 == entries
 
 
@@ -1673,7 +1695,7 @@ def test_get_settings_for_user():
 def test_get_student_learning_path_learning_element_algorithm():
     uow = FakeUnitOfWork()
     create_student_learning_path_learning_element_algorithm_for_tests(uow)
-    result = services.get_student_learning_path_learning_element_algorithm(uow, 1, 1)
+    result = services.get_student_lpath_le_algorithm(uow, 1, 1)
     assert isinstance(result, dict)
     assert result != {}
 
@@ -2682,12 +2704,13 @@ def test_get_learning_style_by_student_id():
     assert type(result) is dict
     assert result != {}
 
+
 def test_create_default_learning_path():
     uow = FakeUnitOfWork()
     create_default_learning_path_for_tests(uow)
     initial_entries = len(uow.default_learning_path.default_learning_path)
     result = services.create_default_learning_path_element(
-        uow=uow, classification='KÜ', position=1, university='TH-AB'
+        uow=uow, classification="KÜ", position=1, university="TH-AB"
     )
     entries = len(uow.default_learning_path.default_learning_path)
     assert isinstance(result, dict)
@@ -2780,7 +2803,7 @@ def test_create_learning_path_algorithm():
     create_course_creator_for_tests(uow)
     initial_entries = len(uow.learning_path_algorithm.learning_path_algorithm)
     result = services.create_learning_path_algorithm(
-        uow=uow, short_name='aco', full_name=''
+        uow=uow, short_name="aco", full_name=""
     )
     entries = len(uow.learning_path_algorithm.learning_path_algorithm)
     assert isinstance(result, dict)
@@ -2788,11 +2811,19 @@ def test_create_learning_path_algorithm():
     assert initial_entries + 1 == entries
 
 
-def test_get_learning_path_algorithm():
+def test_get_learning_path_algorithm_by_id():
     uow = FakeUnitOfWork()
     create_learning_path_algorithm_for_tests(uow)
-    result = services.get_learning_path_algorithm_by_id(
-        uow=uow, id=1
+    result = services.get_learning_path_algorithm_by_id(uow=uow, id=1)
+    assert isinstance(result, dict)
+    assert result != {}
+
+
+def test_get_learning_path_algorithm_by_short_name():
+    uow = FakeUnitOfWork()
+    create_learning_path_algorithm_for_tests(uow)
+    result = services.get_learning_path_algorithm_by_short_name(
+        uow=uow, short_name="aco"
     )
     assert isinstance(result, dict)
     assert result != {}

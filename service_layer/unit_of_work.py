@@ -40,7 +40,7 @@ class AbstractUnitOfWork(abc.ABC):
     student_course: repository.AbstractRepository
     student_learning_element: repository.AbstractRepository
     student_learning_element_visit: repository.AbstractRepository
-    student_learning_path_learning_element_algorithm: repository.AbstractRepository
+    student_lpath_le_algorithm: repository.AbstractRepository
     student_topic: repository.AbstractRepository
     student_topic_visit: repository.AbstractRepository
     teacher: repository.AbstractRepository
@@ -112,9 +112,7 @@ class SqlAlchemyUnitOfWork(AbstractUnitOfWork):  # pragma: no cover
         self.student_learning_element_visit = repository.SqlAlchemyRepository(
             self.session
         )
-        self.student_learning_path_learning_element_algorithm = repository.SqlAlchemyRepository(
-            self.session
-        )
+        self.student_lpath_le_algorithm = repository.SqlAlchemyRepository(self.session)
         self.student_topic = repository.SqlAlchemyRepository(self.session)
         self.student_topic_visit = repository.SqlAlchemyRepository(self.session)
         self.teacher = repository.SqlAlchemyRepository(self.session)

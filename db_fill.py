@@ -2055,85 +2055,99 @@ cursor.execute(sql)
 
 # Create learning path algorithms per student per topic
 sql = """
-    INSERT INTO student_learning_path_learning_element_algorithm (student_id, topic_id, algorithm_id)
+    INSERT INTO student_learning_path_learning_element_algorithm (\
+    student_id, topic_id, algorithm_id)
     VALUES (1, 1, 1)
 """
 cursor.execute(sql)
 
 sql = """
-    INSERT INTO student_learning_path_learning_element_algorithm (student_id, topic_id, algorithm_id)
+    INSERT INTO student_learning_path_learning_element_algorithm (\
+    student_id, topic_id, algorithm_id)
     VALUES (1, 2, 2)
 """
 cursor.execute(sql)
 
 sql = """
-    INSERT INTO student_learning_path_learning_element_algorithm (student_id, topic_id, algorithm_id)
+    INSERT INTO student_learning_path_learning_element_algorithm (\
+    student_id, topic_id, algorithm_id)
     VALUES (1, 3, 3)
 """
 cursor.execute(sql)
 
 sql = """
-    INSERT INTO student_learning_path_learning_element_algorithm (student_id, topic_id, algorithm_id)
+    INSERT INTO student_learning_path_learning_element_algorithm (\
+    student_id, topic_id, algorithm_id)
     VALUES (1, 4, 4)
 """
 cursor.execute(sql)
 
 sql = """
-    INSERT INTO student_learning_path_learning_element_algorithm (student_id, topic_id, algorithm_id)
+    INSERT INTO student_learning_path_learning_element_algorithm (\
+    student_id, topic_id, algorithm_id)
     VALUES (1, 5, 1)
 """
 cursor.execute(sql)
 
 sql = """
-    INSERT INTO student_learning_path_learning_element_algorithm (student_id, topic_id, algorithm_id)
+    INSERT INTO student_learning_path_learning_element_algorithm (\
+    student_id, topic_id, algorithm_id)
     VALUES (1, 6, 2)
 """
 cursor.execute(sql)
 
 sql = """
-    INSERT INTO student_learning_path_learning_element_algorithm (student_id, topic_id, algorithm_id)
+    INSERT INTO student_learning_path_learning_element_algorithm (\
+    student_id, topic_id, algorithm_id)
     VALUES (2, 1, 3)
 """
 cursor.execute(sql)
 
 sql = """
-    INSERT INTO student_learning_path_learning_element_algorithm (student_id, topic_id, algorithm_id)
+    INSERT INTO student_learning_path_learning_element_algorithm (\
+    student_id, topic_id, algorithm_id)
     VALUES (2, 2, 4)
 """
 cursor.execute(sql)
 
 sql = """
-    INSERT INTO student_learning_path_learning_element_algorithm (student_id, topic_id, algorithm_id)
+    INSERT INTO student_learning_path_learning_element_algorithm (\
+    student_id, topic_id, algorithm_id)
     VALUES (2, 3, 1)
 """
 cursor.execute(sql)
 
 sql = """
-    INSERT INTO student_learning_path_learning_element_algorithm (student_id, topic_id, algorithm_id)
+    INSERT INTO student_learning_path_learning_element_algorithm (\
+    student_id, topic_id, algorithm_id)
     VALUES (2, 4, 2)
 """
 cursor.execute(sql)
 
 sql = """
-    INSERT INTO student_learning_path_learning_element_algorithm (student_id, topic_id, algorithm_id)
+    INSERT INTO student_learning_path_learning_element_algorithm (\
+    student_id, topic_id, algorithm_id)
     VALUES (2, 5, 3)
 """
 cursor.execute(sql)
 
 sql = """
-    INSERT INTO student_learning_path_learning_element_algorithm (student_id, topic_id, algorithm_id)
+    INSERT INTO student_learning_path_learning_element_algorithm (\
+    student_id, topic_id, algorithm_id)
     VALUES (3, 1, 4)
 """
 cursor.execute(sql)
 
 sql = """
-    INSERT INTO student_learning_path_learning_element_algorithm (student_id, topic_id, algorithm_id)
+    INSERT INTO student_learning_path_learning_element_algorithm (\
+    student_id, topic_id, algorithm_id)
     VALUES (3, 3, 1)
 """
 cursor.execute(sql)
 
 sql = """
-    INSERT INTO student_learning_path_learning_element_algorithm (student_id, topic_id, algorithm_id)
+    INSERT INTO student_learning_path_learning_element_algorithm (\
+    student_id, topic_id, algorithm_id)
     VALUES (3, 5, 2)
 """
 cursor.execute(sql)

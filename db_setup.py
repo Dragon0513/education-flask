@@ -94,7 +94,9 @@ def setup_db(
     cursor.execute("DROP TABLE IF EXISTS ils_understanding_answers")
     cursor.execute("DROP TABLE IF EXISTS questionnaire_list_k")
     cursor.execute("DROP TABLE IF EXISTS default_learning_path")
-    cursor.execute("DROP TABLE IF EXISTS student_learning_path_learning_element_algorithm")
+    cursor.execute(
+        "DROP TABLE IF EXISTS student_learning_path_learning_element_algorithm"
+    )
     cursor.execute("DROP TABLE IF EXISTS learning_path_algorithm")
 
     # Creating table as per requirement

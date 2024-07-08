@@ -100,6 +100,7 @@ class LearningPath:
                     list_of_les_classifications.append(le["classification"])
         return list_of_les_classifications
 
+
 class LearningPathAlgorithm:
     def __init__(self, short_name, full_name) -> None:
         self.id = None
@@ -112,6 +113,7 @@ class LearningPathAlgorithm:
             "short_name": self.short_name,
             "full_name": self.full_name,
         }
+
 
 class LearningPathTopic:
     def __init__(self, topic_id, learning_path_id, recommended, position) -> None:
@@ -154,6 +156,7 @@ class LearningPathLearningElement:
             "position": self.position,
             "learning_element": self.learning_element,
         }
+
 
 class DefaultLearningPathElement:
     def __init__(self, classification: str, position: int, university: str) -> None:

@@ -287,7 +287,8 @@ class StudentLearningElementVisit:
             "visit_start": self.visit_start,
             "visit_end": self.visit_end,
         }
-    
+
+
 class StudentLearningPathLearningElementAlgorithm:
     def __init__(self, student_id, topic_id, algorithm_id) -> None:
         self.id = None

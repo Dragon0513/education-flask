@@ -512,10 +512,7 @@ def start_mappers():
         TM.LearningPath,
         learning_path,
     )
-    mapper_registry.map_imperatively(
-        TM.LearningPathAlgorithm,
-        learning_path_algorithm
-    )
+    mapper_registry.map_imperatively(TM.LearningPathAlgorithm, learning_path_algorithm)
     mapper_registry.map_imperatively(
         TM.LearningPathLearningElement,
         learning_path_learning_element,

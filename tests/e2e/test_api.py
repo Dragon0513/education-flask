@@ -829,7 +829,7 @@ class TestApi:
     def test_post_learning_path_algorithm(
         self, client_class, input, keys_expected, status_code_expected
     ):
-        url = "/lms" + path_algorithm
+        url = path_algorithm
         r = client_class.post(url, json=input)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))
@@ -860,7 +860,7 @@ class TestApi:
         global student_id
 
         url = (
-            path_lms_student
+            path_student
             + "/"
             + str(student_id)
             + path_topic

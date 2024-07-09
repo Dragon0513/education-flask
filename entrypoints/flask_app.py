@@ -375,7 +375,7 @@ def get_activity_status_for_student_for_learning_element(
             return jsonify(activity_status), 200
 
 
-@app.route("/lms/algorithm", methods=["POST"])
+@app.route("/algorithm", methods=["POST"])
 @cross_origin(supports_credentials=True)
 @json_only()
 def post_learning_path_algorithm(data: Dict[str, Any]):
@@ -808,13 +808,13 @@ def post_student_learning_element_id_visit(
 
 
 @app.route(
-    "/lms/student/<student_id>/topic/<topic_id>/algorithm",
+    "/student/<student_id>/topic/<topic_id>/algorithm",
     methods=["POST"],
 )
 @cross_origin(supports_credentials=True)
 @json_only()
 def post_student_learning_path_learning_element_algorithm(
-    data: Dict[str, Any], student_id, topic_id
+    data: Dict[str, Any], student_id: int, topic_id: int
 ):
     match request.method:
         case "POST":
@@ -1432,7 +1432,7 @@ def learning_path_administration(
 )
 @cross_origin(supports_credentials=True)
 @json_only()
-def post_calculate_learning_path(_: Dict[str, Any], user_id, lms_user_id):
+def post_calculate_learning_path(_: Dict[str, Any], user_id: str, lms_user_id: str):
     match request.method:
         case "POST":
             # Get unit of work.

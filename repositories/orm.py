@@ -327,6 +327,17 @@ contact_form = Table(
     Column("date", Date, nullable=False),
 )
 
+news = Table(
+    "news",
+    mapper_registry.metadata,
+    Column("id", Integer, primary_key=True, autoincrement=True),
+    Column("language_id", String, nullable=False),
+    Column("news_content", String, nullable=False),
+    Column("university", String, nullable=True),
+    Column("expiration_date", Date, nullable=True),
+    Column("created_at", Date, nullable=False),
+)
+
 default_learning_path = Table(
     "default_learning_path",
     mapper_registry.metadata,
@@ -548,6 +559,11 @@ def start_mappers():
     mapper_registry.map_imperatively(
         UA.ContactForm,
         contact_form,
+    )
+
+    mapper_registry.map_imperatively(
+        UA.News,
+        news,
     )
 
     mapper_registry.map_imperatively(

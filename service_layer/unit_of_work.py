@@ -36,6 +36,7 @@ class AbstractUnitOfWork(abc.ABC):
     questionnaire_list_k: repository.AbstractRepository
     settings: repository.AbstractRepository
     contact_form: repository.AbstractRepository
+    news: repository.AbstractRepository
     student: repository.AbstractRepository
     student_course: repository.AbstractRepository
     student_learning_element: repository.AbstractRepository
@@ -105,6 +106,7 @@ class SqlAlchemyUnitOfWork(AbstractUnitOfWork):  # pragma: no cover
         self.questionnaire_list_k = repository.SqlAlchemyRepository(self.session)
         self.settings = repository.SqlAlchemyRepository(self.session)
         self.contact_form = repository.SqlAlchemyRepository(self.session)
+        self.news = repository.SqlAlchemyRepository(self.session)
         self.default_learning_path = repository.SqlAlchemyRepository(self.session)
         self.student = repository.SqlAlchemyRepository(self.session)
         self.student_course = repository.SqlAlchemyRepository(self.session)

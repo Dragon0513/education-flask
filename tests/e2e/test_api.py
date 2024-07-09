@@ -22,6 +22,7 @@ path_admin = "/admin"
 path_activity_status = "/activitystatus"
 path_course = "/course"
 path_contactform = "/contactform"
+path_news = "/news"
 path_knowledge = "/knowledge"
 path_logs = "/logs"
 path_frontend_logs = "/logs/frontend"
@@ -1432,6 +1433,40 @@ class TestApi:
         for key in keys_expected:
             assert key in response.keys()
 
+    # Post the News
+    @pytest.mark.parametrize(
+        "input, keys_expected,\
+                            status_code_expected",
+        [
+            # Working Example
+            (
+                {
+                    "university": "HS-AS",
+                    "language_id": "en",
+                    "created_at": "2023-08-01T13:37:42Z",
+                    "news_content": "This is news",
+                    "expiration_date": "2028-08-01T13:37:42Z",
+                },
+                [
+                    "id",
+                    "university",
+                    "created_at",
+                    "language_id",
+                    "expiration_date",
+                    "news_content",
+                ],
+                201,
+            ),
+        ],
+    )
+    def test_post_news(self, client_class, input, keys_expected, status_code_expected):
+        url = path_news
+        r = client_class.post(url, json=input)
+        assert r.status_code == status_code_expected
+        response = json.loads(r.data.decode("utf-8").strip("\n"))
+        for key in keys_expected:
+            assert key in response.keys()
+
     # GET METHODS
     # Get Students Learning Characteristics
     @pytest.mark.parametrize(
@@ -2659,6 +2694,57 @@ class TestApi:
         assert r.status_code == 200
         response = json.loads(r.data.decode("utf-8").strip("\n"))
         assert response == [{"cmid": 2, "state": 0, "timecompleted": 0}]
+
+    # Get News with language and university
+    @pytest.mark.parametrize(
+        "language_id, university, keys_expected,\
+                            status_code_expected",
+        [
+            # Working Example
+            (
+                "en",
+                "HS-AS",
+                [
+                    "created_at",
+                    "expiration_date",
+                    "language_id",
+                    "news_content",
+                    "university",
+                ],
+                201,
+            ),
+            # No university
+            (
+                "en",
+                "",
+                [
+                    "created_at",
+                    "expiration_date",
+                    "language_id",
+                    "news_content",
+                    "university",
+                ],
+                201,
+            ),
+        ],
+    )
+    def test_get_news(
+        self, client_class, language_id, university, keys_expected, status_code_expected
+    ):
+        url = (
+            path_news
+            + "?language_id="
+            + str(language_id)
+            + "?university="
+            + str(university)
+        )
+        r = client_class.get(url)
+        assert r.status_code == status_code_expected
+        response = json.loads(r.data.decode("utf-8").strip("\n"))
+        assert "news" in response.keys()
+        for key in keys_expected:
+            for entry in response["news"]:
+                assert key in entry.keys()
 
     # PUT METHODS
     # Update the settings of a User

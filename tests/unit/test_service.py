@@ -44,6 +44,7 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
         learning_path_topic=[],
         learning_strategy=[],
         learning_style=[],
+        news=[],
         questionnaire_list_k=[],
         questionnaire_ils=[],
         settings=[],
@@ -82,6 +83,7 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
         self.learning_path_topic = set(learning_path_topic)
         self.learning_strategy = set(learning_strategy)
         self.learning_style = set(learning_style)
+        self.news = set(news)
         self.questionnaire_list_k = set(questionnaire_list_k)
         self.questionnaire_ils = set(questionnaire_ils)
         self.settings = set(settings)
@@ -249,6 +251,10 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
     def create_user(self, user):
         user.id = len(self.user) + 1
         self.user.add(user)
+
+    def create_news(self, news):
+        news.id = len(self.news) + 1
+        self.news.add(news)
 
     def delete_admin(self, user_id):
         to_remove = []
@@ -529,6 +535,14 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
                 to_remove.append(i)
         for remove in to_remove:
             self.user.remove(remove)
+
+    def delete_news(self, language_id, university):
+        to_remove = []
+        for i in self.news:
+            if i.language_id == language_id and i.university == university:
+                to_remove.append(i)
+        for remove in to_remove:
+            self.news.remove(remove)
 
     def get_admin_by_id(self, user_id):
         result = []
@@ -915,6 +929,13 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
                 result.append(i)
         return result
 
+    def get_news(self, language_id, university, created_at=None):
+        result = []
+        for i in self.news:
+            if i.language_id == language_id and i.university == university:
+                result.append(i)
+        return result
+
     def update_course(self, course_id, course):
         to_remove = next((p for p in self.course if p.id == course_id), None)
         if to_remove is not None:
@@ -1082,6 +1103,7 @@ class FakeUnitOfWork(unit_of_work.AbstractUnitOfWork):  # pragma: no cover
         self.learning_path_topic = FakeRepository()
         self.learning_strategy = FakeRepository()
         self.learning_style = FakeRepository()
+        self.news = FakeRepository()
         self.questionnaire_list_k = FakeRepository()
         self.questionnaire_ils = FakeRepository()
         self.settings = FakeRepository()
@@ -1398,6 +1420,17 @@ def create_learning_path_for_tests_ga(uow):
     )
 
 
+def create_news_for_tests(uow):
+    return services.create_news(
+        uow=uow,
+        university="HS-AS",
+        language_id="en",
+        created_at=datetime.datetime.now(),
+        news_content="random text",
+        expiration_date=datetime.datetime(3027, 2, 15, 18, 54, 58, 291224),
+    )
+
+
 def add_student_to_course_for_tests(uow):
     services.add_student_to_course(uow=uow, student_id=1, course_id=1)
 
@@ -1578,6 +1611,23 @@ def test_create_learning_analytics():
     assert entries_beginning + 1 == entries_after
 
 
+def test_create_news():
+    uow = FakeUnitOfWork()
+    entries_beginning = len(uow.news.news)
+    result = services.create_news(
+        uow=uow,
+        university="HS-AS",
+        language_id="en",
+        created_at=datetime.datetime.now(),
+        news_content="idk",
+        expiration_date=datetime.datetime(3027, 2, 15, 18, 54, 58, 291224),
+    )
+    assert type(result) is dict
+    assert result != {}
+    entries_after = len(uow.news.news)
+    assert entries_beginning + 1 == entries_after
+
+
 def test_delete_admin():
     uow = FakeUnitOfWork()
     create_admin_for_tests(uow)
@@ -1716,6 +1766,25 @@ def test_create_contact_form():
     )
     assert type(result) == dict
     assert result != {}
+
+
+def test_get_news():
+    uow = FakeUnitOfWork()
+    create_news_for_tests(uow)
+    result = services.get_news(uow, "en", "HS-AS", datetime.datetime.now())
+    assert type(result) == dict
+    assert result != {}
+    keys_expected = [
+        "created_at",
+        "expiration_date",
+        "language_id",
+        "news_content",
+        "university",
+    ]
+    for key in keys_expected:
+        for entry in result["news"]:
+            assert key in entry.keys()
+            assert result["news"] is not None
 
 
 def test_get_learning_characteristics():

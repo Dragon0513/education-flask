@@ -1127,6 +1127,48 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/GeneralError" #?
+  /user/{user_id}/{lms_user_id}/learningPath:
+    post:
+      tags:
+        - "HASKI-intern"
+        - "User"
+      summary: "Post calculate learning path"
+      description: "Post to calculate the learning paths of every topic of a student"
+      operationId: "postCalculateLearnigPath"
+      parameters:
+        - name: "user_id"
+          in: "path"
+          description: "The ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+        - name: "lms_user_id"
+          in: "path"
+          description: "The Moodle ID of the User"
+          required: true
+          schema:
+            type: "string"
+          example: 1
+      responses:
+        "200":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LearningElementsPath"
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
   /user/{user_id}/{lms_user_id}/student/{student_id}/course/{course_id}/topic/{topic_id}/learningPath:
     get:
       tags:
@@ -2216,6 +2258,86 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/GeneralError" #Y
+  /algorithm:
+    post:
+      tags:
+        - "HASKI-intern"
+      summary: "Post Algorithm"
+      description: "Post a new algorithm"
+      operationId: "postAlgorithm"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Algorithm"
+      responses:
+        "201":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Algorithm"
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+  /student/{student_id}/topic/{topic_id}/algorithm
+    post:
+      tags:
+        - "HASKI-intern"
+        - "Student"
+      summary: "Post student learning path learning element algorithm"
+      description: "Post the learning element algorithm for a specific student and topic"
+      operationId: "postStudentTopicAlgorithm"
+      parameters:
+        - name: "student_id"
+          in: "path"
+          description: "The ID of the Student"
+          required: true
+          schema:
+            type: "integer"
+          example: 1
+        - name: "topic_id"
+          in: "path"
+          description: "The ID of the Topic"
+          required: true
+          schema:
+            type: "integer"
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Algorithm"
+      responses:
+        "201":
+          description: "Successful Operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Algorithm"
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
   /lms/student/{student_id}/questionnaire/ils:
     post:
       tags:

@@ -101,6 +101,20 @@ class LearningPath:
         return list_of_les_classifications
 
 
+class LearningPathAlgorithm:
+    def __init__(self, short_name, full_name) -> None:
+        self.id = None
+        self.short_name = short_name
+        self.full_name = full_name
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "short_name": self.short_name,
+            "full_name": self.full_name,
+        }
+
+
 class LearningPathTopic:
     def __init__(self, topic_id, learning_path_id, recommended, position) -> None:
         self.topic_id = topic_id
@@ -141,4 +155,20 @@ class LearningPathLearningElement:
             "recommended": self.recommended,
             "position": self.position,
             "learning_element": self.learning_element,
+        }
+
+
+class DefaultLearningPathElement:
+    def __init__(self, classification: str, position: int, university: str) -> None:
+        self.id = None
+        self.classification = classification
+        self.position = position
+        self.university = university
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "classification": self.classification,
+            "position": self.position,
+            "university": self.university,
         }

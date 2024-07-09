@@ -95,6 +95,10 @@ def setup_db(
     cursor.execute("DROP TABLE IF EXISTS ils_understanding_answers")
     cursor.execute("DROP TABLE IF EXISTS questionnaire_list_k")
     cursor.execute("DROP TABLE IF EXISTS default_learning_path")
+    cursor.execute(
+        "DROP TABLE IF EXISTS student_learning_path_learning_element_algorithm"
+    )
+    cursor.execute("DROP TABLE IF EXISTS learning_path_algorithm")
 
     # Creating table as per requirement
     sql = """
@@ -1026,6 +1030,31 @@ def setup_db(
             university text NOT NULL
         )
         """
+
+    cursor.execute(sql)
+
+    sql = """
+    CREATE TABLE IF NOT EXISTS public.student_learning_path_learning_element_algorithm
+    (
+        id integer NOT NULL GENERATED ALWAYS AS IDENTITY
+        ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+        student_id integer NOT NULL,
+        topic_id integer NOT NULL,
+        algorithm_id integer NOT NULL
+    )
+    """
+
+    cursor.execute(sql)
+
+    sql = """
+    CREATE TABLE IF NOT EXISTS public.learning_path_algorithm
+    (
+        id integer NOT NULL GENERATED ALWAYS AS IDENTITY
+        ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+        short_name text NOT NULL,
+        full_name text
+    )
+    """
 
     cursor.execute(sql)
 

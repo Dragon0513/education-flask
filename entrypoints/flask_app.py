@@ -375,6 +375,33 @@ def get_activity_status_for_student_for_learning_element(
             return jsonify(activity_status), 200
 
 
+@app.route("/algorithm", methods=["POST"])
+@cross_origin(supports_credentials=True)
+@json_only()
+def post_learning_path_algorithm(data: Dict[str, Any]):
+    match request.method:
+        case "POST":
+            condition1 = data is not None
+            condition2 = "short_name" in data and "full_name" in data
+            if condition1 and condition2:
+                condition3 = (
+                    type(data["short_name"]) is str and type(data["full_name"]) is str
+                )
+                available_algorithms = ["graf", "aco", "ga", "default"]
+                condition4 = data["short_name"].lower() in available_algorithms
+                if condition3 and condition4:
+                    result = services.create_learning_path_algorithm(
+                        unit_of_work.SqlAlchemyUnitOfWork(),
+                        data["short_name"].lower(),
+                        data["full_name"],
+                    )
+                    return jsonify(result), 201
+                else:
+                    raise err.WrongParameterValueError()
+            else:
+                raise err.MissingParameterError()
+
+
 @app.route("/lms/course/<course_id>/<lms_course_id>/topic", methods=["POST"])
 @cross_origin(supports_credentials=True)
 @json_only()
@@ -776,6 +803,41 @@ def post_student_learning_element_id_visit(
                     )
                     status_code = 201
                     return jsonify(result), status_code
+                else:
+                    raise err.WrongParameterValueError()
+            else:
+                raise err.MissingParameterError()
+
+
+@app.route(
+    "/student/<student_id>/topic/<topic_id>/algorithm",
+    methods=["POST"],
+)
+@cross_origin(supports_credentials=True)
+@json_only()
+def post_student_learning_path_learning_element_algorithm(
+    data: Dict[str, Any], student_id: int, topic_id: int
+):
+    match request.method:
+        case "POST":
+            condition1 = data is not None
+            condition2 = "algorithm" in data
+            if condition1 and condition2:
+                condition3 = type(data["algorithm"]) is str
+                available_algorithms = ["graf", "aco", "ga", "default"]
+                condition4 = data["algorithm"].lower() in available_algorithms
+                if condition3 and condition4:
+                    algorithm = data["algorithm"].lower()
+                    algorithm_id = services.get_learning_path_algorithm_by_short_name(
+                        unit_of_work.SqlAlchemyUnitOfWork(), algorithm
+                    )["id"]
+                    r = services.add_student_lpath_le_algorithm(
+                        unit_of_work.SqlAlchemyUnitOfWork(),
+                        student_id,
+                        topic_id,
+                        algorithm_id,
+                    )
+                    return jsonify(r), 201
                 else:
                     raise err.WrongParameterValueError()
             else:
@@ -1364,6 +1426,62 @@ def learning_path_administration(
                     raise err.WrongParameterValueError()
             else:
                 raise err.MissingParameterError()
+
+
+@app.route(
+    "/user/<user_id>/<lms_user_id>/learningPath",
+    methods=["POST"],
+)
+@cross_origin(supports_credentials=True)
+@json_only()
+def post_calculate_learning_path(_: Dict[str, Any], user_id: str, lms_user_id: str):
+    match request.method:
+        case "POST":
+            # Get unit of work.
+            uow = unit_of_work.SqlAlchemyUnitOfWork()
+
+            # Get student and their courses.
+            student = services.get_student_by_user_id(uow, user_id)
+            courses = services.get_courses_by_student_id(
+                uow, user_id, lms_user_id, student["id"]
+            )
+
+            for course in courses["courses"]:
+                # Get every available topic in all course.
+                topics = [
+                    topic
+                    for topic in services.get_topics_by_student_and_course_id(
+                        uow, user_id, lms_user_id, student["id"], course["id"]
+                    )["topics"]
+                ]
+
+                results = []
+                for topic in topics:
+                    if topic["contains_le"]:
+                        # Get algorithm for the topic.
+                        algorithm = services.get_student_lpath_le_algorithm(
+                            uow, student["id"], topic["id"]
+                        )
+                        lpath_algorithm = services.get_learning_path_algorithm_by_id(
+                            uow, algorithm["algorithm_id"]
+                        )
+
+                        # Create learning path.
+                        results.append(
+                            services.create_learning_path(
+                                unit_of_work.SqlAlchemyUnitOfWork(),
+                                user_id,
+                                lms_user_id,
+                                student["id"],
+                                course["id"],
+                                topic["id"],
+                                lpath_algorithm["short_name"].lower(),
+                            )
+                        )
+
+            # Return results with status code.
+            status_code = 201
+            return jsonify(results), status_code
 
 
 @app.route(

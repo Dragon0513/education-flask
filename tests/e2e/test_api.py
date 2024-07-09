@@ -44,6 +44,7 @@ path_subtopic = "/subtopic"
 path_teacher = "/teacher"
 path_topic = "/topic"
 path_user = "/user"
+path_algorithm = "/algorithm"
 
 ils_complete = [
     "ar_1_f1",
@@ -816,6 +817,65 @@ class TestApi:
         for key in keys_expected:
             assert key in response.keys()
 
+    @pytest.mark.parametrize(
+        "input, keys_expected, status_code_expected",
+        [
+            (
+                {"short_name": "aco", "full_name": "Ant Colony Optimization"},
+                ["full_name", "id", "short_name"],
+                201,
+            ),
+        ],
+    )
+    def test_post_learning_path_algorithm(
+        self, client_class, input, keys_expected, status_code_expected
+    ):
+        url = path_algorithm
+        r = client_class.post(url, json=input)
+        assert r.status_code == status_code_expected
+        response = json.loads(r.data.decode("utf-8").strip("\n"))
+        for key in keys_expected:
+            assert key in response.keys()
+
+    # Test post to create student learning path learning element algorithm
+    @pytest.mark.parametrize(
+        "input, topic_id, keys_expected, status_code_expected",
+        [
+            (
+                {"algorithm": "aco"},
+                1,
+                ["algorithm_id", "id", "student_id", "topic_id"],
+                201,
+            ),
+            (
+                {"algorithm": "aco"},
+                2,
+                ["algorithm_id", "id", "student_id", "topic_id"],
+                201,
+            ),
+        ],
+    )
+    def test_post_student_learning_path_learning_element_algorithm(
+        self, client_class, input, topic_id, keys_expected, status_code_expected
+    ):
+        global student_id
+
+        url = (
+            path_student
+            + "/"
+            + str(student_id)
+            + path_topic
+            + "/"
+            + str(topic_id)
+            + path_algorithm
+        )
+
+        r = client_class.post(url, json=input)
+        assert r.status_code == status_code_expected
+        response = json.loads(r.data.decode("utf-8").strip("\n"))
+        for key in keys_expected:
+            assert key in response.keys()
+
     # Post Questionnaire for Student
     @pytest.mark.parametrize(
         "student_id, keys_expected, status_code_expected, \
@@ -1201,6 +1261,46 @@ class TestApi:
         response = json.loads(client_post.data.decode("utf-8").strip("\n"))
         for key in keys_exp:
             assert key in response.keys()
+
+    # Learning paths are calculated
+    @pytest.mark.parametrize(
+        "input, moodle_user_id, keys_expected,\
+                            status_code_expected",
+        [
+            (
+                {},
+                4,
+                [
+                    "id",
+                    "course_id",
+                    "topic_id",
+                    "student_id",
+                    "based_on",
+                    "path",
+                    "calculated_on",
+                ],
+                201,
+            ),
+        ],
+    )
+    def test_post_calculate_learning_path(
+        self, client_class, input, moodle_user_id, keys_expected, status_code_expected
+    ):
+        user_id_student = 4
+        url = (
+            path_user
+            + "/"
+            + str(user_id_student)
+            + "/"
+            + str(moodle_user_id)
+            + path_learning_path
+        )
+        r = client_class.post(url, json=input)
+        assert r.status_code == status_code_expected
+        responses = json.loads(r.data.decode("utf-8").strip("\n"))
+        for key in keys_expected:
+            for response in responses:
+                assert key in response.keys()
 
     # Post a Contact Form
     @pytest.mark.parametrize(

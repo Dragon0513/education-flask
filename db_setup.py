@@ -62,6 +62,7 @@ def setup_db(
     cursor.execute("DROP TABLE IF EXISTS haski_user")
     cursor.execute("DROP TABLE IF EXISTS settings")
     cursor.execute("DROP TABLE IF EXISTS contact_form")
+    cursor.execute("DROP TABLE IF EXISTS news")
     cursor.execute("DROP TABLE IF EXISTS admin")
     cursor.execute("DROP TABLE IF EXISTS course_creator")
     cursor.execute("DROP TABLE IF EXISTS teacher")
@@ -159,6 +160,26 @@ def setup_db(
         TABLESPACE pg_default;
 
         ALTER TABLE IF EXISTS public.contact_form
+            OWNER to postgres;
+    """
+    cursor.execute(sql)
+
+    sql = """
+        CREATE TABLE IF NOT EXISTS public.news
+        (
+            id integer NOT NULL GENERATED ALWAYS AS IDENTITY
+            ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+            language_id text COLLATE pg_catalog."default",
+            news_content text COLLATE pg_catalog."default",
+            university text COLLATE pg_catalog."default",
+            expiration_date timestamp without time zone NOT NULL,
+            created_at timestamp without time zone NOT NULL,
+            CONSTRAINT news_pkey PRIMARY KEY (id)
+        )
+
+        TABLESPACE pg_default;
+
+        ALTER TABLE IF EXISTS public.news
             OWNER to postgres;
     """
     cursor.execute(sql)

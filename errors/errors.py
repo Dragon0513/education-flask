@@ -247,6 +247,16 @@ class ContactFormError(AException):
         super().__init__(exception, message, status_code)
 
 
+class NewsError(AException):
+    def __init__(
+        self,
+        exception: Exception | None = None,
+        message="Something went wrong sending the News.",
+        status_code=400,
+    ):
+        super().__init__(exception, message, status_code)
+
+
 class MissingUserError(AException):
     def __init__(
         self,

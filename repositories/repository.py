@@ -146,6 +146,10 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
+    def create_news(self, news: UA.News) -> UA.News:
+        raise NotImplementedError
+
+    @abc.abstractmethod
     def create_student(self, student: UA.Student) -> UA.Student:
         raise NotImplementedError
 
@@ -173,6 +177,10 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
 
     @abc.abstractmethod
     def delete_contact_form(self, user_id):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def delete_news(self):
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -520,6 +528,10 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
+    def get_news(self, language, university, created_at) -> UA.News:
+        raise NotImplementedError
+
+    @abc.abstractmethod
     def update_course(self, course_id, course) -> DM.Course:
         raise NotImplementedError
 
@@ -832,6 +844,12 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         except Exception:
             raise err.CreationError()
 
+    def create_news(self, news: UA.News) -> UA.News:
+        try:
+            self.session.add(news)
+        except Exception:
+            raise err.CreationError()
+
     def create_student(self, student: UA.Student) -> UA.Student:
         try:
             self.session.add(student)
@@ -885,6 +903,9 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
 
     def delete_contact_form(self, user_id):
         self.session.query(UA.ContactForm).filter_by(user_id=user_id).delete()
+
+    def delete_news(self):
+        self.session.query(UA.News).delete()
 
     def delete_course(self, course_id):
         course = self.get_course_by_id(course_id)
@@ -1590,6 +1611,18 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
             return self.session.query(UA.User).filter_by(university=university).all()
         except Exception as e:
             raise err.DatabaseQueryError(exception=e)
+
+    def get_news(self, language, university, created_at) -> UA.News:
+        try:
+            result = (
+                self.session.query(UA.News)
+                .filter_by(language_id=language, university=university)
+                .filter(UA.News.expiration_date >= created_at)
+                .all()
+            )
+            return result
+        except Exception:
+            raise err.CreationError()
 
     def update_course(self, course_id, course) -> DM.Course:
         course_exist = self.get_course_by_id(course_id)

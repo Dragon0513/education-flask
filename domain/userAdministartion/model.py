@@ -101,3 +101,25 @@ class ContactForm:
             "report_description": self.report_description,
             "date": self.date,
         }
+
+
+class News:
+    def __init__(
+        self, language_id, news_content, expiration_date, created_at, university
+    ) -> None:
+        self.id = None
+        self.language_id = language_id
+        self.news_content = news_content
+        self.expiration_date = expiration_date
+        self.created_at = created_at
+        self.university = university
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "language_id": self.language_id,
+            "news_content": self.news_content,
+            "expiration_date": self.expiration_date,
+            "created_at": self.created_at,
+            "university": self.university,
+        }

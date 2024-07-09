@@ -732,9 +732,11 @@ def post_student_topic_visit(data: Dict[str, Any], student_id, lms_user_id, topi
                         student_id,
                         topic_id,
                         visit_start,
-                        data["previous_topic_id"]
-                        if "previous_topic_id" in data
-                        else None,
+                        (
+                            data["previous_topic_id"]
+                            if "previous_topic_id" in data
+                            else None
+                        ),
                     )
                     status_code = 201
                     return jsonify(result), status_code
@@ -1471,6 +1473,49 @@ def contact_form(data: Dict[str, Any], user_id, lms_user_id):
 @cross_origin(supports_credentials=True)
 def delete_contact_form(user_id, lms_user_id):
     services.delete_contact_form(unit_of_work.SqlAlchemyUnitOfWork(), user_id)
+    return "ok", 201
+
+
+@app.route("/news", methods=["POST"])
+@cross_origin(supports_credentials=True)
+@json_only()
+def news_creation(data: Dict[str, Any]):
+    for el in ["language_id", "news_content", "expiration_date"]:
+        if el not in data:
+            raise err.MissingParameterError()
+
+    result = services.create_news(
+        unit_of_work.SqlAlchemyUnitOfWork(),
+        data["university"],
+        data["language_id"],
+        datetime.today().date(),
+        data["news_content"],
+        datetime.strptime(data["expiration_date"], cons.date_format).date(),
+    )
+
+    if result is None:
+        raise err.NewsError()
+
+    status_code = 201
+    return jsonify(result), status_code
+
+
+@app.route("/news", methods=["GET"])
+@cross_origin(supports_credentials=True)
+def news():
+    lang = request.args.get("language_id")
+    uni = request.args.get("university")
+    result = services.get_news(
+        unit_of_work.SqlAlchemyUnitOfWork(), lang, uni, datetime.today().date()
+    )
+    status_code = 201
+    return jsonify(result), status_code
+
+
+@app.route("/news", methods=["DELETE"])
+@cross_origin(supports_credentials=True)
+def delete_news():
+    services.delete_news(unit_of_work.SqlAlchemyUnitOfWork())
     return "ok", 201
 
 

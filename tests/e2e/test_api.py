@@ -2711,12 +2711,12 @@ class TestApi:
                     "news_content",
                     "university",
                 ],
-                201,
+                200,
             ),
             # No university
             (
                 "en",
-                "",
+                None,
                 [
                     "created_at",
                     "expiration_date",
@@ -2724,7 +2724,7 @@ class TestApi:
                     "news_content",
                     "university",
                 ],
-                201,
+                200,
             ),
         ],
     )
@@ -2733,11 +2733,12 @@ class TestApi:
     ):
         url = (
             path_news
-            + "?language_id="
+            + "/language/"
             + str(language_id)
-            + "?university="
-            + str(university)
+            + "/university/"
         )
+        if not university is None:
+            url = url + str(university)
         r = client_class.get(url)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))

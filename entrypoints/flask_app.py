@@ -1619,11 +1619,18 @@ def news_creation(data: Dict[str, Any]):
 
 
 @app.route("/news/language/<language_id>/university/<university>", methods=["GET"])
-@app.route("/news/language/<language_id>/university/", defaults={'university':None}, methods=["GET"])
+@app.route(
+    "/news/language/<language_id>/university/",
+    defaults={"university": None},
+    methods=["GET"],
+)
 @cross_origin(supports_credentials=True)
 def news(language_id, university):
     result = services.get_news(
-        unit_of_work.SqlAlchemyUnitOfWork(), language_id, university, datetime.today().date()
+        unit_of_work.SqlAlchemyUnitOfWork(),
+        language_id,
+        university,
+        datetime.today().date(),
     )
     status_code = 200
     return jsonify(result), status_code

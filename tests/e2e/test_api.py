@@ -2731,12 +2731,7 @@ class TestApi:
     def test_get_news(
         self, client_class, language_id, university, keys_expected, status_code_expected
     ):
-        url = (
-            path_news
-            + "/language/"
-            + str(language_id)
-            + "/university/"
-        )
+        url = path_news + "/language/" + str(language_id) + "/university/"
         if not university is None:
             url = url + str(university)
         r = client_class.get(url)

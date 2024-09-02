@@ -166,16 +166,6 @@ learning_element = Table(
     Column("last_updated", Date, nullable=True),
 )
 
-learning_element_rating = Table(
-    "learning_element_rating",
-    mapper_registry.metadata,
-    Column("id", Integer, primary_key=True, autoincrement=True),
-    Column("learning_element_id", Integer, nullable=False),
-    Column("rating", Integer, nullable=False),
-    Column("message", String, nullable=True),
-    Column("date", Date, nullable=False),
-)
-
 learning_path = Table(
     "learning_path",
     mapper_registry.metadata,
@@ -457,6 +447,27 @@ topic_learning_element = Table(
     Column("learning_element_id", Integer, nullable=False),
 )
 
+student_rating = Table(
+    "student_rating",
+    mapper_registry.metadata,
+    Column("id", Integer, primary_key=True, autoincrement=True),
+    Column("student_id", Integer, nullable=False),
+    Column("topic_id", Integer, nullable=False),
+    Column("rating_value", Float, nullable=False),
+    Column("rating_deviation", Float, nullable=False),
+    Column("timestamp", Date, nullable=False),
+)
+
+learning_element_rating = Table(
+    "learning_element_rating",
+    mapper_registry.metadata,
+    Column("id", Integer, primary_key=True, autoincrement=True),
+    Column("learning_element_id", Integer, nullable=False),
+    Column("topic_id", Integer, nullable=False),
+    Column("rating_value", Float, nullable=False),
+    Column("rating_deviation", Float, nullable=False),
+    Column("timestamp", Date, nullable=False),
+)
 
 def start_mappers():
     mapper_registry.map_imperatively(
@@ -514,10 +525,6 @@ def start_mappers():
     mapper_registry.map_imperatively(
         DM.LearningElement,
         learning_element,
-    )
-    mapper_registry.map_imperatively(
-        DM.LearningElementRating,
-        learning_element_rating,
     )
     mapper_registry.map_imperatively(
         TM.LearningPath,
@@ -623,4 +630,14 @@ def start_mappers():
     mapper_registry.map_imperatively(
         DM.TopicLearningElement,
         topic_learning_element,
+    )
+
+    mapper_registry.map_imperatively(
+        LM.StudentRating,
+        student_rating,
+    )
+
+    mapper_registry.map_imperatively(
+        DM.LearningElementRating,
+        learning_element_rating,
     )

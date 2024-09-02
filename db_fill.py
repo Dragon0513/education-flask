@@ -510,42 +510,6 @@ sql = """
 """
 cursor.execute(sql)
 
-# create Learning Element rating
-sql = """
-    INSERT INTO learning_element_rating (learning_element_id, rating, message,\
-    date)
-    VALUES (1, 5, 'Sehr Gut', '2023-07-13 16:00:00')
-"""
-cursor.execute(sql)
-
-sql = """
-    INSERT INTO learning_element_rating (learning_element_id, rating, message,\
-    date)
-    VALUES (2, 4, 'Gut', '2023-07-13 16:00:00')
-"""
-cursor.execute(sql)
-
-sql = """
-    INSERT INTO learning_element_rating (learning_element_id, rating, message,\
-    date)
-    VALUES (3, 3, 'Befriedigend', '2023-07-13 16:00:00')
-"""
-cursor.execute(sql)
-
-sql = """
-    INSERT INTO learning_element_rating (learning_element_id, rating, message,\
-    date)
-    VALUES (4, 2, 'Ausreichend', '2023-07-13 16:00:00')
-"""
-cursor.execute(sql)
-
-sql = """
-    INSERT INTO learning_element_rating (learning_element_id, rating, message,\
-    date)
-    VALUES (5, 1, 'Mangelhaft', '2023-07-13 16:00:00')
-"""
-cursor.execute(sql)
-
 # create contactform
 sql = """
     INSERT INTO contact_form (user_id, report_topic, report_type, date)
@@ -2184,6 +2148,34 @@ sql = """
     INSERT INTO student_learning_path_learning_element_algorithm (\
     student_id, topic_id, algorithm_id)
     VALUES (3, 5, 2)
+"""
+cursor.execute(sql)
+
+sql = """
+    INSERT INTO student_rating (\
+    student_id, topic_id, rating_value, rating_deviationm timestamp)
+    VALUES (7, 1, 1500, 350, '2023-07-13 16:00:00')
+"""
+cursor.execute(sql)
+
+sql = """
+    INSERT INTO student_rating (\
+    student_id, topic_id, algorithm_id)
+    VALUES (7, 2, 1500, 350, '2023-07-13 16:00:00')
+"""
+cursor.execute(sql)
+
+sql = """
+    INSERT INTO learning_element_rating (\
+    student_id, topic_id, algorithm_id)
+    VALUES (1, 1, 1500, 350, '2023-07-13 16:00:00')
+"""
+cursor.execute(sql)
+
+sql = """
+    INSERT INTO learning_element_rating (\
+    student_id, topic_id, algorithm_id)
+    VALUES (1, 2, 1500, 350, '2023-07-13 16:00:00')
 """
 cursor.execute(sql)
 

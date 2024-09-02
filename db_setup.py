@@ -84,7 +84,6 @@ def setup_db(
     cursor.execute("DROP TABLE IF EXISTS student_topic_visit")
     cursor.execute("DROP TABLE IF EXISTS student_learning_element")
     cursor.execute("DROP TABLE IF EXISTS student_learning_element_visit")
-    cursor.execute("DROP TABLE IF EXISTS learning_element_rating")
     cursor.execute("DROP TABLE IF EXISTS learning_path")
     cursor.execute("DROP TABLE IF EXISTS learning_path_topic")
     cursor.execute("DROP TABLE IF EXISTS learning_path_learning_element")
@@ -99,6 +98,8 @@ def setup_db(
         "DROP TABLE IF EXISTS student_learning_path_learning_element_algorithm"
     )
     cursor.execute("DROP TABLE IF EXISTS learning_path_algorithm")
+    cursor.execute("DROP TABLE IF EXISTS student_rating")
+    cursor.execute("DROP TABLE IF EXISTS learning_element_rating")
 
     # Creating table as per requirement
     sql = """
@@ -707,30 +708,6 @@ def setup_db(
     cursor.execute(sql)
 
     sql = """
-        CREATE TABLE IF NOT EXISTS public.learning_element_rating
-        (
-            id integer NOT NULL GENERATED ALWAYS AS IDENTITY
-            ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
-            learning_element_id integer NOT NULL,
-            rating integer NOT NULL,
-            message text COLLATE pg_catalog."default",
-            date timestamp without time zone NOT NULL,
-            CONSTRAINT learning_element_rating_pkey PRIMARY KEY (id),
-            CONSTRAINT learning_element_id FOREIGN KEY (learning_element_id)
-                REFERENCES public.learning_element (id) MATCH SIMPLE
-                ON UPDATE NO ACTION
-                ON DELETE NO ACTION
-                NOT VALID
-        )
-
-        TABLESPACE pg_default;
-
-        ALTER TABLE IF EXISTS public.learning_element_rating
-            OWNER to postgres;
-    """
-    cursor.execute(sql)
-
-    sql = """
         CREATE TABLE IF NOT EXISTS public.learning_path
         (
             id integer NOT NULL GENERATED ALWAYS AS IDENTITY
@@ -1054,6 +1031,46 @@ def setup_db(
         short_name text NOT NULL,
         full_name text
     )
+    """
+
+    cursor.execute(sql)
+
+    sql = """
+        CREATE TABLE IF NOT EXISTS public.student_rating
+        (
+            id integer NOT NULL GENERATED ALWAYS AS IDENTITY
+            ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+            student_id integer NOT NULL,
+            topic_id integer NOT NULL,
+            rating_value integer NOT NULL,
+            rating_deviation integer NOT NULL,
+            timestamp timestamp without time zone NOT NULL
+        )
+
+        TABLESPACE pg_default;
+
+        ALTER TABLE IF EXISTS public.student_rating
+            OWNER to postgres;
+    """
+
+    cursor.execute(sql)
+
+    sql = """
+        CREATE TABLE IF NOT EXISTS public.learning_element_rating
+        (
+            id integer NOT NULL GENERATED ALWAYS AS IDENTITY
+            ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+            learning_element_id integer NOT NULL,
+            topic_id integer NOT NULL,
+            rating_value integer NOT NULL,
+            rating_deviation integer NOT NULL,
+            timestamp timestamp without time zone NOT NULL
+        )
+
+        TABLESPACE pg_default;
+
+        ALTER TABLE IF EXISTS public.learning_element_rating
+            OWNER to postgres;
     """
 
     cursor.execute(sql)

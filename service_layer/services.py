@@ -2416,7 +2416,8 @@ def update_ratings(
             )
             == []
         ):
-            # If no student rating is available, create an initial student rating on concept.
+            # If no student rating is available,
+            # create an initial student rating on concept.
             create_student_rating(
                 uow=uow, student_id=student_id, topic_id=topic_id, timestamp=timestamp
             )
@@ -2438,7 +2439,8 @@ def update_ratings(
             )
             == []
         ):
-            # If no learning element rating is available, create an initial learning element rating on concept.
+            # If no learning element rating is available,
+            # create an initial learning element rating on concept.
             create_learning_element_rating(
                 uow=uow,
                 learning_element_id=learning_element_id,

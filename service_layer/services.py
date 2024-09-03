@@ -2346,14 +2346,14 @@ def update_user(
     
 def update_ratings(
         uow: unit_of_work.AbstractUnitOfWork,
-        student_id: str,
-        learning_element_id: str,
-        topic_id: str,
+        student_id: int,
+        learning_element_id: int,
+        topic_id: int,
         attempt_result: int,
         timestamp: datetime,
 ) -> dict:
     with uow:
-        if get_student_ratings_on_topic(uow=uow, student_id=int(student_id), topic_id=int(topic_id)) == []:
+        if get_student_ratings_on_topic(uow=uow, student_id=student_id, topic_id=topic_id) == []:
             # If no student rating is available, create an initial student rating on concept.
             create_student_rating(
                 uow=uow,
@@ -2363,7 +2363,7 @@ def update_ratings(
             )
             
         # Get all student ratings on concept.
-        student_ratings = get_student_ratings_on_topic(uow=uow, student_id=int(student_id), topic_id=int(topic_id))
+        student_ratings = get_student_ratings_on_topic(uow=uow, student_id=student_id, topic_id=topic_id)
         
         # Sort student ratings by timestamp.
         student_ratings.sort(key=lambda x: x['timestamp'])
@@ -2371,7 +2371,7 @@ def update_ratings(
         # Get the most recent student rating on concept.
         student_rating = student_ratings[-1]
 
-        if get_learning_element_ratings_on_topic(uow=uow, learning_element_id=int(learning_element_id), topic_id=int(topic_id)) == []:
+        if get_learning_element_ratings_on_topic(uow=uow, learning_element_id=learning_element_id, topic_id=topic_id) == []:
             # If no learning element rating is available, create an initial learning element rating on concept.
             create_learning_element_rating(
                 uow=uow,
@@ -2381,7 +2381,7 @@ def update_ratings(
             )
 
         # Get all learning element ratings on concept.
-        learning_element_ratings = get_learning_element_ratings_on_topic(uow=uow, learning_element_id=int(learning_element_id), topic_id=int(topic_id))
+        learning_element_ratings = get_learning_element_ratings_on_topic(uow=uow, learning_element_id=learning_element_id, topic_id=topic_id)
     
         # Sort learning element ratings by timestamp.
         learning_element_ratings.sort(key=lambda x: x['timestamp'])
@@ -2409,7 +2409,7 @@ def update_ratings(
         # Calculate updated ratings.
         updated_student_rating = student_rating.calculate_updated_rating(
             attempt_timestamp=timestamp,
-            is_attempt_correct=bool(attempt_result),
+            attempt_result=attempt_result,
             learning_element_id=learning_element_id,
             learning_element_rating_value=learning_element_rating.rating_value,
             learning_element_rating_deviation=learning_element_rating.rating_deviation,
@@ -2418,7 +2418,7 @@ def update_ratings(
 
         updated_learning_element_rating = learning_element_rating.calculate_updated_rating(
             attempt_timestamp=timestamp,
-            is_attempt_correct=bool(attempt_result),
+            attempt_result=attempt_result,
             student_id=student_id,
             student_rating_value=student_rating.rating_value,
             student_rating_deviation=student_rating.rating_deviation,
@@ -2428,8 +2428,8 @@ def update_ratings(
         # Add updated ratings to the database.
         create_student_rating(
             uow=uow, 
-            student_id=int(student_id), 
-            topic_id=int(topic_id), 
+            student_id=student_id, 
+            topic_id=topic_id, 
             rating_value=updated_student_rating["value"], 
             rating_deviation=updated_student_rating["deviation"], 
             timestamp=updated_student_rating["timestamp"]
@@ -2437,8 +2437,8 @@ def update_ratings(
 
         create_learning_element_rating(
             uow=uow, 
-            learning_element_id=int(learning_element_id), 
-            topic_id=int(topic_id), 
+            learning_element_id=learning_element_id, 
+            topic_id=topic_id, 
             rating_value=updated_learning_element_rating["value"], 
             rating_deviation=updated_learning_element_rating["deviation"], 
             timestamp=updated_learning_element_rating["timestamp"]

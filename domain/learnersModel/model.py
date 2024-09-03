@@ -521,8 +521,8 @@ class StudentRating:
     
     def calculate_updated_rating(self,
             attempt_timestamp: datetime,
-            is_attempt_correct: bool,
-            learning_element_id: str,
+            attempt_result: int,
+            learning_element_id: int,
             learning_element_rating_value: float,
             learning_element_rating_deviation: float,
             learning_element_rating_timestamp: datetime,
@@ -533,10 +533,10 @@ class StudentRating:
             attempt=attempt.Attempt(
                 attempt_id='',
                 user_id=str(self.student_id),
-                resource_id=learning_element_id,
+                resource_id=str(learning_element_id),
                 concept_id=str(self.topic_id),
                 timestamp=attempt_timestamp,
-                is_attempt_correct=is_attempt_correct,
+                is_attempt_correct=bool(attempt_result),
             ),
             student_rating=mv_glicko.MVGlickoRating(
                 value=self.rating_value,

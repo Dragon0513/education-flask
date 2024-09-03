@@ -1522,8 +1522,8 @@ def post_calculate_rating(user_id: str, course_id: str, topic_id: str, learning_
                 result = services.update_ratings(
                     uow=uow,
                     student_id=student["id"],
-                    learning_element_id=learning_element_id,
-                    topic_id=topic_id,
+                    learning_element_id=int(learning_element_id),
+                    topic_id=int(topic_id),
                     attempt_result=response.get("success", 0),
                     timestamp=datetime.fromtimestamp(response['timecreated'])
                 )

@@ -23,8 +23,8 @@ def test_calculate_learning_element_rating():
     )
     result = learning_element_2.calculate_updated_rating(
         attempt_timestamp=datetime.fromisoformat('2023-01-01 16:00'),
-        is_attempt_correct=False,
-        student_id='1',
+        attempt_result=False,
+        student_id=1,
         student_rating_value=1500,
         student_rating_deviation=350,
         student_rating_timestamp=datetime.fromisoformat('2023-01-01 16:00')

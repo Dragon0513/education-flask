@@ -95,8 +95,8 @@ def test_calculate_student_rating():
     student_rating_2 = LM.StudentRating(2, 1, datetime.fromisoformat('2023-01-01 16:00'), 1500, 350)
     result = student_rating_2.calculate_updated_rating(
         attempt_timestamp=datetime.fromisoformat('2023-01-01 16:00'),
-        is_attempt_correct=True,
-        learning_element_id='1',
+        attempt_result=True,
+        learning_element_id=1,
         learning_element_rating_value=1500,
         learning_element_rating_deviation=350,
         learning_element_rating_timestamp=datetime.fromisoformat('2023-01-01 16:00'),

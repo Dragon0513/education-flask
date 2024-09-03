@@ -1,5 +1,6 @@
 import json
 from unittest import mock
+
 import pytest
 
 user_id_admin = 0
@@ -1318,8 +1319,18 @@ class TestApi:
             ),
         ],
     )
-    def test_create_student_rating(self, client_class, keys_expected, status_code_expected):
-        url = path_student + "/" + str(student_id) + path_topic + "/" + str(topic_id) + path_rating
+    def test_create_student_rating(
+        self, client_class, keys_expected, status_code_expected
+    ):
+        url = (
+            path_student
+            + "/"
+            + str(student_id)
+            + path_topic
+            + "/"
+            + str(topic_id)
+            + path_rating
+        )
         r = client_class.post(url)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))
@@ -1379,10 +1390,7 @@ class TestApi:
     def test_get_student_ratings(
         self, client_class, keys_expected, status_code_expected
     ):
-        url = (
-            path_student
-            + path_rating
-        )
+        url = path_student + path_rating
         r = client_class.get(url)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))
@@ -1405,8 +1413,18 @@ class TestApi:
             ),
         ],
     )
-    def test_create_learning_element_rating(self, client_class, keys_expected, status_code_expected):
-        url = path_topic + "/" + str(topic_id) + path_learning_element + "/" + str(learning_element_id) + path_rating
+    def test_create_learning_element_rating(
+        self, client_class, keys_expected, status_code_expected
+    ):
+        url = (
+            path_topic
+            + "/"
+            + str(topic_id)
+            + path_learning_element
+            + "/"
+            + str(learning_element_id)
+            + path_rating
+        )
         r = client_class.post(url)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))
@@ -1466,10 +1484,7 @@ class TestApi:
     def test_get_learning_element_ratings(
         self, client_class, keys_expected, status_code_expected
     ):
-        url = (
-            path_learning_element
-            + path_rating
-        )
+        url = path_learning_element + path_rating
         r = client_class.get(url)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))
@@ -1493,33 +1508,18 @@ class TestApi:
         self, mock_get, client_class, keys_expected, status_code_expected
     ):
         mock_response_1 = mock.Mock(
-                    status_code=200,
-                    json=lambda: 
-                        [
-                            {
-                                "modules": [
-                                    {
-                                        "id": 1,
-                                        "instance": 1
-                                    }
-                                ]   
-                            }
-                        ]
+            status_code=200, json=lambda: [{"modules": [{"id": 1, "instance": 1}]}]
         )
 
         mock_response_2 = mock.Mock(
-                    status_code=200,
-                    json=lambda: 
-                        {"usersattempts": [
-                            {"attempts": [{
-                                "timecreated": 1
-                            },
-                            {
-                                "timecreated": 2
-                            }]}
-                        ]}
+            status_code=200,
+            json=lambda: {
+                "usersattempts": [
+                    {"attempts": [{"timecreated": 1}, {"timecreated": 2}]}
+                ]
+            },
         )
-        
+
         mock_get.side_effect = [mock_response_1, mock_response_2]
 
         user_id_student = 4

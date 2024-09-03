@@ -5,11 +5,11 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from domain.domainModel.model import LearningElementRating
-from domain.learnersModel.model import StudentRating
 import errors.errors as err
 import repositories.repository as repository
 import service_layer.crypto.JWTKeyManagement as JWTKeyManagement
+from domain.domainModel.model import LearningElementRating
+from domain.learnersModel.model import StudentRating
 from domain.userAdministartion import model as UA
 from service_layer import services, unit_of_work
 from utils import constants as cons
@@ -260,7 +260,9 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
         news.id = len(self.news) + 1
         self.news.add(news)
 
-    def create_learning_element_rating(self, learning_element_rating: LearningElementRating):
+    def create_learning_element_rating(
+        self, learning_element_rating: LearningElementRating
+    ):
         learning_element_rating.id = len(self.learning_element_rating) + 1
         self.learning_element_rating.add(learning_element_rating)
 
@@ -947,25 +949,26 @@ class FakeRepository(repository.AbstractRepository):  # pragma: no cover
             if i.language_id == language_id and i.university == university:
                 result.append(i)
         return result
-    
-    
+
     def get_student_ratings_on_topic(self, student_id, topic_id) -> list[StudentRating]:
         result = []
         for i in self.student_rating:
             if i.student_id == student_id and i.topic_id == topic_id:
                 result.append(i)
         return result
-    
+
     def get_student_ratings(self) -> list[StudentRating]:
         return self.student_rating
-    
-    def get_learning_element_ratings_on_topic(self, learning_element_id, topic_id) -> list[LearningElementRating]:
+
+    def get_learning_element_ratings_on_topic(
+        self, learning_element_id, topic_id
+    ) -> list[LearningElementRating]:
         result = []
         for i in self.learning_element_rating:
             if i.learning_element_id == learning_element_id and i.topic_id == topic_id:
                 result.append(i)
         return result
-    
+
     def get_learning_element_ratings(self) -> list[LearningElementRating]:
         return self.learning_element_rating
 
@@ -1484,11 +1487,27 @@ def add_student_sub_topic_visit_for_tests(uow):
         uow=uow, student_id=1, topic_id=2, visit_start="2023-01-01", previous_topic_id=1
     )
 
+
 def create_student_rating_for_tests(uow):
-    services.create_student_rating(uow=uow, student_id=1, topic_id=1, rating_value=1200, rating_deviation=250, timestamp=datetime.datetime.now())
+    services.create_student_rating(
+        uow=uow,
+        student_id=1,
+        topic_id=1,
+        rating_value=1200,
+        rating_deviation=250,
+        timestamp=datetime.datetime.now(),
+    )
+
 
 def create_learning_element_rating_for_tests(uow):
-    services.create_learning_element_rating(uow=uow, learning_element_id=1, topic_id=1, rating_value=1200, rating_deviation=250, timestamp=datetime.datetime.now())
+    services.create_learning_element_rating(
+        uow=uow,
+        learning_element_id=1,
+        topic_id=1,
+        rating_value=1200,
+        rating_deviation=250,
+        timestamp=datetime.datetime.now(),
+    )
 
 
 # Starting with Tests
@@ -3043,17 +3062,24 @@ def test_update_learning_style_by_student_id():
     assert type(result) is dict
     assert result != {}
 
+
 def test_create_student_rating():
     uow = FakeUnitOfWork()
     create_student_for_tests(uow=uow)
     initial_entries = len(uow.student_rating.student_rating)
     result = services.create_student_rating(
-        uow=uow, student_id=1, topic_id=1, rating_value=1200, rating_deviation=250, timestamp=datetime.datetime.now()
+        uow=uow,
+        student_id=1,
+        topic_id=1,
+        rating_value=1200,
+        rating_deviation=250,
+        timestamp=datetime.datetime.now(),
     )
     entries = len(uow.student_rating.student_rating)
     assert isinstance(result, dict)
     assert result != {}
     assert initial_entries + 1 == entries
+
 
 def test_get_student_ratings_on_topic():
     uow = FakeUnitOfWork()
@@ -3062,6 +3088,7 @@ def test_get_student_ratings_on_topic():
     assert type(result) is list
     assert result != []
 
+
 def test_get_student_ratings():
     uow = FakeUnitOfWork()
     create_student_rating_for_tests(uow=uow)
@@ -3069,24 +3096,34 @@ def test_get_student_ratings():
     assert type(result) is list
     assert result != []
 
+
 def test_create_learning_element_rating():
     uow = FakeUnitOfWork()
     create_learning_element_rating_for_tests(uow=uow)
     initial_entries = len(uow.learning_element_rating.learning_element_rating)
     result = services.create_learning_element_rating(
-        uow=uow, learning_element_id=1, topic_id=1, rating_value=1200, rating_deviation=250, timestamp=datetime.datetime.now()
+        uow=uow,
+        learning_element_id=1,
+        topic_id=1,
+        rating_value=1200,
+        rating_deviation=250,
+        timestamp=datetime.datetime.now(),
     )
     entries = len(uow.learning_element_rating.learning_element_rating)
     assert isinstance(result, dict)
     assert result != {}
     assert initial_entries + 1 == entries
 
+
 def test_get_learning_element_ratings_on_topic():
     uow = FakeUnitOfWork()
     create_learning_element_rating_for_tests(uow=uow)
-    result = services.get_learning_element_ratings_on_topic(uow=uow, learning_element_id=1, topic_id=1)
+    result = services.get_learning_element_ratings_on_topic(
+        uow=uow, learning_element_id=1, topic_id=1
+    )
     assert type(result) is list
     assert result != []
+
 
 def test_get_learning_element_ratings():
     uow = FakeUnitOfWork()
@@ -3095,22 +3132,14 @@ def test_get_learning_element_ratings():
     assert type(result) is list
     assert result != []
 
+
 @mock.patch(
     "requests.get",
     mock.Mock(
         side_effect=lambda k: (
             mock.Mock(
                 status_code=200,
-                json=lambda: [
-                        {
-                            "modules": [
-                                {
-                                    "id": 1,
-                                    "instance": 1
-                                }
-                            ]   
-                        }
-                    ],
+                json=lambda: [{"modules": [{"id": 1, "instance": 1}]}],
             )
         )
     ),
@@ -3120,20 +3149,9 @@ def test_get_moodle_course_content():
     create_course_creator_for_tests(uow)
     create_course_for_tests(uow)
 
-    result = services.get_moodle_course_content(
-        uow=uow,
-        course_id=1
-    )
-    assert result == [
-                        {
-                            "modules": [
-                                {
-                                    "id": 1,
-                                    "instance": 1
-                                }
-                            ]   
-                        }
-                    ]
+    result = services.get_moodle_course_content(uow=uow, course_id=1)
+    assert result == [{"modules": [{"id": 1, "instance": 1}]}]
+
 
 @mock.patch(
     "requests.get",
@@ -3141,17 +3159,7 @@ def test_get_moodle_course_content():
         side_effect=lambda k: (
             mock.Mock(
                 status_code=200,
-                json=lambda: 
-                    [
-                        {
-                            "modules": [
-                                {
-                                    "id": 1,
-                                    "instance": 1
-                                }
-                            ]   
-                        }
-                    ],
+                json=lambda: [{"modules": [{"id": 1, "instance": 1}]}],
             )
         )
     ),
@@ -3162,40 +3170,22 @@ def test_get_h5p_activity_id_for_learning_element():
     create_course_for_tests(uow)
 
     result = services.get_h5p_activity_id_for_learning_element(
-        uow=uow,
-        course_id=1,
-        learning_element_id=1
+        uow=uow, course_id=1, learning_element_id=1
     )
     assert result == {"h5p_activity_id": 1}
-    
+
+
 @mock.patch("requests.get")
 def test_get_moodle_h5p_activity_attempts(mock_get):
     mock_response_1 = mock.Mock(
-                status_code=200,
-                json=lambda: 
-                    [
-                        {
-                            "modules": [
-                                {
-                                    "id": 1,
-                                    "instance": 1
-                                }
-                            ]   
-                        }
-                    ]
+        status_code=200, json=lambda: [{"modules": [{"id": 1, "instance": 1}]}]
     )
 
     mock_response_2 = mock.Mock(
-                status_code=200,
-                json=lambda: 
-                    {"usersattempts": [
-                        {"attempts": [{
-                            "timecreated": 1
-                        },
-                        {
-                            "timecreated": 2
-                        }]}
-                    ]}
+        status_code=200,
+        json=lambda: {
+            "usersattempts": [{"attempts": [{"timecreated": 1}, {"timecreated": 2}]}]
+        },
     )
 
     mock_get.side_effect = [mock_response_1, mock_response_2]
@@ -3205,48 +3195,24 @@ def test_get_moodle_h5p_activity_attempts(mock_get):
     create_course_for_tests(uow)
 
     result = services.get_moodle_h5p_activity_attempts(
-        uow=uow,
-        course_id=1,
-        learning_element_id=1,
-        lms_user_id='1'
+        uow=uow, course_id=1, learning_element_id=1, lms_user_id="1"
     )
-    assert result ==                     {"usersattempts": [
-                        {"attempts": [{
-                            "timecreated": 1
-                        },
-                        {
-                            "timecreated": 2
-                        }]}
-                    ]}
+    assert result == {
+        "usersattempts": [{"attempts": [{"timecreated": 1}, {"timecreated": 2}]}]
+    }
+
 
 @mock.patch("requests.get")
 def test_get_moodle_most_recent_attempt_by_user(mock_get):
     mock_response_1 = mock.Mock(
-                status_code=200,
-                json=lambda: 
-                    [
-                        {
-                            "modules": [
-                                {
-                                    "id": 1,
-                                    "instance": 1
-                                }
-                            ]   
-                        }
-                    ]
+        status_code=200, json=lambda: [{"modules": [{"id": 1, "instance": 1}]}]
     )
 
     mock_response_2 = mock.Mock(
-                status_code=200,
-                json=lambda: 
-                    {"usersattempts": [
-                        {"attempts": [{
-                            "timecreated": 1
-                        },
-                        {
-                            "timecreated": 2
-                        }]}
-                    ]}
+        status_code=200,
+        json=lambda: {
+            "usersattempts": [{"attempts": [{"timecreated": 1}, {"timecreated": 2}]}]
+        },
     )
 
     mock_get.side_effect = [mock_response_1, mock_response_2]
@@ -3256,9 +3222,6 @@ def test_get_moodle_most_recent_attempt_by_user(mock_get):
     create_course_for_tests(uow)
 
     result = services.get_moodle_most_recent_attempt_by_user(
-        uow=uow,
-        course_id='1',
-        learning_element_id='1',
-        lms_user_id='1'
+        uow=uow, course_id=1, learning_element_id=1, lms_user_id="1"
     )
-    assert result == {'timecreated': 2}
+    assert result == {"timecreated": 2}

@@ -187,9 +187,11 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
     @abc.abstractmethod
     def create_student_rating(self, student_rating: LM.StudentRating):
         raise NotImplementedError
-    
+
     @abc.abstractmethod
-    def create_learning_element_rating(self, learning_element_rating: DM.LearningElementRating):
+    def create_learning_element_rating(
+        self, learning_element_rating: DM.LearningElementRating
+    ):
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -567,19 +569,23 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
     @abc.abstractmethod
     def get_news(self, language, university, created_at) -> UA.News:
         raise NotImplementedError
-    
+
     @abc.abstractmethod
-    def get_student_ratings_on_topic(self, student_id: int, topic_id: int) -> list[LM.StudentRating]:
+    def get_student_ratings_on_topic(
+        self, student_id: int, topic_id: int
+    ) -> list[LM.StudentRating]:
         raise NotImplementedError
-    
+
     @abc.abstractmethod
     def get_student_ratings(self) -> list[LM.StudentRating]:
         raise NotImplementedError
-    
+
     @abc.abstractmethod
-    def get_learning_element_ratings_on_topic(self, learning_element_id: int, topic_id: int) -> list[DM.LearningElementRating]:
+    def get_learning_element_ratings_on_topic(
+        self, learning_element_id: int, topic_id: int
+    ) -> list[DM.LearningElementRating]:
         raise NotImplementedError
-    
+
     @abc.abstractmethod
     def get_learning_element_ratings(self) -> list[DM.LearningElementRating]:
         raise NotImplementedError
@@ -969,15 +975,17 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
             self.session.add(user)
         except Exception:
             raise err.CreationError()
-        
-    def create_learning_element_rating(self, learning_element_rating: DM.LearningElementRating):
+
+    def create_learning_element_rating(
+        self, learning_element_rating: DM.LearningElementRating
+    ):
         try:
             self.session.add(learning_element_rating)
         except IntegrityError:
             raise err.ForeignKeyViolation()
         except Exception:
             raise err.CreationError()
-        
+
     def create_student_rating(self, student_rating: LM.StudentRating):
         try:
             self.session.add(student_rating)
@@ -1743,8 +1751,10 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
             return result
         except Exception:
             raise err.CreationError()
-        
-    def get_student_ratings_on_topic(self, student_id: int, topic_id: int) -> list[LM.StudentRating]:
+
+    def get_student_ratings_on_topic(
+        self, student_id: int, topic_id: int
+    ) -> list[LM.StudentRating]:
         try:
             return (
                 self.session.query(LM.StudentRating)
@@ -1754,14 +1764,16 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
             )
         except Exception:
             raise err.DatabaseQueryError()
-        
+
     def get_student_ratings(self) -> list[LM.StudentRating]:
         try:
             return self.session.query(LM.StudentRating).all()
         except Exception:
             raise err.DatabaseQueryError()
-        
-    def get_learning_element_ratings_on_topic(self, learning_element_id: int, topic_id: int) -> list[DM.LearningElementRating]:
+
+    def get_learning_element_ratings_on_topic(
+        self, learning_element_id: int, topic_id: int
+    ) -> list[DM.LearningElementRating]:
         try:
             return (
                 self.session.query(DM.LearningElementRating)
@@ -1771,7 +1783,7 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
             )
         except Exception:
             raise err.DatabaseQueryError()
-        
+
     def get_learning_element_ratings(self) -> list[DM.LearningElementRating]:
         try:
             return self.session.query(DM.LearningElementRating).all()

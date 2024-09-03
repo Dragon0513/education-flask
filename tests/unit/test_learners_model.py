@@ -1,11 +1,9 @@
-from datetime import datetime
 import unittest
+from datetime import datetime
 
 from domain.learnersModel import basic_ils_algorithm as BILSA
 from domain.learnersModel import basic_listk_algorithm as BLKA
 from domain.learnersModel import model as LM
-
-
 
 
 class TestBasicQuestionnaireAlgorithms(unittest.TestCase):
@@ -86,24 +84,29 @@ class TestBasicQuestionnaireAlgorithms(unittest.TestCase):
             (2.0, 3.33, 3.0, 2.78),
         )
 
+
 def test_calculate_student_rating():
-    student_rating = LM.StudentRating(1, 1, datetime.fromisoformat('2023-01-01 16:00'), None, None)
+    student_rating = LM.StudentRating(
+        1, 1, datetime.fromisoformat("2023-01-01 16:00"), None, None
+    )
     serialized_student_rating = student_rating.serialize()
     assert serialized_student_rating["rating_value"] == 1500
     assert serialized_student_rating["rating_deviation"] == 350
 
-    student_rating_2 = LM.StudentRating(2, 1, datetime.fromisoformat('2023-01-01 16:00'), 1500, 350)
+    student_rating_2 = LM.StudentRating(
+        2, 1, datetime.fromisoformat("2023-01-01 16:00"), 1500, 350
+    )
     result = student_rating_2.calculate_updated_rating(
-        attempt_timestamp=datetime.fromisoformat('2023-01-01 16:00'),
+        attempt_timestamp=datetime.fromisoformat("2023-01-01 16:00"),
         attempt_result=True,
         learning_element_id=1,
         learning_element_rating_value=1500,
         learning_element_rating_deviation=350,
-        learning_element_rating_timestamp=datetime.fromisoformat('2023-01-01 16:00'),
-        )
-    
+        learning_element_rating_timestamp=datetime.fromisoformat("2023-01-01 16:00"),
+    )
+
     assert result == {
         "value": 1629.7696020846117,
         "deviation": 290.2305060910912,
-        "timestamp": datetime.fromisoformat('2023-01-01 16:00'),
+        "timestamp": datetime.fromisoformat("2023-01-01 16:00"),
     }

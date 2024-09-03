@@ -469,6 +469,7 @@ learning_element_rating = Table(
     Column("timestamp", Date, nullable=False),
 )
 
+
 def start_mappers():
     mapper_registry.map_imperatively(
         UA.Admin,

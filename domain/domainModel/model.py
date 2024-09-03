@@ -1,6 +1,9 @@
 from datetime import datetime
+
+from EducRating import attempt, mv_glicko
+
 from domain.domainModel import learning_element_rating
-from EducRating import mv_glicko, attempt
+
 
 class LearningElement:
     def __init__(
@@ -311,15 +314,32 @@ class StudentLearningPathLearningElementAlgorithm:
 
 class LearningElementRating:
     # Get algorithm for learning element rating calculation.
-    learning_element_rating_algorithm = learning_element_rating.LearningElementRatingAlgorithm()
+    learning_element_rating_algorithm = (
+        learning_element_rating.LearningElementRatingAlgorithm()
+    )
 
-    def __init__(self, learning_element_id: int, topic_id: int, timestamp: datetime, rating_value: float | None, rating_deviation: float | None) -> None:
+    def __init__(
+        self,
+        learning_element_id: int,
+        topic_id: int,
+        timestamp: datetime,
+        rating_value: float | None,
+        rating_deviation: float | None,
+    ) -> None:
         self.id = None
         self.learning_element_id = learning_element_id
         self.topic_id = topic_id
         self.timestamp = timestamp
-        self.rating_value = rating_value if rating_value is not None else self.learning_element_rating_algorithm.inital_rating_value
-        self.rating_deviation = rating_deviation if rating_deviation is not None else self.learning_element_rating_algorithm.inital_rating_deviation
+        self.rating_value = (
+            rating_value
+            if rating_value is not None
+            else self.learning_element_rating_algorithm.inital_rating_value
+        )
+        self.rating_deviation = (
+            rating_deviation
+            if rating_deviation is not None
+            else self.learning_element_rating_algorithm.inital_rating_deviation
+        )
 
     def serialize(self):
         return {
@@ -331,40 +351,42 @@ class LearningElementRating:
             "timestamp": self.timestamp,
         }
 
-    def calculate_updated_rating(self,
-            attempt_timestamp: datetime,
-            attempt_result: int,
-            student_id: int,
-            student_rating_value: float,
-            student_rating_deviation: float,
-            student_rating_timestamp: datetime,
-            ) -> dict:
-
+    def calculate_updated_rating(
+        self,
+        attempt_timestamp: datetime,
+        attempt_result: int,
+        student_id: int,
+        student_rating_value: float,
+        student_rating_deviation: float,
+        student_rating_timestamp: datetime,
+    ) -> dict:
         # Calculate the updated rating for a learning element.
-        updated_rating = self.learning_element_rating_algorithm.calculate_updated_rating(
-            attempt=attempt.Attempt(
-                attempt_id='',
-                user_id=str(student_id),
-                resource_id=str(self.learning_element_id),
-                concept_id=str(self.topic_id),
-                timestamp=attempt_timestamp,
-                is_attempt_correct=bool(attempt_result),
-            ),
-            student_rating=mv_glicko.MVGlickoRating(
-                value=student_rating_value,
-                deviation=student_rating_deviation,
-                timestamp=student_rating_timestamp
-            ),
-            learning_element_rating=mv_glicko.MVGlickoRating(
-                value=self.rating_value,
-                deviation=self.rating_deviation,
-                timestamp=self.timestamp,
-            ),
+        updated_rating = (
+            self.learning_element_rating_algorithm.calculate_updated_rating(
+                attempt=attempt.Attempt(
+                    attempt_id="",
+                    user_id=str(student_id),
+                    resource_id=str(self.learning_element_id),
+                    concept_id=str(self.topic_id),
+                    timestamp=attempt_timestamp,
+                    is_attempt_correct=bool(attempt_result),
+                ),
+                student_rating=mv_glicko.MVGlickoRating(
+                    value=student_rating_value,
+                    deviation=student_rating_deviation,
+                    timestamp=student_rating_timestamp,
+                ),
+                learning_element_rating=mv_glicko.MVGlickoRating(
+                    value=self.rating_value,
+                    deviation=self.rating_deviation,
+                    timestamp=self.timestamp,
+                ),
+            )
         )
 
         # Return the updated rating.
         return {
             "value": updated_rating.value,
-            "deviation": updated_rating.deviation, 
-            "timestamp": updated_rating.timestamp
+            "deviation": updated_rating.deviation,
+            "timestamp": updated_rating.timestamp,
         }

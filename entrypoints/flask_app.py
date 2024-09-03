@@ -1486,21 +1486,24 @@ def post_calculate_learning_path(_: Dict[str, Any], user_id: str, lms_user_id: s
 
 @app.route(
     "/user/<user_id>/course/"
-    + "<course_id>/topic/<topic_id>/learningElementId/<learning_element_id>/rating",
+    + "<course_id>/topic/<topic_id>/learningElement/<learning_element_id>/rating",
     methods=["POST"],
 )
 @cross_origin(supports_credentials=True)
-def post_rating_calculation(user_id: str, course_id: str, topic_id: str, learning_element_id: str):
+def post_calculate_rating(user_id: str, course_id: str, topic_id: str, learning_element_id: str):
     match request.method:
         case 'POST':
+            # uow
+            uow = unit_of_work.SqlAlchemyUnitOfWork()
+
             # Get user by user id.
-            user = services.get_user_by_id(uow=unit_of_work.SqlAlchemyUnitOfWork(), user_id=user_id, lms_user_id=None)
+            user = services.get_user_by_id(uow=uow, user_id=user_id, lms_user_id=None)
 
             # Get student by user id.
-            student = services.get_student_by_user_id(uow=unit_of_work.SqlAlchemyUnitOfWork(), user_id=user_id)
+            student = services.get_student_by_user_id(uow=uow, user_id=user_id)
 
             # Get learning element by learning element id.
-            learning_element = services.get_learning_element_by_id(uow=unit_of_work.SqlAlchemyUnitOfWork(), user_id=user_id, lms_user_id=user["lms_user_id"], student_id=student["id"], course_id=course_id, topic_id=topic_id, learning_element_id=learning_element_id)
+            learning_element = services.get_learning_element_by_id(uow=uow, user_id=user_id, lms_user_id=user["lms_user_id"], student_id=student["id"], course_id=course_id, topic_id=topic_id, learning_element_id=learning_element_id)
             
             # Get classification of learning element id.
             classification = learning_element["classification"]
@@ -1513,16 +1516,16 @@ def post_rating_calculation(user_id: str, course_id: str, topic_id: str, learnin
             # Check the condition.
             if condition:
                 # Get the attempt from moodle.
-                response = services.get_moodle_most_recent_attempt_by_user(uow=unit_of_work.SqlAlchemyUnitOfWork(), course_id=course_id, learning_element_id=topic_id, lms_user_id=user["lms_user_id"])
+                response = services.get_moodle_most_recent_attempt_by_user(uow=uow, course_id=course_id, learning_element_id=topic_id, lms_user_id=user["lms_user_id"])
 
                 # Update the ratings.
                 result = services.update_ratings(
-                    uow=unit_of_work.SqlAlchemyUnitOfWork(),
+                    uow=uow,
                     student_id=student["id"],
                     learning_element_id=learning_element_id,
                     topic_id=topic_id,
                     attempt_result=response.get("success", 0),
-                    timestamp=response['timecreated']
+                    timestamp=datetime.fromtimestamp(response['timecreated'])
                 )
 
             # Return result with status code.
@@ -1775,24 +1778,64 @@ def get_teacher_courses(user_id, lms_user_id, teacher_id):
 if __name__ == "__main__":
     app.run(port=5000, debug=True)
 
+@app.route("/student/<student_id>/topic/<topic_id>/rating", methods=["POST"])
+@cross_origin(supports_credentials=True)
+def post_create_student_rating(student_id: str, topic_id: str):
+    match request.method:
+        case "POST":
+            result = services.create_student_rating(
+                uow=unit_of_work.SqlAlchemyUnitOfWork(), student_id=int(student_id), topic_id=int(topic_id), timestamp=datetime.now()
+            )
+            status_code = 201
+            return jsonify(result), status_code
+
 @app.route("/student/<student_id>/topic/<topic_id>/rating", methods=["GET"])
 @cross_origin(supports_credentials=True)
 def get_student_ratings_on_topic(student_id: str, topic_id: str):
     match request.method:
         case "GET":
             result = services.get_student_ratings_on_topic(
-                unit_of_work.SqlAlchemyUnitOfWork(), int(student_id), int(topic_id)
+                uow=unit_of_work.SqlAlchemyUnitOfWork(), student_id=int(student_id), topic_id=int(topic_id)
             )
             status_code = 200
             return jsonify(result), status_code
+        
+@app.route("/student/rating", methods=["GET"])
+@cross_origin(supports_credentials=True)
+def get_student_ratings():
+    match request.method:
+        case "GET":
+            result = services.get_student_ratings(uow=unit_of_work.SqlAlchemyUnitOfWork())
+            status_code = 200
+            return jsonify(result), status_code
+        
+@app.route("/topic/<topic_id>/learningElement/<learning_element_id>/rating", methods=["POST"])
+@cross_origin(supports_credentials=True)
+def post_create_learning_element_rating(topic_id: str, learning_element_id: str):
+    match request.method:
+        case "POST":
+            result = services.create_learning_element_rating(
+                uow=unit_of_work.SqlAlchemyUnitOfWork(), topic_id=int(topic_id), learning_element_id=int(learning_element_id), timestamp=datetime.now()
+            )
+            status_code = 201
+            return jsonify(result), status_code
 
-@app.route("/topic/<topic_id>/learningElementId/<learning_element_id>/rating", methods=["GET"])
+@app.route("/topic/<topic_id>/learningElement/<learning_element_id>/rating", methods=["GET"])
 @cross_origin(supports_credentials=True)
 def get_learning_element_ratings_on_topic(topic_id: str, learning_element_id: str):
     match request.method:
         case "GET":
             result = services.get_learning_element_ratings_on_topic(
-                unit_of_work.SqlAlchemyUnitOfWork(), int(topic_id), int(learning_element_id)
+                uow=unit_of_work.SqlAlchemyUnitOfWork(), topic_id=int(topic_id), learning_element_id=int(learning_element_id)
             )
+            status_code = 200
+            return jsonify(result), status_code
+        
+@app.route("/learningElement/rating", methods=["GET"])
+@cross_origin(supports_credentials=True)
+def get_learning_element_ratings():
+    match request.method:
+        case "GET":
+            result = services.get_learning_element_ratings(uow=unit_of_work.SqlAlchemyUnitOfWork())
             status_code = 200
             return jsonify(result), status_code

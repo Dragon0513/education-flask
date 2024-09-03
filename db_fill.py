@@ -2153,28 +2153,28 @@ cursor.execute(sql)
 
 sql = """
     INSERT INTO student_rating (\
-    student_id, topic_id, rating_value, rating_deviationm timestamp)
+    student_id, topic_id, rating_value, rating_deviation, timestamp)
     VALUES (7, 1, 1500, 350, '2023-07-13 16:00:00')
 """
 cursor.execute(sql)
 
 sql = """
     INSERT INTO student_rating (\
-    student_id, topic_id, algorithm_id)
+    student_id, topic_id, rating_value, rating_deviation, timestamp)
     VALUES (7, 2, 1500, 350, '2023-07-13 16:00:00')
 """
 cursor.execute(sql)
 
 sql = """
     INSERT INTO learning_element_rating (\
-    student_id, topic_id, algorithm_id)
+    learning_element_id, topic_id, rating_value, rating_deviation, timestamp)
     VALUES (1, 1, 1500, 350, '2023-07-13 16:00:00')
 """
 cursor.execute(sql)
 
 sql = """
     INSERT INTO learning_element_rating (\
-    student_id, topic_id, algorithm_id)
+    learning_element_id, topic_id, rating_value, rating_deviation, timestamp)
     VALUES (1, 2, 1500, 350, '2023-07-13 16:00:00')
 """
 cursor.execute(sql)

@@ -573,7 +573,15 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
         raise NotImplementedError
     
     @abc.abstractmethod
+    def get_student_ratings(self) -> list[LM.StudentRating]:
+        raise NotImplementedError
+    
+    @abc.abstractmethod
     def get_learning_element_ratings_on_topic(self, learning_element_id: int, topic_id: int) -> list[DM.LearningElementRating]:
+        raise NotImplementedError
+    
+    @abc.abstractmethod
+    def get_learning_element_ratings(self) -> list[DM.LearningElementRating]:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -1736,7 +1744,7 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         except Exception:
             raise err.CreationError()
         
-    def get_student_ratings_on_topic(self, student_id: int, topic_id: int):
+    def get_student_ratings_on_topic(self, student_id: int, topic_id: int) -> list[LM.StudentRating]:
         try:
             return (
                 self.session.query(LM.StudentRating)
@@ -1747,7 +1755,13 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         except Exception:
             raise err.DatabaseQueryError()
         
-    def get_learning_element_ratings_on_topic(self, learning_element_id: int, topic_id: int):
+    def get_student_ratings(self) -> list[LM.StudentRating]:
+        try:
+            return self.session.query(LM.StudentRating).all()
+        except Exception:
+            raise err.DatabaseQueryError()
+        
+    def get_learning_element_ratings_on_topic(self, learning_element_id: int, topic_id: int) -> list[DM.LearningElementRating]:
         try:
             return (
                 self.session.query(DM.LearningElementRating)
@@ -1755,6 +1769,12 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
                 .filter_by(topic_id=topic_id)
                 .all()
             )
+        except Exception:
+            raise err.DatabaseQueryError()
+        
+    def get_learning_element_ratings(self) -> list[DM.LearningElementRating]:
+        try:
+            return self.session.query(DM.LearningElementRating).all()
         except Exception:
             raise err.DatabaseQueryError()
 

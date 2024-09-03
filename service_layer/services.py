@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, time
 import os
 
 import requests
@@ -2021,12 +2021,21 @@ def get_student_by_user_id(uow: unit_of_work.AbstractUnitOfWork, user_id) -> dic
             student[0].role_id = None
             result = student[0].serialize()
         return result
+    
 
 def get_student_ratings_on_topic(uow: unit_of_work.AbstractUnitOfWork, student_id: int, topic_id: int) -> list:
     with uow:
         student_ratings = uow.student_rating.get_student_ratings_on_topic(student_id=student_id, topic_id=topic_id)
         results = []
         for element in student_ratings:	
+            results.append(element.serialize())
+        return results
+    
+def get_student_ratings(uow: unit_of_work.AbstractUnitOfWork) -> list:
+    with uow:
+        student_ratings = uow.student_rating.get_student_ratings()
+        results = []
+        for element in student_ratings:
             results.append(element.serialize())
         return results
 
@@ -2038,7 +2047,15 @@ def get_learning_element_ratings_on_topic(uow: unit_of_work.AbstractUnitOfWork, 
             results.append(element.serialize())
         return results
     
-def get_moodle_course_content(uow: unit_of_work.AbstractUnitOfWork, course_id: str) -> dict:
+def get_learning_element_ratings(uow: unit_of_work.AbstractUnitOfWork) -> list:
+    with uow:
+        learning_element_ratings = uow.learning_element_rating.get_learning_element_ratings()
+        results = []
+        for element in learning_element_ratings:
+            results.append(element.serialize())
+        return results
+    
+def get_moodle_course_content(uow: unit_of_work.AbstractUnitOfWork, course_id: int) -> dict:
     with uow:
         course = uow.course.get_course_by_id(course_id=course_id)
         moodle_url = os.environ.get("REST_LMS_URL", "")
@@ -2062,7 +2079,7 @@ def get_moodle_course_content(uow: unit_of_work.AbstractUnitOfWork, course_id: s
         else:
             return {}
         
-def get_h5p_activity_id_for_learning_element(uow: unit_of_work.AbstractUnitOfWork, course_id: str, learning_element_id: str) -> dict:
+def get_h5p_activity_id_for_learning_element(uow: unit_of_work.AbstractUnitOfWork, course_id: int, learning_element_id: int) -> dict:
     with uow:
         response = get_moodle_course_content(uow=uow, course_id=course_id)
 
@@ -2078,7 +2095,7 @@ def get_h5p_activity_id_for_learning_element(uow: unit_of_work.AbstractUnitOfWor
         else:
             return {}
         
-def get_moodle_h5p_activity_attempts(uow: unit_of_work.AbstractUnitOfWork, course_id: str, learning_element_id: str, lms_user_id: str) -> dict:
+def get_moodle_h5p_activity_attempts(uow: unit_of_work.AbstractUnitOfWork, course_id: int, learning_element_id: int, lms_user_id: str) -> dict:
         with uow:
             h5p_activity_id = get_h5p_activity_id_for_learning_element(uow=uow, course_id=course_id, learning_element_id=learning_element_id)
             moodle_url = os.environ.get("REST_LMS_URL", "")
@@ -2106,7 +2123,7 @@ def get_moodle_h5p_activity_attempts(uow: unit_of_work.AbstractUnitOfWork, cours
         
 def get_moodle_most_recent_attempt_by_user(uow: unit_of_work.AbstractUnitOfWork, course_id: str, learning_element_id: str, lms_user_id: str) -> dict:
     with uow:
-        response = get_moodle_h5p_activity_attempts(uow=uow, course_id=course_id, learning_element_id=learning_element_id, lms_user_id=lms_user_id)
+        response = get_moodle_h5p_activity_attempts(uow=uow, course_id=int(course_id), learning_element_id=int(learning_element_id), lms_user_id=lms_user_id)
 
         if response != {}:
             # Get all attempts.
@@ -2333,44 +2350,44 @@ def update_ratings(
         learning_element_id: str,
         topic_id: str,
         attempt_result: int,
-        timestamp: int,
+        timestamp: datetime,
 ) -> dict:
     with uow:
-        # Get all student ratings on concept.
-        student_ratings = get_student_ratings_on_topic(uow=uow, student_id=int(student_id), topic_id=int(topic_id))
-
-        if student_ratings == []:
+        if get_student_ratings_on_topic(uow=uow, student_id=int(student_id), topic_id=int(topic_id)) == []:
             # If no student rating is available, create an initial student rating on concept.
-            student_rating = create_student_rating(
+            create_student_rating(
                 uow=uow,
                 student_id = int(student_id),
                 topic_id = int(topic_id),
-                timestamp=datetime.fromtimestamp(timestamp)
+                timestamp=timestamp
             )
-        else:
-            # Sort student ratings by timestamp.
-            student_ratings.sort(key=lambda x: x['timestamp'])
+            
+        # Get all student ratings on concept.
+        student_ratings = get_student_ratings_on_topic(uow=uow, student_id=int(student_id), topic_id=int(topic_id))
+        
+        # Sort student ratings by timestamp.
+        student_ratings.sort(key=lambda x: x['timestamp'])
 
-            # Get the most recent student rating on concept.
-            student_rating = student_ratings[-1]
+        # Get the most recent student rating on concept.
+        student_rating = student_ratings[-1]
 
-        # Get all learning element ratings on concept.
-        learning_element_ratings = get_learning_element_ratings_on_topic(uow=uow, learning_element_id=int(learning_element_id), topic_id=int(topic_id))
-
-        if learning_element_ratings == []:
+        if get_learning_element_ratings_on_topic(uow=uow, learning_element_id=int(learning_element_id), topic_id=int(topic_id)) == []:
             # If no learning element rating is available, create an initial learning element rating on concept.
-            learning_element_rating = create_learning_element_rating(
+            create_learning_element_rating(
                 uow=uow,
                 learning_element_id=int(learning_element_id),
                 topic_id=int(topic_id),
-                timestamp=datetime.fromtimestamp(timestamp)
+                timestamp=timestamp
             )
-        else:
-            # Sort learning element ratings by timestamp.
-            learning_element_ratings.sort(key=lambda x: x['timestamp'])
 
-            # Get the most recent learning element rating on concept.
-            learning_element_rating = learning_element_ratings[-1]
+        # Get all learning element ratings on concept.
+        learning_element_ratings = get_learning_element_ratings_on_topic(uow=uow, learning_element_id=int(learning_element_id), topic_id=int(topic_id))
+    
+        # Sort learning element ratings by timestamp.
+        learning_element_ratings.sort(key=lambda x: x['timestamp'])
+
+        # Get the most recent learning element rating on concept.
+        learning_element_rating = learning_element_ratings[-1]
 
         # Create student rating and learning element rating objects.
         student_rating = LM.StudentRating(
@@ -2378,7 +2395,7 @@ def update_ratings(
             topic_id=student_rating['topic_id'],
             rating_value=student_rating['rating_value'],
             rating_deviation=student_rating['rating_deviation'],
-            timestamp=student_rating['timestamp']
+            timestamp=datetime.combine(student_rating['timestamp'], time.min)
         )
 
         learning_element_rating = DM.LearningElementRating(
@@ -2386,12 +2403,12 @@ def update_ratings(
             topic_id=learning_element_rating['topic_id'],
             rating_value=learning_element_rating['rating_value'],
             rating_deviation=learning_element_rating['rating_deviation'],
-            timestamp=learning_element_rating['timestamp']
+            timestamp=datetime.combine(learning_element_rating['timestamp'], time.min)
         )
 
         # Calculate updated ratings.
         updated_student_rating = student_rating.calculate_updated_rating(
-            attempt_timestamp=datetime.fromtimestamp(timestamp),
+            attempt_timestamp=timestamp,
             is_attempt_correct=bool(attempt_result),
             learning_element_id=learning_element_id,
             learning_element_rating_value=learning_element_rating.rating_value,
@@ -2400,7 +2417,7 @@ def update_ratings(
         )
 
         updated_learning_element_rating = learning_element_rating.calculate_updated_rating(
-            attempt_timestamp=datetime.fromtimestamp(timestamp),
+            attempt_timestamp=timestamp,
             is_attempt_correct=bool(attempt_result),
             student_id=student_id,
             student_rating_value=student_rating.rating_value,

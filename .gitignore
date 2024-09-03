@@ -16,3 +16,4 @@ configs/lti_config.json
 test_keys/
 flask.log
 .coverage.*
+.tox

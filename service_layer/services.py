@@ -2414,20 +2414,16 @@ def update_ratings(
     timestamp: datetime,
 ) -> dict:
     with uow:
-
         # get all student ratings
         # if student_ratingS == zero length
-            # create inital rating
-        
+        # create inital rating
+
         # Get all student ratings on concept.
         student_ratings = get_student_ratings_on_topic(
-                uow=uow, student_id=student_id, topic_id=topic_id
-            )
+            uow=uow, student_id=student_id, topic_id=topic_id
+        )
 
-        if (
-            student_ratings
-            == []
-        ):
+        if student_ratings == []:
             # If no student rating is available,
             # create an initial student rating on concept.
             student_rating = create_student_rating(
@@ -2440,19 +2436,17 @@ def update_ratings(
             # Get the most recent student rating on concept.
             student_rating = student_ratings[-1]
 
-            # Check if timestamp of attempt is smaller or equal than the timestamp of the most recent student rating.
+            # Check if timestamp of attempt is smaller or equal than
+            # the timestamp of the most recent student rating.
             if timestamp <= student_rating["timestamp"]:
                 return {}
-        
+
         # Get all learning element ratings on concept.
         learning_element_ratings = get_learning_element_ratings_on_topic(
-                uow=uow, learning_element_id=learning_element_id, topic_id=topic_id
-            )
+            uow=uow, learning_element_id=learning_element_id, topic_id=topic_id
+        )
 
-        if (
-            learning_element_ratings
-            == []
-        ):
+        if learning_element_ratings == []:
             # If no learning element rating is available,
             # create an initial learning element rating on concept.
             create_learning_element_rating(

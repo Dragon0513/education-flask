@@ -2185,7 +2185,11 @@ def get_moodle_most_recent_attempt_by_user(
             attempts = response["usersattempts"][0]["attempts"]
 
             # Get the most recent attempt.
-            most_recent_attempt = max(attempts, key=lambda x: x["timecreated"])
+            most_recent_attempt = {}
+
+            # Check if there are any attempts.
+            if attempts != []:
+                most_recent_attempt = max(attempts, key=lambda x: x["timecreated"])
 
             return most_recent_attempt
 

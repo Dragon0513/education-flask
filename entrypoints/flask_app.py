@@ -1534,14 +1534,15 @@ def post_calculate_rating(
                 )
 
                 # Update the ratings.
-                result = services.update_ratings(
-                    uow=uow,
-                    student_id=student["id"],
-                    learning_element_id=int(learning_element_id),
-                    topic_id=int(topic_id),
-                    attempt_result=response.get("success", 0),
-                    timestamp=datetime.fromtimestamp(response["timecreated"]),
-                )
+                if response != {}:
+                    result = services.update_ratings(
+                        uow=uow,
+                        student_id=student["id"],
+                        learning_element_id=int(learning_element_id),
+                        topic_id=int(topic_id),
+                        attempt_result=response.get("success", 0),
+                        timestamp=datetime.fromtimestamp(response["timecreated"]),
+                    )
 
             # Return result with status code.
             status_code = 201

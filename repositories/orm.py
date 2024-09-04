@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, Date, Float, Integer, String, Table
+from sqlalchemy import Boolean, Column, Date, Float, Integer, String, Table, DateTime
 from sqlalchemy.orm import registry
 
 from domain.domainModel import model as DM
@@ -455,7 +455,7 @@ student_rating = Table(
     Column("topic_id", Integer, nullable=False),
     Column("rating_value", Float, nullable=False),
     Column("rating_deviation", Float, nullable=False),
-    Column("timestamp", Date, nullable=False),
+    Column("timestamp", DateTime, nullable=False),
 )
 
 learning_element_rating = Table(
@@ -466,7 +466,7 @@ learning_element_rating = Table(
     Column("topic_id", Integer, nullable=False),
     Column("rating_value", Float, nullable=False),
     Column("rating_deviation", Float, nullable=False),
-    Column("timestamp", Date, nullable=False),
+    Column("timestamp", DateTime, nullable=False),
 )
 
 

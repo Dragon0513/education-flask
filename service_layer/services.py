@@ -1,5 +1,5 @@
 import os
-from datetime import datetime, time
+from datetime import datetime
 
 import requests
 from flask.wrappers import Request
@@ -2414,33 +2414,43 @@ def update_ratings(
     timestamp: datetime,
 ) -> dict:
     with uow:
-        if (
-            get_student_ratings_on_topic(
+
+        # get all student ratings
+        # if student_ratingS == zero length
+            # create inital rating
+        
+        # Get all student ratings on concept.
+        student_ratings = get_student_ratings_on_topic(
                 uow=uow, student_id=student_id, topic_id=topic_id
             )
+
+        if (
+            student_ratings
             == []
         ):
             # If no student rating is available,
             # create an initial student rating on concept.
-            create_student_rating(
+            student_rating = create_student_rating(
                 uow=uow, student_id=student_id, topic_id=topic_id, timestamp=timestamp
             )
+        else:
+            # Sort student ratings by timestamp.
+            student_ratings.sort(key=lambda x: x["timestamp"])
 
-        # Get all student ratings on concept.
-        student_ratings = get_student_ratings_on_topic(
-            uow=uow, student_id=student_id, topic_id=topic_id
-        )
+            # Get the most recent student rating on concept.
+            student_rating = student_ratings[-1]
 
-        # Sort student ratings by timestamp.
-        student_ratings.sort(key=lambda x: x["timestamp"])
-
-        # Get the most recent student rating on concept.
-        student_rating = student_ratings[-1]
-
-        if (
-            get_learning_element_ratings_on_topic(
+            # Check if timestamp of attempt is smaller or equal than the timestamp of the most recent student rating.
+            if timestamp <= student_rating["timestamp"]:
+                return {}
+        
+        # Get all learning element ratings on concept.
+        learning_element_ratings = get_learning_element_ratings_on_topic(
                 uow=uow, learning_element_id=learning_element_id, topic_id=topic_id
             )
+
+        if (
+            learning_element_ratings
             == []
         ):
             # If no learning element rating is available,
@@ -2451,17 +2461,12 @@ def update_ratings(
                 topic_id=topic_id,
                 timestamp=timestamp,
             )
+        else:
+            # Sort learning element ratings by timestamp.
+            learning_element_ratings.sort(key=lambda x: x["timestamp"])
 
-        # Get all learning element ratings on concept.
-        learning_element_ratings = get_learning_element_ratings_on_topic(
-            uow=uow, learning_element_id=learning_element_id, topic_id=topic_id
-        )
-
-        # Sort learning element ratings by timestamp.
-        learning_element_ratings.sort(key=lambda x: x["timestamp"])
-
-        # Get the most recent learning element rating on concept.
-        learning_element_rating = learning_element_ratings[-1]
+            # Get the most recent learning element rating on concept.
+            learning_element_rating = learning_element_ratings[-1]
 
         # Create student rating and learning element rating objects.
         student_rating = LM.StudentRating(
@@ -2469,7 +2474,7 @@ def update_ratings(
             topic_id=student_rating["topic_id"],
             rating_value=student_rating["rating_value"],
             rating_deviation=student_rating["rating_deviation"],
-            timestamp=datetime.combine(student_rating["timestamp"], time.min),
+            timestamp=student_rating["timestamp"],
         )
 
         learning_element_rating = DM.LearningElementRating(
@@ -2477,7 +2482,7 @@ def update_ratings(
             topic_id=learning_element_rating["topic_id"],
             rating_value=learning_element_rating["rating_value"],
             rating_deviation=learning_element_rating["rating_deviation"],
-            timestamp=datetime.combine(learning_element_rating["timestamp"], time.min),
+            timestamp=learning_element_rating["timestamp"],
         )
 
         # Calculate updated ratings.

@@ -32,7 +32,9 @@ _iss_conf_dict = {
                     "alg": "RS256",
                     "kid": os.environ.get("KEY_ID", "None"),
                     "e": "AQAB",
-                    "n": os.environ.get("KEY_N_VALUE", "None"),  # noqa: Place your default n value here
+                    "n": os.environ.get(
+                        "KEY_N_VALUE", "None"
+                    ),  # noqa: Place your default n value here
                     "use": "sig",
                 }
             ]

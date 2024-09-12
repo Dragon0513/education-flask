@@ -1392,7 +1392,15 @@ class TestApi:
     ):
         user_id_student = 4
         student_id = 1
-        url = path_user + '/' + str(user_id_student) + path_student + '/' + str(student_id) + path_rating
+        url = (
+            path_user
+            + "/"
+            + str(user_id_student)
+            + path_student
+            + "/"
+            + str(student_id)
+            + path_rating
+        )
         r = client_class.get(url)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))

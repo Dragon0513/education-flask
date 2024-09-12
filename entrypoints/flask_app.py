@@ -1830,10 +1830,10 @@ def get_student_ratings_on_topic(student_id: str, topic_id: str):
 def get_student_ratings(user_id: str, student_id: str):
     match request.method:
         case "GET":
-            student = services.get_student_by_user_id(uow=
-                unit_of_work.SqlAlchemyUnitOfWork(), user_id=user_id
+            student = services.get_student_by_user_id(
+                uow=unit_of_work.SqlAlchemyUnitOfWork(), user_id=user_id
             )
-            if student['id'] == int(student_id):
+            if student["id"] == int(student_id):
                 result = services.get_student_ratings(
                     uow=unit_of_work.SqlAlchemyUnitOfWork()
                 )

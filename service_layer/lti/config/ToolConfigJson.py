@@ -30,9 +30,11 @@ _iss_conf_dict = {
                 {
                     "kty": "RSA",
                     "alg": "RS256",
-                    "kid": "e2115228575628aa3ee9",
+                    "kid": os.environ.get("KEY_ID", "None"),
                     "e": "AQAB",
-                    "n": "pYn7sOS-tZ3nj7jQ42MVE5EHtzU80N_NU7SQ7e8R1G4HOJ_E9rBqaQT86oxSLo_wRLlfWjruvi2KH98zbhjY68DAsJxXT8UatqXHlZIeanuhrLNtfrYnQJm9fREoWanbgxwPNtGQ3uauVngsmImdMcUvWs-x4riarLvMNF0iVzER4AusSJaFofPy5KopBRf-HWx6meD6-HAqX2X_N4ZvblSFWzZnKEe8QuhWjAqaFKiq-wUOEhzdeNnsQl9vg4uzZ2i6hHbbonpVvC4_sxjTWJFj-21bXShzn3NKbwXXFfX_-GuMv6_9PCakuMco3RrM_VgJJ3-4kMmovLk76iSwBQ",  # noqa: Place your default n value here
+                    "n": os.environ.get(
+                        "KEY_N_VALUE", "None"
+                    ),  # noqa: Place your default n value here
                     "use": "sig",
                 }
             ]

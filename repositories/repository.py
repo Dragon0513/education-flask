@@ -351,7 +351,7 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_course_by_id(self, course_id) -> DM.Course:
+    def get_course_by_id(self, course_id) -> list[DM.Course]:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -1272,7 +1272,7 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         except Exception:
             raise err.DatabaseQueryError()
 
-    def get_course_by_id(self, course_id) -> DM.Course:
+    def get_course_by_id(self, course_id) -> list[DM.Course]:
         result = self.session.query(DM.Course).filter_by(id=course_id).all()
         if result == []:
             raise err.NoValidIdError()

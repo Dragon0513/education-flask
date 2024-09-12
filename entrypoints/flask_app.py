@@ -1825,16 +1825,22 @@ def get_student_ratings_on_topic(student_id: str, topic_id: str):
             return jsonify(result), status_code
 
 
-@app.route("/student/rating", methods=["GET"])
+@app.route("/user/<user_id>/student/<student_id>/rating", methods=["GET"])
 @cross_origin(supports_credentials=True)
-def get_student_ratings():
+def get_student_ratings(user_id: str, student_id: str):
     match request.method:
         case "GET":
-            result = services.get_student_ratings(
-                uow=unit_of_work.SqlAlchemyUnitOfWork()
+            student = services.get_student_by_user_id(uow=
+                unit_of_work.SqlAlchemyUnitOfWork(), user_id=user_id
             )
-            status_code = 200
-            return jsonify(result), status_code
+            if student['id'] == int(student_id):
+                result = services.get_student_ratings(
+                    uow=unit_of_work.SqlAlchemyUnitOfWork()
+                )
+                status_code = 200
+                return jsonify(result), status_code
+            else:
+                raise err.WrongParameterValueError()
 
 
 @app.route(

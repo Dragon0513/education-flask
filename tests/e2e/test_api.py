@@ -1390,7 +1390,9 @@ class TestApi:
     def test_get_student_ratings(
         self, client_class, keys_expected, status_code_expected
     ):
-        url = path_student + path_rating
+        user_id_student = 4
+        student_id = 1
+        url = path_user + '/' + str(user_id_student) + path_student + '/' + str(student_id) + path_rating
         r = client_class.get(url)
         assert r.status_code == status_code_expected
         response = json.loads(r.data.decode("utf-8").strip("\n"))

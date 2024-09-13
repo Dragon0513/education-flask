@@ -185,6 +185,16 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
+    def create_student_rating(self, student_rating: LM.StudentRating):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def create_learning_element_rating(
+        self, learning_element_rating: DM.LearningElementRating
+    ):
+        raise NotImplementedError
+
+    @abc.abstractmethod
     def delete_admin(self, user_id):
         raise NotImplementedError
 
@@ -341,7 +351,7 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_course_by_id(self, course_id) -> DM.Course:
+    def get_course_by_id(self, course_id) -> list[DM.Course]:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -558,6 +568,26 @@ class AbstractRepository(abc.ABC):  # pragma: no cover
 
     @abc.abstractmethod
     def get_news(self, language, university, created_at) -> UA.News:
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def get_student_ratings_on_topic(
+        self, student_id: int, topic_id: int
+    ) -> list[LM.StudentRating]:
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def get_student_ratings(self) -> list[LM.StudentRating]:
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def get_learning_element_ratings_on_topic(
+        self, learning_element_id: int, topic_id: int
+    ) -> list[DM.LearningElementRating]:
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def get_learning_element_ratings(self) -> list[DM.LearningElementRating]:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -946,6 +976,24 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         except Exception:
             raise err.CreationError()
 
+    def create_learning_element_rating(
+        self, learning_element_rating: DM.LearningElementRating
+    ):
+        try:
+            self.session.add(learning_element_rating)
+        except IntegrityError:
+            raise err.ForeignKeyViolation()
+        except Exception:
+            raise err.CreationError()
+
+    def create_student_rating(self, student_rating: LM.StudentRating):
+        try:
+            self.session.add(student_rating)
+        except IntegrityError:
+            raise err.ForeignKeyViolation()
+        except Exception:
+            raise err.CreationError()
+
     def delete_admin(self, user_id):
         admin = self.get_admin_by_id(user_id)
         if admin != []:
@@ -1224,7 +1272,7 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
         except Exception:
             raise err.DatabaseQueryError()
 
-    def get_course_by_id(self, course_id) -> DM.Course:
+    def get_course_by_id(self, course_id) -> list[DM.Course]:
         result = self.session.query(DM.Course).filter_by(id=course_id).all()
         if result == []:
             raise err.NoValidIdError()
@@ -1703,6 +1751,44 @@ class SqlAlchemyRepository(AbstractRepository):  # pragma: no cover
             return result
         except Exception:
             raise err.CreationError()
+
+    def get_student_ratings_on_topic(
+        self, student_id: int, topic_id: int
+    ) -> list[LM.StudentRating]:
+        try:
+            return (
+                self.session.query(LM.StudentRating)
+                .filter_by(student_id=student_id)
+                .filter_by(topic_id=topic_id)
+                .all()
+            )
+        except Exception:
+            raise err.DatabaseQueryError()
+
+    def get_student_ratings(self) -> list[LM.StudentRating]:
+        try:
+            return self.session.query(LM.StudentRating).all()
+        except Exception:
+            raise err.DatabaseQueryError()
+
+    def get_learning_element_ratings_on_topic(
+        self, learning_element_id: int, topic_id: int
+    ) -> list[DM.LearningElementRating]:
+        try:
+            return (
+                self.session.query(DM.LearningElementRating)
+                .filter_by(learning_element_id=learning_element_id)
+                .filter_by(topic_id=topic_id)
+                .all()
+            )
+        except Exception:
+            raise err.DatabaseQueryError()
+
+    def get_learning_element_ratings(self) -> list[DM.LearningElementRating]:
+        try:
+            return self.session.query(DM.LearningElementRating).all()
+        except Exception:
+            raise err.DatabaseQueryError()
 
     def update_course(self, course_id, course) -> DM.Course:
         course_exist = self.get_course_by_id(course_id)

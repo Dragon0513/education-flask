@@ -80,7 +80,6 @@ def clean_up_db(
     cursor.execute("DELETE FROM learning_path_learning_element")
     cursor.execute("DELETE FROM learning_path_topic")
     cursor.execute("DELETE FROM learning_path")
-    cursor.execute("DELETE FROM learning_element_rating")
     cursor.execute("DELETE FROM student_learning_element_visit")
     cursor.execute("DELETE FROM student_learning_element")
     cursor.execute("DELETE FROM student_topic_visit")
@@ -109,6 +108,8 @@ def clean_up_db(
     cursor.execute("DELETE FROM default_learning_path")
     cursor.execute("DELETE FROM student_learning_path_learning_element_algorithm")
     cursor.execute("DELETE FROM learning_path_algorithm")
+    cursor.execute("DELETE FROM student_rating")
+    cursor.execute("DELETE FROM learning_element_rating")
 
     conn.commit()
 

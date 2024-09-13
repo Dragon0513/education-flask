@@ -1,3 +1,10 @@
+from datetime import datetime
+
+from EducRating import attempt, mv_glicko
+
+from domain.learnersModel import student_rating
+
+
 class LearningCharacteristic:
     def __init__(
         self,
@@ -484,4 +491,80 @@ class QuestionnaireListK:
             "lrn_env1_f37": self.lrn_env1_f37,
             "lrn_env2_f38": self.lrn_env2_f38,
             "lrn_env3_f39": self.lrn_env3_f39,
+        }
+
+
+class StudentRating:
+    # Get algorithm for student rating calculation.
+    student_rating_algorithm = student_rating.StudentRatingAlgorithm()
+
+    def __init__(
+        self,
+        student_id: int,
+        topic_id: int,
+        timestamp: datetime,
+        rating_value: float | None,
+        rating_deviation: float | None,
+    ) -> None:
+        self.id = None
+        self.student_id = student_id
+        self.topic_id = topic_id
+        self.timestamp = timestamp
+        self.rating_value = (
+            rating_value
+            if rating_value is not None
+            else self.student_rating_algorithm.inital_rating_value
+        )
+        self.rating_deviation = (
+            rating_deviation
+            if rating_deviation is not None
+            else self.student_rating_algorithm.inital_rating_deviation
+        )
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "student_id": self.student_id,
+            "topic_id": self.topic_id,
+            "rating_value": self.rating_value,
+            "rating_deviation": self.rating_deviation,
+            "timestamp": self.timestamp,
+        }
+
+    def calculate_updated_rating(
+        self,
+        attempt_timestamp: datetime,
+        attempt_result: int,
+        learning_element_id: int,
+        learning_element_rating_value: float,
+        learning_element_rating_deviation: float,
+        learning_element_rating_timestamp: datetime,
+    ) -> dict:
+        # Calculate the updated rating for a student.
+        updated_rating = self.student_rating_algorithm.calculate_updated_rating(
+            attempt=attempt.Attempt(
+                attempt_id="",
+                user_id=str(self.student_id),
+                resource_id=str(learning_element_id),
+                concept_id=str(self.topic_id),
+                timestamp=attempt_timestamp,
+                is_attempt_correct=bool(attempt_result),
+            ),
+            student_rating=mv_glicko.MVGlickoRating(
+                value=self.rating_value,
+                deviation=self.rating_deviation,
+                timestamp=self.timestamp,
+            ),
+            learning_element_rating=mv_glicko.MVGlickoRating(
+                value=learning_element_rating_value,
+                deviation=learning_element_rating_deviation,
+                timestamp=learning_element_rating_timestamp,
+            ),
+        )
+
+        # Return the updated rating.
+        return {
+            "value": updated_rating.value,
+            "deviation": updated_rating.deviation,
+            "timestamp": updated_rating.timestamp,
         }

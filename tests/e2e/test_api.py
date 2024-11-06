@@ -1694,7 +1694,7 @@ class TestApi:
             # Working Example
             (
                 {
-                    "university": "HS-AS",
+                    "university": "TH-AB",
                     "language_id": "en",
                     "created_at": "2023-08-01T13:37:42Z",
                     "news_content": "This is news",
@@ -2956,7 +2956,7 @@ class TestApi:
             # Working Example
             (
                 "en",
-                "HS-AS",
+                "TH-AB",
                 [
                     "created_at",
                     "expiration_date",

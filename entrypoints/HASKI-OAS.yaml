@@ -4375,7 +4375,7 @@ components:
               description: "The language of the news"
             university:
               type: "string"
-              example: "HS-KE / HS-AS"
+              example: "HS-KE / TH-AB"
               description: "The university of the news"
             news_content:
               type: "string"

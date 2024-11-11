@@ -561,7 +561,7 @@ sql = """
     INSERT INTO news (language_id, news_content, university, expiration_date,\
     created_at)
     VALUES ('en', 'Test in eng and with Aschaffenburg university', \
-    'HS-AS', '2025-04-15 16:00:00',\
+    'TH-AB', '2025-04-15 16:00:00',\
     '2023-07-13 16:00:00')
 """
 cursor.execute(sql)
